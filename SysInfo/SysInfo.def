@@ -1,0 +1,6 @@
+; SysInfo.def : Declares the module parameters for the DLL.
+
+LIBRARY      "SysInfo"
+
+EXPORTS
+    ; Explicit exports can go here

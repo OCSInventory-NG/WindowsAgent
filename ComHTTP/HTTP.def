@@ -1,0 +1,12 @@
+; HTTP.def : Declares the module parameters for the DLL.
+
+LIBRARY      "HTTP"
+
+EXPORTS
+    ; Explicit exports can go here
+	newServerConnexion
+	deleteServerConnexion
+	newServerConfig
+	saveServerConfig
+	deleteServerConfig
+	

@@ -1,0 +1,6 @@
+; OCSInventory Front.def : Declares the module parameters for the DLL.
+
+LIBRARY      "OCSInventory Front"
+
+EXPORTS
+    ; Explicit exports can go here

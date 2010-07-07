@@ -1,0 +1,48 @@
+[OCS Inventory Agent]
+; OCS Inventory NG Agent features
+; Enable debugging mode (0 => disabled, 1 => enabled, 2=> trace all) 
+Debug=1
+; Enable local inventory mode (path to folder to store .ocs file => enabled,
+; empty => disabled) 
+Local=
+; Enable agent scanning HKEY_CURRENT_USER hive for printers and sofware
+; (0 => disabled, 1 => enabled) 
+HKCU=0
+; Disable prompting user for TAG value (0 => prompt allowed, 1 => disabled) 
+NoTAG=0
+; Force agent launching IpDiscover on specified network (network address => enabled,
+; empty disabled)
+IpDisc=
+; Which communication provider to use
+; Name of communication DLL and configuration section to use
+; DLL must be in "com" sub directory
+ComProvider=ComHTTP.dll
+
+[HTTP]
+; OCS Inventory NG Communication Server address and port
+; Listening on http[s]://server[:port]/ocsinventory
+Server=http://localhost/ocsinventory
+; Using SSL connections (0 => standard SSL without certificate validation,
+; 1 => SSL with server certificate validation required)
+SSL=0
+; Path to CA certificate chain file in PEM format, for server certificate
+; validation
+CaBundle=D:\Developp\OCS Inventory NG\cacert.pem
+; Using authentication on Communication Server (0 => no, 1 => yes)
+AuthRequired=0
+; Communication Server authentication credentials (encrypted)
+User=
+Pwd=
+; Using proxy (0 => no, 1 => HTTP proxy, 2 => Socks 4 proxy, 3 => Socks 5 proxy)
+ProxyType=0
+; Proxy address and port
+Proxy=
+ProxyPort=
+; Using proxy authentication (0 => no, 1 => yes)
+ProxyAuthRequired=
+; Proxy authentication credentials (encrypted)
+ProxyUser=
+ProxyPwd=
+ 
+[OCS Inventory Service]
+PROLOG_FREQ=1
