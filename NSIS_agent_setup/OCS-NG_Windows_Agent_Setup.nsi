@@ -661,7 +661,7 @@ end_loop_stop_service:
 	;* 704 = CreateToolhelp32Snapshot failed
 	sleep 1000
 	KillProcDLL::KillProc "OcsSystray.exe"
-	StrCpy $logBuffer "Trying to kill processOcsSystray.exe...Result: $R0$\r$\n"
+	StrCpy $logBuffer "Trying to kill process OcsSystray.exe...Result: $R0$\r$\n"
 	Call Write_Log
 	sleep 1000
 	KillProcDLL::KillProc "OcsService.exe"
