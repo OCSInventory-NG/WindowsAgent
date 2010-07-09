@@ -16,6 +16,12 @@ REQUIREMENTS
 - NSIS 2.46 or higher (http://nsis.sourceforge.net))
 - Services plugin (http://nsis.sourceforge.net/Services_plug-in)
 - KillProcDLL plug-in (http://nsis.sourceforge.net/KillProcDLL_plug-in)
+- SetACL 2.0.3 or higher (http://setacl.sourceforge.net/)
+
+Put SetACL.exe into OCS-NG_Windows_Agent_Setup.nsi script directory, and 
+compile OCS-NG_Windows_Agent_Setup.nsi (Script assume that agent's binary
+are on directory "../release", and that MS VC++ 2008 is installed into
+default folder "C:\Program Files\Microsoft Visual Studio 9.0\VC").
 
 
 
