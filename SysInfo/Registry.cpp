@@ -41,8 +41,8 @@
 #define NT_LASTLOGGEDUSER_USER_VALUE			_T( "DefaultUserName")
 
 // Defines for retrieving last user who'd been logged in on Vista
-#define VISTA_LASTLOGGEDUSER_USER_KEY			_T( "Volatile Environment")
-#define VISTA_LASTLOGGEDUSER_USER_VALUE			_T( "USERNAME" )
+#define VISTA_LASTLOGGEDUSER_USER_KEY			_T( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI")
+#define VISTA_LASTLOGGEDUSER_USER_VALUE			_T( "LastLoggedOnUser" )
 
 // Defines for retrieving computer description from 9X/Me registry
 #define WIN_COMPUTER_DESCRIPTION_KEY			_T( "SYSTEM\\CurrentControlSet\\Services\\VxD\\VNETSUP")
