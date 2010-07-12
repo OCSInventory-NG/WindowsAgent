@@ -503,7 +503,7 @@ BOOL CEdid::GetDisplayEDID(HDEVINFO hDeviceInfoSet, SP_DEVINFO_DATA *pDevInfoDat
 	return TRUE;
 }
 
-void CEdid::Bricolage (CMonitor *myMonitor, Standard_EDID *myRecord)
+void CEdid::AcerHack (CMonitor *myMonitor, Standard_EDID *myRecord)
 {
 	TCHAR Buf1[32], Buf2[32], Buffer[32];
 
@@ -513,22 +513,20 @@ void CEdid::Bricolage (CMonitor *myMonitor, Standard_EDID *myRecord)
 	
 	if (!lstrcmpi(myRecord->Manufacturer_ID, _T( "ACR")))
 	{
-		if ((myRecord->EDID_ID_Code==0xad49) ||	// Acer AL1916
-			(myRecord->EDID_ID_Code==0x0783) ||	// Acer AL1923
-			(myRecord->EDID_ID_Code==0x0020))	// Acer B223W
-		{
-			
-			lstrcpyn(Buf1, myMonitor->GetSerial(), sizeof(Buf1));
-			if (_tcslen(Buf1)>8) {
-				wsprintf(Buf2, _T( "%08x"), myRecord->Serial_Number);
-				lstrcpyn (Buffer,    Buf1, 9);
-				lstrcpyn (Buffer+8,  Buf2, 9);
-				lstrcpyn (Buffer+16, Buf1+8, 5);
+		// This an Acer monitor
+		lstrcpyn(Buf1, myMonitor->GetSerial(), sizeof(Buf1));
+		if (lstrlen( Buf1)==12) {
+			// Heuristic confirm for
+			// AL1916 (0xAD49), AL1923 (0x0783) B223W (0x0018 et 0x0020)
+			// P243W  (0xADAF), X233H  (0x00A8)
+			wsprintf( Buf2, _T( "%08x"), myRecord->Serial_Number);
+			lstrcpyn( Buffer,    Buf1, 9);
+			lstrcpyn( Buffer+8,  Buf2, 9);
+			lstrcpyn(Buffer+16, Buf1+8, 5);
 
-				AddLog( _T( "\tEDID Fix: Change Serial Number to %s\n"), Buffer);
-				myMonitor->SetSerial(Buffer);
+			AddLog( _T( "\tEDID Acer Fix: Change Serial Number to %s\n"), Buffer);
+			myMonitor->SetSerial( Buffer);
 
-			}
 		}
 	}
 }
@@ -615,7 +613,7 @@ BOOL CEdid::GetMonitors(CMonitorList *pMyList)
 					break;
 				}
 				myMonitor.SetType( DecodeDPMSFlag( myRecord.DPMS_Flags));
-				Bricolage(&myMonitor, &myRecord);
+				AcerHack(&myMonitor, &myRecord);
 				pMyList->AddTail( myMonitor);
 			}
 			dwIndex++;
@@ -690,7 +688,7 @@ BOOL CEdid::GetMonitors(CMonitorList *pMyList)
 					break;
 				}
 				myMonitor.SetType( DecodeDPMSFlag( myRecord.DPMS_Flags));
-				Bricolage(&myMonitor, &myRecord);
+				AcerHack(&myMonitor, &myRecord);
 				pMyList->AddTail( myMonitor);
 			}
 			dwIndex++;

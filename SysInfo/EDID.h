@@ -200,10 +200,10 @@ protected: // Methods
 	LPCTSTR		GetManufacturerName( LPCTSTR ID);
 	// Get Detailed_Timing type
 	DetailTiming GetDetailledTimingDescriptionType(BYTE Detailed_Timing_Descript[]);
-
-	// Gedif specific
-	void		Bricolage (CMonitor *myMonitor, Standard_EDID *myRecord);
 	LPCTSTR		GetDescription (Standard_EDID *myRecord);
+
+	// Acer monitor specific
+	void		AcerHack (CMonitor *myMonitor, Standard_EDID *myRecord);
 	
 protected: // Members variables
 	HINSTANCE	m_hDll;		// Handle to setupapi.dll loaded
