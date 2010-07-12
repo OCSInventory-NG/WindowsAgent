@@ -180,6 +180,7 @@ BOOL CXMLInteract::UpdateMemorySlots( CMemorySlotList &myMemoryList)
 				m_pXml->AddElemNV( _T( "TYPE"), cObject.GetType());
 				m_pXml->AddElemNV( _T( "SPEED"), cObject.GetSpeed());
 				m_pXml->AddElemNV( _T( "NUMSLOTS"), cObject.GetSlotNumber());	
+				m_pXml->AddElemNV( _T( "SERIALNUMBER"), cObject.GetSN());	
 			m_pXml->OutOfElem();		
 			if (pos != NULL)
 				cObject = myMemoryList.GetNext( pos);
@@ -584,6 +585,7 @@ BOOL CXMLInteract::UpdateStorages( CStoragePeripheralList &myStorageList)
 				m_pXml->AddElemNV( _T( "TYPE"), cObject.GetType());
 				m_pXml->AddElemNV( _T( "DISKSIZE"), cObject.GetSizeString());
 				m_pXml->AddElemNV( _T( "SERIALNUMBER"), cObject.GetSN());
+				m_pXml->AddElemNV( _T( "FIRMWARE"), cObject.GetFirmware());
 			m_pXml->OutOfElem();
 			if (pos != NULL)
 				cObject = myStorageList.GetNext( pos);

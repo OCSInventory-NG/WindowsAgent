@@ -447,6 +447,8 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 				myObject.SetName( csBuffer);
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Manufacturer"));
 				myObject.SetManufacturer( csBuffer);
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
+				myObject.SetDescription( csBuffer);
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "MediaType"));
 				myObject.SetType( csBuffer);
 				myObject.SetSize( m_dllWMI.GetClassObjectU64Value( _T( "Size")) / ONE_MEGABYTE);
@@ -462,8 +464,7 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 					csBuffer = di.ModelNumber( lDiskIndex);
 					myObject.SetModel( csBuffer);
 					csTemp = di.RevisionNumber( lDiskIndex);
-					csBuffer.Format( _T( "%s Rev. %s"), myObject.GetModel(), csTemp);
-					myObject.SetDescription( csBuffer);
+					myObject.SetFirmware( csTemp);
 				}
 				else
 				{
@@ -471,8 +472,8 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 					myObject.SetSN( csBuffer);
 					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Model"));
 					myObject.SetModel( csBuffer);
-					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
-					myObject.SetDescription( csBuffer);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "FirmwareRevision"));
+					myObject.SetFirmware( csBuffer);
 				}
 				pMyList->AddTail( myObject);
 				uIndex ++;
@@ -510,6 +511,8 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 				myObject.SetDescription( csBuffer);
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Name"));
 				myObject.SetName( csBuffer);
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "RevisionLevel"));
+				myObject.SetFirmware( csBuffer);
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "MediaType"));
 				myObject.SetType( csBuffer);
 				myObject.SetSize( m_dllWMI.GetClassObjectU64Value( _T( "Size")) / ONE_MEGABYTE);
@@ -544,6 +547,8 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Manufacturer"));
 				myObject.SetManufacturer( csBuffer);
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Caption"));
+				if (csBuffer.IsEmpty())
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Id"));
 				myObject.SetModel( csBuffer);
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
 				myObject.SetDescription( csBuffer);
@@ -1207,6 +1212,8 @@ BOOL CWmi::GetSystemPorts(CSystemPortList *pMyList)
 				uTotal = 0;
 	CSystemPort	myObject;
 	CString		csBuffer;
+	DWORD		dwValue;
+	int			nIndex;
 
 	ASSERT( pMyList);
 
@@ -1214,30 +1221,33 @@ BOOL CWmi::GetSystemPorts(CSystemPortList *pMyList)
 	if (!m_bConnected)
 		return FALSE;
 
-	// Get serial ports
-	AddLog( _T( "WMI GetSystemPorts: Trying to find Win32_SerialPort WMI objects..."));
-	// Reset object list content
-	pMyList->RemoveAll();
+	// Get Connector ports
+	AddLog( _T( "WMI GetSystemPorts: Trying to find Win32_PortConnector WMI objects..."));
 	try
 	{
 		uIndex = 0;
-		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_SerialPort")))
+		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_PortConnector")))
 		{
 			while (m_dllWMI.MoveNextEnumClassObject())
 			{
 				myObject.Clear();
-				myObject.SetType( SYSTEM_PORT_SERIAL);
-				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Name"));
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "ExternalReferenceDesignator"));
 				myObject.SetName( csBuffer);
-				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Caption"));
+				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "PortType"));
+				myObject.SetType( dwValue);
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "ConnectorType"));
+				nIndex = csBuffer.Find( _T( ";"));
+				if (nIndex > 0)
+					// This is multi-valued 
+					dwValue = _ttol( csBuffer.Left( nIndex));
+				else
+					// Single value
+					dwValue = _ttol( csBuffer);
+				myObject.SetConnectorType( dwValue);
+				csBuffer.Format( _T( "%s %s"), myObject.GetName(), myObject.GetDescription());
 				myObject.SetCaption( csBuffer);
-				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
-				myObject.SetDescription( csBuffer);
-				if (IsDeviceReallyConnected( m_dllWMI.GetClassObjectDwordValue( _T( "StatusInfo"))))
-				{
-					pMyList->AddTail( myObject);
-					uIndex ++;
-				}
+				pMyList->AddTail( myObject);
+				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
@@ -1247,50 +1257,94 @@ BOOL CWmi::GetSystemPorts(CSystemPortList *pMyList)
 			AddLog( _T( "OK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_SerialPort object !\n"));
+			AddLog( _T( "Failed because no Win32_PortConnector object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
 		AddLog( _T( "Failed because unknown exception !\n"));
 	}
-	// Get parallel ports
-	AddLog( _T( "WMI GetSystemPorts: Trying to find Win32_ParallelPort WMI objects..."));
-	try
+	if (uTotal == 0)
 	{
-		uIndex = 0;
-		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_ParallelPort")))
+		// No connector port object, try serial and parallel
+		// Get serial ports
+		AddLog( _T( "WMI GetSystemPorts: Trying to find Win32_SerialPort WMI objects..."));
+		// Reset object list content
+		pMyList->RemoveAll();
+		try
 		{
-			while (m_dllWMI.MoveNextEnumClassObject())
+			uIndex = 0;
+			if (m_dllWMI.BeginEnumClassObject( _T( "Win32_SerialPort")))
 			{
-				myObject.Clear();
-				myObject.SetType( SYSTEM_PORT_PARALLEL);
-				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Name"));
-				myObject.SetName( csBuffer);
-				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Caption"));
-				myObject.SetCaption( csBuffer);
-				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
-				myObject.SetDescription( csBuffer);
-				if (IsDeviceReallyConnected( m_dllWMI.GetClassObjectDwordValue( _T( "StatusInfo"))))
+				while (m_dllWMI.MoveNextEnumClassObject())
 				{
-					pMyList->AddTail( myObject);
-					uIndex ++;
+					myObject.Clear();
+					myObject.SetType( SYSTEM_PORT_SERIAL);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Name"));
+					myObject.SetName( csBuffer);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Caption"));
+					myObject.SetCaption( csBuffer);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
+					myObject.SetDescription( csBuffer);
+					if (IsDeviceReallyConnected( m_dllWMI.GetClassObjectDwordValue( _T( "StatusInfo"))))
+					{
+						pMyList->AddTail( myObject);
+						uIndex ++;
+					}
 				}
+				m_dllWMI.CloseEnumClassObject();
 			}
-			m_dllWMI.CloseEnumClassObject();
+			if (uIndex > 0)
+			{
+				uTotal += uIndex;
+				AddLog( _T( "OK (%u objects)\n"), uIndex);
+			}
+			else
+				AddLog( _T( "Failed because no Win32_SerialPort object !\n"));
 		}
-		if (uIndex > 0)
+		catch (CException *pEx)
 		{
-			uTotal += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			pEx->Delete();
+			AddLog( _T( "Failed because unknown exception !\n"));
 		}
-		else
-			AddLog( _T( "Failed because no Win32_ParallelPort object !\n"));
-	}
-	catch (CException *pEx)
-	{
-		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		// Get parallel ports
+		AddLog( _T( "WMI GetSystemPorts: Trying to find Win32_ParallelPort WMI objects..."));
+		try
+		{
+			uIndex = 0;
+			if (m_dllWMI.BeginEnumClassObject( _T( "Win32_ParallelPort")))
+			{
+				while (m_dllWMI.MoveNextEnumClassObject())
+				{
+					myObject.Clear();
+					myObject.SetType( SYSTEM_PORT_PARALLEL);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Name"));
+					myObject.SetName( csBuffer);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Caption"));
+					myObject.SetCaption( csBuffer);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
+					myObject.SetDescription( csBuffer);
+					if (IsDeviceReallyConnected( m_dllWMI.GetClassObjectDwordValue( _T( "StatusInfo"))))
+					{
+						pMyList->AddTail( myObject);
+						uIndex ++;
+					}
+				}
+				m_dllWMI.CloseEnumClassObject();
+			}
+			if (uIndex > 0)
+			{
+				uTotal += uIndex;
+				AddLog( _T( "OK (%u objects)\n"), uIndex);
+			}
+			else
+				AddLog( _T( "Failed because no Win32_ParallelPort object !\n"));
+		}
+		catch (CException *pEx)
+		{
+			pEx->Delete();
+			AddLog( _T( "Failed because unknown exception !\n"));
+		}
 	}
 	if (uTotal > 0)
 	{
@@ -1600,6 +1654,10 @@ BOOL CWmi::GetMemorySlots(CMemorySlotList *pMyList)
 				myObject.SetSpeed( csBuffer);
 				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "MemoryType"));
 				myObject.SetType( dwValue);
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "SerialNumber"));
+				if (csBuffer.IsEmpty())
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "PartNumber"));
+				myObject.SetSN( csBuffer);
 				// Device is OK
 				pMyList->AddTail( myObject);
 				uIndex ++;

@@ -64,6 +64,11 @@ UINT CMemorySlot::GetSlotNumber()
 	return m_uSlotNumber;
 }
 
+LPCTSTR CMemorySlot::GetSN()
+{
+	return m_csSN;
+}
+
 void CMemorySlot::SetCaption(LPCTSTR lpstrCaption)
 {
 	m_csCaption = lpstrCaption;
@@ -261,6 +266,12 @@ void CMemorySlot::SetSlotNumber(UINT uNumber)
 	m_uSlotNumber = uNumber;
 }
 
+void CMemorySlot::SetSN( LPCTSTR lpstrSN)
+{
+	m_csSN = lpstrSN;
+	StrForSQL( m_csSN);
+}
+
 void CMemorySlot::Clear()
 {
 	m_csCaption.Empty();	
@@ -270,6 +281,7 @@ void CMemorySlot::Clear()
 	m_csSpeed.Empty();		
 	m_csUsage.Empty();		
 	m_uSlotNumber = 0;	
+	m_csSN.Empty();		
 }
 
 int CMemorySlot::operator==(CMemorySlot cObject) const
@@ -280,5 +292,6 @@ int CMemorySlot::operator==(CMemorySlot cObject) const
 		(m_csType == cObject.GetType()) &&
 		(m_csSpeed == cObject.GetSpeed()) &&
 		(m_csUsage == cObject.GetUsage()) &&
-		(m_uSlotNumber == cObject.GetSlotNumber()));
+		(m_uSlotNumber == cObject.GetSlotNumber()) &&
+		(m_csSN == cObject.GetSN()));
 }

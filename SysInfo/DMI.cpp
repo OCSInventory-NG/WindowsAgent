@@ -677,6 +677,11 @@ BOOL CDMI::GetMemorySlots( CMemorySlotList *pMyList)
 		// Speed
 		csBuffer.Format( _T( "%u"), MAKEWORD( pPointer[0x15], pPointer[0x16]));
 		myObject.SetSpeed( csBuffer);
+		// Serial Number
+		csBuffer = DmiString(dmi, pPointer[0x18]);
+		if (csBuffer.IsEmpty())
+			csBuffer = DmiString(dmi, pPointer[0x1A]);
+		myObject.SetSN( csBuffer);
 		pMyList->AddTail( myObject);
 		// next 
 		pPointer = GetNextTable( DMI_MEMORY_DEVICE);

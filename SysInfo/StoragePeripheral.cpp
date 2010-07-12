@@ -82,6 +82,11 @@ LPCTSTR CStoragePeripheral::GetSN()
 	return m_csSN;
 }
 
+LPCTSTR CStoragePeripheral::GetFirmware()
+{
+	return m_csFirmware;
+}
+
 void CStoragePeripheral::SetManufacturer(LPCTSTR lpstrManufacturer)
 {
 	m_csManufacturer = lpstrManufacturer;
@@ -123,6 +128,12 @@ void CStoragePeripheral::SetSN(LPCTSTR lpstrSN)
 	StrForSQL( m_csSN);
 }
 
+void CStoragePeripheral::SetFirmware( LPCTSTR lpstrRev)
+{
+	m_csFirmware = lpstrRev;
+	StrForSQL( m_csFirmware);
+}
+
 void CStoragePeripheral::Clear()
 {
 	m_csType.Empty();			
@@ -131,6 +142,7 @@ void CStoragePeripheral::Clear()
 	m_csModel.Empty();			
 	m_csDescription.Empty();	
 	m_csSN.Empty();
+	m_csFirmware.Empty();
 	m_u64Size = 0;			
 }
 
@@ -142,5 +154,6 @@ int CStoragePeripheral::operator==(CStoragePeripheral cObject) const
 		(m_csModel == cObject.GetModel()) &&
 		(m_csDescription == cObject.GetDescription()) &&
 		(m_u64Size == cObject.GetSize()) &&
-		(m_csSN == cObject.GetSN()));
+		(m_csSN == cObject.GetSN()) &&
+		(m_csFirmware == cObject.GetFirmware()));
 }

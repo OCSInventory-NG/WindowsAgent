@@ -46,6 +46,8 @@ public: // Methods
 	LPCTSTR GetType();
 	// Get slot number in the memory block
 	UINT	GetSlotNumber();
+	// Get memory device serial number
+	LPCTSTR GetSN();
 
 	//////////////////////////////////
 	// Set attributes values
@@ -61,6 +63,7 @@ public: // Methods
 	void SetType( DWORD dwType);
 	void SetTypeECC( DWORD dwECC);
 	void SetSlotNumber( UINT uNumber);
+	void SetSN( LPCTSTR lpstrSN);
 
 	//////////////////////////////////
 	// Comparison operators
@@ -76,6 +79,7 @@ protected: // Attributes
 	CString m_csSpeed;		// Memory access speed in MHz
 	CString	m_csUsage;		// Memory usage (system, video, flash...)
 	UINT	m_uSlotNumber;	// Memory slot number
+	CString m_csSN;			// Memory device serial number
 };
 #endif // !defined(AFX_MEMORYSLOT_H__B07E0FAA_CE82_4915_B2B4_5E622AA26582__INCLUDED_)
 

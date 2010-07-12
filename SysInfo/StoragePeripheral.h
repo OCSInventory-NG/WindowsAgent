@@ -43,6 +43,7 @@ public: // Methods
 	LPCTSTR GetSizeString();
 	LPCTSTR GetManufacturer();
 	LPCTSTR GetSN();
+	LPCTSTR GetFirmware();
 
 	//////////////////////////////////
 	// Set attributes values
@@ -55,6 +56,7 @@ public: // Methods
 	void SetSize( unsigned __int64 u64Size);
 	void SetManufacturer( LPCTSTR lpstrManufacturer);
 	void SetSN( LPCTSTR lpstrSN);
+	void SetFirmware( LPCTSTR lpstrRev);
 
 	//////////////////////////////////
 	// Comparison operators
@@ -69,6 +71,7 @@ protected: // Attributes
 	CString m_csModel;			// Model
 	CString m_csDescription;	// Description
 	CString m_csSN;				// Serial number
+	CString m_csFirmware;		// Firmware revision
 	unsigned __int64 m_u64Size;	// Total size in MB
 };
 #endif // !defined(AFX_STORAGEPERIPHERAL_H__6D006CB8_0A72_4960_93A3_89E3D1C9A400__INCLUDED_)

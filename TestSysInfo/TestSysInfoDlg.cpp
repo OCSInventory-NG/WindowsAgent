@@ -307,6 +307,8 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 		SysInfoLog( str);
 		str.Format( _T( "Slot Number: %u"), myMemSlot.GetSlotNumber());
 		SysInfoLog( str);
+		str.Format( _T( "Serial Number: %u"), myMemSlot.GetSN());
+		SysInfoLog( str);
 		if (pos != NULL)
 		{
 			myMemSlot = m_MemoryList.GetNext( pos);
@@ -508,6 +510,14 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( str);
 			str = _T( "Status = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "Status"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "SerialNumber = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "SerialNumber"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "PartNumber = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "PartNumber"));
 			str += res;
 			m_List.AddString( str);
 			m_List.AddString( _T( ""));
@@ -936,6 +946,44 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
+	m_List.AddString( _T( " Port Connector infos"));
+	m_List.AddString( _T( "------------------------------------------------------"));
+	if (myWmiDll.BeginEnumClassObject( _T( "Win32_PortConnector")))
+	{
+		while (myWmiDll.MoveNextEnumClassObject())
+		{
+			CString str, res;
+
+			str = _T( "Name = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Caption = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Caption"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Description  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Description"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "ExternalReferenceDesignator = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "ExternalReferenceDesignator"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "PortType = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "PortType"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "ConnectorType = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "ConnectorType"));
+			str += res;
+			m_List.AddString( str);
+			m_List.AddString( _T( ""));
+		}
+		myWmiDll.CloseEnumClassObject();
+	}
+
+	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( " Keyboard infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_Keyboard")))
@@ -1329,6 +1377,10 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			res = myWmiDll.GetClassObjectStringValue( _T( "Manufacturer"));
 			str += res;
 			m_List.AddString( str);
+			str = _T( "Name  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
+			str += res;
+			m_List.AddString( str);
 			str = _T( "Caption = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "Caption"));
 			str += res;
@@ -1341,8 +1393,12 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			res = myWmiDll.GetClassObjectStringValue( _T( "Model"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "Name  = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
+			str = _T( "Firmware Revision  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "FirmwareRevision"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "S/N  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "SerialNumber"));
 			str += res;
 			m_List.AddString( str);
 			str = _T( "MediaType = ");
@@ -1385,107 +1441,6 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Disk Drive Physical Medias infos"));
-	m_List.AddString( _T( "------------------------------------------------------"));
-	if (myWmiDll.BeginEnumClassObject( _T( "Win32_DiskDrivePhysicalMedia")))
-	{
-		while (myWmiDll.MoveNextEnumClassObject())
-		{
-			CString str, res;
-			unsigned __int64  u64;
-			ULONG	ulCylinders,
-					ulTracksPerCylinder,
-					ulSectorPerTrack,
-					ulBytesPerSector;
-			
-
-			str = _T( "Win32_DiskDrive Manufacturer = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Dependent"), _T( "Manufacturer"));
-			str += res;
-			m_List.AddString( str);
-			str = _T( "Win32_DiskDrive Caption = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Dependent"), _T( "Caption"));
-			str += res;
-			m_List.AddString( str);
-			str = _T( "Win32_DiskDrive Description  = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Dependent"), _T( "Description"));
-			str += res;
-			m_List.AddString( str);
-			str = _T( "Win32_DiskDrive Model  = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Dependent"), _T( "Model"));
-			str += res;
-			m_List.AddString( str);
-			str = _T( "Win32_DiskDrive Name  = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Dependent"), _T( "Name"));
-			str += res;
-			m_List.AddString( str);
-			str = _T( "Win32_DiskDrive MediaType = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Dependent"), _T( "MediaType"));
-			str += res;
-			m_List.AddString( str);
-			u64 = myWmiDll.GetRefElementClassObjectU64Value( _T( "Dependent"), _T( "MaxMediaSize"));
-			str.Format( _T( "Win32_DiskDrive MaxMediaSize in MB = %lu "), u64/1000);
-			m_List.AddString( str);
-			u64 = myWmiDll.GetRefElementClassObjectU64Value( _T( "Dependent"), _T( "Size"));
-			str.Format( _T( "Win32_DiskDrive Size in MB = %lu "), u64/1000000);
-			m_List.AddString( str);
-			ulCylinders = myWmiDll.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "TotalCylinders"));
-			str.Format( _T( "Win32_DiskDrive Cylinders = %lu "), ulCylinders);
-			m_List.AddString( str);
-			ulTracksPerCylinder = myWmiDll.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "TracksPerCylinder"));
-			str.Format( _T( "Win32_DiskDrive Tracks per Cylinder = %lu "), ulTracksPerCylinder);
-			m_List.AddString( str);
-			u64 = myWmiDll.GetRefElementClassObjectU64Value( _T( "Dependent"), _T( "TotalTracks"));
-			str.Format( _T( "Win32_DiskDrive Total Tracks = %lu "), u64);
-			m_List.AddString( str);
-			ulSectorPerTrack = myWmiDll.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "SectorsPerTrack"));
-			str.Format( _T( "Win32_DiskDrive Sectors per Track = %lu "), ulSectorPerTrack);
-			m_List.AddString( str);
-			u64 = myWmiDll.GetRefElementClassObjectU64Value( _T( "Dependent"), _T( "TotalSectors"));
-			str.Format( _T( "Win32_DiskDrive Total Sectors = %lu "), u64);
-			m_List.AddString( str);
-			ulBytesPerSector = myWmiDll.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "BytesPerSector"));
-			str.Format( _T( "Win32_DiskDrive Bytes per Sector = %lu "), ulBytesPerSector);
-			m_List.AddString( str);
-			str.Format( _T( "Win32_DiskDrive Total size = %lu "), ulCylinders*ulTracksPerCylinder*ulSectorPerTrack*ulBytesPerSector);
-			m_List.AddString( str);
-
-			str = _T( "Win32_PhysicalMedia Manufacturer = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Manufacturer"));
-			str += res;
-			m_List.AddString( str);
-			str = _T( "Win32_PhysicalMedia Caption = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Caption"));
-			str += res;
-			m_List.AddString( str);
-			str = _T( "Win32_PhysicalMedia Description  = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Description"));
-			str += res;
-			m_List.AddString( str);
-			str = _T( "Win32_PhysicalMedia Model  = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Model"));
-			str += res;
-			m_List.AddString( str);
-			str = _T( "Win32_PhysicalMedia Name  = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Name"));
-			str += res;
-			m_List.AddString( str);
-			ulCylinders = myWmiDll.GetRefElementClassObjectDwordValue( _T( "Antecedent"), _T( "MediaType"));
-			str.Format( _T( "Win32_PhysicalMedia MediaType = %lu "), ulCylinders);
-			m_List.AddString( str);
-			u64 = myWmiDll.GetRefElementClassObjectU64Value( _T( "Antecedent"), _T( "Capacity"));
-			str.Format( _T( "Win32_PhysicalMedia Capacity in KBytes = %lu "), u64/1024);
-			m_List.AddString( str);
-			str = _T( "StatusInfo  = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "StatusInfo"));
-			str += res;
-			m_List.AddString( str);
-			m_List.AddString( _T( ""));
-		}
-		myWmiDll.CloseEnumClassObject();
-	}
-
-	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "CD-ROM Drives infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_CDROMDrive")))
@@ -1499,6 +1454,10 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			res = myWmiDll.GetClassObjectStringValue( _T( "Manufacturer"));
 			str += res;
 			m_List.AddString( str);
+			str = _T( "Name  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
+			str += res;
+			m_List.AddString( str);
 			str = _T( "Caption = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "Caption"));
 			str += res;
@@ -1507,8 +1466,8 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			res = myWmiDll.GetClassObjectStringValue( _T( "Description"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "Name  = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
+			str = _T( "Revision Level  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "RevisionLevel"));
 			str += res;
 			m_List.AddString( str);
 			str = _T( "MediaType = ");
@@ -1554,6 +1513,10 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( str);
 			str = _T( "Name  = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Id  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Id"));
 			str += res;
 			m_List.AddString( str);
 			str = _T( "MediaType = ");
@@ -1990,6 +1953,8 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		SysInfoLog( str);
 		str.Format( _T( "Slot Number: %u"), myMemSlot.GetSlotNumber());
 		SysInfoLog( str);
+		str.Format( _T( "Serial Number: %u"), myMemSlot.GetSN());
+		SysInfoLog( str);
 		if (pos != NULL)
 		{
 			myMemSlot = m_MemoryList.GetNext( pos);
@@ -2262,6 +2227,8 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		str.Format( _T( "Size: %I64u MB"), myStorage.GetSize());
 		SysInfoLog( str);
 		str.Format( _T( "S/N: %s"), myStorage.GetSN());
+		SysInfoLog( str);
+		str.Format( _T( "Firmware Revsion: %s"), myStorage.GetFirmware());
 		SysInfoLog( str);
 		if (pos != NULL)
 		{
