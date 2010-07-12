@@ -819,7 +819,7 @@ BOOL CRegistry::GetBiosInfoNT( CBios *pMyBios)
 
 	AddLog( _T( "Registry NT GetBiosInfo...\n"));
 	// Windows NT
-	lResult = RegOpenKeyEx( m_hKey, NT_BIOS_KEY, 0, KEY_READ, &hKey);
+	lResult = RegOpenKeyEx( m_hKey, NT_BIOS_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 	if (lResult == ERROR_SUCCESS)
 	{
 		// Get System manufacturer
@@ -922,7 +922,7 @@ BOOL CRegistry::GetBiosInfoNT( CBios *pMyBios)
 	if ((!bManufacturer) || (!bModel))
 	{
 		// Try to get System Manufacturer and Model from Windows Update Registry key
-		lResult = RegOpenKeyEx( m_hKey, NT_WU_KEY, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( m_hKey, NT_WU_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		if (lResult == ERROR_SUCCESS)
 		{
 			// Get System manufacturer
@@ -1081,7 +1081,7 @@ BOOL CRegistry::IsNotebookNT()
 
 	AddLog( _T( "Registry NT IsNotebook...\n"));
 	// Windows NT => Open the battery key
-	if (RegOpenKeyEx( m_hKey, NT_NOTEBOOK_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_NOTEBOOK_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -1225,7 +1225,7 @@ DWORD CRegistry::GetProcessorsNT(CString &csProcType, CString &csProcSpeed)
 
 	AddLog( _T( "Registry NT GetProcessors...\n"));
 	// Windows NT => Open the processor key
-	if (RegOpenKeyEx( m_hKey, NT_PROCESSOR_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_PROCESSOR_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -1235,7 +1235,7 @@ DWORD CRegistry::GetProcessorsNT(CString &csProcType, CString &csProcSpeed)
 			szDeviceName[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_PROCESSOR_KEY, szDeviceName);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csProcType = NOT_AVAILABLE; 
 				csProcSpeed = NOT_AVAILABLE;
@@ -1326,7 +1326,7 @@ BOOL CRegistry::GetPrinters(CPrinterList *pList)
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
 	// Open the Printer key
-	if (RegOpenKeyEx( m_hKey, PRINTERS_ENUM_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, PRINTERS_ENUM_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find printers
 		dwLength = 255;
@@ -1338,7 +1338,7 @@ BOOL CRegistry::GetPrinters(CPrinterList *pList)
 			szDeviceName[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), PRINTERS_ENUM_KEY, szDeviceName);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyDevice) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyDevice) == ERROR_SUCCESS)
 			{
 
 				// OK => Read the Printer description
@@ -1575,7 +1575,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 	AddLog( _T( "Registry NT GetVideoAdapters...\n"));
 	// Windows NT =>  Browse the active service keys to find the Display service
 	// Enumerate service groups under HKLM\System\CurrentControlSet\Enum
-	if (RegOpenKeyEx( m_hKey, NT_ENUM_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_ENUM_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		dwLength = 255;
 		while ((lResult = RegEnumKeyEx( hKeyEnum, dwIndexEnum, szGroupName, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
@@ -1583,7 +1583,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 			// For each group, enumerate service keys
 			szGroupName[dwLength] = 0;
 			csSubKey.Format( _T( "%s\\%s"), NT_ENUM_KEY, szGroupName);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyGroup) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyGroup) == ERROR_SUCCESS)
 			{
 				dwLength = 255;
 				dwIndexGroup = 0;
@@ -1592,7 +1592,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 					// For each service, enumerate propertie keys
 					szDeviceName[dwLength] = 0;
 					csSubKey.Format( _T( "%s\\%s\\%s"), NT_ENUM_KEY, szGroupName, szDeviceName);
-					if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+					if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 					{
 						dwLength = 255;
 						dwIndexProperties = 0;
@@ -1601,7 +1601,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 							// If a display class key, read the associated service
 							szPropertyName[dwLength] = 0;
 							csSubKey.Format( _T( "%s\\%s\\%s\\%s"), NT_ENUM_KEY, szGroupName, szDeviceName, szPropertyName);
-							if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyProperty) == ERROR_SUCCESS)
+							if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyProperty) == ERROR_SUCCESS)
 							{
 								// Read the class
 								if (GetValue( hKeyProperty, NT_ENUM_CLASS_VALUE, csClassName) != ERROR_SUCCESS)
@@ -1641,7 +1641,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 								csAdapterChip = NOT_AVAILABLE;
 								lAdapterMemory = -1;
 								bHaveToStore = FALSE;
-								if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyProperty) == ERROR_SUCCESS)
+								if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyProperty) == ERROR_SUCCESS)
 								{
 									dwLength = 255;
 									// Get the Graphic Adapter name
@@ -1774,7 +1774,7 @@ BOOL CRegistry::GetVideoAdaptersXP(CVideoAdapterList *pList)
 	AddLog( _T( "Registry XP GetVideoAdapters...\n"));
 	// Windows XP =>  Browse the active service keys to find the Display service
 	// Enumerate device groups under HKLM\System\CurrentControlSet\Control\Video
-	if (RegOpenKeyEx( m_hKey, XP_ENUM_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, XP_ENUM_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		dwLength = 255;
 		while ((lResult = RegEnumKeyEx( hKeyEnum, dwIndexEnum, szGroupName, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
@@ -1782,7 +1782,7 @@ BOOL CRegistry::GetVideoAdaptersXP(CVideoAdapterList *pList)
 			// For each group, enumerate device keys
 			szGroupName[dwLength] = 0;
 			csSubKey.Format( _T( "%s\\%s"), XP_ENUM_KEY, szGroupName);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyGroup) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyGroup) == ERROR_SUCCESS)
 			{
 				dwLength = 255;
 				dwIndexGroup = 0;
@@ -1791,7 +1791,7 @@ BOOL CRegistry::GetVideoAdaptersXP(CVideoAdapterList *pList)
 					// For each device, get propertie keys
 					szDeviceName[dwLength] = 0;
 					csSubKey.Format( _T( "%s\\%s\\%s"), XP_ENUM_KEY, szGroupName, szDeviceName);
-					if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyProperty) == ERROR_SUCCESS)
+					if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyProperty) == ERROR_SUCCESS)
 					{
 						bHaveToStore = FALSE;
 						// Get the Graphic Adapter name
@@ -2058,7 +2058,7 @@ BOOL CRegistry::GetSoundDevicesNT(CSoundDeviceList *pList)
 
 	AddLog( _T( "Registry NT GetSoundDevices...\n"));
 	// Windows NT => Open the sound key
-	if (RegOpenKeyEx( m_hKey, NT_SOUND_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_SOUND_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -2068,7 +2068,7 @@ BOOL CRegistry::GetSoundDevicesNT(CSoundDeviceList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_SOUND_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csProviderName = NOT_AVAILABLE;
 				csDeviceName = NOT_AVAILABLE;
@@ -2113,7 +2113,7 @@ BOOL CRegistry::GetSoundDevicesNT(CSoundDeviceList *pList)
 				// Check if there is a Drivers sub key to validate
 				csSubKey += _T( "\\");
 				csSubKey += NT_SOUND_DRIVER;
-				if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyDriver) == ERROR_SUCCESS)
+				if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyDriver) == ERROR_SUCCESS)
 				{
 					// OK => Try to read the SubClasses value
 					if (GetValue( hKeyDriver, NT_SOUND_DRIVER_CLASS, csProviderName) != ERROR_SUCCESS)
@@ -2313,7 +2313,7 @@ BOOL CRegistry::GetModemsNT(CModemList *pList)
 
 	AddLog( _T( "Registry NT GetModems...\n"));
 	// Windows NT => Open the modem key
-	if (RegOpenKeyEx( m_hKey, NT_MODEM_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_MODEM_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -2323,7 +2323,7 @@ BOOL CRegistry::GetModemsNT(CModemList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_MODEM_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csType = NOT_AVAILABLE; 
 				csDeviceName = NOT_AVAILABLE; 
@@ -2568,7 +2568,7 @@ BOOL CRegistry::GetMonitorsNT(CMonitorList *pList)
 
 	AddLog( _T( "Registry NT GetMonitors...\n"));
 	// Windows 9X => Open the monitor key
-	if (RegOpenKeyEx( m_hKey, NT_MONITOR_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_MONITOR_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -2578,7 +2578,7 @@ BOOL CRegistry::GetMonitorsNT(CMonitorList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_MONITOR_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csManufacturer = NOT_AVAILABLE; 
 				csModel = NOT_AVAILABLE;
@@ -3538,7 +3538,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find Floppy Controllers in HKLM\\%s...\n"),
 			NT_CONTROLER_FLOPPY_KEY);
 	// Windows NT => Open the floppy controler key
-	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_FLOPPY_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_FLOPPY_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -3548,7 +3548,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_CONTROLER_FLOPPY_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csManufacturer = NOT_AVAILABLE; 
 				csName = NOT_AVAILABLE;
@@ -3652,7 +3652,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find IDE Controllers in HKLM\\%s...\n"),
 			NT_CONTROLER_IDE_KEY);
-	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_IDE_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_IDE_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -3662,7 +3662,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_CONTROLER_IDE_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csManufacturer = NOT_AVAILABLE; 
 				csName = NOT_AVAILABLE;
@@ -3766,7 +3766,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find SCSI Controllers in HKLM\\%s...\n"),
 			NT_CONTROLER_SCSI_KEY);
-	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_SCSI_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_SCSI_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -3776,7 +3776,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_CONTROLER_SCSI_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csManufacturer = NOT_AVAILABLE; 
 				csName = NOT_AVAILABLE;
@@ -3880,7 +3880,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find InfraRed Controllers in HKLM\\%s...\n"),
 			NT_CONTROLER_INFRARED_KEY);
-	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_INFRARED_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_INFRARED_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -3890,7 +3890,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_CONTROLER_INFRARED_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csManufacturer = NOT_AVAILABLE; 
 				csName = NOT_AVAILABLE;
@@ -4005,7 +4005,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find USB Controllers in HKLM\\%s...\n"),
 			NT_CONTROLER_USB_KEY);
-	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_USB_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_USB_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -4015,7 +4015,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_CONTROLER_USB_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csManufacturer = NOT_AVAILABLE; 
 				csName = NOT_AVAILABLE;
@@ -4130,7 +4130,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find IEEE1394 Controllers in HKLM\\%s...\n"),
 			NT_CONTROLER_IEEE1394_KEY);
-	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_IEEE1394_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_IEEE1394_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -4140,7 +4140,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_CONTROLER_IEEE1394_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csManufacturer = NOT_AVAILABLE; 
 				csName = NOT_AVAILABLE;
@@ -4244,7 +4244,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find PCMCIA Controllers in HKLM\\%s...\n"),
 			NT_CONTROLER_PCMCIA_KEY);
-	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_PCMCIA_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_PCMCIA_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -4254,7 +4254,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_CONTROLER_PCMCIA_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csManufacturer = NOT_AVAILABLE; 
 				csName = NOT_AVAILABLE;
@@ -4864,7 +4864,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 	AddLog( _T( "Registry NT GetStoragePeripherals: Trying to find Floppy Drives in HKLM\\%s...\n"),
 			NT_STORAGE_FLOPPY_KEY);
 	// Windows NT => Open the floppy drive key
-	if (RegOpenKeyEx( m_hKey, NT_STORAGE_FLOPPY_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_STORAGE_FLOPPY_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -4874,7 +4874,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_STORAGE_FLOPPY_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyEnumBus) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnumBus) == ERROR_SUCCESS)
 			{
 				dwLength = 255;
 				dwIndexEnumBus = 0;
@@ -4884,7 +4884,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 					szSubKey[dwLength] = 0;
 					bHaveToStore = FALSE;
 					csSubKey.Format( _T( "%s\\%s\\%s"), NT_STORAGE_FLOPPY_KEY, szKey, szSubKey);
-					if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+					if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 					{
 						csManufacturer = NOT_AVAILABLE; 
 						csModel = NOT_AVAILABLE;
@@ -5000,7 +5000,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 			NT_STORAGE_OTHER_KEY);
 	// Windows NT => Open the other drive key
 	uIndex = 0;
-	if (RegOpenKeyEx( m_hKey, NT_STORAGE_OTHER_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_STORAGE_OTHER_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find SCSI port
 		dwLength = 255;
@@ -5011,7 +5011,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKeyBus.Format( _T( "%s\\%s"), NT_STORAGE_OTHER_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKeyBus, 0, KEY_READ, &hKeyEnumBus) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKeyBus, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnumBus) == ERROR_SUCCESS)
 			{
 				// Enum the device subkeys to find SCSI target
 				dwLength = 255;
@@ -5022,7 +5022,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 					szSubKey[dwLength] = 0;
 					bHaveToStore = FALSE;
 					csSubKeyTarget.Format( _T( "%s\\%s"), csSubKeyBus, szSubKey);
-					if (RegOpenKeyEx( m_hKey, csSubKeyTarget, 0, KEY_READ, &hKeyEnumTarget) == ERROR_SUCCESS)
+					if (RegOpenKeyEx( m_hKey, csSubKeyTarget, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnumTarget) == ERROR_SUCCESS)
 					{
 						// Enum the device subkeys to find SCSI target
 						dwLength = 255;
@@ -5033,7 +5033,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 							szKey[dwLength] = 0;
 							bHaveToStore = FALSE;
 							csSubKeyLogical.Format( _T( "%s\\%s"), csSubKeyTarget, szKey);
-							if (RegOpenKeyEx( m_hKey, csSubKeyLogical, 0, KEY_READ, &hKeyEnumLogical) == ERROR_SUCCESS)
+							if (RegOpenKeyEx( m_hKey, csSubKeyLogical, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnumLogical) == ERROR_SUCCESS)
 							{
 								// Enum the device subkeys to find SCSI logical unit
 								dwLength = 255;
@@ -5044,7 +5044,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 									szSubKey[dwLength] = 0;
 									bHaveToStore = FALSE;
 									csSubKey.Format( _T( "%s\\%s"), csSubKeyLogical, szSubKey);
-									if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+									if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 									{
 										csManufacturer = NOT_AVAILABLE; 
 										csModel = NOT_AVAILABLE;
@@ -5412,7 +5412,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive)
 	CString csCurHive = (hHive==HKEY_LOCAL_MACHINE ? _T( "HKLM") : _T( "HKCU")) ;
 	AddLog( _T( "Registry NT GetRegistryApplications READING hive %s  ... \n"),csCurHive);	
 	// Windows NT => Open the Apps key
-	if (RegOpenKeyEx( hHive, NT_APPS_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( hHive, NT_APPS_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find installed apps
 		dwLength = 255;
@@ -5422,7 +5422,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive)
 			szGUID[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_APPS_KEY, szGUID);
-			if (RegOpenKeyEx( hHive, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( hHive, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csPublisher = NOT_AVAILABLE;
 				csName = NOT_AVAILABLE;
@@ -5603,7 +5603,7 @@ BOOL CRegistry::GetDeviceDescriptionNT( CString &csDescription)
 
 	csDescription = NOT_AVAILABLE;
 	AddLog( _T( "Registry NT GetDeviceDescription..."));
-	if (RegOpenKeyEx( m_hKey, NT_COMPUTER_DESCRIPTION_KEY, 0, KEY_READ, &hKey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_COMPUTER_DESCRIPTION_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey) != ERROR_SUCCESS)
 	{
 		AddLog( _T( "Failed in call to <RegOpenKey> function for HKLM\\%s !\n"),
 				NT_COMPUTER_DESCRIPTION_KEY);
@@ -5696,7 +5696,7 @@ BOOL CRegistry::GetDomainOrWorkgroupNT(CString &csDomain)
 
 	csDomain = NOT_AVAILABLE;
 	AddLog( _T( "Registry NT GetDomainOrWorkgroup..."));
-	if (RegOpenKeyEx( m_hKey, NT_DOMAIN_KEY, 0, KEY_READ, &hKey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_DOMAIN_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey) != ERROR_SUCCESS)
 	{
 		AddLog( _T( "Failed in call to <RegOpenKey> function for HKLM\\%s !\n"),
 				NT_DOMAIN_KEY);
@@ -5799,7 +5799,7 @@ BOOL CRegistry::GetWindowsRegistrationNT(CString &csCompany, CString &csOwner, C
 
 	AddLog( _T( "Registry NT GetWindowsRegistration...\n"));
 	// Windows NT => Open the registration key
-	if (RegOpenKeyEx( m_hKey, NT_REGISTRATION_KEY, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_REGISTRATION_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 	{
 		// Read the company name
 		if (GetValue( hKeyObject, NT_REGISTRATION_COMPANY_VALUE, csCompany) == ERROR_SUCCESS)
@@ -5888,7 +5888,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 	}
 
 	//Requete registry
-	if( RegOpenKeyEx( HKEY_LOCAL_MACHINE, csKeyPath, 0, KEY_READ, &InfoKey ) == ERROR_SUCCESS )
+	if( RegOpenKeyEx( HKEY_LOCAL_MACHINE, csKeyPath, 0, KEY_READ|KEY_WOW64_64KEY, &InfoKey ) == ERROR_SUCCESS )
 	{
 		if( RegQueryValueEx(InfoKey, csValueName, NULL, &InfoType, Data, &dwDataSize) == ERROR_SUCCESS )
 		{
@@ -5989,7 +5989,7 @@ BOOL CRegistry::GetLoggedOnUserNT(CString &csUser)
 	csUser = NOT_AVAILABLE;
 	AddLog( _T( "Registry NT GetLoggedOnUser: Trying to get Logon User Name..."));
 	// Try to get logged on user
-	if (RegOpenKeyEx( HKEY_CURRENT_USER, NT_LOGON_USER_KEY, 0, KEY_READ, &hKey) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( HKEY_CURRENT_USER, NT_LOGON_USER_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey) == ERROR_SUCCESS)
 	{
 		// Get user name.
 		if (GetValue( hKey, NT_LOGON_USER_VALUE, csUser) == ERROR_SUCCESS)
@@ -6062,42 +6062,42 @@ BOOL CRegistry::GetRegistryValue( UINT uKeyTree, LPCTSTR lpstrSubKey, LPCTSTR lp
 			_T( "HKCR"),
 			lpstrSubKey,
 			lpstrValue);
-		lResult = RegOpenKeyEx( HKEY_CLASSES_ROOT, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_CLASSES_ROOT, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKCU_TREE: // HKEY_CURRENT_USER
 		AddLog( _T( "Registry GetRegistryValue (%s\\%s\\%s)..."),
 			_T( "HKCU"),
 			lpstrSubKey,
 			lpstrValue);
-		lResult = RegOpenKeyEx( HKEY_CURRENT_USER, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_CURRENT_USER, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKLM_TREE: // HKEY_LOCAL_MACHINE
 		AddLog( _T( "Registry GetRegistryValue (%s\\%s\\%s)..."),
 			_T( "HKLM"),
 			lpstrSubKey,
 			lpstrValue);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKU_TREE: // HKEY_USERS
 		AddLog( _T( "Registry GetRegistryValue (%s\\%s\\%s)..."),
 			_T( "HKU"),
 			lpstrSubKey,
 			lpstrValue);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKCC_TREE: // HKEY_CURRENT_CONFIG
 		AddLog( _T( "Registry GetRegistryValue (%s\\%s\\%s)..."),
 			_T( "HKCC"),
 			lpstrSubKey,
 			lpstrValue);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKDD_TRE: // HKEY_DYN_DATA (9X only)
 		AddLog( _T( "Registry GetRegistryValue (%s\\%s\\%s)..."),
 			_T( "HKDD"),
 			lpstrSubKey,
 			lpstrValue);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	default: // Error
 		AddLog( _T( "Registry GetRegistryValue...Failed because unrecognized Registry Tree %u !\n"), uKeyTree);
@@ -6434,7 +6434,7 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetInputDevices: Trying to find Keyboards in HKLM\\%s...\n"),
 			NT_INPUT_KEYBOARD_KEY);
-	if (RegOpenKeyEx( m_hKey, NT_INPUT_KEYBOARD_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_INPUT_KEYBOARD_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -6444,7 +6444,7 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_INPUT_KEYBOARD_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csManufacturer = NOT_AVAILABLE; 
 				csCaption = NOT_AVAILABLE; 
@@ -6548,7 +6548,7 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetInputDevices: Trying to find Pointing Devices in HKLM\\%s...\n"),
 			NT_INPUT_POINTING_KEY);
-	if (RegOpenKeyEx( m_hKey, NT_INPUT_POINTING_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_INPUT_POINTING_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -6558,7 +6558,7 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_INPUT_POINTING_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csManufacturer = NOT_AVAILABLE; 
 				csCaption = NOT_AVAILABLE; 
@@ -6841,7 +6841,7 @@ BOOL CRegistry::GetSystemPortsNT(CSystemPortList *pList)
 
 	AddLog( _T( "Registry NT GetSystemPorts...\n"));
 	// Windows 9X => Open the modem key
-	if (RegOpenKeyEx( m_hKey, NT_SYSTEM_PORT_KEY, 0, KEY_READ, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_SYSTEM_PORT_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
 		dwLength = 255;
@@ -6851,7 +6851,7 @@ BOOL CRegistry::GetSystemPortsNT(CSystemPortList *pList)
 			szKey[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_SYSTEM_PORT_KEY, szKey);
-			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csType = NOT_AVAILABLE; 
 				csName = NOT_AVAILABLE; 
@@ -7049,37 +7049,37 @@ BOOL CRegistry::GetRegistryMultipleValues( LPCTSTR lpstrQueryName, UINT uKeyTree
 		AddLog( _T( "Registry GetRegistryMultipleValues (%s\\%s)...\n"),
 			_T( "HKCR"),
 			lpstrSubKey);
-		lResult = RegOpenKeyEx( HKEY_CLASSES_ROOT, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_CLASSES_ROOT, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKCU_TREE: // HKEY_CURRENT_USER
 		AddLog( _T( "Registry GetRegistryMultipleValues (%s\\%s)...\n"),
 			_T( "HKCU"),
 			lpstrSubKey);
-		lResult = RegOpenKeyEx( HKEY_CURRENT_USER, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_CURRENT_USER, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKLM_TREE: // HKEY_LOCAL_MACHINE
 		AddLog( _T( "Registry GetRegistryMultipleValues (%s\\%s)...\n"),
 			_T( "HKLM"),
 			lpstrSubKey);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKU_TREE: // HKEY_USERS
 		AddLog( _T( "Registry GetRegistryMultipleValues (%s\\%s)...\n"),
 			_T( "HKU"),
 			lpstrSubKey);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKCC_TREE: // HKEY_CURRENT_CONFIG
 		AddLog( _T( "Registry GetRegistryMultipleValues (%s\\%s)...\n"),
 			_T( "HKCC"),
 			lpstrSubKey);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKDD_TRE: // HKEY_DYN_DATA (9X only)
 		AddLog( _T( "Registry GetRegistryMultipleValues (%s\\%s)...\n"),
 			_T( "HKDD"),
 			lpstrSubKey);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ, &hKey);
+		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	default: // Error
 		AddLog( _T( "Registry GetRegistryMultipleValues...Failed because unrecognized Registry Tree %u !\n"), uKeyTree);
