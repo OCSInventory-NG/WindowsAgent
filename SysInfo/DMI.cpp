@@ -565,6 +565,7 @@ BOOL CDMI::GetSystemPorts( CSystemPortList *pMyList)
 	pPointer = GetNextTable( DMI_SYSTEM_PORTS, TRUE);
 	while( pPointer != NULL)
 	{
+		myObject.Clear();
 		dmi = (DmiHeader*) pPointer;
 		// External reference designator
 		myObject.SetName( DmiString(dmi, pPointer[0x06]));
@@ -604,6 +605,7 @@ BOOL CDMI::GetSystemSlots( CSystemSlotList *pMyList)
 	pPointer = GetNextTable( DMI_SYSTEM_SLOTS, TRUE);
 	while( pPointer != NULL)
 	{
+		myObject.Clear();
 		dmi = (DmiHeader*) pPointer;
 		// Slot designation
 		myObject.SetSlotDesignation( DmiString(dmi, pPointer[0x04]));
@@ -648,6 +650,7 @@ BOOL CDMI::GetMemorySlots( CMemorySlotList *pMyList)
 	pPointer = GetNextTable( DMI_MEMORY_DEVICE, TRUE);
 	while( pPointer != NULL)
 	{
+		myObject.Clear();
 		dmi = (DmiHeader*) pPointer;
 		uCount++;
 		myObject.SetSlotNumber( uCount);
