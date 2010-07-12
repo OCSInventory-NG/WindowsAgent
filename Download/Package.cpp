@@ -160,7 +160,7 @@ BOOL CPackage::clean( LPCTSTR lpstrID)
 {
 	CString csPath;
 
-	ASSERT( lpstrFragID);
+	ASSERT( lpstrID);
 
 	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), lpstrID);
 	return directoryDelete( csPath);
