@@ -1655,9 +1655,12 @@ BOOL CWmi::GetMemorySlots(CMemorySlotList *pMyList)
 				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "MemoryType"));
 				myObject.SetType( dwValue);
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "SerialNumber"));
+/*				// If S/N is empty, get Part number
 				if (csBuffer.IsEmpty())
 					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "PartNumber"));
-				myObject.SetSN( csBuffer);
+*/
+				if (u64Value > 0)
+					myObject.SetSN( csBuffer);
 				// Device is OK
 				pMyList->AddTail( myObject);
 				uIndex ++;

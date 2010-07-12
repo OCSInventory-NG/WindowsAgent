@@ -657,19 +657,19 @@ BOOL CDMI::GetMemorySlots( CMemorySlotList *pMyList)
 			// Device Locator
 			myObject.SetDescription( DmiString(dmi, pPointer[0x10]));
 		// Size
-		WORD word = MAKEWORD(pPointer[0x0C], pPointer[0x0D]);
-		if(word == 0)
+		WORD wCapacity = MAKEWORD(pPointer[0x0C], pPointer[0x0D]);
+		if (wCapacity == 0)
 			csBuffer = _T( "0");
-		else if(word == 0xFFFF)
+		else if (wCapacity == 0xFFFF)
 			// Not available, wrong number
 			csBuffer = NOT_AVAILABLE;
-		else if((word >> 15) & 0x1)
+		else if ((wCapacity >> 15) & 0x1)
 			// Size is in KB
 			csBuffer = _T( "< 1");
 		else
 		{
 			// Size is in MB
-			csBuffer.Format( _T( "%u"), (word & 0x7FFF));
+			csBuffer.Format( _T( "%u"), (wCapacity & 0x7FFF));
 		}
 		myObject.SetCapacity( csBuffer);
 		// Type
@@ -679,9 +679,11 @@ BOOL CDMI::GetMemorySlots( CMemorySlotList *pMyList)
 		myObject.SetSpeed( csBuffer);
 		// Serial Number
 		csBuffer = DmiString(dmi, pPointer[0x18]);
+/*		// If S/N is empty, get Part number
 		if (csBuffer.IsEmpty())
 			csBuffer = DmiString(dmi, pPointer[0x1A]);
-		myObject.SetSN( csBuffer);
+*/		if (wCapacity > 0)
+			myObject.SetSN( csBuffer);
 		pMyList->AddTail( myObject);
 		// next 
 		pPointer = GetNextTable( DMI_MEMORY_DEVICE);
