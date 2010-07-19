@@ -52,6 +52,7 @@ public: // Methods
 	BOOL GetSystemPorts( CSystemPortList *pMyList);
 	BOOL GetPrinters( CPrinterList *pMyList);
 	DWORD GetProcessors( CString &csProcType, CString &csProcSpeed);
+	BOOL GetLogicalDrives( CLogicalDriveList *pMyList);
 	BOOL GetMemorySlots( CMemorySlotList *pMyList);
 	BOOL GetModems( CModemList *pMyList);
 	BOOL GetMonitors( CMonitorList *pMyList);

@@ -18,6 +18,8 @@
 #define new DEBUG_NEW
 #endif
 
+#pragma comment(lib, "wbemuuid.lib")
+
 // COcsWmiApp
 
 BEGIN_MESSAGE_MAP(COcsWmiApp, CWinApp)
@@ -53,81 +55,114 @@ COcsWmi::COcsWmi()
 	m_pIWbemServices = NULL;
 	m_pEnumClassObject = NULL;
 	m_pClassObject = NULL;
-
-	m_hResult =  CoInitializeEx(0, COINIT_MULTITHREADED); // Initialize COM.
-
-	if (FAILED( m_hResult))
-		AfxThrowOleException( m_hResult);                  // Program has failed.
 }
 
 COcsWmi::~COcsWmi()
 {
 	DisconnectWMI();
-	CoUninitialize();
 }
 
-BOOL COcsWmi::ConnectWMI(LPCTSTR lpstrNameSpace)
+BOOL COcsWmi::ConnectWMI( LPCTSTR lpstrNameSpace)
 {
+	IWbemLocator *pIWbemLocator = NULL;
+
+	ASSERT( lpstrNameSpace);
+
 	try
 	{
 		m_pIWbemServices = NULL;
 		m_pEnumClassObject = NULL;
-		BOOL bResult = TRUE;
 
-		// Adjust the security to allow client impersonation.
-		//  NOTE:
-		//  When using asynchronous WMI API's remotely in an environment where the "Local System" account 
-		//  has no network identity (such as non-Kerberos domains), the authentication level of 
-		//  RPC_C_AUTHN_LEVEL_NONE is needed. However, lowering the authentication level to 
-		//  RPC_C_AUTHN_LEVEL_NONE makes your application less secure. It is wise to
-		//	use semi-synchronous API's for accessing WMI data and events instead of the asynchronous ones.
-		m_hResult = CoInitializeSecurity( NULL, -1, NULL, NULL, 
-										  RPC_C_AUTHN_LEVEL_PKT_PRIVACY, 
-										  RPC_C_IMP_LEVEL_IMPERSONATE, 
-										  NULL, 
-										  EOAC_SECURE_REFS, //change to EOAC_NONE if you change dwAuthnLevel to RPC_C_AUTHN_LEVEL_NONE
-										  NULL );
+		// Step 1: --------------------------------------------------
+		// Initialize COM. ------------------------------------------
+		m_hResult =  CoInitializeEx( 0, COINIT_MULTITHREADED); // Initialize COM.
 		if (FAILED( m_hResult))
 			return FALSE;
 
-		// Create an instance of the WbemLocator interface.
-		IWbemLocator *pIWbemLocator = NULL;
+		// Step 2: --------------------------------------------------
+		// Set general COM security levels --------------------------
+		m_hResult =  CoInitializeSecurity(	NULL, 
+										-1,                          // COM authentication
+										NULL,                        // Authentication services
+										NULL,                        // Reserved
+										RPC_C_AUTHN_LEVEL_DEFAULT,   // Default authentication 
+										RPC_C_IMP_LEVEL_IMPERSONATE, // Default Impersonation  
+										NULL,                        // Authentication info
+										EOAC_NONE,                   // Additional capabilities 
+										NULL                         // Reserved
+										);
+		if (FAILED( m_hResult))
+		{
+			CoUninitialize();
+			return FALSE;
+		}
+
+		// Step 3: ---------------------------------------------------
+		// Obtain the initial locator to WMI -------------------------
 		CComBSTR pNamespace = CComBSTR( lpstrNameSpace);
 
-		if ((m_hResult = CoCreateInstance( CLSID_WbemLocator, NULL, CLSCTX_INPROC_SERVER,
-										   IID_IWbemLocator, (LPVOID *) &pIWbemLocator)) == S_OK)
+		m_hResult = CoCreateInstance( CLSID_WbemLocator, 
+									NULL, 
+									CLSCTX_INPROC_SERVER,
+									IID_IWbemLocator,
+									(LPVOID *) &pIWbemLocator);
+		if (FAILED( m_hResult))
 		{
-			// If already connected, release m_pIWbemServices.
-			if (m_pIWbemServices)
-				m_pIWbemServices->Release();
-
-			// Using the locator, connect to CIMOM in the given namespace.
-			if((m_hResult = pIWbemLocator->ConnectServer( BSTR( pNamespace),
-											 NULL,  // using current account for simplicity
-											 NULL,	// using current password for simplicity
-											 0L,	// locale
-											 0L,	// securityFlags
-											 NULL,	// authority (domain for NTLM)
-											 NULL,	// context
-											 &m_pIWbemServices)) == S_OK) 
-				// Indicate success.
-				bResult = TRUE;
-			else
-				bResult = FALSE;
-
-			// Done with pIWbemLocator. 
-			pIWbemLocator->Release(); 
+			CoUninitialize();
+			return FALSE;
 		}
-		else
-			bResult = FALSE;
 
-		// Done with pNamespace.
-		return bResult;
+		// If already connected, release m_pIWbemServices.
+		if (m_pIWbemServices)
+			m_pIWbemServices->Release();
+
+		// Step 4: -----------------------------------------------------
+		// Connect to WMI given namespace through the IWbemLocator::ConnectServer method
+		m_hResult = pIWbemLocator->ConnectServer( pNamespace,
+										 NULL,  // User name. NULL = current user
+										 NULL,	// User password. NULL = current
+										 NULL,	// Locale. NULL indicates current
+										 NULL,	// Security flags, NULL or WBEM_FLAG_CONNECT_USE_MAX_WAIT.
+										 NULL,	// Authority (e.g. Kerberos, or domain for NTLM)
+										 NULL,	// Context object 
+										 &m_pIWbemServices);
+		// Done with pIWbemLocator. 
+		pIWbemLocator->Release(); 
+		pIWbemLocator = NULL;
+		if (FAILED( m_hResult))
+		{
+			CoUninitialize();
+			return FALSE;
+		}
+
+		// Step 5: --------------------------------------------------
+		// Set security levels on the proxy -------------------------
+		m_hResult = CoSetProxyBlanket( m_pIWbemServices,                        // Indicates the proxy to set
+							   RPC_C_AUTHN_WINNT,           // RPC_C_AUTHN_xxx
+							   RPC_C_AUTHZ_NONE,            // RPC_C_AUTHZ_xxx
+							   NULL,                        // Server principal name 
+							   RPC_C_AUTHN_LEVEL_CALL,      // RPC_C_AUTHN_LEVEL_xxx 
+							   RPC_C_IMP_LEVEL_IMPERSONATE, // RPC_C_IMP_LEVEL_xxx
+							   NULL,                        // client identity
+							   EOAC_NONE);                  // proxy capabilities 
+		if (FAILED( m_hResult))
+		{
+			m_pIWbemServices->Release();
+			CoUninitialize();
+			return FALSE;
+		}
+		// Connected successfully to WMI given namespace
+		return TRUE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
+		if (m_pIWbemServices)
+			m_pIWbemServices->Release();
+		if (pIWbemLocator)
+			pIWbemLocator->Release();
 		m_hResult = WBEM_E_FAILED;
+		CoUninitialize();
 		return FALSE;
 	}
 }
@@ -148,6 +183,7 @@ BOOL COcsWmi::DisconnectWMI()
 		if (m_pIWbemServices)
 			m_pIWbemServices->Release();
 		m_pIWbemServices = NULL;
+		CoUninitialize();
 		return TRUE;
 	}
 	catch (CException *pEx)
@@ -159,25 +195,28 @@ BOOL COcsWmi::DisconnectWMI()
 }
 
 
-BOOL COcsWmi::BeginEnumClassObject(LPCTSTR lpstrObject)
+BOOL COcsWmi::BeginEnumClassObject( LPCTSTR lpstrObject)
 {
+	ASSERT( m_pIWbemServices);
+	ASSERT( lpstrObject);
+
 	try
 	{
 		// Get the object class
-		CComBSTR className = CComBSTR( lpstrObject);
+		CString csQuery;
+		csQuery.Format( _T( "SELECT * FROM %s"), lpstrObject);
+		CComBSTR	bstrQuery( csQuery);
 		
-		if ((!m_pIWbemServices))
-			return FALSE;
-
 		if (m_pEnumClassObject)
 			m_pEnumClassObject->Release();
 		m_pEnumClassObject = NULL;
 
 		// Get the list of object instances.
-		m_hResult = m_pIWbemServices->CreateInstanceEnum( BSTR( className),			// name of class
-														  0,
-														  NULL,
-														  &m_pEnumClassObject);// pointer to enumerator
+		m_hResult = m_pIWbemServices->ExecQuery( L"WQL",			// Query language
+											BSTR( bstrQuery),		// Query
+											WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
+											NULL,
+											&m_pEnumClassObject);	// pointer to enumerator
 		if (FAILED( m_hResult))
 			return FALSE;
 		return TRUE;
@@ -193,22 +232,21 @@ BOOL COcsWmi::BeginEnumClassObject(LPCTSTR lpstrObject)
 
 BOOL COcsWmi::MoveNextEnumClassObject()
 {
+	ASSERT( m_pEnumClassObject);
+
 	try
 	{
 		ULONG uReturned = 1;
-
-		if (!m_pEnumClassObject)
-			return FALSE;
 
 		if (m_pClassObject)
 			m_pClassObject->Release();
 		m_pClassObject = NULL;
 
-		// enumerate through the resultset.
-		m_hResult = m_pEnumClassObject->Next( 2000,			// timeout in two seconds
-											  1,				// return just one storage device
-											  &m_pClassObject,// pointer to storage device
-											  &uReturned);	// number obtained: one or zero
+		// Enumerate through the resultset.
+		m_hResult = m_pEnumClassObject->Next( 2000,				// Timeout
+											  1,				// Return just one storage device
+											  &m_pClassObject,	// Pointer to storage device
+											  &uReturned);		// Number obtained: one or zero
 		if (SUCCEEDED( m_hResult) && (uReturned == 1))
 			return TRUE;
 		return FALSE;
@@ -246,15 +284,15 @@ BOOL COcsWmi::CloseEnumClassObject()
 
 LPCTSTR COcsWmi::GetClassObjectStringValue(LPCTSTR lpstrProperty)
 {
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrProperty);
+
 	try
 	{
 		CComBSTR propName = CComBSTR( lpstrProperty);
 		VARIANT pVal;
 		VariantInit(&pVal);
 		CIMTYPE pType;
-
-		if (!m_pClassObject)
-			return NULL;
 
 		VariantClear(&pVal);
 		m_hResult = m_pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
@@ -284,6 +322,9 @@ LPCTSTR COcsWmi::GetClassObjectStringValue(LPCTSTR lpstrProperty)
 
 DWORD COcsWmi::GetClassObjectDwordValue(LPCTSTR lpstrProperty)
 {
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrProperty);
+
 	try
 	{
 		CComBSTR propName = CComBSTR( lpstrProperty);
@@ -291,9 +332,6 @@ DWORD COcsWmi::GetClassObjectDwordValue(LPCTSTR lpstrProperty)
 		VariantInit(&pVal);
 		CIMTYPE pType;
 
-		if (!m_pClassObject)
-			return 0;
-		
 		VariantClear(&pVal);
 		m_hResult = m_pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
 		if (SUCCEEDED( m_hResult))
@@ -311,6 +349,9 @@ DWORD COcsWmi::GetClassObjectDwordValue(LPCTSTR lpstrProperty)
 
 __int64 COcsWmi::GetClassObjectI64Value(LPCTSTR lpstrProperty)
 {
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrProperty);
+
 	try
 	{
 		CComBSTR propName = CComBSTR( lpstrProperty);
@@ -318,9 +359,6 @@ __int64 COcsWmi::GetClassObjectI64Value(LPCTSTR lpstrProperty)
 		VariantInit(&pVal);
 		CIMTYPE pType;
 
-		if (!m_pClassObject)
-			return 0;
-		
 		VariantClear(&pVal);
 		m_hResult = m_pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
 		if (SUCCEEDED( m_hResult))
@@ -338,6 +376,9 @@ __int64 COcsWmi::GetClassObjectI64Value(LPCTSTR lpstrProperty)
 
 unsigned __int64 COcsWmi::GetClassObjectU64Value(LPCTSTR lpstrProperty)
 {
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrProperty);
+
 	try
 	{
 		CComBSTR propName = CComBSTR( lpstrProperty);
@@ -345,9 +386,6 @@ unsigned __int64 COcsWmi::GetClassObjectU64Value(LPCTSTR lpstrProperty)
 		VariantInit(&pVal);
 		CIMTYPE pType;
 
-		if (!m_pClassObject)
-			return 0;
-		
 		VariantClear(&pVal);
 		m_hResult = m_pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
 		if (SUCCEEDED( m_hResult))
@@ -365,6 +403,10 @@ unsigned __int64 COcsWmi::GetClassObjectU64Value(LPCTSTR lpstrProperty)
 
 LPCTSTR COcsWmi::GetRefElementClassObjectStringValue(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty)
 {
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrRefElement);
+	ASSERT( lpstrProperty);
+
 	try
 	{
 		CComBSTR elementName = CComBSTR( lpstrRefElement);
@@ -374,11 +416,6 @@ LPCTSTR COcsWmi::GetRefElementClassObjectStringValue(LPCTSTR lpstrRefElement, LP
 		VariantInit(&pVal);
 		CIMTYPE pType;
 		IWbemClassObject *pClassObject;
-
-		if (!m_pClassObject)
-		{
-			return NULL;
-		}
 
 		VariantClear(&pVal);
 		m_hResult = m_pClassObject->Get( BSTR( elementName), 0L, &pVal, &pType, NULL);
@@ -422,6 +459,10 @@ LPCTSTR COcsWmi::GetRefElementClassObjectStringValue(LPCTSTR lpstrRefElement, LP
 
 DWORD COcsWmi::GetRefElementClassObjectDwordValue(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty)
 {
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrRefElement);
+	ASSERT( lpstrProperty);
+
 	try
 	{
 		CComBSTR elementName = CComBSTR( lpstrRefElement);
@@ -432,11 +473,6 @@ DWORD COcsWmi::GetRefElementClassObjectDwordValue(LPCTSTR lpstrRefElement, LPCTS
 		CIMTYPE pType;
 		IWbemClassObject *pClassObject;
 		static DWORD dwResult;
-
-		if (!m_pClassObject)
-		{
-			return 0;
-		}
 
 		VariantClear(&pVal);
 		m_hResult = m_pClassObject->Get( BSTR( elementName), 0L, &pVal, &pType, NULL);
@@ -475,6 +511,10 @@ DWORD COcsWmi::GetRefElementClassObjectDwordValue(LPCTSTR lpstrRefElement, LPCTS
 
 __int64 COcsWmi::GetRefElementClassObjectI64Value(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty)
 {
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrRefElement);
+	ASSERT( lpstrProperty);
+
 	try
 	{
 		CComBSTR elementName = CComBSTR( lpstrRefElement);
@@ -485,11 +525,6 @@ __int64 COcsWmi::GetRefElementClassObjectI64Value(LPCTSTR lpstrRefElement, LPCTS
 		CIMTYPE pType;
 		IWbemClassObject *pClassObject;
 		static __int64 i64Result;
-
-		if (!m_pClassObject)
-		{
-			return 0;
-		}
 
 		VariantClear(&pVal);
 		m_hResult = m_pClassObject->Get( BSTR( elementName), 0L, &pVal, &pType, NULL);
@@ -528,6 +563,9 @@ __int64 COcsWmi::GetRefElementClassObjectI64Value(LPCTSTR lpstrRefElement, LPCTS
 
 unsigned __int64 COcsWmi::GetRefElementClassObjectU64Value(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty)
 {
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrRefElement);
+	ASSERT( lpstrProperty);
 	try
 	{
 		CComBSTR elementName = CComBSTR( lpstrRefElement);
@@ -539,10 +577,6 @@ unsigned __int64 COcsWmi::GetRefElementClassObjectU64Value(LPCTSTR lpstrRefEleme
 		IWbemClassObject *pClassObject;
 		static unsigned __int64 u64Result;
 
-		if (!m_pClassObject)
-		{
-			return 0;
-		}
 
 		VariantClear(&pVal);
 		m_hResult = m_pClassObject->Get( BSTR( elementName), 0L, &pVal, &pType, NULL);

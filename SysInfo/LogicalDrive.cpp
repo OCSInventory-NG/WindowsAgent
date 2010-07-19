@@ -91,7 +91,7 @@ BOOL CLogicalDrive::RetrieveDriveInfo( LPCTSTR lpstrDrive)
 	switch (::GetDriveType( lpstrDrive))
 		{
 		case DRIVE_FIXED :		// Local HDD
-			m_csDriveType = _T( "Hard Drive");
+			SetType( DRIVE_FIXED);
 			bIsLocalDrive = TRUE;
 			// Retrieve File System information
 			if (GetVolumeInformation( lpstrDrive, strName, dwName, NULL, &dwMaximumComponentLength, &dwFSFlags, strFSName, dwFSName))
@@ -108,19 +108,19 @@ BOOL CLogicalDrive::RetrieveDriveInfo( LPCTSTR lpstrDrive)
 			}
 			break;
 		case DRIVE_REMOVABLE :	// Removable Drive
-			m_csDriveType = _T( "Removable Drive");
+			SetType( DRIVE_REMOVABLE);
 			bIsLocalDrive = FALSE;
 			m_csVolumName = NOT_AVAILABLE;
 			m_csFileSystem = NOT_AVAILABLE;
 			break;
 		case DRIVE_CDROM:		// CD-Rom drive
-			m_csDriveType = _T( "CD-Rom Drive");
+			SetType( DRIVE_CDROM);
 			bIsLocalDrive = FALSE;
 			m_csVolumName = NOT_AVAILABLE;
 			m_csFileSystem = NOT_AVAILABLE;
 			break;
 		case DRIVE_REMOTE :		// Network drive
-			m_csDriveType = _T( "Network Drive");
+			SetType( DRIVE_REMOTE);
 			bIsLocalDrive = FALSE;
 			// Retrieve File System information
 			if (GetVolumeInformation( lpstrDrive, strName, dwName, NULL, &dwMaximumComponentLength, &dwFSFlags, strFSName, dwFSName))
@@ -140,8 +140,8 @@ BOOL CLogicalDrive::RetrieveDriveInfo( LPCTSTR lpstrDrive)
 				m_csVolumName.Format( _T( "%s"), NOT_AVAILABLE);
 			break;
 		case DRIVE_RAMDISK:		// RAM Disk
-			m_csDriveType = _T( "RAM Drive");
-			bIsLocalDrive = FALSE;
+			SetType( DRIVE_RAMDISK);
+			bIsLocalDrive = TRUE;
 			// Retrieve File System information
 			if (GetVolumeInformation( lpstrDrive, strName, dwName, NULL, &dwMaximumComponentLength, &dwFSFlags, strFSName, dwFSName))
 			{
@@ -157,9 +157,19 @@ BOOL CLogicalDrive::RetrieveDriveInfo( LPCTSTR lpstrDrive)
 			}
 			break;
 		case DRIVE_NO_ROOT_DIR:	// Disk does not have root dir
+			SetType( DRIVE_NO_ROOT_DIR);
+			bIsLocalDrive = FALSE;
+			m_csVolumName = NOT_AVAILABLE;
+			m_csFileSystem = NOT_AVAILABLE;
+			break;
 		case DRIVE_UNKNOWN:
+			SetType( DRIVE_UNKNOWN);
+			bIsLocalDrive = FALSE;
+			m_csVolumName = NOT_AVAILABLE;
+			m_csFileSystem = NOT_AVAILABLE;
+			break;
 		default :				// Unknown
-			m_csDriveType = NOT_AVAILABLE;
+			SetDriveType( NOT_AVAILABLE);
 			bIsLocalDrive = FALSE;
 			m_csVolumName = NOT_AVAILABLE;
 			m_csFileSystem = NOT_AVAILABLE;
@@ -193,6 +203,38 @@ LONG CLogicalDrive::GetFilesNumber()
 void CLogicalDrive::SetDriveType( LPCTSTR lpstrType)
 {
 	m_csDriveType = lpstrType;
+	StrForSQL( m_csDriveType);
+}
+
+void CLogicalDrive::SetType( DWORD dwType)
+{
+	switch (dwType)
+	{
+	case DRIVE_REMOVABLE:
+		m_csDriveType = _T( "Removable Drive");
+		break;
+	case DRIVE_FIXED:
+		m_csDriveType = _T( "Hard Drive");
+		break;
+	case DRIVE_REMOTE:
+		m_csDriveType = _T( "Network Drive");
+		break;
+	case DRIVE_CDROM:
+		m_csDriveType = _T( "CD-Rom Drive");
+		break;
+	case DRIVE_RAMDISK:
+		m_csDriveType = _T( "RAM Drive");
+		break;
+	case DRIVE_NO_ROOT_DIR:
+		m_csDriveType = _T( "No root dir");
+		break;
+	case DRIVE_UNKNOWN:
+		m_csDriveType = _T( "Unknown");
+		break;
+	default:
+		m_csDriveType = NOT_AVAILABLE;
+		break;
+	}
 	StrForSQL( m_csDriveType);
 }
 

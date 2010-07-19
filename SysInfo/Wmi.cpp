@@ -45,9 +45,9 @@ BOOL CWmi::Connect( LPCTSTR lpstrDevice)
 		AddLog( _T( "WMI Connect: Trying to connect to WMI namespace root\\cimv2 on device <%s>..."), 
 			(lpstrDevice == NULL ? _T( "Localhost") : lpstrDevice));
 		if (lpstrDevice == NULL)
-			csCimRoot.Format( _T( "\\\\.\\root\\cimv2"));
+			csCimRoot.Format( _T( "root\\CIMV2"));
 		else
-			csCimRoot.Format( _T( "\\\\%s\\root\\cimv2"), lpstrDevice);
+			csCimRoot.Format( _T( "\\\\%s\\root\\CIMV2"), lpstrDevice);
 		if (!m_dllWMI.ConnectWMI( csCimRoot))
 		{
 			// Unable to connect to WMI => no WMI support
@@ -1599,6 +1599,110 @@ BOOL CWmi::GetSystemSlots(CSystemSlotList *pMyList)
 			return TRUE;
 		}
 		AddLog( _T( "Failed because no Win32_SystemSlot object !\n"));
+		return FALSE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		AddLog( _T( "Failed because unknown exception !\n"));
+		return FALSE;
+	}
+}
+
+BOOL CWmi::GetLogicalDrives( CLogicalDriveList *pMyList)
+{
+	ASSERT( pMyList);
+
+	// If not WMI connected => cannot do this
+	if (!m_bConnected)
+		return FALSE;
+
+	AddLog( _T( "WMI GetLogicalDrives: Trying to find Win32_LogicalDisk WMI objects..."));
+	// Reset object list content
+	pMyList->RemoveAll();
+	try
+	{
+		UINT	uIndex = 0;
+		unsigned __int64 u64Size;
+		DWORD	dwType;
+		CLogicalDrive	myObject;
+		CString	csBuffer;
+		BOOL	bIsLocalDrive;
+
+		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_LogicalDisk")))
+		{
+			while (m_dllWMI.MoveNextEnumClassObject())
+			{
+				myObject.Clear();
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Caption"));
+				myObject.SetDriveLetter( csBuffer);
+				dwType = m_dllWMI.GetClassObjectDwordValue( _T( "DriveType"));
+				switch (dwType)
+				{
+				case DRIVE_REMOVABLE:
+					myObject.SetFileSystem( NOT_AVAILABLE);
+					myObject.SetVolumName( NOT_AVAILABLE);
+					bIsLocalDrive = FALSE;
+					break;
+				case DRIVE_FIXED:
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Filesystem"));
+					myObject.SetFileSystem( csBuffer);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "VolumeName"));
+					myObject.SetVolumName( csBuffer);
+					bIsLocalDrive = TRUE;
+					break;
+				case DRIVE_REMOTE:
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Filesystem"));
+					myObject.SetFileSystem( csBuffer);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "ProviderName"));
+					myObject.SetVolumName( csBuffer);
+					bIsLocalDrive = FALSE;
+					break;
+				case DRIVE_CDROM:
+					myObject.SetFileSystem( NOT_AVAILABLE);
+					myObject.SetVolumName( NOT_AVAILABLE);
+					bIsLocalDrive = FALSE;
+					break;
+				case DRIVE_RAMDISK:
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Filesystem"));
+					myObject.SetFileSystem( csBuffer);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "VolumeName"));
+					myObject.SetVolumName( csBuffer);
+					bIsLocalDrive = TRUE;
+					break;
+				case DRIVE_NO_ROOT_DIR:
+				case DRIVE_UNKNOWN:
+				default:
+					myObject.SetFileSystem( NOT_AVAILABLE);
+					myObject.SetVolumName( NOT_AVAILABLE);
+					bIsLocalDrive = FALSE;
+					break;
+				}
+				myObject.SetType( dwType);
+				if (bIsLocalDrive)
+				{
+					u64Size = m_dllWMI.GetClassObjectU64Value( _T( "Size"));
+					myObject.SetTotalSize( u64Size/ONE_MEGABYTE);
+					u64Size = m_dllWMI.GetClassObjectU64Value( _T( "FreeSpace"));
+					myObject.SetFreeSpace( u64Size/ONE_MEGABYTE);
+				}
+				else
+				{
+					myObject.SetTotalSize( 0);
+					myObject.SetFreeSpace( 0);
+				}
+
+				pMyList->AddTail( myObject);
+				uIndex ++;
+			}
+			m_dllWMI.CloseEnumClassObject();
+		}
+		if (uIndex > 0)
+		{
+			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			return TRUE;
+		}
+		AddLog( _T( "Failed because no Win32_LogicalDisk object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)

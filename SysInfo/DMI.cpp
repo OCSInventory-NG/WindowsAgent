@@ -184,14 +184,14 @@ BOOL CDMI::Connect()
     // current user and obtain pointer pSvc
     // to make IWbemServices calls.
     h_result = p_locator->ConnectServer(
-        _T("ROOT\\WMI"),		 // WMI namespace
+        _T("root\\WMI"),		 // WMI namespace
         NULL,                    // User name
         NULL,                    // User password
-        0,                       // Locale
+        NULL,                    // Locale
         NULL,                    // Security flags                 
-        0,                       // Authority       
-        0,                       // Context object
-        &p_service                 // IWbemServices proxy
+        NULL,                    // Authority       
+        NULL,                    // Context object
+        &p_service               // IWbemServices proxy
     );                              
     
     if (h_result<0)

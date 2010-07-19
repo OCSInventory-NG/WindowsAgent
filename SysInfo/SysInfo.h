@@ -112,6 +112,7 @@ public: // Methods
 	BOOL getBiosInfo( CBios *pMyBios);
 	BOOL getInputDevices( CInputDeviceList *pList);
 	LPCTSTR getLocalIP();
+	BOOL getLogicalDrives( CLogicalDriveList *pMyList);
 	BOOL getMemorySlots( CMemorySlotList *pMyList);
 	BOOL getModems( CModemList *pMyList);
 	BOOL getMonitors( CMonitorList *pMyList);

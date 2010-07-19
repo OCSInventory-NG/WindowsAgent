@@ -19,7 +19,7 @@
 
 #include "resource.h"		// main symbols
 
-#include "wbemcli.h"        // WMI interface declarations
+#include <wbemcli.h>        // WMI interface declarations
 
 #ifdef OCSWMI_EXPORTS
 #define OCSWMI_API __declspec(dllexport)

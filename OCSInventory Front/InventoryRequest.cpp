@@ -414,9 +414,6 @@ BOOL CInventoryRequest::runInventory()
 	ULONG		ulPhysicalMemory, ulSwapSize;
 	BOOL		bRunBiosInfo = TRUE;
 	CSoftware	cSoft;
-	UINT		uIndex;
-	CLogicalDrive	cLogicalDrive;
-	LONG		lNumberOfFiles;
 
 	// Get logged on user
 	if (!m_pSysInfo->getUserName( cs1))
@@ -509,48 +506,8 @@ BOOL CInventoryRequest::runInventory()
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %d storage peripheral(s) found"),
 					  m_StorageList.GetCount());
 	// Get Logical Drives
-	if ((dwValue = GetLogicalDrives()) == 0)
-	{
-		// Cannot find logical drives
+	if (!m_pSysInfo->getLogicalDrives( &m_DriveList))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve logical drives"));
-	}
-	else
-	{
-		for (uIndex=0; uIndex<=26; uIndex++)
-		{
-			// Check if the logical drive uIndex really exists
-			if (dwValue & 1)
-			{
-				// Yes => Construct the root directory
-				cs1.Format( _T( "%c:\\"), 'A'+uIndex);
-				m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Retrieving logical drive <%s> properties"), cs1);
-				// Check if this is a local Hard Disk
-				if (cLogicalDrive.RetrieveDriveInfo( cs1))
-				{
-					// This a local Hard Disk
-					if (FALSE)
-					{
-						// Search files in drive directories
-						lNumberOfFiles = 0;
-						m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Searching for software on logical drive <%s>"), cs1);
-						// SearchFilesInDirectory( csDrive);
-					}
-					else
-						// Do not search files in drive directories
-						lNumberOfFiles = 0;
-				}
-				else
-					// Not a local drive
-					lNumberOfFiles = 0;
-				// Set the logical drive file number
-				cLogicalDrive.SetFilesNumber( lNumberOfFiles);
-				// Add the logical drive to the list
-				m_DriveList.AddTail( cLogicalDrive);
-			}
-			// Bit shift the logical drives mask
-			dwValue >>= 1;
-		}
-	}
 	// Get Sound Devices
 	if (!m_pSysInfo->getSoundDevices( &m_SoundList))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve sound devices"));

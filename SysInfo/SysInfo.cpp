@@ -366,6 +366,39 @@ BOOL CSysInfo::getSoundDevices( CSoundDeviceList *pMyList)
 	return m_registryInfo.GetSoundDevices( pMyList);
 }
 
+BOOL CSysInfo::getLogicalDrives( CLogicalDriveList *pMyList)
+{
+	CLogicalDrive	cLogicalDrive;
+	UINT		uIndex;
+	DWORD		dwValue;
+	CString		csDrive;
+
+	// First, try WMI
+	if (m_wmiInfo.GetLogicalDrives( pMyList))
+		return TRUE;
+	// Last, use GetLogicalDrives API
+	pMyList->RemoveAll();
+	if ((dwValue = GetLogicalDrives()) != 0)
+	{
+		for (uIndex=0; uIndex<=26; uIndex++)
+		{
+			// Check if the logical drive uIndex really exists
+			if (dwValue & 1)
+			{
+				// Yes => Construct the root directory
+				csDrive.Format( _T( "%c:\\"), 'A'+uIndex);
+				// Check if this is a local Hard Disk
+				cLogicalDrive.RetrieveDriveInfo( csDrive);
+				// Add the logical drive to the list
+				pMyList->AddTail( cLogicalDrive);
+			}
+			// Bit shift the logical drives mask
+			dwValue >>= 1;
+		}
+	}
+	return TRUE;
+}
+
 BOOL CSysInfo::getMemorySlots( CMemorySlotList *pMyList)
 {
 	// First, try SMBios/DMI

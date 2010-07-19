@@ -339,7 +339,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	COcsWmi		myWmiDll;
 
 	m_List.ResetContent();
-	if (myWmiDll.ConnectWMI( _T( "\\\\.\\root\\cimv2")))
+	if (myWmiDll.ConnectWMI( _T( "root\\CIMV2")))
 		m_List.AddString( _T( "Connected to WMI"));
 	else
 	{
@@ -1673,6 +1673,48 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
+	m_List.AddString( _T( "Logical Drives infos"));
+	m_List.AddString( _T( "------------------------------------------------------"));
+	if (myWmiDll.BeginEnumClassObject( _T( "Win32_LogicalDisk")))
+	{
+		while (myWmiDll.MoveNextEnumClassObject())
+		{
+			CString str, res;
+
+			str = _T( "DriveType = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "DriveType"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Caption = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Caption"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Filesystem  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Filesystem"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "VolumeName  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "VolumeName"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "ProviderName = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "ProviderName"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Size = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Size"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "FreeSpace = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "FreeSpace"));
+			str += res;
+			m_List.AddString( str);
+			m_List.AddString( _T( ""));
+		}
+		myWmiDll.CloseEnumClassObject();
+	}
+
+	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Printer infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_Printer")))
@@ -2319,6 +2361,42 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
+	SysInfoLog( _T( "Logical Drive infos"));
+	SysInfoLog( _T( "------------------------------------------------------"));
+	CLogicalDrive myDrive;
+	pos = m_DriveList.GetHeadPosition();
+	bContinue = (pos != NULL);
+	if (bContinue)
+		// There is one record => get the first
+		myDrive = m_DriveList.GetNext( pos);
+	while (bContinue)
+	{
+		bContinue = (pos != NULL);
+		str.Format( _T( "Type: %s"), myDrive.GetDriveType());
+		SysInfoLog( str);
+		str.Format( _T( "Letter: %s"), myDrive.GetDriveLetter());
+		SysInfoLog( str);
+		str.Format( _T( "Filesystem: %s"), myDrive.GetFileSystem());
+		SysInfoLog( str);
+		str.Format( _T( "Size in MB: %ld"), myDrive.GetTotalMB());
+		SysInfoLog( str);
+		str.Format( _T( "Free space in MB: %ld"), myDrive.GetFreeMB());
+		SysInfoLog( str);
+		str.Format( _T( "Volume Name: %s"), myDrive.GetVolumName());
+		SysInfoLog( str);
+		if (pos != NULL)
+		{
+			myDrive = m_DriveList.GetNext( pos);
+			SysInfoLog( _T( ""));
+		}
+	}
+	SysInfoLog( _T( ""));
+	str.Format( _T( "Logical Drive Hash: %s"), m_DriveList.GetHash());
+	SysInfoLog( str);
+
+
+	SysInfoLog( _T( ""));
+	SysInfoLog( _T( "------------------------------------------------------"));
 	SysInfoLog( _T( "Printers infos"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CPrinter myPrinter;
@@ -2454,11 +2532,7 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	CString		cs1, cs2, cs3, cs4;
 	DWORD		dwValue;
 	ULONG		ulPhysicalMemory, ulSwapSize;
-	BOOL		bRunBiosInfo = TRUE;
 	CSoftware	cSoft;
-	UINT		uIndex;
-	CLogicalDrive	cLogicalDrive;
-	LONG		lNumberOfFiles;
 	CSysInfo    *m_pSysInfo	= new CSysInfo( TRUE, _T( "c:\\"));
 
 	// Get logged on user
@@ -2497,41 +2571,7 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	// Get Physical storage devices
 	m_pSysInfo->getStoragePeripherals( &m_StorageList);
 	// Get Logical Drives
-	if ((dwValue = GetLogicalDrives()) != 0)
-	{
-		for (uIndex=0; uIndex<=26; uIndex++)
-		{
-			// Check if the logical drive uIndex really exists
-			if (dwValue & 1)
-			{
-				// Yes => Construct the root directory
-				cs1.Format( _T( "%c:\\"), 'A'+uIndex);
-				// Check if this is a local Hard Disk
-				if (cLogicalDrive.RetrieveDriveInfo( cs1))
-				{
-					// This a local Hard Disk
-					if (FALSE)
-					{
-						// Search files in drive directories
-						lNumberOfFiles = 0;
-						// SearchFilesInDirectory( csDrive);
-					}
-					else
-						// Do not search files in drive directories
-						lNumberOfFiles = 0;
-				}
-				else
-					// Not a local drive
-					lNumberOfFiles = 0;
-				// Set the logical drive file number
-				cLogicalDrive.SetFilesNumber( lNumberOfFiles);
-				// Add the logical drive to the list
-				m_DriveList.AddTail( cLogicalDrive);
-			}
-			// Bit shift the logical drives mask
-			dwValue >>= 1;
-		}
-	}
+	m_pSysInfo->getLogicalDrives( &m_DriveList);
 	// Get Sound Devices
 	m_pSysInfo->getSoundDevices( &m_SoundList);
 	// Get Modems

@@ -59,6 +59,7 @@ public: // Methods
 	// Set attributes values
 	//////////////////////////////////
 
+	void SetType( DWORD dwType);
 	void SetDriveType( LPCTSTR lpstrType);
 	void SetVolumName( LPCTSTR lpstrVolumn);
 	void SetFileSystem( LPCTSTR lpstrFileSystem);
