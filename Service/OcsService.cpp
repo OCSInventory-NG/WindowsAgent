@@ -31,6 +31,63 @@ COcsService::~COcsService()
 {
 }
 
+BOOL COcsService::ParseCommandLine(int argc, LPTSTR argv[])
+{
+	CString csMessage,
+			csParam;
+
+    // See if we have any command line args we recognise
+	if (argc <= 1)
+		return FALSE;
+
+	csParam = argv[1];
+	if ((csParam.CompareNoCase( _T( "-?")) == 0) || (csParam.CompareNoCase( _T( "-h")) == 0) ||
+		(csParam.CompareNoCase( _T( "/?")) == 0) || (csParam.CompareNoCase( _T( "/h")) == 0))
+	{
+        // Spit out version info
+		csMessage.Format( _T( "Service <%s> %s registered into Windows Service Control Manager.\n\n%s\n%s\n%s\n%s"),
+				m_csServiceName, IsInstalled() ? _T( "is") : _T( "IS NOT"),
+				_T( "You can use the following command line parameters :"),
+				_T( "   [-?] or [/?] or [-h] or [/h] to show this help."),
+				_T( "   [-install] or [/install] to register service autostart at system startup."),
+				_T( "   [-uninstall] or [/uninstall]  or [-remove] or [/remove] to unregister service."));
+		AfxMessageBox( csMessage, MB_OK|MB_ICONINFORMATION);
+        return TRUE; // say we processed the argument
+    } 
+	if ((csParam.CompareNoCase( _T( "-install")) == 0) || (csParam.CompareNoCase( _T( "/install")) == 0))
+	{
+        // Request to install
+        if (IsInstalled()) 
+		{
+			csMessage.Format( _T( "Service <%s> is already registered."), m_csServiceName);
+			AfxMessageBox( csMessage, MB_OK|MB_ICONEXCLAMATION);
+        } 
+		else if (!Install( OCS_SERVICE_DESCRIPTION, OCS_SERVICE_DEPENDANCIES))
+		{
+			csMessage.Format( _T( "Failed to register Service <%s> into Windows Service Manager."), m_csServiceName);
+			AfxMessageBox( csMessage, MB_OK|MB_ICONSTOP);
+        }
+        return TRUE; // say we processed the argument
+    } 
+	if ((csParam.CompareNoCase( _T( "-uninstall")) == 0) || (csParam.CompareNoCase( _T( "/uninstall")) == 0) ||
+		(csParam.CompareNoCase( _T( "-remove")) == 0) || (csParam.CompareNoCase( _T( "/remove")) == 0))
+	{
+        // Request to uninstall.
+        if (IsInstalled()) 
+		{
+            // Try and remove the copy that's installed
+            if (!Uninstall()) 
+			{
+				csMessage.Format( _T( "Failed to unregister Service <%s> from Windows Service Manager."), m_csServiceName);
+				AfxMessageBox( csMessage, MB_OK|MB_ICONSTOP);
+            }
+        }
+        return TRUE; // say we processed the argument
+    }
+    // Don't recognise the args
+    return FALSE;
+}
+
 int COcsService::generateRandNumber(int nMax)
 {
 	CString csNamePath;
@@ -144,15 +201,18 @@ BOOL COcsService::protectFile(LPCTSTR lpstrFolder, LPCTSTR lpstrFile)
 
 BOOL COcsService::protectFiles()
 {
-	protectFile( getInstallFolder(), _T( "zlib1.dll"));
+	protectFile( getInstallFolder(), _T( "Zlib1.dll"));
 	protectFile( getInstallFolder(), _T( "libeay32.dll"));
 	protectFile( getInstallFolder(), _T( "ssleay32.dll"));
 	protectFile( getInstallFolder(), _T( "libcurl.dll"));
-	protectFile( getInstallFolder(), _T( "ocswmi.dll"));
-	protectFile( getInstallFolder(), _T( "sysinfo.dll"));
+	protectFile( getInstallFolder(), _T( "ZipArchive.dll"));
+	protectFile( getInstallFolder(), _T( "ComHTTP.dll"));
+	protectFile( getInstallFolder(), _T( "OcsWmi.dll"));
+	protectFile( getInstallFolder(), _T( "Sysinfo.dll"));
 	protectFile( getInstallFolder(), _T( "OCSInventory Front.dll"));
-	protectFile( getInstallFolder(), _T( "ocsinventory.exe"));
-	protectFile( getInstallFolder(), _T( "ocssystray.exe"));
+	protectFile( getInstallFolder(), _T( "Download.exe"));
+	protectFile( getInstallFolder(), _T( "Ocsinventory.exe"));
+	protectFile( getInstallFolder(), _T( "OcsSystray.exe"));
 	protectFile( getDataFolder(), _T( "last_state"));
 	protectFile( getDataFolder(), _T( "ocsinventory.dat"));
 	protectFile( getDataFolder(), _T( "admininfo.conf"));
@@ -248,7 +308,7 @@ void COcsService::Run()
 	}
 
 	// Report to the event log that the service has stopped successfully
-	//LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_STOPPED, m_csServiceName);
+	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_STOPPED, m_csServiceName);
 }
 
 

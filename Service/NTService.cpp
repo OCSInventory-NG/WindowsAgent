@@ -51,11 +51,7 @@ CNTService::~CNTService()
 
 BOOL CNTService::ParseCommandLine(int argc, LPTSTR argv[])
 {
-	return ParseStandardArgs( argc, argv);
-}
 
-BOOL CNTService::ParseStandardArgs(int argc, LPTSTR argv[])
-{
 	CString csMessage,
 			csParam;
 
@@ -139,7 +135,7 @@ BOOL CNTService::IsInstalled()
     return bResult;
 }
 
-BOOL CNTService::Install()
+BOOL CNTService::Install( LPCTSTR lpstrDescription, LPCTSTR lpstrDependancies)
 {
     TCHAR szFilePath[_MAX_PATH+1];
 	CString csKey;
@@ -156,23 +152,35 @@ BOOL CNTService::Install()
 		return FALSE;
     // Create the service
     SC_HANDLE hService = ::CreateService(hSCM,
-                                         m_csServiceName,
-                                         m_csServiceName,
-                                         SERVICE_ALL_ACCESS,
+                                         m_csServiceName,			// Service key name
+                                         m_csServiceName,			// Service display name
+                                         SERVICE_ALL_ACCESS,		// Desired access
                                          SERVICE_WIN32_OWN_PROCESS|SERVICE_INTERACTIVE_PROCESS, // Runs in its own process with desktop interaction
-                                         SERVICE_AUTO_START,        // start condition
+                                         SERVICE_AUTO_START,        // Autostart at system startup
                                          SERVICE_ERROR_NORMAL,		// Normal error reporting
                                          szFilePath,				// Main binary
-                                         NULL,						
-                                         NULL,
-                                         NULL,
-                                         NULL,						// Service runs under Local system account
-                                         NULL);
+                                         NULL,						// Load order group
+                                         NULL,						// Tag ID to order service start in group
+                                         lpstrDependancies,			// Service dependancies
+                                         NULL,						// Service runs under Local system account,
+                                         NULL);						// so no user and password
     if (!hService) 
 	{
         ::CloseServiceHandle(hSCM);
         return FALSE;
     }
+	// Set service description
+	if (lpstrDescription != NULL)
+	{
+		SERVICE_DESCRIPTION sd;
+		sd.lpDescription = (LPTSTR) lpstrDescription;
+		if (!::ChangeServiceConfig2( hService, SERVICE_CONFIG_DESCRIPTION, &sd))
+		{
+			::CloseServiceHandle(hService);
+			::CloseServiceHandle(hSCM);
+			return FALSE;
+		}
+	}
     // Create registry entries for service parameters
 	csKey.Format( _T( "%s\\%s\\%s"), HKEY_NT_SERVICE, m_csServiceName, HKEY_NT_SERVICE_PARAMETER);
     if (::RegCreateKey(HKEY_LOCAL_MACHINE, csKey, &hKey) != ERROR_SUCCESS) 

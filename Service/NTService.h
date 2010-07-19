@@ -71,9 +71,9 @@ public:
 	BOOL IsRunning();
 	// Return code of specific service control message
 	DWORD GetWin32ExitCode();
-	// Parse command line args (by default, only parse standard args 
+	// Parse command line args (at least, parse standard args 
 	// to install/remove service or show version)
-    BOOL ParseCommandLine( int argc, LPTSTR argv[]);
+    virtual BOOL ParseCommandLine( int argc, LPTSTR argv[]);
 
    
     // static member functions
@@ -83,15 +83,10 @@ public:
     void DebugMsg( LPCTSTR pszFormat, ...);
 
 protected:
-	// Parse command line args
-	//	-i to register service into Windows Service Manager
-	//	-u to unregister service
-	//	-v to show version
-    BOOL ParseStandardArgs( int argc, LPTSTR argv[]);
 	// Is service already regsitered
     BOOL IsInstalled();
 	// Register service into Windows Service Manager
-    BOOL Install();
+    BOOL Install( LPCTSTR lpstrDescription = NULL, LPCTSTR lpstrDependancies = NULL);
 	// Unregister service into Windows Service Manager
     BOOL Uninstall();
 	// Set service status

@@ -19,6 +19,9 @@
 #include "ntservice.h"
 #include "ntservicemsg.h"
 
+#define OCS_SERVICE_DESCRIPTION		_T( "Service starting priodically OCS Inventory NG Agent for Windows")
+#define OCS_SERVICE_DEPENDANCIES	_T( "RPCSS\0EventLog\0WMI\0Netman\0\0")
+
 #define	OCS_SERVICE_RAND_FILE		_T( "rand")
 #define	OCS_SERVICE_TTO_WAIT		_T( "TTO_WAIT")
 #define	OCS_SERVICE_OLD_PROLOG_FREQ	_T( "OLD_PROLOG_FREQ")
@@ -33,10 +36,21 @@ class COcsService :
 public:
 	COcsService();
 	~COcsService();
+	BOOL OnInit();
+	void OnStop();
+	void Run();
+	// Process messages send by user (run inventory now, show inventory)
+	BOOL OnUserControl( DWORD dwOpcode);
+	// Parse command line args
+	//	-install to register service into Windows Service Manager
+	//	-uninstall to unregister service
+	//	-? to show version
+    BOOL ParseCommandLine( int argc, LPTSTR argv[]);
+
 protected:
 	// Generate random number between 0 and nMax
 	int generateRandNumber(int nMax);
-	// Open file lpstrFile in directory lpstrFolder for denying write and stote opened object into m_tHandles
+	// Open file lpstrFile in directory lpstrFolder for denying write and store opened object into m_tHandles
 	BOOL protectFile(LPCTSTR lpstrFolder, LPCTSTR lpstrFile);
 	// Open required OCS files to prevent delete
 	BOOL protectFiles();
@@ -50,12 +64,6 @@ protected:
 	BOOL CheckInventoryState();
 	// Launch OCS Inventory Agent, using notify mode or not
 	BOOL runAgent( BOOL bNotify = FALSE);	
-public:
-	BOOL OnInit();
-	void OnStop();
-	void Run();
-	// Process messages send by user (run inventory now, show inventory)
-	BOOL OnUserControl( DWORD dwOpcode);
 
 protected:
 	int			m_iTToWait;				// Time to wait before next agent run (in seconds)
