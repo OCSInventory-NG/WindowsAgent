@@ -20,7 +20,7 @@
 #include "ntservicemsg.h"
 
 #define OCS_SERVICE_DESCRIPTION		_T( "Service starting periodically OCS Inventory NG Agent for Windows")
-#define OCS_SERVICE_DEPENDANCIES	_T( "RPCSS\0EventLog\0WMI\0Netman\0\0")
+#define OCS_SERVICE_DEPENDANCIES	_T( "RPCSS\0EventLog\0WMI\0Tcpip\0\0")
 
 #define	OCS_SERVICE_RAND_FILE		_T( "rand")
 #define	OCS_SERVICE_TTO_WAIT		_T( "TTO_WAIT")
