@@ -28,7 +28,7 @@ OCS Inventory NG Windows Agent Command Line Options:
 /local=["path to folder"]                   Agent do not contact communication server, and store inventory in xml compressed .ocs file into folder "path to folder"
                                             If no "path to folder" provided, agent assume folder as data folder
 
-/debug[=level]                              Generate a very verbose log file "ocsinventory-ng.log" into agent's install folder
+/debug[=level]                              Generate a very verbose log file "ocsinventory.log" into agent's install folder
                                             0 => disable verbose logs (default)
                                             1 => enable default verbose logs (default when no level provided provided)
                                             2 => enable debuging logs
