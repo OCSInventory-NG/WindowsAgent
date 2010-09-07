@@ -24,6 +24,7 @@ CLog::CLog()
 	m_dwLoglevel = LOG_PRIORITY_NOTICE;
 	m_bLogOpened = FALSE;
 	m_hLogFile;
+	// Disable use of log file by default
 	setApplication();
 }
 
@@ -39,8 +40,12 @@ CLog::~CLog()
 void CLog::setApplication( LPCTSTR lpstrApp)
 {
 	if (m_bLogOpened)
+	{
 		// Already opened
+		m_hLogFile.Close();
+		m_bLogOpened = FALSE;
 		return;
+	}
 	if (lpstrApp != NULL)
 		m_csFileName.Format( _T( "%s\\%s.log"), getDataFolder(), lpstrApp);
 	else

@@ -84,7 +84,6 @@ BOOL COCSInventoryFrontApp::InitInstance()
 	*
 	****/		
 	m_pLogger = CLog::getInstance();
-	m_pLogger->setApplication( _T( "ocsinventory-agent"));
    /*****
 	*
 	* Load default Agent config
