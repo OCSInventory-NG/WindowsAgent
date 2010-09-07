@@ -98,6 +98,7 @@ BOOL COCSInventoryApp::InitInstance()
 
 		// Logger
 		m_pLogger			= getOcsLogger();
+		m_pLogger->setApplication( AfxGetAppName());
 		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "=============================================================="));
 		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "Starting OCS Inventory NG Agent on %s."), cStartTime.Format( _T( "%#c")));
 
