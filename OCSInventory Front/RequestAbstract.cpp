@@ -93,9 +93,9 @@ BOOL CRequestAbstract::final()
 }
 
 /**
- *	Set the query type
+ *	Set the query name and optional type
  */
-BOOL CRequestAbstract::setQuery(CString csQuery)
+BOOL CRequestAbstract::setQuery( LPCTSTR lpstrQuery, LPCTSTR lpstrType)
 {
 	BOOL bRet = FALSE;
 
@@ -105,7 +105,11 @@ BOOL CRequestAbstract::setQuery(CString csQuery)
 	if (!m_cmXml.IntoElem())
 		return bRet;
 	if(!m_cmXml.FindElem( _T("QUERY")))
-		bRet = m_cmXml.AddElem( _T( "QUERY"), csQuery);
+	{
+		bRet = m_cmXml.AddElem( _T( "QUERY"), lpstrQuery);
+		if (lpstrType != NULL)
+			m_cmXml.AddElem( _T( "TYPE"), lpstrType);
+	}
 	return bRet;
 }
 

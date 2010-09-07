@@ -62,6 +62,9 @@ public: // Methods
 	// Write network adapters in XML document
 	// Return TRUE if they are successfully updated
 	BOOL UpdateNetworks( CNetworkAdapterList &myNetworkList);
+	// Write network adapters in XML document for NOTIFY mode
+	// Return TRUE if they are successfully updated
+	BOOL NotifyNetworks( CNetworkAdapterList &myNetworkList);
 	// Write printers in XML document
 	// Return TRUE if they are successfully updated
 	BOOL UpdatePrinters( CPrinterList &myPrinterList);

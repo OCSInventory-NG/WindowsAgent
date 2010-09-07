@@ -93,6 +93,8 @@ public: // Methods
 	BOOL isFastIpRequired();
 	// Does we have to generate a new Device Unique ID (/UID)
 	BOOL isNewUidRequired();
+	// Is NOTIFY mode required
+	BOOL isNotifyRequired();
 	// Does we disable software inventory (/NOSOFTWARE)
 	BOOL isNoSoftwareRequired();
 	// Does we disable software inventory (/NOTAG)
@@ -126,6 +128,8 @@ public: // Methods
 	void setForceInventoryRequired( BOOL bForce = TRUE);
 	// Does we have to generate a new Device Unique ID (/UID)
 	void setNewUID( BOOL bNew = TRUE);
+	// Enable agent to notify inventory change of important informations
+	void setNotify( BOOL bNotify = FALSE);
 	// Set if IpDiscover force for network with /IPDISC:network
 	void setIpDiscoverRequired(LPCTSTR lpstrNetwork = NULL);
 	// Set if IpDiscover latency is specified
@@ -153,6 +157,7 @@ private: //Attributes
 	CString m_csTag;	// Is /TAG:"tag value" enabled (yes = not empty, no = empty)
 	BOOL	m_bHKCU;	// Is /HKCU enabled, to also scan HKEY_CURRENT_USER for printers and softwares
 	BOOL	m_bUID;		// Is /UID enabled, to force generating a new Device Unique ID
+	BOOL	m_bNotify;	// Is /NOTIFY enabled, to force notifying mode because service detects inventory changes
 	CString	m_csConfigFile; // Is /CONF:"path_to_file" enabled, to specify path to config file
 	CString m_csIpDisc; // Is /IPDISC:"NetworkNumber" enabled to force IP Discover for the specified network
 	CString m_csIpDiscLat; // Is /IPDISC_LAT:"number_of_ms" enabled to force IP Discover latency

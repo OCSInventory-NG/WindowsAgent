@@ -312,6 +312,44 @@ BOOL CXMLInteract::UpdateNetworks( CNetworkAdapterList &myNetworkList)
 	return TRUE;
 }
 
+BOOL CXMLInteract::NotifyNetworks( CNetworkAdapterList &myNetworkList)
+{
+	CNetworkAdapter	cObject;
+	POSITION		pos;
+	BOOL			bContinue;
+
+	try
+	{
+		pos = myNetworkList.GetHeadPosition();
+		bContinue = (pos != NULL);
+		if (bContinue)
+			// There is one record => get the first
+			cObject = myNetworkList.GetNext( pos);
+		while (bContinue)
+		{
+			bContinue = (pos != NULL);			
+			m_pXml->AddElem( _T( "IFACE"));
+			m_pXml->IntoElem();
+				m_pXml->AddElemNV( _T( "MAC"), cObject.GetMACAddress());
+				m_pXml->AddElemNV( _T( "IP"), cObject.GetIPAddress());
+				m_pXml->AddElemNV( _T( "MASK"), cObject.GetIPNetMask());
+				m_pXml->AddElemNV( _T( "GW"), cObject.GetGateway());
+				m_pXml->AddElemNV( _T( "SUBNET"), cObject.GetNetNumber());
+				m_pXml->AddElemNV( _T( "DHCP"), cObject.GetDhcpServer());
+			m_pXml->OutOfElem();		
+			if (pos != NULL)
+				cObject = myNetworkList.GetNext( pos);
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
+	}
+	return TRUE;
+}
+
 BOOL CXMLInteract::UpdateSystemPorts( CSystemPortList &myPortList)
 {
 	CSystemPort	cObject;

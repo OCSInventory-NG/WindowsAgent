@@ -30,11 +30,12 @@ class OCSINVENTORYFRONT_API CInventoryRequest : public CRequestAbstract
 public: //Methods
 
 	//Standards constructor and destructor
-	CInventoryRequest();
+	// Optionnally, enable notify mode to send only important informations changes, such as IP informations
+	CInventoryRequest( BOOL bNotify = FALSE);
 	virtual ~CInventoryRequest();
 
 	// Enable agent to specify a tag
-	BOOL setTag(CString);
+	void setTag(CString);
 	// Do some action when request successfully executed
 	void setSuccess();
 
@@ -84,6 +85,8 @@ private: // Attributes
 	COCSInventoryState	*m_pState;			
 	// Device TAG
 	CString m_csTag;
+	// Is /NOTIFY enabled, to force notifying mode because service detects inventory changes
+	BOOL	m_bNotify;
 
 private: // Methods
 	// Initialize inventory object

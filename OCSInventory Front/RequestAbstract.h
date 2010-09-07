@@ -49,8 +49,8 @@ public: // Methods
 	// Final operations before a request can be sent
 	virtual BOOL final();
 
-	// Set the query type
-	BOOL setQuery( CString);
+	// Set the query name, and optional type
+	BOOL setQuery( LPCTSTR lpstrQuery, LPCTSTR lpstrType = NULL);
 	// Return a pointer to our global Markup
 	CMarkup* getXmlPointer();
 	// Return a pointer to our request

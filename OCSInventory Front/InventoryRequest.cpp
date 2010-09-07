@@ -27,8 +27,10 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CInventoryRequest::CInventoryRequest()
+CInventoryRequest::CInventoryRequest( BOOL bNotify)
 {
+	m_bNotify = bNotify;
+
 	if (!initInventory())
 		// Can't get Device hardware and os => stop !
 		exit( -1);
@@ -51,7 +53,11 @@ BOOL CInventoryRequest::initInventory()
 {
 	CString csStateFile;
 
-	setQuery( _T("INVENTORY"));
+	if (m_bNotify)
+		// Notify IP information changes
+		setQuery( _T( "NOTIFY"), _T( "IP"));
+	else
+		setQuery( _T( "INVENTORY"));
 
 	/****	
 	*
@@ -105,73 +111,82 @@ BOOL CInventoryRequest::final()
 	BOOL bSuccess = FALSE;
 	CString	csFilename;
 
-	// Check state to see if changed
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Checking last inventory state"));
-	if (isStateChanged())
-		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "INVENTORY => Inventory changed since last run"));
-	else
-		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "INVENTORY => No change since last inventory"));
-
-	// Update the XML
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Generating XML document with Device properties"));
-	// Update Memory slots
-	bSuccess = m_pTheDB->UpdateMemorySlots( m_MemoryList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Logical Drive(s)"), m_MemoryList.GetCount());
-	// Update Hardware 
-	bSuccess = bSuccess && m_pTheDB->UpdateDeviceProperties( m_Device);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update common Device properties"));
-	// Update BIOS file
-	bSuccess = bSuccess && m_pTheDB->UpdateBIOS( m_BIOS);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update BIOS"));
-	// Update Input Devices
-	bSuccess = bSuccess && m_pTheDB->UpdateInputDevices( m_InputList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Input Device(s)"), m_InputList.GetCount());
-	// Update System Ports
-	bSuccess = bSuccess && m_pTheDB->UpdateSystemPorts( m_PortList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u System Port(s)"), m_PortList.GetCount());
-	// Update System Controllers
-	bSuccess = bSuccess && m_pTheDB->UpdateSystemControllers( m_SystemControllerList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u System Controler(s)"), m_SystemControllerList.GetCount());
-	// Update System Slots
-	bSuccess = bSuccess && m_pTheDB->UpdateSystemSlots( m_SlotList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u System Slot(s)"), m_SlotList.GetCount());
-	// Update Sounds
-	bSuccess = bSuccess && m_pTheDB->UpdateSounds( m_SoundList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Sound Device(s)"), m_SoundList.GetCount());
-	// Update Storages
-	bSuccess = bSuccess && m_pTheDB->UpdateStorages( m_StorageList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Storage Peripheral(s)"), m_StorageList.GetCount());
-	// Update Logical Drives
-	bSuccess = bSuccess && m_pTheDB->UpdateDrives( m_DriveList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Logical Drive(s)"), m_DriveList.GetCount());
-	// Update Modems
-	bSuccess = bSuccess && m_pTheDB->UpdateModems( m_ModemList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Modem(s)"), m_ModemList.GetCount());
-	// Update Networks
-	bSuccess = bSuccess && m_pTheDB->UpdateNetworks( m_NetworkList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Network Adapter(s)"), m_NetworkList.GetCount());
-	// Update Videos
-	bSuccess = bSuccess && m_pTheDB->UpdateVideos( m_VideoList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Video Adapter(s)"), m_VideoList.GetCount());
-	// Update Monitors
-	bSuccess = bSuccess && m_pTheDB->UpdateMonitors( m_MonitorList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Monitor(s)"), m_MonitorList.GetCount());
-	// Update Printers
-	bSuccess = bSuccess && m_pTheDB->UpdatePrinters( m_PrinterList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Printer(s)"), m_PrinterList.GetCount());
-	// Update Softwares
-	if (!getAgentConfig()->isNoSoftwareRequired())
+	if (m_bNotify)
 	{
-		bSuccess = bSuccess && m_pTheDB->UpdateSoftwares( m_SoftwareList);
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Software"), m_SoftwareList.GetCount());
+		// Notify network informations changes
+		bSuccess = m_pTheDB->NotifyNetworks( m_NetworkList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Notify %u Network Adapter(s)"), m_NetworkList.GetCount());
 	}
-	// Update Registry values
-	bSuccess = bSuccess && m_pTheDB->UpdateRegistryValues( m_RegistryList);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Registry Value(s)"), m_RegistryList.GetCount());
-	// Update Administrative Informations
-	csFilename.Format( _T("%s\\%s"), getDataFolder(), OCS_ACCOUNTINFO_FILENAME);
-	bSuccess = bSuccess && m_pTheDB->UpdateAccountInfo( csFilename);
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update Administrative Information(s)"));
+	else
+	{
+		// Standard inventory => Check state to see if changed
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Checking last inventory state"));
+		if (isStateChanged())
+			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "INVENTORY => Inventory changed since last run"));
+		else
+			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "INVENTORY => No change since last inventory"));
+
+		// Update the XML
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Generating XML document with Device properties"));
+		// Update Memory slots
+		bSuccess = m_pTheDB->UpdateMemorySlots( m_MemoryList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Logical Drive(s)"), m_MemoryList.GetCount());
+		// Update Hardware 
+		bSuccess = bSuccess && m_pTheDB->UpdateDeviceProperties( m_Device);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update common Device properties"));
+		// Update BIOS file
+		bSuccess = bSuccess && m_pTheDB->UpdateBIOS( m_BIOS);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update BIOS"));
+		// Update Input Devices
+		bSuccess = bSuccess && m_pTheDB->UpdateInputDevices( m_InputList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Input Device(s)"), m_InputList.GetCount());
+		// Update System Ports
+		bSuccess = bSuccess && m_pTheDB->UpdateSystemPorts( m_PortList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u System Port(s)"), m_PortList.GetCount());
+		// Update System Controllers
+		bSuccess = bSuccess && m_pTheDB->UpdateSystemControllers( m_SystemControllerList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u System Controler(s)"), m_SystemControllerList.GetCount());
+		// Update System Slots
+		bSuccess = bSuccess && m_pTheDB->UpdateSystemSlots( m_SlotList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u System Slot(s)"), m_SlotList.GetCount());
+		// Update Sounds
+		bSuccess = bSuccess && m_pTheDB->UpdateSounds( m_SoundList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Sound Device(s)"), m_SoundList.GetCount());
+		// Update Storages
+		bSuccess = bSuccess && m_pTheDB->UpdateStorages( m_StorageList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Storage Peripheral(s)"), m_StorageList.GetCount());
+		// Update Logical Drives
+		bSuccess = bSuccess && m_pTheDB->UpdateDrives( m_DriveList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Logical Drive(s)"), m_DriveList.GetCount());
+		// Update Modems
+		bSuccess = bSuccess && m_pTheDB->UpdateModems( m_ModemList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Modem(s)"), m_ModemList.GetCount());
+		// Update Networks
+		bSuccess = bSuccess && m_pTheDB->UpdateNetworks( m_NetworkList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Network Adapter(s)"), m_NetworkList.GetCount());
+		// Update Videos
+		bSuccess = bSuccess && m_pTheDB->UpdateVideos( m_VideoList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Video Adapter(s)"), m_VideoList.GetCount());
+		// Update Monitors
+		bSuccess = bSuccess && m_pTheDB->UpdateMonitors( m_MonitorList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Monitor(s)"), m_MonitorList.GetCount());
+		// Update Printers
+		bSuccess = bSuccess && m_pTheDB->UpdatePrinters( m_PrinterList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Printer(s)"), m_PrinterList.GetCount());
+		// Update Softwares
+		if (!getAgentConfig()->isNoSoftwareRequired())
+		{
+			bSuccess = bSuccess && m_pTheDB->UpdateSoftwares( m_SoftwareList);
+			m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Software"), m_SoftwareList.GetCount());
+		}
+		// Update Registry values
+		bSuccess = bSuccess && m_pTheDB->UpdateRegistryValues( m_RegistryList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Registry Value(s)"), m_RegistryList.GetCount());
+		// Update Administrative Informations
+		csFilename.Format( _T("%s\\%s"), getDataFolder(), OCS_ACCOUNTINFO_FILENAME);
+		bSuccess = bSuccess && m_pTheDB->UpdateAccountInfo( csFilename);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update Administrative Information(s)"));
+	}
 
 	if (!bSuccess)
 		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "INVENTORY => XML Update Device properties failed"));
@@ -181,6 +196,10 @@ BOOL CInventoryRequest::final()
 
 BOOL CInventoryRequest::writeLastInventoryState()
 {
+	if (m_bNotify)
+		// Do not write inventory state changes in NOTIFY mode
+		return TRUE;
+
 	// Write inventory state
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Writing new inventory state"));
 	CString csFileName;
@@ -188,10 +207,9 @@ BOOL CInventoryRequest::writeLastInventoryState()
 	return m_pState->WriteToFile( csFileName);
 }
 
-BOOL CInventoryRequest::setTag(CString csTag)
+void CInventoryRequest::setTag(CString csTag)
 {
 	m_csTag = csTag;
-	return TRUE;
 }
 
 BOOL CInventoryRequest::isStateChanged()

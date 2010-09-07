@@ -35,6 +35,7 @@ CConfig::CConfig()
 	m_bForce = FALSE;
 	m_bNoSoftware = FALSE;
 	m_bUID = FALSE;
+	m_bNotify = FALSE;
 	m_csTag.Empty();
 	m_csXml.Empty();
 }
@@ -101,6 +102,11 @@ BOOL CConfig::isTagTextProvided()
 BOOL CConfig::isNewUidRequired()
 {
 	return m_bUID;
+}
+
+BOOL CConfig::isNotifyRequired()
+{
+	return m_bNotify;
 }
 
 BOOL CConfig::isNoSoftwareRequired()
@@ -261,6 +267,11 @@ void CConfig::setIpDiscoverLatency(LPCTSTR lpstrLatency)
 void CConfig::setNewUID(BOOL bNew)
 {
 	m_bUID = bNew;
+}
+
+void CConfig::setNotify(BOOL bNotify)
+{
+	m_bNotify = bNotify;
 }
 
 void CConfig::setNoSoftwareRequired(BOOL bNoSoftware)

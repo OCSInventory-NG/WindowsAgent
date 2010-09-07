@@ -381,12 +381,17 @@ BOOL COCSInventoryApp::InitInstance()
 			m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "AGENT => Prolog Frequency set to %s hour(s)"), pPrologResp->getPrologFreq());
 
 
-		if (pPrologResp->isInventoryRequired() || m_pConfig->isForceInventoryRequired())
+		if (pPrologResp->isInventoryRequired() || m_pConfig->isNotifyRequired() || m_pConfig->isForceInventoryRequired())
 		{
 			if (m_pConfig->isForceInventoryRequired())		
 				m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "AGENT => Inventory forced by /FORCE option"));
 			else
-				m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "AGENT => Inventory required"));
+			{
+				if (m_pConfig->isNotifyRequired())		
+					m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT => Inventory change forced by /NOTIFY option"));
+				else
+					m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "AGENT => Inventory required"));
+			}
 
 			/*****
 			 *
@@ -394,7 +399,7 @@ BOOL COCSInventoryApp::InitInstance()
 			 *
 			 ****/
 			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT => Launching hardware and software checks"));
-			pInventory = new CInventoryRequest;
+			pInventory = new CInventoryRequest( m_pConfig->isNotifyRequired());
 
 			/*****
 			 *
@@ -677,5 +682,8 @@ BOOL COCSInventoryApp::parseCommandLine()
 	// /UID
 	if (isRequired( m_lpCmdLine, _T( "uid")))
 		m_pConfig->setNewUID();
+	// /NOTIFY
+	if (isRequired( m_lpCmdLine, _T( "notify")))
+		m_pConfig->setNotify( TRUE);
 	return TRUE;
 }
