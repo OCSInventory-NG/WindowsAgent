@@ -110,7 +110,7 @@ CHTTPConnexion::CHTTPConnexion( CHTTPConfig *pConfig)
 
 	m_pConfig = pConfig;
 	/* General headers */
-	m_csUserAgent.Format( _T( "OCS-NG_WINDOWS_AGENT_%s"), getAgentConfig()->getVersion());
+	m_csUserAgent.Format( _T( "OCS-NG_WINDOWS_AGENT_v%s"), getAgentConfig()->getVersion());
 	m_pCurl = NULL;
 }
 
