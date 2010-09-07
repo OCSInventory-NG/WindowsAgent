@@ -42,8 +42,6 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 	}
 	else
 	{
-		// Disable use of log file
-		getOcsLogger()->setApplication( NULL);
 #ifdef _DEBUG
 		if (MyService.Initialize())
 		{

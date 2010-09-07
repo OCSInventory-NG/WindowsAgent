@@ -56,8 +56,6 @@ BOOL COcsSystrayApp::InitInstance()
 	// of your final executable, you should remove from the following
 	// the specific initialization routines you do not need
 
-	// Disable use of log file
-	getOcsLogger()->setApplication( NULL);
 	// Start systray icon
 	COcsSystrayDlg dlg;
 	m_pMainWnd = &dlg;
