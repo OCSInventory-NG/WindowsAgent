@@ -27,7 +27,8 @@ static char THIS_FILE[]=__FILE__;
 
 CPrologRequest::CPrologRequest()
 {
-	CDeviceid *pDeviceid = CDeviceid::getInstance();
+//	CDeviceid *pDeviceid = CDeviceid::getInstance();
+	CDeviceid *pDeviceid = getOcsDeviceID();
 
 	m_cmXml.SetDoc(XML_HEADERS);
 	m_cmXml.AddElem( _T( "REQUEST"));
