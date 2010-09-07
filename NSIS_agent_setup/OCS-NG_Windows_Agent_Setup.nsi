@@ -1223,10 +1223,10 @@ Section "OCS Inventory Agent" SEC01
 	Iferrors 0 +3
 	StrCpy $logBuffer "$logBuffer ERROR copying SysInfo.dll $\r$\n"
 	clearerrors
-	File "..\Release\uac.manifest"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying uac.manifest $\r$\n"
-	clearerrors
+;	File "..\Release\uac.manifest"
+;	Iferrors 0 +3
+;	StrCpy $logBuffer "$logBuffer ERROR copying uac.manifest $\r$\n"
+;	clearerrors
 	File "..\Release\ZipArchive.dll"
 	Iferrors 0 +3
 	StrCpy $logBuffer "$logBuffer ERROR copying ZipArchive.dll $\r$\n"
