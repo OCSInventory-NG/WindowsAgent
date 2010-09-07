@@ -87,12 +87,6 @@ BOOL COCSInventoryFrontApp::InitInstance()
 	m_pLogger->setApplication( _T( "ocsinventory-agent"));
    /*****
 	*
-	* Intialise device unique ID	
-	*
-	****/		
-	m_pDeviceID = CDeviceid::getInstance();
-   /*****
-	*
 	* Load default Agent config
 	*
 	****/		
@@ -137,6 +131,8 @@ LPCTSTR COCSInventoryFrontApp::getDataFolder()
 
 CDeviceid * COCSInventoryFrontApp::getDeviceID()
 {
+	if (m_pDeviceID == NULL)
+		m_pDeviceID = CDeviceid::getInstance();
 	return m_pDeviceID;
 }
 
