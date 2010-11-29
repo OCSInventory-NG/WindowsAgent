@@ -83,4 +83,6 @@ public:
 	afx_msg void OnBnClickedSmbios();
 	afx_msg void OnBnClickedWmi();
 	afx_msg void OnBnClickedSysinfo();
+	afx_msg void OnBnClickedLoadXml();
+	afx_msg void OnBnClickedSaveXml();
 };

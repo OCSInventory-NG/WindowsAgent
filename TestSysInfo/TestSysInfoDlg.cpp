@@ -12,8 +12,11 @@
 //
 
 #include "stdafx.h"
+#include "atlconv.h"
 #include "TestSysInfo.h"
 #include "TestSysInfoDlg.h"
+#include "tinyxml.h"
+#include "tinystr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -46,6 +49,8 @@ BEGIN_MESSAGE_MAP(CTestSysInfoDlg, CDialog)
 	ON_BN_CLICKED(IDC_SMBIOS, &CTestSysInfoDlg::OnBnClickedSmbios)
 	ON_BN_CLICKED(IDC_WMI, &CTestSysInfoDlg::OnBnClickedWmi)
 	ON_BN_CLICKED(IDC_SYSINFO, &CTestSysInfoDlg::OnBnClickedSysinfo)
+	ON_BN_CLICKED(IDC_LOAD_XML, &CTestSysInfoDlg::OnBnClickedLoadXml)
+	ON_BN_CLICKED(IDC_SAVE_XML, &CTestSysInfoDlg::OnBnClickedSaveXml)
 END_MESSAGE_MAP()
 
 
@@ -2597,3 +2602,81 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	return TRUE;
 }
 
+
+void CTestSysInfoDlg::OnBnClickedLoadXml()
+{
+	// TODO: Add your control notification handler code here
+	CStdioFile myFile;
+	CString csFile, csLine;
+    USES_CONVERSION;
+	CFileDialog cDlg( TRUE, NULL, NULL,
+		              OFN_EXPLORER|OFN_FILEMUSTEXIST,
+					  _T( "XML files|*.xml|All files|*.*||"));
+
+	if (cDlg.DoModal() == IDCANCEL)
+		return;
+	TiXmlDocument *pXmlDoc = new TiXmlDocument();
+	TiXmlElement *pXmlRequest, *pXmlLine;
+
+
+	myFile.Open( cDlg.GetPathName(), CFile::modeRead|CFile::typeText);
+	while (myFile.ReadString( csLine))
+		csFile += csLine;
+	myFile.Close();
+	pXmlDoc->Parse( T2A( csFile));
+	m_List.ResetContent();
+	pXmlRequest = pXmlDoc->FirstChildElement( "Request");
+	if (pXmlRequest)
+	{
+		pXmlLine = pXmlRequest->FirstChildElement( "Line");
+		while( pXmlLine)
+		{
+			const char *pszText = pXmlLine->GetText();
+			csLine = pszText;
+			m_List.AddString( csLine);
+			pXmlLine = pXmlLine->NextSiblingElement( "Line");
+		}
+	}
+	else
+	{
+		AfxMessageBox( _T( "XML file is an OCS Inventory TextSysinfo file !"));
+		return;
+	}
+}
+
+void CTestSysInfoDlg::OnBnClickedSaveXml()
+{
+	// TODO: Add your control notification handler code here
+	CString csLine;
+	CStdioFile myFile;
+    USES_CONVERSION;
+
+	CFileDialog cDlg( FALSE, _T( "xml"), _T( "TestSysinfo.xml"),
+		              OFN_EXPLORER|OFN_CREATEPROMPT|OFN_OVERWRITEPROMPT,
+					  _T( "XML files|*.xml|All files|*.*||"));
+
+	TiXmlDocument *pXmlDoc = new TiXmlDocument();
+	TiXmlDeclaration *pXmlDecl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+	pXmlDoc->LinkEndChild( pXmlDecl);
+	TiXmlElement *pXmlRequest = new TiXmlElement( "Request");
+	pXmlDoc->LinkEndChild( pXmlRequest);
+	
+	for ( int i=0; i< m_List.GetCount(); i++)
+	{
+		TiXmlElement *pXmlLine = new TiXmlElement( "Line");
+		m_List.GetText( i, csLine);
+		TiXmlText *pXmlText = new TiXmlText( T2A( csLine));
+		pXmlLine->LinkEndChild( pXmlText);
+		pXmlRequest->LinkEndChild( pXmlLine);
+	}
+	if (cDlg.DoModal() != IDOK)
+		return;
+
+	TiXmlPrinter myPrinter;
+	myPrinter.SetIndent( "    " );
+	pXmlDoc->Accept( &myPrinter );
+	csLine = myPrinter.CStr();
+	myFile.Open( cDlg.GetPathName(), CFile::modeCreate|CFile::modeWrite|CFile::typeText);
+	myFile.WriteString( csLine);
+	myFile.Close();
+}
