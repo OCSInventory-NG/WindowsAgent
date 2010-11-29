@@ -391,14 +391,15 @@ int COptDownloadPackage::downloadInfoFile()
 		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Cannot read Metadata file <%s>"), getLocalMetadataFilename());
 		return FALSE;
 	}
-	if( !xml.SetDoc( csBuffer ))
+	xml.SetDoc( csBuffer);
+	if(!xml.IsWellFormed())
 	{
 		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Metadata file <%s> is not XML"), getLocalMetadataFilename());
 		return FALSE;
 	}
-	xml.FindElem( _T( "DOWNLOAD"));
+	xml.FindFirstElem( _T( "DOWNLOAD"));
 	xml.SetAttrib( _T( "LOC"), m_csRemotePackLoc);
-	if (!WriteTextToFile( xml.GetDoc(), xml.GetDoc().GetLength(), getLocalMetadataFilename()))
+	if (!WriteTextToFile( xml.GetDoc(), _tcslen( xml.GetDoc()), getLocalMetadataFilename()))
 	{
 		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't update Metadata file <%s>"), getLocalMetadataFilename());
 		return FALSE;

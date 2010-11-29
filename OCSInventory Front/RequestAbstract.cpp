@@ -36,11 +36,9 @@ CRequestAbstract::CRequestAbstract()
 	 *	XML beginning generation
 	 *
 	 ****/
-	m_cmXml.SetDoc(XML_HEADERS);
-	m_cmXml.AddElem( _T( "REQUEST"));
-	m_cmXml.IntoElem();
-	m_cmXml.AddElemNV( _T( "DEVICEID"), m_pDeviceid->getDeviceID());
-	m_cmXml.AddElem( _T( "CONTENT"));
+	m_pRequestXmlNode = m_cmXml.AddElem( _T( "REQUEST"));
+	m_cmXml.AddChildElem( _T( "DEVICEID"), m_pDeviceid->getDeviceID());
+	m_pContentXmlNode = m_cmXml.AddChildElem( _T( "CONTENT")); 
 }
 
 CRequestAbstract::~CRequestAbstract()
@@ -74,6 +72,7 @@ void CRequestAbstract::cleanXml()
 			bef.SetAt(i,'x');		
 	}
 	m_cmXml.SetDoc(bef);
+
 }
 
 /**
@@ -84,7 +83,8 @@ BOOL CRequestAbstract::final()
 	if(!m_bFinal)
 	{
 		cleanXml();
-		m_pRawMessage = CZip::deflate(m_cmXml.GetDoc());
+		m_pLogger->log( LOG_PRIORITY_TRACE, m_cmXml.GetDoc());
+		m_pRawMessage = CZip::deflate( m_cmXml.GetDoc());
 		m_bFinal = TRUE;
 		return (m_pRawMessage != NULL);
 	}
@@ -97,20 +97,16 @@ BOOL CRequestAbstract::final()
  */
 BOOL CRequestAbstract::setQuery( LPCTSTR lpstrQuery, LPCTSTR lpstrType)
 {
-	BOOL bRet = FALSE;
+	m_cmXml.ResetPos( m_pRequestXmlNode); 
 
-	m_cmXml.ResetPos(); 
-	if (!m_cmXml.FindElem(_T("REQUEST")))
-		return bRet;
-	if (!m_cmXml.IntoElem())
-		return bRet;
-	if(!m_cmXml.FindElem( _T("QUERY")))
+	if (!m_cmXml.FindFirstElem( _T("QUERY")))
 	{
-		bRet = m_cmXml.AddElem( _T( "QUERY"), lpstrQuery);
+		if (!m_cmXml.AddChildElem( _T( "QUERY"), lpstrQuery))
+			return FALSE;
 		if (lpstrType != NULL)
-			m_cmXml.AddElem( _T( "TYPE"), lpstrType);
+			m_cmXml.AddChildElem( _T( "TYPE"), lpstrType);
 	}
-	return bRet;
+	return TRUE;
 }
 
 /**
@@ -127,11 +123,7 @@ CMarkup* CRequestAbstract::getXmlPointer()
  */
 CMarkup* CRequestAbstract::getXmlPointerRequest()
 {
-	m_cmXml.ResetPos();
-	if (!m_cmXml.FindElem(_T("REQUEST")))
-		return NULL;
-	if (!m_cmXml.IntoElem())
-		return NULL;
+	m_cmXml.ResetPos( m_pRequestXmlNode);
 	return &m_cmXml;
 };
 
@@ -140,40 +132,6 @@ CMarkup* CRequestAbstract::getXmlPointerRequest()
  */
 CMarkup* CRequestAbstract::getXmlPointerContent()
 {
-	m_cmXml.ResetPos();
-	if (!m_cmXml.FindElem(_T("REQUEST")))
-		return NULL;
-	if (!m_cmXml.IntoElem())
-		return NULL;
-	if (!m_cmXml.FindElem(_T("CONTENT")))
-		return NULL;
-	if (!m_cmXml.IntoElem())
-		return NULL;
+	m_cmXml.ResetPos( m_pContentXmlNode);
 	return &m_cmXml;
 };
-
-/**
- *	Add some xml tags to the request element
- */
-BOOL CRequestAbstract::xmlAddRequestElem( LPCTSTR lpstrTag, LPCTSTR lpstrValue)
-{
-	m_cmXml.ResetPos(); 
-	if (!m_cmXml.FindElem(_T("REQUEST")))
-		return FALSE;
-	if (!m_cmXml.IntoElem())
-		return FALSE;
-	return m_cmXml.AddElemNV( lpstrTag, lpstrValue);
-}
-
-/**
- *	Add some xml tags to the request content element
- */
-BOOL CRequestAbstract::xmlAddContentElem( LPCTSTR lpstrTag, LPCTSTR lpstrValue)
-{
-	m_cmXml.ResetPos(); 
-	if (!m_cmXml.FindElem(_T("CONTENT")))
-		return FALSE;
-	if (!m_cmXml.IntoElem())
-		return FALSE;
-	return m_cmXml.AddElemNV( lpstrTag, lpstrValue);
-}

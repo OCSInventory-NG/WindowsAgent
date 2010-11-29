@@ -144,103 +144,112 @@ LPCTSTR COCSInventoryState::GetSoftwares()
 
 BOOL COCSInventoryState::ParseFromXML( LPCTSTR lpstrXml)
 {
-	CMarkup x;
+	try
+	{
+		CMarkup x;
+		TiXmlElement *pState, *pNode;
 
-	x.SetDoc( lpstrXml);
+		x.SetDoc( lpstrXml);
 
-	x.FindElem( _T( "LAST_STATE"));
-	x.FindChildElem( _T( "HARDWARE"));		
-	m_csHardware = x.GetChildData();
-	x.ResetChildPos();
+		pState = x.FindFirstElem( _T( "LAST_STATE"));
 
-	x.FindChildElem( _T( "BIOS"));
-	m_csBios = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "HARDWARE"));		
+		m_csHardware = x.GetData( pNode);
 
-	x.FindChildElem( _T( "MEMORIES"));
-	m_csMemories = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "BIOS"));
+		m_csBios = x.GetData( pNode);
 
-	x.FindChildElem( _T( "SLOTS"));
-	m_csSlots = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "MEMORIES"));
+		m_csMemories = x.GetData( pNode);
 
-	x.FindChildElem( _T( "REGISTRY"));
-	m_csRegistry = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "SLOTS"));
+		m_csSlots = x.GetData( pNode);
 
-	x.FindChildElem( _T( "CONTROLLERS"));
-	m_csControllers = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "REGISTRY"));
+		m_csRegistry = x.GetData( pNode);
 
-	x.FindChildElem( _T( "MONITORS"));
-	m_csMonitors = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "CONTROLLERS"));
+		m_csControllers = x.GetData( pNode);
 
-	x.FindChildElem( _T( "PORTS"));
-	m_csPorts = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "MONITORS"));
+		m_csMonitors = x.GetData( pNode);
 
-	x.FindChildElem( _T( "STORAGES"));
-	m_csStorages = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "PORTS"));
+		m_csPorts = x.GetData( pNode);
 
-	x.FindChildElem( _T( "DRIVES"));
-	m_csDrives = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "STORAGES"));
+		m_csStorages = x.GetData( pNode);
 
-	x.FindChildElem( _T( "INPUTS"));
-	m_csInputs = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "DRIVES"));
+		m_csDrives = x.GetData( pNode);
 
-	x.FindChildElem( _T( "MODEMS"));
-	m_csModems = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "INPUTS"));
+		m_csInputs = x.GetData( pNode);
 
-	x.FindChildElem( _T( "NETWORKS"));
-	m_csNetworks = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "MODEMS"));
+		m_csModems = x.GetData( pNode);
 
-	x.FindChildElem( _T( "PRINTERS"));
-	m_csPrinters = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "NETWORKS"));
+		m_csNetworks = x.GetData( pNode);
 
-	x.FindChildElem( _T( "SOUNDS"));
-	m_csSounds = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "PRINTERS"));
+		m_csPrinters = x.GetData( pNode);
 
-	x.FindChildElem( _T( "VIDEOS"));
-	m_csVideos = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "SOUNDS"));
+		m_csSounds = x.GetData( pNode);
 
-	x.FindChildElem( _T( "SOFTWARES"));
-	m_csSoftwares = x.GetChildData();
-	x.ResetChildPos();
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "VIDEOS"));
+		m_csVideos = x.GetData( pNode);
 
-	return TRUE;
+		x.ResetPos( pState);
+		pNode = x.FindFirstElem( _T( "SOFTWARES"));
+		m_csSoftwares = x.GetData( pNode);
+
+		return TRUE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		return FALSE;
+	}
 }
 
 BOOL COCSInventoryState::FormatXML(CMarkup* pX)
 {
 	pX->AddElem( _T( "LAST_STATE"));
-	pX->IntoElem();
-		pX->AddElemNV( _T( "HARDWARE"),m_csHardware);
-		pX->AddElemNV( _T( "BIOS"), m_csBios);
-		pX->AddElemNV( _T( "MEMORIES"),m_csMemories);
-		pX->AddElemNV( _T( "SLOTS"),m_csSlots);
-		pX->AddElemNV( _T( "REGISTRY"),m_csRegistry);
-		pX->AddElemNV( _T( "CONTROLLERS"),m_csControllers);
-		pX->AddElemNV( _T( "MONITORS"),m_csMonitors);
-		pX->AddElemNV( _T( "PORTS"),m_csPorts);
-		pX->AddElemNV( _T( "STORAGES"),m_csStorages);
-		pX->AddElemNV( _T( "DRIVES"),m_csDrives);
-		pX->AddElemNV( _T( "INPUTS"),m_csInputs);
-		pX->AddElemNV( _T( "MODEMS"),m_csModems);
-		pX->AddElemNV( _T( "NETWORKS"),m_csNetworks);
-		pX->AddElemNV( _T( "PRINTERS"),m_csPrinters);
-		pX->AddElemNV( _T( "SOUNDS"),m_csSounds);
-		pX->AddElemNV( _T( "VIDEOS"),m_csVideos);
-		pX->AddElemNV( _T( "SOFTWARES"),m_csSoftwares);
+		pX->AddChildElem( _T( "HARDWARE"),m_csHardware);
+		pX->AddChildElem( _T( "BIOS"), m_csBios);
+		pX->AddChildElem( _T( "MEMORIES"),m_csMemories);
+		pX->AddChildElem( _T( "SLOTS"),m_csSlots);
+		pX->AddChildElem( _T( "REGISTRY"),m_csRegistry);
+		pX->AddChildElem( _T( "CONTROLLERS"),m_csControllers);
+		pX->AddChildElem( _T( "MONITORS"),m_csMonitors);
+		pX->AddChildElem( _T( "PORTS"),m_csPorts);
+		pX->AddChildElem( _T( "STORAGES"),m_csStorages);
+		pX->AddChildElem( _T( "DRIVES"),m_csDrives);
+		pX->AddChildElem( _T( "INPUTS"),m_csInputs);
+		pX->AddChildElem( _T( "MODEMS"),m_csModems);
+		pX->AddChildElem( _T( "NETWORKS"),m_csNetworks);
+		pX->AddChildElem( _T( "PRINTERS"),m_csPrinters);
+		pX->AddChildElem( _T( "SOUNDS"),m_csSounds);
+		pX->AddChildElem( _T( "VIDEOS"),m_csVideos);
+		pX->AddChildElem( _T( "SOFTWARES"),m_csSoftwares);
 	pX->OutOfElem();
 	return TRUE;
 }
@@ -346,14 +355,8 @@ BOOL COCSInventoryState::WriteToFile(LPCTSTR lpstrFilename)
 {
 	CMarkup	myXml;
 
-#ifdef _MBCS
-	myXml.SetDoc( _T( "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<!DOCTYPE REQUEST>\r\n"));
-#else
-	// UTF-8 / Unicode
-	myXml.SetDoc( _T( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<!DOCTYPE REQUEST>\r\n"));
-#endif
 	FormatXML( &myXml);
-	if (!WriteTextToFile( myXml.GetDoc(), myXml.GetDoc().GetLength(), lpstrFilename))
+	if (!WriteTextToFile( myXml.GetDoc(), _tcslen( myXml.GetDoc()), lpstrFilename))
 		return FALSE;
 	return TRUE;
 }

@@ -29,21 +29,22 @@ CPrologResponse::CPrologResponse(CByteArray *rawResponse) : CResponseAbstract( r
 {
 	m_bInventoryRequired = FALSE;
 	m_csPrologFreq.Format( _T( "%lu"), DEFAULT_PROLOG_FREQ);
+	TiXmlElement *pXmlReply;
+	TiXmlElement *pXmlElement;
 
 	// Get RESPONSE to know if inventory needed
 	m_cmXml.ResetPos();
-	if (m_cmXml.FindElem( _T( "REPLY")))
+	if (pXmlReply = m_cmXml.FindFirstElem( _T( "REPLY")))
 	{
-		m_cmXml.IntoElem();
-		if (m_cmXml.FindElem( _T( "RESPONSE")))
+		// Search RESPONSE node under REPLY node
+		if (pXmlElement = m_cmXml.FindFirstElem( _T( "RESPONSE"), pXmlReply))
 			// If SEND asked, inventory needed
-			m_bInventoryRequired = (m_cmXml.GetData().CompareNoCase( _T( "SEND")) == 0);
-		// Get PROLOG_FREQ (if negative or 0, set it to default)
-		m_cmXml.ResetChildPos();
-		if (m_cmXml.FindElem( _T( "PROLOG_FREQ")))
+			m_bInventoryRequired = (_tcsicmp( m_cmXml.GetData( pXmlElement), _T( "SEND")) == 0);
+		// Get PROLOG_FREQ node under REPLY node
+		if (pXmlElement = m_cmXml.FindFirstElem( _T( "PROLOG_FREQ"), pXmlReply))
 		{
-			// 
-			m_csPrologFreq = m_cmXml.GetData();
+			// Get prolog frequency value  (if negative or 0, set it to default)
+			m_csPrologFreq.Format( _T( "%s"), m_cmXml.GetData( pXmlElement));
 			if (_ttol( m_csPrologFreq) <= 0)
 			{
 				m_csPrologFreq.Format( _T( "%lu"), DEFAULT_PROLOG_FREQ);
@@ -59,16 +60,21 @@ CPrologResponse::~CPrologResponse()
 
 BOOL CPrologResponse::isActivatedOption(CString option)
 {
+	TiXmlElement *pXmlReply, 
+				 *pXmlOption,
+				 *pXmlElement;
 	m_cmXml.ResetPos();
-	m_cmXml.FindElem( _T( "REPLY"));
-	m_cmXml.IntoElem();
-	while(m_cmXml.FindElem( _T( "OPTION")))
+	// Search REPLY node under document node
+	pXmlReply = m_cmXml.FindFirstElem( _T( "REPLY"));
+	// Search OPTION node under REPLY node
+	pXmlOption = m_cmXml.FindFirstElem( _T( "OPTION"), pXmlReply);
+	while( pXmlOption)
 	{
-		m_cmXml.IntoElem();
-		m_cmXml.FindElem( _T( "NAME"));
-		if (option.CompareNoCase(m_cmXml.GetData()) == 0)
+		pXmlElement = m_cmXml.FindFirstElem( _T( "NAME"), pXmlOption);
+		if (option.CompareNoCase(m_cmXml.GetData( pXmlElement)) == 0)
 			return TRUE;
-		m_cmXml.OutOfElem();			
+		// Search next OPTION node
+		pXmlOption = m_cmXml.FindNextElem( _T( "OPTION"), pXmlOption);
 	}
 	return FALSE;
 }
@@ -139,75 +145,74 @@ CMapStringToString* CPrologResponse::getDownloadParameters()
 
 CMapStringToString* CPrologResponse::getOptionAttributes(CString option,...)
 {
-	CString csAttrib = option;
-	CString csCheck;
-	BOOL bValid = FALSE;
+	CString csOptionName = option;
+	CString csAttribute;
+	CString csValue;
+	BOOL bValid;
+	TiXmlElement *pXmlReply, 
+				 *pXmlOption,
+				 *pXmlElement;
 
 	// Go to response content
 	m_cmXml.ResetPos();
-	m_cmXml.FindElem( _T( "REPLY"));
-	m_cmXml.IntoElem();
-
+	pXmlReply = m_cmXml.FindFirstElem( _T( "REPLY"));
 
 	CMapStringToString *pMap = new CMapStringToString[MAX_OPTION_PARAMETERS];
 
 	DWORD dwParameterNumber = 0;
 	
 	// Parsing options
-	while (m_cmXml.FindElem( _T( "OPTION")))
+	pXmlOption = m_cmXml.FindFirstElem( _T( "OPTION"), pXmlReply);
+	while (pXmlOption)
 	{
-		m_cmXml.IntoElem();
-		m_cmXml.FindElem( _T( "NAME"));
+		pXmlElement = m_cmXml.FindFirstElem( _T( "NAME"), pXmlOption);
 		
 		// Finding the rigth option
-		if( option.CompareNoCase(m_cmXml.GetData()) != 0 )
+		if( csOptionName.CompareNoCase( m_cmXml.GetData( pXmlElement)) != 0 )
 		{
-			m_cmXml.OutOfElem();
+			pXmlOption = m_cmXml.FindNextElem( _T( "OPTION"), pXmlOption);
 			continue;
 		}		
 		
-		// Finally retireving the paramaters for the option
-		while(m_cmXml.FindElem( _T( "PARAM")))
+		// Finally retrieving the paramaters for the option
+		pXmlElement = m_cmXml.FindFirstElem( _T( "PARAM"), pXmlOption);
+		while (pXmlElement)
 		{
+			bValid = TRUE;
 			if(dwParameterNumber>=MAX_OPTION_PARAMETERS)
 				break;
 
 			// "VAL" is the effective xml tag value
-			pMap[dwParameterNumber].SetAt( _T( "VAL"), m_cmXml.GetData());
+			pMap[dwParameterNumber].SetAt( _T( "VAL"), m_cmXml.GetData( pXmlElement));
 			
 			// Now we retrieve the xml attributes for the option (asked on the stack)
 			va_list marker;
 			va_start( marker,option  );     /* Initialize variable arguments. */
 
-			if (csAttrib !=  _T( ""))
-			{
-				do
-				{				
-					csAttrib = va_arg( marker, LPCTSTR);
-					if (csAttrib !=  _T( ""))
-						pMap[dwParameterNumber].SetAt( csAttrib, m_cmXml.GetAttrib(csAttrib));
+			do
+			{				
+				csAttribute = va_arg( marker, LPCTSTR);
+				if (csAttribute !=  _T( ""))
+				{
+					csValue = m_cmXml.GetAttrib( csAttribute);
 					// If an attribute is NULL, we do not feed the cmap array with it
-					pMap[dwParameterNumber].Lookup( csAttrib, csCheck);
-					if (csCheck !=  _T( ""))
-						bValid = TRUE;
-					else
-					{
-						bValid=FALSE;
-						break;
-					}
+					if (csValue != _T( ""))
+						pMap[dwParameterNumber].SetAt( csAttribute, csValue);
+					else 
+						// One missing attribute
+						bValid = FALSE;
 				}
-				while( csAttrib != "" );
 			}
+			while (csAttribute != _T( ""));
 			va_end( marker );
-
+			// If there is one missing attibute, we do not store element
 			if (bValid)
 				dwParameterNumber++;
 			else
-			{
 				pMap[dwParameterNumber].RemoveAll();
-			}
+			pXmlElement = m_cmXml.FindNextElem( _T( "PARAM"), pXmlElement);
 		}
-		m_cmXml.OutOfElem();
+		pXmlOption = m_cmXml.FindNextElem( _T( "OPTION"), pXmlOption);
 	}
 	return pMap;
 }

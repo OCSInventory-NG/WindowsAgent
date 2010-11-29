@@ -73,7 +73,7 @@ BOOL CInventoryRequest::initInventory()
 	/******************/
 
 	if( m_pDeviceid->getOldDeviceID() != _T("") )
-		m_cmXml.AddElemNV( _T("OLD_DEVICEID"),m_pDeviceid->getOldDeviceID());
+		m_cmXml.AddChildElem( _T("OLD_DEVICEID"),m_pDeviceid->getOldDeviceID());
 			
 	/****	
 	*
@@ -111,6 +111,7 @@ BOOL CInventoryRequest::final()
 	BOOL bSuccess = FALSE;
 	CString	csFilename;
 
+	getXmlPointerContent();
 	if (m_bNotify)
 	{
 		// Notify network informations changes
@@ -399,9 +400,7 @@ BOOL CInventoryRequest::loadDownloadHistory()
 
 	getXmlPointerContent();
 	m_cmXml.AddElem( _T("DOWNLOAD"));
-	m_cmXml.IntoElem();
 	m_cmXml.AddElem( _T("HISTORY"));
-	m_cmXml.IntoElem();
 
 	if( historyOpened )
 	{
@@ -411,15 +410,12 @@ BOOL CInventoryRequest::loadDownloadHistory()
 			m_pLogger->log( LOG_PRIORITY_DEBUG, _T("INVENTORY => Adding Download Package <%s> to report"), csBuffer);
 			m_cmXml.AddElem( _T("PACKAGE"));
 			m_cmXml.AddAttrib( _T("ID"), csBuffer);
+			m_cmXml.OutOfElem();
 		}
-		m_cmXml.OutOfElem();
-		m_cmXml.OutOfElem();
 		fileHistory.Close();
 	}
 	else
 	{
-		m_cmXml.OutOfElem();
-		m_cmXml.OutOfElem();
 		return FALSE;
 	}
 	return TRUE;

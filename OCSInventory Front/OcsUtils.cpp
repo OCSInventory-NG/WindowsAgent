@@ -26,7 +26,7 @@ LPCSTR OCSINVENTORYFRONT_API GetAnsiFromTString(LPCTSTR a_wstrString)
    
    if (_tcslen( a_wstrString) > 1024*1024)
 	   AfxThrowMemoryException();
-   strcpy_s( szBuffer, 1024*1024, T2A(a_wstrString));
+   strcpy_s( szBuffer, 1024*1024, CT2CA(a_wstrString));
    return szBuffer;
 }
 
@@ -37,7 +37,7 @@ LPCTSTR OCSINVENTORYFRONT_API GetTStringFromAnsi(LPCSTR a_strString)
   
    if (strlen( a_strString) > 1024*1024)
 	   AfxThrowMemoryException();
-   _tcscpy_s( szBuffer, 1024*1024, A2T( a_strString));
+   _tcscpy_s( szBuffer, 1024*1024, CA2CT( a_strString));
    return szBuffer;
 }
 

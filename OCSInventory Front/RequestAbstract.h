@@ -23,13 +23,6 @@
 #include "Deviceid.h"
 #include "Zip.h"
 
-#ifdef _MBCS
-#define XML_HEADERS				_T( "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<!DOCTYPE REQUEST>\r\n")
-#else
-// UTF-8 / Unicode
-#define XML_HEADERS				_T( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<!DOCTYPE REQUEST>\r\n")
-#endif
-
 class OCSINVENTORYFRONT_API CRequestAbstract  
 {
 public: // Methods
@@ -40,7 +33,7 @@ public: // Methods
 
 	// Return the raw message in CString format
 	CString getMessage() { return m_cmXml.GetDoc(); }
-	DWORD getMessageLength() { return (m_cmXml.GetDoc().GetLength()*sizeof(TCHAR)); }
+	DWORD getMessageLength() { return (_tcslen( m_cmXml.GetDoc())*sizeof(TCHAR)); }
 
 	// Return the compressed sent message 
 	CByteArray* getRawMessage() { return m_pRawMessage; }
@@ -57,10 +50,6 @@ public: // Methods
 	CMarkup* getXmlPointerRequest();
 	// Return a pointer to our request content
 	CMarkup* getXmlPointerContent();
-	// Add XML tags to the request element
-	BOOL xmlAddRequestElem( LPCTSTR lpstrTag, LPCTSTR lpstrValue);
-	// Add XML tags to the request content element
-	BOOL xmlAddContentElem( LPCTSTR lpstrTag, LPCTSTR lpstrValue);
 
 	// Do some action when request successfully executed
 	virtual void setSuccess() = NULL;
@@ -83,7 +72,9 @@ protected: // Attributes
 	BOOL m_bFinal;
 	// A pointer to logging machine
 	CLog *m_pLogger;
-
+	// Xml node handling
+	TiXmlElement *m_pRequestXmlNode;
+	TiXmlElement *m_pContentXmlNode;
 };
 
 #endif // !defined(AFX_REQUESTABSTRACT_H__2161ADD9_34EF_4EEF_81DB_99C7F63A30BE__INCLUDED_)

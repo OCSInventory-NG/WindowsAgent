@@ -14,6 +14,7 @@
 
 #include "stdafx.h"
 #include "ResponseAbstract.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -33,7 +34,8 @@ CResponseAbstract::CResponseAbstract(CByteArray* rawResponse)
 	m_pRawData =  rawResponse;
 	if (m_pRawData != NULL)
 		m_csContent = CZip::inflate(m_pRawData);
-	m_cmXml.SetDoc(m_csContent);
+	getOcsLogger()->log( LOG_PRIORITY_TRACE, m_csContent);
+	m_cmXml.SetDoc( m_csContent);
 	if(!getErrorStatus())
 		setErrorStatus( OCS_RESPONSE_ERROR_SUCCESS);
 }

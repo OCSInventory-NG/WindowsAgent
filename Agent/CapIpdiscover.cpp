@@ -181,7 +181,6 @@ BOOL CCapIpdiscover::scanLocalNetwork()
 				// Retrieve the inventory xml pointer and add elements
 				pXml=m_pInventory->getXmlPointerContent();
 				pXml->AddElem( _T( "IPDISCOVER"));
-				pXml->IntoElem();
 
 				m_pLogger->log( LOG_PRIORITY_DEBUG, _T("IPDISCOVER => Scanning to detect IPv4 enabled hosts for network <%s> with <%i> ms between each request"),m_csLan.GetBuffer(0),m_ulIpDisc_lat);
 				ulIpMask = lpfn_htonl( lpfn_inet_addr( GetAnsiFromTString( csMask)));
@@ -330,11 +329,13 @@ BOOL CCapIpdiscover::UnlockCriticalSection()
 void CCapIpdiscover::AddHostFound( LPCTSTR lpstrIP, LPCTSTR lpstrMac, LPCTSTR lpstrHostName)
 {
 	m_ulHostFound++;
-	CMarkup *pXml = m_pInventory->getXmlPointer();
+	CMarkup *pXml = m_pInventory->getXmlPointerContent();
+	pXml->FindFirstElem( _T( "IPDISCOVER"));
 	pXml->AddElem( _T( "H"));
-	pXml->AddChildElem( _T( "I"),lpstrIP);
-	pXml->AddChildElem( _T( "M"),lpstrMac);
-	pXml->AddChildElem( _T( "N"),lpstrHostName);
+		pXml->AddChildElem( _T( "I"),lpstrIP);
+		pXml->AddChildElem( _T( "M"),lpstrMac);
+		pXml->AddChildElem( _T( "N"),lpstrHostName);
+	pXml->OutOfElem();
 	m_pLogger->log( LOG_PRIORITY_DEBUG,  _T( "IPDISCOVER => Computer found @IPv4:%s @MAC:%s NAME:%s"), lpstrIP, lpstrMac, lpstrHostName);
 }
 

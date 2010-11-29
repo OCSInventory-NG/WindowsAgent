@@ -30,23 +30,26 @@ CInventoryResponse::CInventoryResponse(CByteArray *rawResponse) : CResponseAbstr
 	// Inherit from CResponseAbstract (parse response as text and put xml in local cmarkup
 	CLog *pLogger = getOcsLogger();
 	CString csName, csValue;
+	TiXmlElement *pXmlReply, *pXmlAccount, *pXmlElement;
 
 	// Parse Account Infos updates
 	m_cmXml.ResetPos();
-	if (m_cmXml.FindElem( _T( "REPLY")))
+	if (pXmlReply = m_cmXml.FindFirstElem( _T( "REPLY")))
 	{
-		m_cmXml.IntoElem();
-		while (m_cmXml.FindElem( _T( "ACCOUNTINFO")))
+		// Search ACCOUNTINFO node under REPLY node
+		pXmlAccount = m_cmXml.FindFirstElem( _T( "ACCOUNTINFO"));
+		while (pXmlAccount)
 		{
-			m_cmXml.FindChildElem( _T( "KEYNAME"));
-			csName = m_cmXml.GetChildData();
-			m_cmXml.ResetChildPos();
-			m_cmXml.FindChildElem( _T( "KEYVALUE"));
-			csValue = m_cmXml.GetChildData();
+			pXmlElement = m_cmXml.FindFirstElem( _T( "KEYNAME"), pXmlAccount);
+			csName = m_cmXml.GetData( pXmlElement);
+			pXmlElement = m_cmXml.FindFirstElem( _T( "KEYVALUE"), pXmlAccount);
+			csValue = m_cmXml.GetData( pXmlElement);
 			if (getAgentConfig()->writeAccountInfos( csName, csValue))
 				pLogger->log( LOG_PRIORITY_NOTICE, _T( "ADMIN INFOS => Couple ( %s <=> %s ) added to configuration file"), csName, csValue);
 			else
 				pLogger->log( LOG_PRIORITY_ERROR, _T( "ADMIN INFOS => Failed to add couple ( %s <=> %s ) to configuration file <%s>"), csName, csValue, LookupError( GetLastError()));
+			// Search next ACCOUNTINFO node
+			pXmlAccount = m_cmXml.FindNextElem( _T( "ACCOUNTINFO"), pXmlAccount);
 		}
 	}
 	

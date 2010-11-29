@@ -13,14 +13,11 @@
 
 CDownloadRequest::CDownloadRequest(void)
 {
-//	CDeviceid *pDeviceid = CDeviceid::getInstance();
 	CDeviceid *pDeviceid = getOcsDeviceID();
 
-	m_cmXml.SetDoc( XML_HEADERS);
 	m_cmXml.AddElem( _T( "REQUEST"));
 	m_cmXml.AddAttrib( _T( "QUERY"), _T( "DOWNLOAD"));
 	m_cmXml.AddAttrib( _T( "DEVICEID"), pDeviceid->getDeviceID());
-	m_cmXml.ResetPos();
 }
 
 CDownloadRequest::~CDownloadRequest(void)
@@ -31,17 +28,16 @@ BOOL CDownloadRequest::setPackageResult( LPCTSTR lpstrPackID, LPCTSTR lpstrCode,
 {
 	ASSERT( lpstrPackID);
 	ASSERT( lpstrCode);
+	TiXmlElement *pXmlRequest;
 
 	m_cmXml.ResetPos(); 
-	if (!m_cmXml.FindElem(_T("REQUEST")))
+	if ((pXmlRequest = m_cmXml.FindFirstElem(_T("REQUEST"))) == NULL)
 		return FALSE;
-	if (!m_cmXml.AddAttrib( _T( "ID"), lpstrPackID))
+	if (!m_cmXml.AddChildElem( _T( "ID"), lpstrPackID))
 		return FALSE;
-	if (!m_cmXml.AddAttrib( _T( "ERR"), lpstrCode))
+	if (!m_cmXml.AddChildElem( _T( "ERR"), lpstrCode))
 		return FALSE;
 	TRACE( m_cmXml.GetDoc());
-	/* TODO */
-	AfxMessageBox( m_cmXml.GetDoc());
 	return TRUE;
 }
 

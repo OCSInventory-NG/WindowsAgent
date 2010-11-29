@@ -25,17 +25,9 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CPrologRequest::CPrologRequest()
+CPrologRequest::CPrologRequest() : CRequestAbstract()
 {
-//	CDeviceid *pDeviceid = CDeviceid::getInstance();
-	CDeviceid *pDeviceid = getOcsDeviceID();
-
-	m_cmXml.SetDoc(XML_HEADERS);
-	m_cmXml.AddElem( _T( "REQUEST"));
-	m_cmXml.IntoElem();
-	m_cmXml.AddElem( _T( "QUERY"), _T( "PROLOG"));
-	m_cmXml.AddElem( _T( "DEVICEID"),pDeviceid->getDeviceID());
-	m_cmXml.ResetPos();
+	setQuery( _T( "PROLOG"));
 }
 
 CPrologRequest::~CPrologRequest()

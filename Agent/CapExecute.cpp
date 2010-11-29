@@ -113,27 +113,23 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 
 BOOL CCapExecute::copyXML( CMarkup *pSource, CMarkup *pDest)
 {
-/* TODO
-	TiXmlHandle hdl(doc);
+/*	TiXmlHandle hdl(doc);
 
 	TiXmlElement *elem; // = hdl.FirstChildElement().Element();
 	TiXmlNode *pChild;
 
-	for( elem = hdl.FirstChildElement().Element();
-		elem;
-		elem = elem->NextSiblingElement() ) {
-
-		pXml->AddElem(elem->Value());
+	for (elem = hdl.FirstChildElement().Element(); elem; elem = elem->NextSiblingElement())
+	{
+		pXml->AddElem( elem->Value());
 		pXml->IntoElem();
 
-
-		for ( pChild = elem->FirstChild(); pChild != 0; pChild = pChild->IterateChildren(pChild)) {
-
-
-			if (pChild->FirstChild() != NULL) {
-
-				if (!pXml->AddElemNV(pChild->Value(), pChild->FirstChild()->Value())) {
-					AddLog("Failed to save %s: %s", pChild->Value(), pChild->FirstChild()->Value());
+		for (pChild = elem->FirstChild(); pChild != 0; pChild = pChild->IterateChildren(pChild))
+		{
+			if (pChild->FirstChild() != NULL) 
+			{
+				if (!pXml->AddChildElem(pChild->Value(), pChild->FirstChild()->Value()))
+				{
+					m_pLogger->log( LOG_PRIORITY_WARNING, _T( "Failed to save %s: %s"), pChild->Value(), pChild->FirstChild()->Value());
 				}
 				pXml->ResetChildPos();
 			}
@@ -141,6 +137,5 @@ BOOL CCapExecute::copyXML( CMarkup *pSource, CMarkup *pDest)
 
 		pXml->OutOfElem();
 	}
-*/
-	return TRUE;
+*/	return TRUE;
 }
