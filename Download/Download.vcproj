@@ -48,13 +48,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\External_Deps\ZipArchive;..\External_Deps\cmake;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;"
+				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\External_Deps\ZipArchive;..\External_Deps\cmake;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -76,6 +77,87 @@
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="1"
+			UseOfMFC="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="false"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\External_Deps\ZipArchive;..\External_Deps\cmake;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="..\External_Deps\ZipArchive.lib"
+				LinkIncremental="2"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -130,13 +212,14 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\External_Deps\ZipArchive;..\External_Deps\cmake;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;"
+				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\External_Deps\ZipArchive;..\External_Deps\cmake;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -160,86 +243,6 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="1"
-			UseOfMFC="2"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="false"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\External_Deps\ZipArchive;..\External_Deps\cmake;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-				AdditionalIncludeDirectories="$(IntDir)"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="..\External_Deps\ZipArchive.lib"
-				LinkIncremental="2"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -294,13 +297,14 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\External_Deps\ZipArchive;..\External_Deps\cmake;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;"
+				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\External_Deps\ZipArchive;..\External_Deps\cmake;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -384,7 +388,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -392,7 +396,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

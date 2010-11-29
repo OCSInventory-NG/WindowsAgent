@@ -54,7 +54,7 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 		// Parse XML
 		myXml.SetDoc( csBuffer);
 		myXml.ResetPos();
-		myXml.FindElem( _T( "DOWNLOAD"));
+		myXml.FindFirstElem( _T( "DOWNLOAD"));
 
 		m_csID = myXml.GetAttrib( _T( "ID"));
 		m_uPriority = _ttoi( myXml.GetAttrib( _T( "PRI")));
