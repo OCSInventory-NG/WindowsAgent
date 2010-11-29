@@ -62,7 +62,7 @@ private: // Methods
 	void log_error( LPCTSTR);
 	// Debug log
 	void log_debug( LPCTSTR);
-	// Trace log
+	// Trace log for full mode debug
 	void log_trace( LPCTSTR);
 
 private: // Atributes

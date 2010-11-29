@@ -13,6 +13,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "Config.h"
 #include "Log.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -88,6 +89,9 @@ void CLog::log(int iPriority, LPCTSTR lpstrLog, ...)
 	case LOG_PRIORITY_WARNING:
 			log_warning( csMessage);
 			break;
+	case LOG_PRIORITY_TRACE:
+			log_trace( csMessage);
+			break;
 	default:
 			CString csError;
 			csError.Format( _T( "LOG: Unknown log code (%i)"), iPriority);
@@ -159,6 +163,25 @@ void CLog::log_warning( LPCTSTR lpstrMessage)
 		if ((m_dwLoglevel < LOG_PRIORITY_DEBUG) || !isOpen())
 			return;
 		csLog.Format( _T( "\tWARNING *** %s\n"), lpstrMessage);
+		m_hLogFile.WriteString( csLog);
+		m_hLogFile.Flush();
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+	}
+}
+
+
+void CLog::log_trace( LPCTSTR lpstrMessage)
+{
+	try
+	{
+		CString csLog;
+
+		if ((getAgentConfig()->isDebugRequired() < OCS_DEBUG_MODE_TRACE) || !isOpen())
+			return;
+		csLog.Format( _T( "================= TRACE START ===============\n%s\n================= TRACE STOP ===============\n"), lpstrMessage);
 		m_hLogFile.WriteString( csLog);
 		m_hLogFile.Flush();
 	}
