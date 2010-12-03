@@ -719,7 +719,7 @@ UINT CPackage::execute()
 // User notification
 BOOL CPackage::isNotifyUserRequired()
 {
-	return m_bNotifyUser;
+	return (m_bNotifyUser);
 }
 
 BOOL CPackage::isAbortAllowed()
@@ -743,7 +743,7 @@ LPCTSTR CPackage::getNotifyText()
 
 BOOL CPackage::isDoneNotifyUserRequired()
 {
-	return m_bNeedDoneAction;
+	return (m_bNeedDoneAction);
 }
 
 LPCTSTR CPackage::getDoneNotifyText()
