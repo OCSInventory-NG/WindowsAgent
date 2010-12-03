@@ -508,7 +508,7 @@ BOOL CDownloadApp::runPeriod()
 					downloadFragment( pPack);
 				else
 					// all fragment downloaded, unzip and execute
-					if (executePackage( pPack))
+					if (!pPack->existDone() && executePackage( pPack))
 						setFinished( pPack);
 			}
 			m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Pausing for fragment latency (%u seconds)"), m_uDownloadFragLatency);
