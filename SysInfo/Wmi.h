@@ -47,6 +47,7 @@ public: // Methods
 	BOOL GetBaseBoard( CString &csVendor, CString &csProduct, CString &csSN);
 	BOOL GetSystemEnclosure( CString &csVendor, CString &csType, CString &csSN, CString &csAssetTag);
 	BOOL GetOS( CString &csName, CString &csVersion, CString &csComment, CString &csDescription);
+	DWORD GetAddressWidthOS();
 	BOOL GetDomainOrWorkgroup(CString &csDomain);
 	BOOL GetInputDevices( CInputDeviceList *pMyList);
 	BOOL GetSystemPorts( CSystemPortList *pMyList);

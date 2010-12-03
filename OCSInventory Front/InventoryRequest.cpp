@@ -449,6 +449,8 @@ BOOL CInventoryRequest::runInventory()
 		cs1 = _T( "Microsoft Windows 2000 Professional");
 	m_Device.SetOS( cs1, cs2, cs3);
 	m_Device.SetDescription (cs4);
+	// Get OS Address width
+	m_Device.SetAddressWidthOS( m_pSysInfo->getAddressWidthOS());
 	// Get NT Domain or Workgroup
 	if (!m_pSysInfo->getDomainOrWorkgroup( cs1))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve computer domain or workgroup"));

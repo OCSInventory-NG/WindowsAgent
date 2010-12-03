@@ -57,6 +57,11 @@ public: // Methods
 	BOOL IsFromRegistry();
 	// Get the source in string format
 	LPCTSTR GetSource();
+	// Get the installation date
+	LPCTSTR GetInstallDate();
+	// Get Memory Address Width (32/64 bits)
+	DWORD GetMemoryAddressWidth();
+
 
 	//////////////////////////////////
 	// Set attributes values
@@ -82,6 +87,10 @@ public: // Methods
 	void SetFilename( LPCTSTR lpstrFilename);
 	// Set the app filesize
 	void SetFilesize( ULONG ulSize);
+	// Set the installation date
+	void SetInstallDate( LPCTSTR lpstrDate);
+	// Set Memory Address Width (32/64 bits)
+	void SetMemoryAddressWidth( DWORD dwWidth);
 	// Set if the app is extracted from the registry
 	void SetFromRegistry( BOOL bFromRegistry = FALSE);
 
@@ -101,6 +110,8 @@ protected: // Attributes
 	CString m_csLanguage;	// Language of app
 	CString m_csFilename;	// Filename of app
 	ULONG	m_ulFilesize;	// Size in bytes of file app
+	DWORD	m_dwAddressWidth; // Memory address width (32/64 bits)
+	CString m_csInstallDate; // Software installation date
 	BOOL	m_bFromRegistry;// Extracted from registry ?
 };
 #endif // !defined(AFX_SOFTWARE_H__C4903B6B_8BDE_11D4_8077_0040055338AF__INCLUDED_)

@@ -1445,6 +1445,48 @@ BOOL CWmi::GetOS(CString &csName, CString &csVersion, CString &csComment, CStrin
 	}
 }
 
+DWORD CWmi::GetAddressWidthOS()
+{
+	static DWORD	dwBits;
+	DWORD			dwNumber = 0;
+	// If not WMI connected => cannot do this
+	if (!m_bConnected)
+		return FALSE;
+
+	AddLog( _T( "WMI GetAddressWidthOS: Trying to find Win32_Processor WMI objects..."));
+	try
+	{
+		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_Processor")))
+		{
+			while (m_dllWMI.MoveNextEnumClassObject())
+			{
+				dwBits = m_dllWMI.GetClassObjectDwordValue( _T( "AddressWidth"));
+				// If value AddressWidth is not available, assume 32 bits
+				if (dwBits == 0)
+					dwBits = 32;
+				dwNumber ++;
+			}
+			m_dllWMI.CloseEnumClassObject();
+		}
+		if (dwNumber > 0)
+			AddLog( _T( "%u bits OS. OK\n"), dwBits);
+		else
+		{
+			AddLog( _T( "Failed because no Win32_Processor object, assuming 32 bits OS !\n"));
+			dwBits = 32;
+		}
+		return dwBits;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		AddLog( _T( "Failed because unknown exception, assuming 32 bits OS !\n"));
+		dwBits = 32;
+		return dwBits;
+	}
+}
+
+
 BOOL CWmi::GetWindowsRegistration( CString &csCompany, CString &csUser, CString &csSN)
 {
 	// If not WMI connected => cannot do this

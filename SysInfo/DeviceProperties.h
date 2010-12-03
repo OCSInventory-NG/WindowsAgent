@@ -48,6 +48,8 @@ public:
 	LPCTSTR GetOSVersion();
 	// Return a string with the operating system comments
 	LPCTSTR GetOSComment();
+	// Return TRUE if 64 bits OS
+	BOOL Is64bitsOS();
 	// Return a string with the processor type
 	LPCTSTR GetProcessorType();
 	// Return a string with the processor speed
@@ -98,6 +100,8 @@ public:
 	void SetDeviceName( LPCTSTR lpstrName);
 	// Set the operating system informations
 	void SetOS( LPCTSTR lpstrName, LPCTSTR lpstrVersion, LPCTSTR lpstrComment);
+	// Set OS memory addressing bits (32 bits, 64 bits...)
+	void SetAddressWidthOS( UINT uBits = 32);
 	// Set the processors informations
 	void SetProcessor( LPCTSTR lpstrName, LPCTSTR lpstrSpeed, DWORD dwNumber);
 	// Set the physical and paging file size in mega bytes
@@ -140,9 +144,10 @@ public:
 protected: // Attributes
 	CString	m_csDeviceID;		// Device unique ID
 	CString	m_csDeviceName;		// Device netbios or DNS name
-	CString	m_csOSName;			// OS Name of the device (ex "Windows NT")
-	CString	m_csOSVersion;		// OS Version of the device (ex "4.0 Build 1381")
-	CString	m_csOSComment;		// OS Comment of the device (ex "Service Pack 6")
+	CString	m_csOSName;			// Operating system name (ex "Windows NT")
+	CString	m_csOSVersion;		// OS Version  (ex "4.0 Build 1381")
+	CString	m_csOSComment;		// OS Comment (ex "Service Pack 6")
+	UINT	m_uBitsOS;			// OS memory addressing bits ( 32, 64, 128...)
 	CString	m_csProcessorType;	// First Processor type of the device (ex "Intel Pentium II Model 1280 Stepping 2")
 	CString	m_csProcessorSpeed; // Processor speed
 	DWORD	m_dwNumberOfProcessor; // Number of processor of the device

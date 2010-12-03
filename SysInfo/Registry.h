@@ -19,6 +19,10 @@
 
 #include "SysInfoClasses.h"
 
+#define HIVE_WOW32_32KEY	0
+#define HIVE_WOW64_32KEY	1
+#define HIVE_WOW64_64KEY	2
+
 class SYSINFO_API CRegistry  
 {
 public: // Methods
@@ -33,6 +37,7 @@ public: // Methods
 	//////////////////////////////////
 
 	BOOL Connect( LPCTSTR lpstrDevice = NULL);
+	void SetAddressWidthOS( DWORD dwAddressWidth);
 	BOOL Disconnect();
 
 	//////////////////////////////////
@@ -85,7 +90,7 @@ protected: // Methods
 	DWORD GetProcessors9X( CString &csProcType, CString &csProcSpeed);
 	DWORD GetProcessorsNT( CString &csProcType, CString &csProcSpeed);
 	BOOL GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive);
-	BOOL GetRegistryApplicationsNT( CSoftwareList *pList, HKEY hHive);
+	BOOL GetRegistryApplicationsNT( CSoftwareList *pList, HKEY hHive, UINT uHiveType = HIVE_WOW32_32KEY);
 	BOOL GetSoundDevices9X( CSoundDeviceList *pList);
 	BOOL GetSoundDevicesNT( CSoundDeviceList *pList);
 	BOOL GetStoragePeripherals9X( CStoragePeripheralList *pMyList);
@@ -114,6 +119,8 @@ protected: // Attributes
 	HKEY m_hKey;			// Handle to HKLM key on computer
 	DWORD m_dwPlatformId;	// OS Platform ID to determine if Win9X or NT
 	BOOL  m_bIsXP;			// TRUE if Win XP or higher
+	DWORD m_dwAddressWidth; // OS Address Width (32, 64 bits)
+
 };
 #endif // !defined(AFX_REGISTRY_H__599ACCD2_83FA_4ED3_9006_8C315E043D08__INCLUDED_)
 

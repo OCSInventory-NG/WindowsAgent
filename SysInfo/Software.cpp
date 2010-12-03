@@ -93,6 +93,16 @@ LPCTSTR CSoftware::GetSource()
 	return _T( "Disk");
 }
 
+LPCTSTR CSoftware::GetInstallDate()
+{
+	return m_csInstallDate;
+}
+
+DWORD CSoftware::GetMemoryAddressWidth()
+{
+	return m_dwAddressWidth;
+}
+
 void CSoftware::Set( LPCTSTR lpstrPublisher, LPCTSTR lpstrName, LPCTSTR lpstrVersion, LPCTSTR lpstrFolder, LPCTSTR lpstrComments, LPCTSTR lpstrFilename, ULONG ulSize, BOOL bFromRegistry)
 {
 	m_csPublisher = lpstrPublisher;
@@ -169,6 +179,24 @@ void CSoftware::SetFromRegistry( BOOL bFromRegistry)
 	m_bFromRegistry = bFromRegistry;
 }
 
+void CSoftware::SetInstallDate( LPCTSTR lpstrDate)
+{
+	if (_tcslen( lpstrDate) <= 8)
+		m_csInstallDate = lpstrDate;
+	else
+	{
+		// Format date in YYYY/MM/DD
+		m_csInstallDate = lpstrDate;
+		m_csInstallDate.Insert( 4, '/');
+		m_csInstallDate.Insert( 7, '/');
+	}
+}
+
+void CSoftware::SetMemoryAddressWidth( DWORD dwWidth)
+{
+	m_dwAddressWidth = dwWidth;
+}
+
 void CSoftware::Clear()
 {
 	m_csPublisher.Empty();	
@@ -181,6 +209,8 @@ void CSoftware::Clear()
 	m_csFilename.Empty();	
 	m_ulFilesize = 0;	
 	m_bFromRegistry = FALSE;
+	m_csInstallDate.Empty();
+	m_dwAddressWidth = 0;
 }
 
 int CSoftware::operator==(CSoftware cObject) const
@@ -194,5 +224,8 @@ int CSoftware::operator==(CSoftware cObject) const
 		(m_csLanguage == cObject.GetLanguage()) &&
 		(m_csFilename == cObject.GetFilename()) &&
 		(m_ulFilesize == cObject.GetFilesize()) &&
-		(m_bFromRegistry == cObject.IsFromRegistry()));
+		(m_bFromRegistry == cObject.IsFromRegistry()) &&
+		(m_csInstallDate == cObject.GetInstallDate()) &&
+		(m_dwAddressWidth == cObject.GetMemoryAddressWidth())
+		);
 }

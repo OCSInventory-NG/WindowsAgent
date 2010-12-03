@@ -60,6 +60,7 @@ CSysInfo::CSysInfo( BOOL bEnableLog, LPCTSTR lpstrFolder)
 	m_wmiInfo.Connect();
 	m_dmiInfo.Connect();
 	m_registryInfo.Connect();
+	m_dwAddressWidth = 0;
 }
 
 CSysInfo::~CSysInfo()
@@ -334,6 +335,13 @@ DWORD CSysInfo::getProcessors( CString &csProcType, CString &csProcSpeed)
 	}
 	// Last, use registry
 	return m_registryInfo.GetProcessors( csProcType, csProcSpeed);
+}
+
+DWORD CSysInfo::getAddressWidthOS()
+{
+	if (m_dwAddressWidth == 0)
+		m_dwAddressWidth = m_wmiInfo.GetAddressWidthOS();
+	return m_dwAddressWidth;
 }
 
 BOOL CSysInfo::getSystemPorts( CSystemPortList *pMyList)
@@ -733,6 +741,7 @@ BOOL CSysInfo::getLastLoggedUser(CString &csLastLoggedUser)
 BOOL CSysInfo::getRegistryApplications(CSoftwareList *pList, BOOL hkcu)
 {
 	// Use registry
+	m_registryInfo.SetAddressWidthOS( getAddressWidthOS());
 	return m_registryInfo.GetRegistryApplications( pList, hkcu);
 }
 

@@ -399,6 +399,7 @@
 #define NT_APPS_QUIETUNINSTALL_VALUE			_T( "QuietUninstallString")
 #define NT_APPS_MODIFY_VALUE					_T( "ModifyPath")
 #define NT_APPS_LANGUAGE_VALUE					_T( "Language")
+#define NT_APPS_INSTALLDATE_VALUE				_T( "InstallDate")
 
 // Defines for validating detected components under HKEY_DYN_DATA for 9X/Me
 #define WIN_CONFIG_MANAGER_KEY					_T( "Config Manager\\Enum")
@@ -430,6 +431,7 @@ CRegistry::CRegistry()
 	}
 	m_hKey = NULL;
 	m_bRemoteRegistry = FALSE;
+	m_dwAddressWidth = 32;
 }
 
 CRegistry::~CRegistry()
@@ -568,6 +570,11 @@ BOOL CRegistry::Connect(LPCTSTR lpstrDevice)
 	m_hKey = HKEY_LOCAL_MACHINE;
 	AddLog( _T( "OK.\n"));
 	return TRUE;
+}
+
+void CRegistry::SetAddressWidthOS( DWORD dwAddressWidth)
+{
+	m_dwAddressWidth = dwAddressWidth;
 }
 
 BOOL CRegistry::Disconnect()
@@ -5193,6 +5200,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 BOOL CRegistry::GetRegistryApplications(CSoftwareList *pList, BOOL hkcu)
 {
 	ASSERT( pList);
+	static BOOL bResult = TRUE;
 
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
@@ -5208,9 +5216,30 @@ BOOL CRegistry::GetRegistryApplications(CSoftwareList *pList, BOOL hkcu)
 
 	case VER_PLATFORM_WIN32_NT:
 		// Windows NT/2000/XP/2003
-		if( hkcu )
-			GetRegistryApplicationsNT( pList, HKEY_CURRENT_USER);
-		return GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE);
+		if (hkcu)
+		{
+			// HKEY_CURRENT_USER
+			if (m_dwAddressWidth == 64)
+			{
+				// 64 bits OS
+				bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_CURRENT_USER, HIVE_WOW64_64KEY);
+				bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_CURRENT_USER, HIVE_WOW64_32KEY);
+			}
+			else
+				// 32 bits OS
+				bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_CURRENT_USER);
+		}
+		// HKEY_LOCAL_MACHINE
+		if (m_dwAddressWidth == 64)
+		{
+			// 64 bits OS
+			bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE, HIVE_WOW64_64KEY);
+			bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE, HIVE_WOW64_32KEY);
+		}
+		else
+			// 32 bits OS
+			bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE);
+		return bResult;
 	default:
 		// Unknown
 		AddLog( _T( "Registry GetRegistryApplications...Failed because unsupported or unrecognized OS !\n"));
@@ -5385,7 +5414,7 @@ BOOL CRegistry::GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive)
 	return !pList->IsEmpty();
 }
 
-BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive)
+BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT uHiveType)
 {
 	HKEY			hKeyEnum,
 					hKeyObject;
@@ -5396,7 +5425,8 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive)
 					csFolder,
 					csComments,
 					csLanguage,
-					csUninstall;
+					csUninstall,
+					csInstallDate;
 	TCHAR			szGUID[256];
 	DWORD			dwLength,
 					dwLanguage,
@@ -5410,9 +5440,24 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive)
 	ASSERT( pList);
 
 	CString csCurHive = (hHive==HKEY_LOCAL_MACHINE ? _T( "HKLM") : _T( "HKCU")) ;
-	AddLog( _T( "Registry NT GetRegistryApplications READING hive %s  ... \n"),csCurHive);	
 	// Windows NT => Open the Apps key
-	if (RegOpenKeyEx( hHive, NT_APPS_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
+	switch (uHiveType)
+	{
+	case HIVE_WOW64_64KEY:
+		AddLog( _T( "Registry NT GetRegistryApplications: Reading 64 bits hive %s... \n"),csCurHive);	
+		dwLength = KEY_READ|KEY_WOW64_64KEY;
+		break;
+	case HIVE_WOW64_32KEY:
+		AddLog( _T( "Registry NT GetRegistryApplications: Reading 32 bits hive %s... \n"),csCurHive);	
+		dwLength = KEY_READ|KEY_WOW64_32KEY;
+		break;
+	case HIVE_WOW32_32KEY:
+	default:
+		AddLog( _T( "Registry NT GetRegistryApplications: Reading hive %s... \n"),csCurHive);	
+		dwLength = KEY_READ;
+		break;
+	}
+	if (RegOpenKeyEx( hHive, NT_APPS_KEY, 0, dwLength, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find installed apps
 		dwLength = 255;
@@ -5431,6 +5476,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive)
 				csComments = NOT_AVAILABLE;
 				csLanguage = NOT_AVAILABLE;
 				csUninstall = NOT_AVAILABLE;
+				csInstallDate = NOT_AVAILABLE;
 				// Read the Publisher
 				if (GetValue( hKeyObject, NT_APPS_VENDOR_VALUE, csPublisher) == ERROR_SUCCESS)
 				{
@@ -5502,6 +5548,16 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive)
 									   csSubKey, NT_APPS_LANGUAGE_VALUE);
 					csLanguage = NOT_AVAILABLE;
 				}
+				// Read the install date
+				if (GetValue( hKeyObject, NT_APPS_INSTALLDATE_VALUE, csComments) == ERROR_SUCCESS)
+				{
+				}
+				else
+				{
+					AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for %s\\%s\\%s !\n"),csCurHive,
+									   csSubKey, NT_APPS_INSTALLDATE_VALUE);
+					csInstallDate = NOT_AVAILABLE;
+				}
 				// Read the uninstall string
 				if ((GetValue( hKeyObject, NT_APPS_UNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
 					(GetValue( hKeyObject, NT_APPS_QUIETUNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
@@ -5523,6 +5579,11 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive)
 				cApp.SetFromRegistry( TRUE);
 				cApp.SetGUID( szGUID);
 				cApp.SetLanguage( csLanguage);
+				cApp.SetInstallDate( csInstallDate);
+				if (uHiveType == HIVE_WOW64_64KEY)
+					cApp.SetMemoryAddressWidth( 64);
+				else
+					cApp.SetMemoryAddressWidth( 32);
 				// Add the app to the apps list
 				if (bHaveToStore)
 				{

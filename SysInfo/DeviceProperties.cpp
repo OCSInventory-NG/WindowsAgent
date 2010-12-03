@@ -41,6 +41,7 @@ void CDeviceProperties::Clear()
 	m_csOSName.Empty();			// OS Name of the device (ex "Windows NT")
 	m_csOSVersion.Empty();		// OS Version of the device (ex "4.0 Build 1381")
 	m_csOSComment.Empty();		// OS Comment of the device (ex "Service Pack 6")
+	m_uBitsOS = 32;				// Assume 32 bits OS
 	m_csProcessorType.Empty();	// First Processor type of the device (ex "Intel Pentium II Model 1280 Stepping 2")
 	m_csProcessorSpeed.Empty(); // Processor speed
 	m_dwNumberOfProcessor = 0;	// Number of processor of the device
@@ -88,6 +89,11 @@ void CDeviceProperties::SetProcessor(LPCTSTR lpstrName, LPCTSTR lpstrSpeed, DWOR
 	m_csProcessorSpeed = lpstrSpeed;
 	StrForSQL( m_csProcessorSpeed);
 	m_dwNumberOfProcessor = dwNumber;
+}
+
+void CDeviceProperties::SetAddressWidthOS( UINT uBits)
+{
+	m_uBitsOS = uBits;
 }
 
 void CDeviceProperties::SetMemory(ULONG ulPhysical, ULONG ulPageFile)
@@ -199,6 +205,11 @@ LPCTSTR CDeviceProperties::GetOSVersion()
 LPCTSTR CDeviceProperties::GetOSComment()
 {
 	return m_csOSComment;
+}
+
+BOOL CDeviceProperties::Is64bitsOS()
+{
+	return (m_uBitsOS == 64);
 }
 
 LPCTSTR CDeviceProperties::GetProcessorType()

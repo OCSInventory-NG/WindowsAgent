@@ -739,6 +739,10 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			res = myWmiDll.GetClassObjectStringValue( _T( "NumberOfCores"));
 			str += res;
 			m_List.AddString( str);
+			str = _T( "AddressWidth = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "AddressWidth"));
+			str += res;
+			m_List.AddString( str);
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
@@ -2450,6 +2454,8 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 	SysInfoLog( str);
 	str.Format( _T( "OS Product ID : %s"), m_Device.GetWindowsProductID());
 	SysInfoLog( str);
+	str.Format( _T( "64 bits OS: %s"), (m_Device.Is64bitsOS() ? _T( "TRUE") : _T( "FALSE")));
+	SysInfoLog( str);
 	SysInfoLog( _T( ""));
 	str.Format( _T( "Device Hash: %s"), m_Device.GetHash());
 	SysInfoLog( str);
@@ -2550,6 +2556,7 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	m_pSysInfo->getOS( cs1, cs2, cs3, cs4);
 	m_Device.SetOS( cs1, cs2, cs3);
 	m_Device.SetDescription (cs4);
+	m_Device.SetAddressWidthOS( m_pSysInfo->getAddressWidthOS());
 	// Get NT Domain or Workgroup
 	m_pSysInfo->getDomainOrWorkgroup( cs1);
 	m_Device.SetDomainOrWorkgroup( cs1);

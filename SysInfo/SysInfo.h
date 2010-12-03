@@ -102,6 +102,7 @@ public: // Methods
 
 	// OS information
 	BOOL getOS( CString &csName, CString &csVersion, CString &csComment, CString &csDescription);
+	DWORD getAddressWidthOS();
 	BOOL getDomainOrWorkgroup( CString &csDomain);
 	BOOL getUserDomain( CString &csUserDomain);
 
@@ -147,6 +148,7 @@ protected: // Attributes
 	CDMI		m_dmiInfo;		// Class to get informations from SMBIOS/DMI
 	CRegistry	m_registryInfo;	// Class to get informations from registry
 	CWindowsSocket	m_Sock;		// Class to get informations from Windows Sockets
+	DWORD		m_dwAddressWidth;// OS Address Width (32, 64 bits)
 };
 
 inline BOOL getFileVersion( LPCTSTR lpstrFile, CString &csPublisher, CString &csName, CString &csVersion, CString &csComment, CString &csLanguage)
