@@ -178,7 +178,7 @@ CMapStringToString* CPrologResponse::getOptionAttributes(CString option,...)
 		pXmlElement = m_cmXml.FindFirstElem( _T( "PARAM"), pXmlOption);
 		while (pXmlElement)
 		{
-			bValid = TRUE;
+			bValid = FALSE;
 			if(dwParameterNumber>=MAX_OPTION_PARAMETERS)
 				break;
 
@@ -197,15 +197,15 @@ CMapStringToString* CPrologResponse::getOptionAttributes(CString option,...)
 					csValue = m_cmXml.GetAttrib( csAttribute);
 					// If an attribute is NULL, we do not feed the cmap array with it
 					if (csValue != _T( ""))
+					{
 						pMap[dwParameterNumber].SetAt( csAttribute, csValue);
-					else 
-						// One missing attribute
-						bValid = FALSE;
+						bValid = TRUE;
+					}
 				}
 			}
 			while (csAttribute != _T( ""));
 			va_end( marker );
-			// If there is one missing attibute, we do not store element
+			// If all asked attibutes are NULL, we do not store element
 			if (bValid)
 				dwParameterNumber++;
 			else
