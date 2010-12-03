@@ -586,6 +586,8 @@ BOOL CInventoryRequest::runInventory()
 	// Add OS to the list of detected software
 	cSoft.Set( _T( "Microsoft Corporation"), m_Device.GetOSName(),
 			   m_Device.GetOSVersion(), NOT_AVAILABLE, m_Device.GetOSComment(), NOT_AVAILABLE, 0, TRUE);
+	cSoft.SetMemoryAddressWidth( m_pSysInfo->getAddressWidthOS());
+	m_SoftwareList.AddTail( cSoft);
 	// Verify total system memory
 	ULONG ulMemTotal = m_MemoryList.GetTotalMemory();
 	if (ulMemTotal > 0)
