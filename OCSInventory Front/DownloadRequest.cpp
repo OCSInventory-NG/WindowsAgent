@@ -15,9 +15,7 @@ CDownloadRequest::CDownloadRequest(void)
 {
 	CDeviceid *pDeviceid = getOcsDeviceID();
 
-	m_cmXml.AddElem( _T( "REQUEST"));
-	m_cmXml.AddAttrib( _T( "QUERY"), _T( "DOWNLOAD"));
-	m_cmXml.AddAttrib( _T( "DEVICEID"), pDeviceid->getDeviceID());
+	setQuery( _T( "DOWNLOAD"));
 }
 
 CDownloadRequest::~CDownloadRequest(void)
@@ -28,14 +26,11 @@ BOOL CDownloadRequest::setPackageResult( LPCTSTR lpstrPackID, LPCTSTR lpstrCode,
 {
 	ASSERT( lpstrPackID);
 	ASSERT( lpstrCode);
-	TiXmlElement *pXmlRequest;
 
-	m_cmXml.ResetPos(); 
-	if ((pXmlRequest = m_cmXml.FindFirstElem(_T("REQUEST"))) == NULL)
+	m_cmXml.ResetPos( m_pRequestXmlNode); 
+	if (!m_cmXml.AddAttrib( _T( "ID"), lpstrPackID))
 		return FALSE;
-	if (!m_cmXml.AddChildElem( _T( "ID"), lpstrPackID))
-		return FALSE;
-	if (!m_cmXml.AddChildElem( _T( "ERR"), lpstrCode))
+	if (!m_cmXml.AddAttrib( _T( "ERR"), lpstrCode))
 		return FALSE;
 	TRACE( m_cmXml.GetDoc());
 	return TRUE;
