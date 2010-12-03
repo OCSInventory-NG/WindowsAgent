@@ -47,6 +47,8 @@ public:
 	TiXmlElement *IntoElem();
 	// Set parent XML node as new working node
 	TiXmlElement *OutOfElem();
+	// Remove all childs named szName of provided node (current working XML node if null)
+	BOOL RemoveChildElem( LPCTSTR szName, TiXmlElement *pXmlNode = NULL); 
 	// Start search on child nodes of provided node (current working XML node if null), 
 	// and set first node found as new working node
 	TiXmlElement *FindFirstElem( LPCTSTR szName, TiXmlElement *pXmlNode = NULL);

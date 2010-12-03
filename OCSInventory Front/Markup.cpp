@@ -200,6 +200,39 @@ TiXmlElement *CMarkup::OutOfElem()
 	}
 }
 
+BOOL CMarkup::RemoveChildElem( LPCTSTR szName, TiXmlElement *pXmlNode)
+{
+	USES_CONVERSION;
+
+	if ((m_pCurrentNode == NULL) && (pXmlNode == NULL))
+		return FALSE;
+
+	try
+	{
+		TiXmlNode *pSearchNode;
+		TiXmlElement *pXmlElement;
+
+		if (pXmlNode != NULL)
+			pSearchNode = pXmlNode;
+		else
+			pSearchNode = m_pCurrentNode;
+		// Find first child element
+		while (pXmlElement = pSearchNode->FirstChildElement( T2CA( szName)))
+		{
+			// One sibling child node found
+			pSearchNode->RemoveChild( pXmlElement);
+		}
+		// No more child node
+		return TRUE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		return FALSE;
+	}
+}
+
+
 TiXmlElement *CMarkup::FindFirstElem( LPCTSTR szName, TiXmlElement *pXmlNode)
 {
 	ASSERT( m_pDoc);
