@@ -12,7 +12,7 @@ setcompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "OCS Inventory NG Agent"
-!define PRODUCT_VERSION "2.0.0.1"
+!define PRODUCT_VERSION "2.0.0.3"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
@@ -1311,6 +1311,7 @@ Function CreateMenu
 	StrCpy $logBuffer 'Creating Menu ShortCut "$SMSTARTUP\OCS Inventory NG Systray.lnk" to start Systray applet...$\r$\n'
 	Call Write_Log
 	CreateShortCut "$SMSTARTUP\OCS Inventory NG Systray.lnk" "$INSTDIR\OcsSystray.exe"
+	Exec "$INSTDIR\OcsSystray.exe"
 	goto CreateMenu_End
 CreateMenu_NO_SYSTRAY:
 	StrCpy $logBuffer '[/NO_SYSTRAY] used, so disabling Systray applet shortcut in All Users Startup menu...$\r$\n'
