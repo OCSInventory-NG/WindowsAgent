@@ -111,9 +111,9 @@ LPCTSTR CWmi::GetArchitecture( DWORD dwArch)
 		return _T( "Alpha");
 	case 0x3:
 		return _T( "PowerPC");
-	case 0x4:
+	case 0x6:
 		return _T( "IA64");
-	case 0x5:
+	case 0x9:
 		return _T( "x64");
 	default:
 		return NOT_AVAILABLE;
