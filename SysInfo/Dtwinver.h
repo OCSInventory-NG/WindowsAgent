@@ -3,7 +3,7 @@ Module : DTWINVER.H
 Purpose: Declaration of a comprehensive class to perform OS version detection
 Created: PJN / 11-05-1996
 
-Copyright (c) 1997 - 2009 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
+Copyright (c) 1997 - 2010 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
 
 All rights reserved.
 
@@ -49,7 +49,7 @@ to maintain a single distribution point for the source code.
 #define COSVERSION_SUITE_N                                    0x00800000
 #define COSVERSION_SUITE_HOME_BASIC                           0x01000000
 #define COSVERSION_SUITE_HOME_PREMIUM                         0x02000000
-#define COSVERSION_SUITE_HYPERV                               0x04000000
+#define COSVERSION_SUITE_HYPERV_TOOLS                         0x04000000
 #define COSVERSION_SUITE_BUSINESS                             0x08000000
 #define COSVERSION_SUITE_HOME_SERVER                          0x10000000
 #define COSVERSION_SUITE_SERVER_CORE                          0x20000000
@@ -62,6 +62,11 @@ to maintain a single distribution point for the source code.
 #define COSVERSION_SUITE2_STORAGE_EXPRESS_SERVER              0x00000008
 #define COSVERSION_SUITE2_STORAGE_WORKGROUP_SERVER            0x00000010
 #define COSVERSION_SUITE2_STANDARD                            0x00000020
+#define COSVERSION_SUITE2_E                                   0x00000040
+#define COSVERSION_SUITE2_PROFESSIONAL                        0x00000080
+#define COSVERSION_SUITE2_FOUNDATION                          0x00000100
+#define COSVERSION_SUITE2_MULTIPOINT                          0x00000200
+#define COSVERSION_SUITE2_HYPERV_SERVER                       0x00000400
 
 
 ////////////////////////////////// Classes ////////////////////////////////////
@@ -153,9 +158,9 @@ public:
 //Methods:
   BOOL GetVersion(LPOS_VERSION_INFO lpVersionInformation);
                                  
-//Please note that the return values for all the following functions 
+//Please note that the return values for the following group of functions 
 //are mutually exclusive for example if you are running on 
-//95 OSR2 then IsWindows95 will return FALSE
+//95 OSR2 then IsWindows95 will return FALSE etc.
   BOOL IsWindows30(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindows31(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindows311(LPOS_VERSION_INFO lpVersionInformation);
@@ -175,8 +180,8 @@ public:
   BOOL IsWindowsNT4(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindows2000(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindowsXPOrWindowsServer2003(LPOS_VERSION_INFO lpVersionInformation);
-  BOOL IsWindowsVista(LPOS_VERSION_INFO lpVersionInformation);
-  BOOL IsWindows7(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindowsVistaOrWindowsServer2008(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindows7OrWindowsServer2008R2(LPOS_VERSION_INFO lpVersionInformation);
 
 //Returns the various flavours of the "os" that is installed. Note that these
 //functions are not completely mutually exlusive
@@ -190,15 +195,18 @@ public:
   BOOL IsNTEnterpriseServer(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsNTDatacenterServer(LPOS_VERSION_INFO lpVersionInformation);
 
-  BOOL IsWin2000Professional(LPOS_VERSION_INFO lpVersionInformation);
-  BOOL IsWin2000Server(LPOS_VERSION_INFO lpVersionInformation);
-  BOOL IsWin2000AdvancedServer(LPOS_VERSION_INFO lpVersionInformation);
-  BOOL IsWin2000DatacenterServer(LPOS_VERSION_INFO lpVersionInformation);
-  BOOL IsWin2000DomainController(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindows2000Professional(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindows2000Server(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindows2000AdvancedServer(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindows2000DatacenterServer(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindows2000DomainController(LPOS_VERSION_INFO lpVersionInformation);
 
   BOOL IsWindowsXP(LPOS_VERSION_INFO lpVersionInformation);
-  BOOL IsXPPersonal(LPOS_VERSION_INFO lpVersionInformation);
-  BOOL IsXPProfessional(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindowsXPPersonal(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindowsXPProfessional(LPOS_VERSION_INFO lpVersionInformation);
+
+  BOOL IsWindows7(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindowsVista(LPOS_VERSION_INFO lpVersionInformation);
 
   BOOL IsWebWindowsServer2003(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindowsServer2003(LPOS_VERSION_INFO lpVersionInformation);
@@ -214,11 +222,20 @@ public:
   BOOL IsDatacenterWindowsServer2003R2(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsDomainControllerWindowsServer2003R2(LPOS_VERSION_INFO lpVersionInformation);
 
+  BOOL IsWebWindowsServer2008R2(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindowsServer2008R2(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsStandardWindowsServer2008R2(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsEnterpriseWindowsServer2008R2(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsDatacenterWindowsServer2008R2(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsDomainControllerWindowsServer2008R2(LPOS_VERSION_INFO lpVersionInformation);
+
   BOOL IsHomeBasicInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsHomeBasicPremium(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsBusinessInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsProfessionalInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsEnterpriseInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsUltimateInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsPersonalInstalled(LPOS_VERSION_INFO lpVersionInformation);
 
   BOOL IsWebWindowsServer2008(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindowsServer2008(LPOS_VERSION_INFO lpVersionInformation);
@@ -241,8 +258,12 @@ public:
   BOOL IsSecurityApplianceInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsBackOfficeInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsNEditionInstalled(LPOS_VERSION_INFO lpVersionInformation);
-  BOOL IsHyperVInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsEEditionInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsHyperVToolsInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsHyperVServer(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsServerCoreInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsMultiPointServerInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsServerFoundationInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsUniprocessorFree(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsUniprocessorChecked(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsMultiprocessorFree(LPOS_VERSION_INFO lpVersionInformation);
