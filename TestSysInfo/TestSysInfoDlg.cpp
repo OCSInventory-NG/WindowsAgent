@@ -1906,6 +1906,18 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			res = myWmiDll.GetClassObjectStringValue( _T( "Description"));
 			str += res;
 			m_List.AddString( str);
+			str = _T( "InstallLocation = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "InstallLocation"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Language = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Language"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "InstallDate = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "InstallDate"));
+			str += res;
+			m_List.AddString( str);
 			str = _T( "SKUNumber = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "SKUNumber"));
 			str += res;
