@@ -423,11 +423,11 @@ BOOL CInventoryRequest::loadDownloadHistory()
 
 BOOL CInventoryRequest::runInventory()
 {
-	CString		cs1, cs2, cs3, cs4;
+	CString		cs1, cs2, cs3, cs4, cs5;
 	DWORD		dwValue;
 	ULONG		ulPhysicalMemory, ulSwapSize;
 	BOOL		bRunBiosInfo = TRUE;
-	CSoftware	cSoft;
+	CSoftware	cSoftOS;
 
 	// Get logged on user
 	if (!m_pSysInfo->getUserName( cs1))
@@ -439,7 +439,7 @@ BOOL CInventoryRequest::runInventory()
 	m_pSysInfo->getLastLoggedUser( cs1);
 	m_Device.SetLastLoggedUser( cs1);
 	// Get OS informations and device type (windows station or windows server)
-	if (!m_pSysInfo->getOS( cs1, cs2, cs3, cs4))
+	if (!m_pSysInfo->getOS( cs1, cs2, cs3, cs4, cs5))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve Operating System"));
 	else
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Operating System is <%s %s %s>, description <%s>"), 
@@ -451,6 +451,11 @@ BOOL CInventoryRequest::runInventory()
 	m_Device.SetDescription (cs4);
 	// Get OS Address width
 	m_Device.SetAddressWidthOS( m_pSysInfo->getAddressWidthOS());
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Operating System uses %u bits memory address width"),  m_pSysInfo->getAddressWidthOS());
+	// Prepare to also store OS information to software list
+	cSoftOS.Set( _T( "Microsoft Corporation"), cs1, cs2, NOT_AVAILABLE, cs3, NOT_AVAILABLE, 0, TRUE);
+	cSoftOS.SetInstallDate( cs5);
+	cSoftOS.SetMemoryAddressWidth( m_pSysInfo->getAddressWidthOS());
 	// Get NT Domain or Workgroup
 	if (!m_pSysInfo->getDomainOrWorkgroup( cs1))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve computer domain or workgroup"));
@@ -584,10 +589,7 @@ BOOL CInventoryRequest::runInventory()
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %d software found"),
 						m_SoftwareList.GetCount());
 	// Add OS to the list of detected software
-	cSoft.Set( _T( "Microsoft Corporation"), m_Device.GetOSName(),
-			   m_Device.GetOSVersion(), NOT_AVAILABLE, m_Device.GetOSComment(), NOT_AVAILABLE, 0, TRUE);
-	cSoft.SetMemoryAddressWidth( m_pSysInfo->getAddressWidthOS());
-	m_SoftwareList.AddTail( cSoft);
+	m_SoftwareList.AddTail( cSoftOS);
 	// Verify total system memory
 	ULONG ulMemTotal = m_MemoryList.GetTotalMemory();
 	if (ulMemTotal > 0)

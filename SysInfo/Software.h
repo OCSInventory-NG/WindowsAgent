@@ -87,8 +87,8 @@ public: // Methods
 	void SetFilename( LPCTSTR lpstrFilename);
 	// Set the app filesize
 	void SetFilesize( ULONG ulSize);
-	// Set the installation date
-	void SetInstallDate( LPCTSTR lpstrDate);
+	// Set the installation date, and insert '/' to format it as YYYY/MM/DD f asked
+	void SetInstallDate( LPCTSTR lpstrDate, BOOL bFormat = FALSE);
 	// Set Memory Address Width (32/64 bits)
 	void SetMemoryAddressWidth( DWORD dwWidth);
 	// Set if the app is extracted from the registry

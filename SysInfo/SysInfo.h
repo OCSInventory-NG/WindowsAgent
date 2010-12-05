@@ -101,7 +101,7 @@ public: // Methods
 	//////////////////////////////////
 
 	// OS information
-	BOOL getOS( CString &csName, CString &csVersion, CString &csComment, CString &csDescription);
+	BOOL getOS( CString &csName, CString &csVersion, CString &csComment, CString &csDescription, CString &csInstallDate);
 	DWORD getAddressWidthOS();
 	BOOL getDomainOrWorkgroup( CString &csDomain);
 	BOOL getUserDomain( CString &csUserDomain);

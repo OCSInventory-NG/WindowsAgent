@@ -387,6 +387,7 @@
 #define WIN_APPS_QUIETUNINSTALL_VALUE			_T( "QuietUninstallString")
 #define WIN_APPS_MODIFY_VALUE					_T( "ModifyPath")
 #define WIN_APPS_LANGUAGE_VALUE					_T( "Language")
+#define WIN_APPS_INSTALLDATE_VALUE				_T( "InstallDate")
 
 // Defines for retrieving installed apps from 9X/Me registry
 #define NT_APPS_KEY								_T( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall")
@@ -5259,7 +5260,8 @@ BOOL CRegistry::GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive)
 					csFolder,
 					csComments,
 					csLanguage,
-					csUninstall;
+					csUninstall,
+					csInstallDate;
 	TCHAR			szGUID[256];
 	DWORD			dwLength,
 					dwLanguage,
@@ -5294,6 +5296,7 @@ BOOL CRegistry::GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive)
 				csComments = NOT_AVAILABLE;
 				csLanguage = NOT_AVAILABLE;
 				csUninstall = NOT_AVAILABLE;
+				csInstallDate = NOT_AVAILABLE;
 				// Read the Publisher
 				if (GetValue( hKeyObject, WIN_APPS_VENDOR_VALUE, csPublisher) == ERROR_SUCCESS)
 				{
@@ -5365,6 +5368,16 @@ BOOL CRegistry::GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive)
 									   csSubKey, WIN_APPS_LANGUAGE_VALUE);
 					csLanguage = NOT_AVAILABLE;
 				}
+				// Read the install date
+				if (GetValue( hKeyObject, WIN_APPS_INSTALLDATE_VALUE, csInstallDate) == ERROR_SUCCESS)
+				{
+				}
+				else
+				{
+					AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for %s\\%s\\%s !\n"),csCurHive,
+									   csSubKey, WIN_APPS_INSTALLDATE_VALUE);
+					csInstallDate = NOT_AVAILABLE;
+				}
 				// Read the uninstall string
 				if ((GetValue( hKeyObject, WIN_APPS_UNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
 					(GetValue( hKeyObject, WIN_APPS_QUIETUNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
@@ -5386,6 +5399,8 @@ BOOL CRegistry::GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive)
 				cApp.SetFromRegistry( TRUE);
 				cApp.SetGUID( szGUID);
 				cApp.SetLanguage( csLanguage);
+				cApp.SetInstallDate( csInstallDate, TRUE);
+				cApp.SetMemoryAddressWidth( 32);
 				// Add the app to the apps list
 				if (bHaveToStore)
 				{
@@ -5431,6 +5446,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 	DWORD			dwLength,
 					dwLanguage,
 					dwIndexEnum = 0;
+	REGSAM			regAccess;
 	LONG			lResult;
 	FILETIME		MyFileTime;
 	CSoftware		cApp;
@@ -5445,19 +5461,19 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 	{
 	case HIVE_WOW64_64KEY:
 		AddLog( _T( "Registry NT GetRegistryApplications: Reading 64 bits hive %s... \n"),csCurHive);	
-		dwLength = KEY_READ|KEY_WOW64_64KEY;
+		regAccess = KEY_READ|KEY_WOW64_64KEY;
 		break;
 	case HIVE_WOW64_32KEY:
 		AddLog( _T( "Registry NT GetRegistryApplications: Reading 32 bits hive %s... \n"),csCurHive);	
-		dwLength = KEY_READ|KEY_WOW64_32KEY;
+		regAccess = KEY_READ|KEY_WOW64_32KEY;
 		break;
 	case HIVE_WOW32_32KEY:
 	default:
 		AddLog( _T( "Registry NT GetRegistryApplications: Reading hive %s... \n"),csCurHive);	
-		dwLength = KEY_READ;
+		regAccess = KEY_READ;
 		break;
 	}
-	if (RegOpenKeyEx( hHive, NT_APPS_KEY, 0, dwLength, &hKeyEnum) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( hHive, NT_APPS_KEY, 0, regAccess, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find installed apps
 		dwLength = 255;
@@ -5467,7 +5483,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 			szGUID[dwLength] = 0;
 			bHaveToStore = FALSE;
 			csSubKey.Format( _T( "%s\\%s"), NT_APPS_KEY, szGUID);
-			if (RegOpenKeyEx( hHive, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
+			if (RegOpenKeyEx( hHive, csSubKey, 0, regAccess, &hKeyObject) == ERROR_SUCCESS)
 			{
 				csPublisher = NOT_AVAILABLE;
 				csName = NOT_AVAILABLE;
@@ -5549,7 +5565,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 					csLanguage = NOT_AVAILABLE;
 				}
 				// Read the install date
-				if (GetValue( hKeyObject, NT_APPS_INSTALLDATE_VALUE, csComments) == ERROR_SUCCESS)
+				if (GetValue( hKeyObject, NT_APPS_INSTALLDATE_VALUE, csInstallDate) == ERROR_SUCCESS)
 				{
 				}
 				else
@@ -5579,7 +5595,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 				cApp.SetFromRegistry( TRUE);
 				cApp.SetGUID( szGUID);
 				cApp.SetLanguage( csLanguage);
-				cApp.SetInstallDate( csInstallDate);
+				cApp.SetInstallDate( csInstallDate, TRUE);
 				if (uHiveType == HIVE_WOW64_64KEY)
 					cApp.SetMemoryAddressWidth( 64);
 				else

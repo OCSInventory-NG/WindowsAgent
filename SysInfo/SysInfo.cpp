@@ -72,9 +72,9 @@ CSysInfo::~CSysInfo()
 	CloseLog();
 }
 
-BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, CString &csDescription)
+BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, CString &csDescription, CString &csInstallDate)
 {
-	if (m_wmiInfo.GetOS( csName, csVersion, csComment, csDescription))
+	if (m_wmiInfo.GetOS( csName, csVersion, csComment, csDescription, csInstallDate))
 		// WMI successful
 		return TRUE;
 
@@ -179,11 +179,11 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 				{
 					csName = _T("Microsoft Windows 2000");
 
-					if (os.IsWin2000Professional(&osvi))
+					if (os.IsWindows2000Professional(&osvi))
 						csName += _T(" Professional");
-					else if (os.IsWin2000DatacenterServer(&osvi))
+					else if (os.IsWindows2000DatacenterServer(&osvi))
 						csName += _T(" Datacenter");
-					else if (os.IsWin2000AdvancedServer(&osvi))
+					else if (os.IsWindows2000AdvancedServer(&osvi))
 						csName += _T(" Advanced Server");
 					else 
 						csName += _T(" Server");
@@ -193,9 +193,9 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 				{
 					csName = _T("Microsoft Windows XP");
 
-					if (os.IsXPPersonal(&osvi))
+					if (os.IsWindowsXPPersonal(&osvi))
 						csName += _T(" Home Edition");                  
-					else if (os.IsXPProfessional(&osvi))
+					else if (os.IsWindowsXPProfessional(&osvi))
 						csName += _T(" Professional");                  
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
@@ -272,10 +272,23 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 						csName += _T(" Ultimate Edition");                  
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
-				if (os.IsEmulated64Bit(&osvi))
+				else if (os.IsWindowsServer2008R2(&osvi))
+				{
+					csName = _T("Microsoft Windows Server 2008 R2");
+
+					if (os.IsDatacenterWindowsServer2008R2(&osvi))
+						csName += _T(" Datacenter Edition");
+					else if (os.IsEnterpriseWindowsServer2008R2(&osvi))
+						csName += _T(" Enterprise Edition");
+					else if (os.IsWebWindowsServer2008R2(&osvi))
+						csName += _T(" Web Edition");
+					else if (os.IsStandardWindowsServer2008R2(&osvi))
+						csName += _T(" Standard Edition");
+				}
+/*				if (os.IsEmulated64Bit(&osvi))
 					csComment += _T(" (64 Bits)");
 				break;
-			}
+*/			}
 			default:                         
 			{
 				csName = _T("Unknown OS");

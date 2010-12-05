@@ -530,9 +530,11 @@ BOOL CXMLInteract::UpdateSoftwares( CSoftwareList &mySoftwareList)
 				m_pXml->AddChildElem( _T( "COMMENTS"), cObject.GetComments());
 				m_pXml->AddChildElem( _T( "FILENAME"), cObject.GetFilename());
 				m_pXml->AddChildElem( _T( "FILESIZE"), cObject.GetFilesize());
-				m_pXml->AddChildElem( _T( "SOURCE"), cObject.IsFromRegistry() ? 1 : 0);
 				m_pXml->AddChildElem( _T( "GUID"), cObject.GetGUID());
 				m_pXml->AddChildElem( _T( "LANGUAGE"), cObject.GetLanguage());
+				m_pXml->AddChildElem( _T( "INSTALLDATE"), cObject.GetInstallDate());
+				m_pXml->AddChildElem( _T( "BITSWIDTH"), cObject.GetMemoryAddressWidth());
+				m_pXml->AddChildElem( _T( "SOURCE"), cObject.IsFromRegistry() ? 1 : 0);
 			m_pXml->OutOfElem();
 			if (pos != NULL)
 				cObject = mySoftwareList.GetNext( pos);

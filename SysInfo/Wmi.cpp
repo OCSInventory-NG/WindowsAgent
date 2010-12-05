@@ -1402,7 +1402,7 @@ DWORD CWmi::GetProcessors(CString &csProcType, CString &csProcSpeed)
 	}
 }
 
-BOOL CWmi::GetOS(CString &csName, CString &csVersion, CString &csComment, CString &csDescription)
+BOOL CWmi::GetOS(CString &csName, CString &csVersion, CString &csComment, CString &csDescription, CString &csInstallDate)
 {
 	// If not WMI connected => cannot do this
 	if (!m_bConnected)
@@ -1425,6 +1425,9 @@ BOOL CWmi::GetOS(CString &csName, CString &csVersion, CString &csComment, CStrin
 				StrForSQL( csComment);
 				csDescription = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
 				StrForSQL( csDescription);
+				csInstallDate = m_dllWMI.GetClassObjectStringValue( _T( "InstallDate"));
+				csInstallDate.Truncate( 8);
+				StrForSQL( csInstallDate);
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();

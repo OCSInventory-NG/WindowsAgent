@@ -179,9 +179,9 @@ void CSoftware::SetFromRegistry( BOOL bFromRegistry)
 	m_bFromRegistry = bFromRegistry;
 }
 
-void CSoftware::SetInstallDate( LPCTSTR lpstrDate)
+void CSoftware::SetInstallDate( LPCTSTR lpstrDate, BOOL bFormat)
 {
-	if (_tcslen( lpstrDate) <= 8)
+	if ((_tcslen( lpstrDate) < 8) || (!bFormat))
 		m_csInstallDate = lpstrDate;
 	else
 	{

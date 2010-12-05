@@ -1822,6 +1822,10 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			res = myWmiDll.GetClassObjectStringValue( _T( "RegisteredUser"));
 			str += res;
 			m_List.AddString( str);
+			str = _T( "InstallDate = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "InstallDate"));
+			str += res;
+			m_List.AddString( str);
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
@@ -2479,9 +2483,17 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		SysInfoLog( str);
 		str.Format( _T( "Version: %s"), myApp.GetVersion());
 		SysInfoLog( str);
+		str.Format( _T( "GUID: %s"), myApp.GetGUID());
+		SysInfoLog( str);
+		str.Format( _T( "Memory Address Width: %lu"), myApp.GetMemoryAddressWidth());
+		SysInfoLog( str);
 		str.Format( _T( "Folder: %s"), myApp.GetFolder());
 		SysInfoLog( str);
 		str.Format( _T( "Comments: %s"), myApp.GetComments());
+		SysInfoLog( str);
+		str.Format( _T( "Language: %s"), myApp.GetLanguage());
+		SysInfoLog( str);
+		str.Format( _T( "InstallDate: %s"), myApp.GetInstallDate());
 		SysInfoLog( str);
 		if (myApp.IsFromRegistry())
 			SysInfoLog( _T( "Extracted from registry"));
@@ -2540,10 +2552,10 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 BOOL CTestSysInfoDlg::runSysInfo()
 {
-	CString		cs1, cs2, cs3, cs4;
+	CString		cs1, cs2, cs3, cs4, cs5;
 	DWORD		dwValue;
 	ULONG		ulPhysicalMemory, ulSwapSize;
-	CSoftware	cSoft;
+	CSoftware	cSoftOS;
 	CSysInfo    *m_pSysInfo	= new CSysInfo( TRUE, _T( "c:\\"));
 
 	// Get logged on user
@@ -2553,10 +2565,14 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	m_pSysInfo->getLastLoggedUser( cs1);
 	m_Device.SetLastLoggedUser( cs1);
 	// Get OS informations and device type (windows station or windows server)
-	m_pSysInfo->getOS( cs1, cs2, cs3, cs4);
+	m_pSysInfo->getOS( cs1, cs2, cs3, cs4, cs5);
 	m_Device.SetOS( cs1, cs2, cs3);
 	m_Device.SetDescription (cs4);
 	m_Device.SetAddressWidthOS( m_pSysInfo->getAddressWidthOS());
+	// Prepare to also store OS information to software list
+	cSoftOS.Set( _T( "Microsoft Corporation"), cs1, cs2, NOT_AVAILABLE, cs3, NOT_AVAILABLE, 0, TRUE);
+	cSoftOS.SetInstallDate( cs5);
+	cSoftOS.SetMemoryAddressWidth( m_pSysInfo->getAddressWidthOS());
 	// Get NT Domain or Workgroup
 	m_pSysInfo->getDomainOrWorkgroup( cs1);
 	m_Device.SetDomainOrWorkgroup( cs1);
@@ -2605,6 +2621,7 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	m_Device.SetWindowsProductKey( cs1);
 	// Get Software list
 	m_pSysInfo->getRegistryApplications( &m_SoftwareList, TRUE);
+	m_SoftwareList.AddTail( cSoftOS);
 	delete m_pSysInfo;
 	return TRUE;
 }
