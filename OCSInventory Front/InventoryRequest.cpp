@@ -454,7 +454,7 @@ BOOL CInventoryRequest::runInventory()
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Operating System uses %u bits memory address width"),  m_pSysInfo->getAddressWidthOS());
 	// Prepare to also store OS information to software list
 	cSoftOS.Set( _T( "Microsoft Corporation"), cs1, cs2, NOT_AVAILABLE, cs3, NOT_AVAILABLE, 0, TRUE);
-	cSoftOS.SetInstallDate( cs5);
+	cSoftOS.SetInstallDate( cs5, TRUE);
 	cSoftOS.SetMemoryAddressWidth( m_pSysInfo->getAddressWidthOS());
 	// Get NT Domain or Workgroup
 	if (!m_pSysInfo->getDomainOrWorkgroup( cs1))
