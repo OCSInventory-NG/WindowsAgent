@@ -52,18 +52,25 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 		if (!LoadFileToText( csBuffer, lpstrFile))
 			return FALSE;
 		// Parse XML
-		myXml.SetDoc( csBuffer);
+		if (!myXml.SetDoc( csBuffer))
+			return FALSE;
 		myXml.ResetPos();
-		myXml.FindFirstElem( _T( "DOWNLOAD"));
-
+		if (!myXml.FindFirstElem( _T( "DOWNLOAD")))
+			return FALSE;
 		m_csID = myXml.GetAttrib( _T( "ID"));
-		m_uPriority = _ttoi( myXml.GetAttrib( _T( "PRI")));
+		csBuffer = myXml.GetAttrib( _T( "PRI"));
+		if (csBuffer.IsEmpty())
+			return FALSE;
+		m_uPriority = _ttoi( csBuffer);
 		m_csAction = myXml.GetAttrib( _T( "ACT"));
 		m_csName = myXml.GetAttrib( _T( "NAME"));
 		m_csDigest = myXml.GetAttrib( _T( "DIGEST"));
 		m_csLocation = myXml.GetAttrib( _T( "LOC"));
 		m_csProtocol = myXml.GetAttrib( _T( "PROTO"));
-		m_uFrags = _ttoi( myXml.GetAttrib( _T( "FRAGS")));
+		csBuffer = myXml.GetAttrib( _T( "FRAGS"));
+		if (csBuffer.IsEmpty())
+			return FALSE;
+		m_uFrags = _ttoi( csBuffer);
 		m_csDigestAlgo = myXml.GetAttrib( _T( "DIGEST_ALGO"));
 		m_csDigestAlgo.MakeLower();
 		m_csDigestEncode = myXml.GetAttrib( _T( "DIGEST_ENCODE"));
@@ -87,14 +94,31 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 			// Put into tmp folder to unzip package into path
 			m_csPath.Format( _T( "%s\\%s\\tmp"), getDownloadFolder(), m_csID);
 
-		if( !ExpandEnvironmentStrings( myXml.GetAttrib( _T( "COMMAND")), cCommand, 255 ))
+		if (m_csAction == OCS_DOWNLOAD_ACTION_LAUNCH)
 		{
-			return FALSE;
+			// In LAUNCH, command is in the NAME atribute
+			if( !ExpandEnvironmentStrings( m_csName, cCommand, 255 ))
+			{
+				return FALSE;
+			}
+			else
+			{
+				m_csCommand = cCommand;
+				m_csCommand.Replace( _T( "INSTALL_PATH"), getInstallFolder());
+			}
 		}
 		else
 		{
-			m_csCommand = cCommand;
-			m_csCommand.Replace( _T( "INSTALL_PATH"), getInstallFolder());
+			// In Store or Execute mode, command is in the COMMAND attribute
+			if( !ExpandEnvironmentStrings( myXml.GetAttrib( _T( "COMMAND")), cCommand, 255 ))
+			{
+				return FALSE;
+			}
+			else
+			{
+				m_csCommand = cCommand;
+				m_csCommand.Replace( _T( "INSTALL_PATH"), getInstallFolder());
+			}
 		}
 		m_csGardeFou = myXml.GetAttrib( _T( "GARDEFOU"));
 		
