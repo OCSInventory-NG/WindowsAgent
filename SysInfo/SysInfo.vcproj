@@ -47,7 +47,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\OcsWmi;&quot;..\External_Deps\openssl-1.0.0\inc32&quot;"
+				AdditionalIncludeDirectories="..\OcsWmi;&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE;SYSINFO_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -131,7 +131,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\OcsWmi;&quot;..\External_Deps\openssl-1.0.0\inc32&quot;"
+				AdditionalIncludeDirectories="..\OcsWmi;&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE;SYSINFO_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -214,7 +214,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\OcsWmi;&quot;..\External_Deps\openssl-1.0.0\inc32&quot;"
+				AdditionalIncludeDirectories="..\OcsWmi;&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE;SYSINFO_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -299,7 +299,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\OcsWmi;&quot;..\External_Deps\openssl-1.0.0\inc32&quot;"
+				AdditionalIncludeDirectories="..\OcsWmi;&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE;SYSINFO_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"

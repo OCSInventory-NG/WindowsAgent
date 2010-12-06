@@ -35,16 +35,16 @@ BUILDING DEPENDANCIES
 OCS Inventory NG Agent for Windows needs followong libraries:
 
 - zlib 1.2.5 or newer (www.zlib.net)
-- openssl 1.0.0 or newer (www.openssl.org)
-- curl 7.20.1 or newer (http://curl.haxx.se/)
+- openssl 1.0.0c or newer (www.openssl.org)
+- curl 7.21.2 or newer (http://curl.haxx.se/)
 - tinyXML 2.6.1 or newer (http://www.sourceforge.net/projects/tinyxml/)
 - ZipArchive GPL Edition 4.0.1 or newer (http://www.artpol-software.com)
 
 Uncompress sources of these libraries into directory "External_Deps" to create
 the followong directory structures.
 - External_Deps\Zlib-1.2.5
-- External_Deps\openssl-1.0.0
-- External_Deps\curl-7.20.1
+- External_Deps\openssl-1.0.0c
+- External_Deps\curl-7.21.2
 - External_Deps\tinyxml
 - External_Deps\ZipArchive
 

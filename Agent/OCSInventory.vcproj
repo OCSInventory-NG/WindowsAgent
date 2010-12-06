@@ -48,7 +48,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
+				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;;&quot;..\External_Deps\curl-7.21.2\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -132,7 +132,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
+				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;;&quot;..\External_Deps\curl-7.21.2\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -216,7 +216,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
+				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;;&quot;..\External_Deps\curl-7.21.2\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
@@ -302,7 +302,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0\inc32&quot;;&quot;..\External_Deps\curl-7.20.1\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
+				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;;&quot;..\External_Deps\curl-7.21.2\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
