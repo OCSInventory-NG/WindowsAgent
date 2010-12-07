@@ -147,7 +147,7 @@ BOOL CHTTPConnexion::initLibCurl()
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL Follow Location option <%s>"), curl_easy_strerror( codeCurl));
 	}
 	// Set cURL user agent
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_USERAGENT, GetAnsiFromTString( m_csUserAgent))) != CURLE_OK)
+	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_USERAGENT, GetAnsiFromUnicode( m_csUserAgent))) != CURLE_OK)
 	{
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL User Agent <%s>"), curl_easy_strerror( codeCurl));
 	}
@@ -161,7 +161,7 @@ BOOL CHTTPConnexion::initLibCurl()
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL server authentication <%s>"), curl_easy_strerror( codeCurl));
 		}
 		csAuth.Format( _T( "%s:%s"), m_pConfig->getHttpUser(), m_pConfig->getHttpPwd());
-		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_USERPWD, GetAnsiFromTString( csAuth))) != CURLE_OK)
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_USERPWD, GetAnsiFromUnicode( csAuth))) != CURLE_OK)
 		{
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL server credentials <%s>"), curl_easy_strerror( codeCurl));
 		}
@@ -178,7 +178,7 @@ BOOL CHTTPConnexion::initLibCurl()
 		{
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP proxy type <%s>"), curl_easy_strerror( codeCurl));
 		}
-		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_PROXY, GetAnsiFromTString( m_pConfig->getProxy()))) != CURLE_OK)
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_PROXY, GetAnsiFromUnicode( m_pConfig->getProxy()))) != CURLE_OK)
 		{
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL proxy address <%s>"), curl_easy_strerror( codeCurl));
 		}
@@ -195,7 +195,7 @@ BOOL CHTTPConnexion::initLibCurl()
 		{
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL Socks 4 proxy type <%s>"), curl_easy_strerror( codeCurl));
 		}
-		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_PROXY, GetAnsiFromTString( m_pConfig->getProxy()))) != CURLE_OK)
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_PROXY, GetAnsiFromUnicode( m_pConfig->getProxy()))) != CURLE_OK)
 		{
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL proxy address <%s>"), curl_easy_strerror( codeCurl));
 		}
@@ -212,7 +212,7 @@ BOOL CHTTPConnexion::initLibCurl()
 		{
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL Socks 5 proxy type <%s>"), curl_easy_strerror( codeCurl));
 		}
-		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_PROXY, GetAnsiFromTString( m_pConfig->getProxy()))) != CURLE_OK)
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_PROXY, GetAnsiFromUnicode( m_pConfig->getProxy()))) != CURLE_OK)
 		{
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL proxy address <%s>"), curl_easy_strerror( codeCurl));
 		}
@@ -242,7 +242,7 @@ BOOL CHTTPConnexion::initLibCurl()
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to enable cURL SSL server certificate validation <%s>"), curl_easy_strerror( codeCurl));
 		}
 		// Set default CA certificate chain file path
-	    if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_CAINFO, GetAnsiFromTString( m_pConfig->getCaBundle()))) != CURLE_OK)
+	    if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_CAINFO, GetAnsiFromUnicode( m_pConfig->getCaBundle()))) != CURLE_OK)
 		{
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL CA chain file <%s>"), curl_easy_strerror( codeCurl));
 		}
@@ -282,7 +282,7 @@ BOOL CHTTPConnexion::setProxyAuth()
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL proxy authentication <%s>"), curl_easy_strerror( codeCurl));
 		}
 		csAuth.Format( _T( "%s:%s"), m_pConfig->getProxyUser(), m_pConfig->getProxyPwd());
-		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_PROXYUSERPWD, GetAnsiFromTString( csAuth))) != CURLE_OK)
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_PROXYUSERPWD, GetAnsiFromUnicode( csAuth))) != CURLE_OK)
 		{
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL proxy credentials <%s>"), curl_easy_strerror( codeCurl));
 		}
@@ -291,11 +291,7 @@ BOOL CHTTPConnexion::setProxyAuth()
 	{
 		// Disable proxy authentication
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Using cURL proxy without authentication"));
-/*		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_PROXYAUTH, CURLAUTH_NONE)) != CURLE_OK)
-		{
-			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to disable cURL proxy authentication <%s>"), curl_easy_strerror( codeCurl));
-		}
-*/	}
+	}
 	return TRUE;
 }
 
@@ -354,13 +350,8 @@ CByteArray * CHTTPConnexion::sendRequest( CRequestAbstract * pRequest)
 		m_csErrorString = _T( "Zlib compress error");
 		return pResponse;
 	}
-	if ((pContentToSend = CZip::deflate( pRequest->getMessage())) == NULL)
-	{
-		m_dwErrorCode = OCS_RESPONSE_ERROR_ZLIB;
-		m_csErrorString = _T( "Zlib compress error");
-		return pResponse;
-	}
-	dwContentLength = pContentToSend->GetSize();
+	pContentToSend = pRequest->getRawMessage();
+	dwContentLength = pRequest->getRawMessageLength();
 	// Initialize cURL
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Initializing cURL library for sendRequest"));
 	if (!initLibCurl())
@@ -371,7 +362,7 @@ CByteArray * CHTTPConnexion::sendRequest( CRequestAbstract * pRequest)
 	}
 	// Set the URL to receive our POST
 	csUrl =  m_pConfig->getServer();
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromTString( csUrl))) != CURLE_OK)
+	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( csUrl))) != CURLE_OK)
 	{
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post address <%s>"), curl_easy_strerror( codeCurl));
 	}
@@ -429,9 +420,6 @@ CByteArray * CHTTPConnexion::sendRequest( CRequestAbstract * pRequest)
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => HTTP Post response received <%s>"), m_csErrorString);
 	}
 
-	// Delete sent buffer
-	delete pContentToSend;
-
 	// Clean cURL
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Cleaning cURL library"));
 	curl_slist_free_all( pRequestHeaders);
@@ -463,7 +451,7 @@ CByteArray * CHTTPConnexion::simplePost( LPCTSTR lpstrURL, LPCTSTR lpstrPost)
 		return pResponse;
 	}
 	// Set the URL to receive our POST
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromTString( lpstrURL))) != CURLE_OK)
+	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( lpstrURL))) != CURLE_OK)
 	{
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL simplePost address <%s>"), curl_easy_strerror( codeCurl));
 	}
@@ -495,7 +483,7 @@ CByteArray * CHTTPConnexion::simplePost( LPCTSTR lpstrURL, LPCTSTR lpstrPost)
 	{
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post data length <%s>"), curl_easy_strerror( codeCurl));
 	}
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POSTFIELDS, GetAnsiFromTString( lpstrPost))) != CURLE_OK)
+	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POSTFIELDS, GetAnsiFromUnicode( lpstrPost))) != CURLE_OK)
 	{
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post data <%s>"), curl_easy_strerror( codeCurl));
 	}
@@ -545,7 +533,7 @@ CByteArray * CHTTPConnexion::simpleGet( LPCTSTR lpstrURL)
 		return pResponse;
 	}
 	// Set the URL to receive our GET
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromTString( lpstrURL))) != CURLE_OK)
+	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( lpstrURL))) != CURLE_OK)
 	{
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL simpleGet address <%s>"), curl_easy_strerror( codeCurl));
 	}
@@ -628,7 +616,7 @@ BOOL CHTTPConnexion::getFile( LPCTSTR lpstrURL, LPCTSTR lpstrFilename)
 		return bResult;
 	}
 	// Set the URL to receive our GET
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromTString( lpstrURL))) != CURLE_OK)
+	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( lpstrURL))) != CURLE_OK)
 	{
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL fileGet address <%s>"), curl_easy_strerror( codeCurl));
 	}
