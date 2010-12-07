@@ -504,8 +504,8 @@ BOOL COCSInventoryApp::InitInstance()
 			if (m_pConfig->isXmlRequired())
 			{
 				csMessage.Format(_T( "%s\\%s.xml"), m_pConfig->getXmlFolder(), getOcsDeviceID()->getDeviceID());
-				m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "AGENT => Writing standard XML file <%s.xml> required by argument /XML"),csMessage);
-				WriteTextToFile( pInventory->getMessage(), pInventory->getMessageLength(), csMessage);
+				m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "AGENT => Writing standard XML file <%s.xml> required by argument /XML"), csMessage);
+				WriteVoidToFile( pInventory->getMessage(), pInventory->getMessage().GetLength(), csMessage);
 			}
 			
 			/*****
