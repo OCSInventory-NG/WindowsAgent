@@ -32,6 +32,8 @@ public:
 	BOOL SetTinyXmlDocument( TiXmlDocument *pDoc);
 	// Ensure this an XML document
 	BOOL IsWellFormed();
+	// Add XML into current working node
+	BOOL AddXml( CMarkup *pSource);
 
 	// Add an XML node as child of current working XML node, and set it as new working node
 	TiXmlElement *AddElem( LPCTSTR szName, LPCTSTR szValue=NULL);

@@ -449,3 +449,31 @@ BOOL CMarkup::IsWellFormed()
 {
 	return TRUE;
 }
+
+BOOL CMarkup::AddXml( CMarkup *pSource)
+{
+	TiXmlHandle hdl( pSource->GetTiXmlDocument());
+
+	TiXmlElement *pElem; // = hdl.FirstChildElement().Element();
+	TiXmlElement *pChild;
+
+	CString csSection, csProperty, csValue;
+
+	for (pElem = hdl.FirstChildElement().Element(); pElem; pElem = pElem->NextSiblingElement())
+	{
+		// Add section to destination document
+		csSection.Format( _T( "%s"), pElem->Value());
+		if (!AddElem( csSection))
+			return FALSE;
+		for (pChild = pElem->FirstChildElement(); pChild; pChild = pChild->IterateChildren( pChild)->ToElement())
+		{
+			// Add child elem to destination document
+			csProperty.Format( _T( "%s"), pChild->Value());
+			csValue.Format( _T( "%s"), pChild->GetText());
+			if (!AddChildElem( csProperty, csValue))
+				return FALSE;
+		}
+		OutOfElem(); // Out of section
+	}
+	return TRUE;
+}
