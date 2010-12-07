@@ -21,12 +21,13 @@ public:
 	CMarkup();
 	virtual ~CMarkup();
 
-	// Get XML document in text format
-	LPCTSTR GetDoc();
+	// Get XML document in UTF-8 text format
+	LPCSTR GetDoc();
 	// Get XML document in TinyXML object
 	TiXmlDocument *GetTiXmlDocument();
-	// Set XML document from text string
-	BOOL SetDoc( LPCTSTR szDoc);
+	// Set XML document from text string (may be UTF-8 or not)
+	BOOL SetDoc( LPCSTR szDoc);
+	BOOL SetDoc( LPCWSTR szDoc);
 	// Set XML document from TinyXML object
 	BOOL SetTinyXmlDocument( TiXmlDocument *pDoc);
 	// Ensure this an XML document

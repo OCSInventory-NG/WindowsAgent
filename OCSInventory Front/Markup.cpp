@@ -32,7 +32,7 @@ TiXmlElement *CMarkup::AddElem( LPCTSTR szName, LPCTSTR szValue)
 	try
 	{
 		// Create XML element
-		TiXmlElement *pXmlElement = new TiXmlElement( T2CA( szName));
+		TiXmlElement *pXmlElement = new TiXmlElement( CT2CA( szName, CP_UTF8));
 		if (pXmlElement == NULL)
 			return NULL;
 		// Link it as a child of current working element
@@ -44,7 +44,7 @@ TiXmlElement *CMarkup::AddElem( LPCTSTR szName, LPCTSTR szValue)
 		if ((szValue != NULL) && (_tcslen( szValue) != 0))
 		{
 			// There is text to set between <Element></Element>
-			TiXmlText *pXmlText = new TiXmlText( T2CA( szValue));
+			TiXmlText *pXmlText = new TiXmlText( CT2CA( szValue, CP_UTF8));
 			if (pXmlText == NULL)
 			{
 				delete pXmlElement;
@@ -79,7 +79,7 @@ TiXmlElement *CMarkup::AddChildElem( LPCTSTR szName, LPCTSTR szValue)
 	try
 	{
 		// Create XML element
-		TiXmlElement *pXmlElement = new TiXmlElement( T2CA( szName));
+		TiXmlElement *pXmlElement = new TiXmlElement( CT2CA( szName, CP_UTF8));
 		if (pXmlElement == NULL)
 			return NULL;
 		// Link it as a child of current working element
@@ -91,7 +91,7 @@ TiXmlElement *CMarkup::AddChildElem( LPCTSTR szName, LPCTSTR szValue)
 		if ((szValue != NULL) && (_tcslen( szValue) != 0))
 		{
 			// There is text to set between <Element></Element>
-			TiXmlText *pXmlText = new TiXmlText( T2CA( szValue));
+			TiXmlText *pXmlText = new TiXmlText( CT2CA( szValue, CP_UTF8));
 			if (pXmlText == NULL)
 			{
 				delete pXmlElement;
@@ -127,7 +127,7 @@ BOOL CMarkup::SetAttrib( LPCTSTR szName, LPCTSTR szValue)
 	USES_CONVERSION;
 	try
 	{
-		m_pCurrentNode->SetAttribute( T2CA( szName), T2CA(  szValue));
+		m_pCurrentNode->SetAttribute( CT2CA( szName, CP_UTF8), CT2CA(  szValue, CP_UTF8));
 		return TRUE;
 	}
 	catch (CException *pEx)
@@ -217,7 +217,7 @@ BOOL CMarkup::RemoveChildElem( LPCTSTR szName, TiXmlElement *pXmlNode)
 		else
 			pSearchNode = m_pCurrentNode;
 		// Find first child element
-		while (pXmlElement = pSearchNode->FirstChildElement( T2CA( szName)))
+		while (pXmlElement = pSearchNode->FirstChildElement( CT2CA( szName, CP_UTF8)))
 		{
 			// One sibling child node found
 			pSearchNode->RemoveChild( pXmlElement);
@@ -253,7 +253,7 @@ TiXmlElement *CMarkup::FindFirstElem( LPCTSTR szName, TiXmlElement *pXmlNode)
 				pSearchNode = m_pCurrentNode;
 		}
 		// Find first child element
-		pXmlElement = pSearchNode->FirstChildElement( T2CA( szName));
+		pXmlElement = pSearchNode->FirstChildElement( CT2CA( szName, CP_UTF8));
 		if (pXmlElement)
 		{
 			// One sibling child node found
@@ -290,7 +290,7 @@ TiXmlElement *CMarkup::FindNextElem( LPCTSTR szName, TiXmlElement *pXmlNode)
 				pSearchNode = m_pCurrentNode;
 		}
 		// We are continuing a previous search at same XML tree level
-		pXmlElement = pSearchNode->NextSiblingElement( T2CA( szName));
+		pXmlElement = pSearchNode->NextSiblingElement( CT2CA( szName, CP_UTF8));
 		if (pXmlElement)
 		{
 			// Next sibling found
@@ -340,7 +340,7 @@ LPCTSTR CMarkup::GetData( TiXmlElement *pXmlNode)
 		const char *szValue = pNode->GetText();
 		if (szValue)
 		{
-			csResult.Format( _T( "%s"), CA2T( szValue));
+			csResult.Format( _T( "%s"), CA2CT( szValue, CP_UTF8));
 			return csResult;
 		}
 		return NULL;
@@ -362,10 +362,10 @@ LPCTSTR CMarkup::GetAttrib( LPCTSTR szAttrib)
 
 	try
 	{
-		const char *szValue = m_pCurrentNode->Attribute( T2CA( szAttrib));
+		const char *szValue = m_pCurrentNode->Attribute( CT2CA( szAttrib, CP_UTF8));
 		if (szValue)
 		{
-			csResult.Format( _T( "%s"), CA2T( szValue));
+			csResult.Format( _T( "%s"), CA2CT( szValue, CP_UTF8));
 			return csResult;
 		}
 		return NULL;
@@ -377,12 +377,12 @@ LPCTSTR CMarkup::GetAttrib( LPCTSTR szAttrib)
 	}
 }
 
-LPCTSTR CMarkup::GetDoc()
+LPCSTR CMarkup::GetDoc()
 {
 	try
 	{
 		TiXmlPrinter myPrinter;
-		static CString csDoc;
+		static CStringA csDoc;
 
 		myPrinter.SetIndent( "    " );
 		m_pDoc->Accept( &myPrinter );
@@ -403,16 +403,15 @@ TiXmlDocument *CMarkup::GetTiXmlDocument()
 }
 
 // Set XML document from text string
-BOOL CMarkup::SetDoc( LPCTSTR szDoc)
+BOOL CMarkup::SetDoc( LPCSTR szDoc)
 {
-    USES_CONVERSION;
 	try
 	{
 		TiXmlDocument *pDoc = new TiXmlDocument();
 
 		if (pDoc)
 		{
-			pDoc->Parse( T2A( szDoc));
+			pDoc->Parse( szDoc);
 			if (m_pDoc)
 				delete m_pDoc;
 			m_pDoc = pDoc;
@@ -426,6 +425,12 @@ BOOL CMarkup::SetDoc( LPCTSTR szDoc)
 		pEx->Delete();
 		return FALSE;
 	}
+}
+
+BOOL CMarkup::SetDoc( LPCWSTR szDoc)
+{
+    USES_CONVERSION;
+	return SetDoc( CT2CA( szDoc));
 }
 
 // Set XML document from TinyXML object
