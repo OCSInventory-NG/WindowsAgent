@@ -152,7 +152,7 @@ BOOL CHTTPCrypt::encrypt( CString &csClear, CString &csCrypted)
 
     // Create encryption context.   
     EVP_CIPHER_CTX_init( &oEncCtx);
-    EVP_EncryptInit_ex( &oEncCtx, oChiper, 0, (LPBYTE)GetAnsiFromTString( m_csKey), pInitVector);
+    EVP_EncryptInit_ex( &oEncCtx, oChiper, 0, (LPBYTE) LPCSTR( GetAnsiFromUnicode( m_csKey)), pInitVector);
 
     // Encrypt most of the data:
 	nOutBufferLength = csClear.GetLength()+2*AES_BLOCK_SIZE;
@@ -160,7 +160,7 @@ BOOL CHTTPCrypt::encrypt( CString &csClear, CString &csCrypted)
 		return FALSE;
 	nLength = nOutBufferLength;
     if (EVP_EncryptUpdate( &oEncCtx, pOutBuffer, &nLength,
-							(LPBYTE)GetAnsiFromTString( csClear), csClear.GetLength()) < 0)
+							(LPBYTE) LPCSTR( GetAnsiFromUnicode( csClear)), csClear.GetLength()) < 0)
 	{
 		// Encryption fail
 		free( pOutBuffer);
@@ -237,7 +237,7 @@ BOOL CHTTPCrypt::decrypt(CString &csCrypted, CString &csClear)
 
 	// Create decryption context.   
 	EVP_CIPHER_CTX_init( &oEncCtx);
-	EVP_DecryptInit_ex( &oEncCtx, oChiper, 0, (LPBYTE) GetAnsiFromTString( m_csKey), pInBuffer);
+	EVP_DecryptInit_ex( &oEncCtx, oChiper, 0, (LPBYTE) LPCSTR( GetAnsiFromUnicode( m_csKey)), pInBuffer);
 	free( pInBuffer);
 
 	// Subtract the InitVec.
