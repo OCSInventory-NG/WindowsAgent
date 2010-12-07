@@ -30,8 +30,6 @@ public:
 	BOOL SetDoc( LPCWSTR szDoc);
 	// Set XML document from TinyXML object
 	BOOL SetTinyXmlDocument( TiXmlDocument *pDoc);
-	// Ensure this an XML document
-	BOOL IsWellFormed();
 	// Add XML into current working node
 	BOOL AddXml( CMarkup *pSource);
 

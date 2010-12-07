@@ -445,11 +445,6 @@ BOOL CMarkup::SetTinyXmlDocument( TiXmlDocument *pDoc)
 	return TRUE;
 }
 
-BOOL CMarkup::IsWellFormed()
-{
-	return TRUE;
-}
-
 BOOL CMarkup::AddXml( CMarkup *pSource)
 {
 	TiXmlHandle hdl( pSource->GetTiXmlDocument());
