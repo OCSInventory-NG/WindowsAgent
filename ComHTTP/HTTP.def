@@ -1,6 +1,6 @@
 ; HTTP.def : Declares the module parameters for the DLL.
 
-LIBRARY      "HTTP"
+LIBRARY      "ComHTTP"
 
 EXPORTS
     ; Explicit exports can go here
