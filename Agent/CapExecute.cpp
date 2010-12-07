@@ -84,15 +84,14 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 				// Success
 				break;
 			}
-			// Now get output and ensure XML wel formatted
-			myXml.SetDoc( cmProcess.getOutput());
-			if (!myXml.IsWellFormed())
+			// Now get output and ensure XML well formatted
+			if (!myXml.SetDoc( cmProcess.getOutput()))
 			{
 				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output is not an XML document"), cFinder.GetFilePath());
 				continue;
 			}
-			// Copy XML content to inventory
-			if (!copyXML( &myXml, m_pInventory->getXmlPointerContent()))
+			// Copy XML content to inventory, node <content>
+			if (! m_pInventory->getXmlPointerContent()->AddXml( &myXml))
 			{
 				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Failed adding plugin <%s> output to inventory"), cFinder.GetFilePath());
 				continue;
@@ -108,34 +107,4 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 		pEx->Delete();
 		return FALSE;
 	}
-}
-
-
-BOOL CCapExecute::copyXML( CMarkup *pSource, CMarkup *pDest)
-{
-/*	TiXmlHandle hdl(doc);
-
-	TiXmlElement *elem; // = hdl.FirstChildElement().Element();
-	TiXmlNode *pChild;
-
-	for (elem = hdl.FirstChildElement().Element(); elem; elem = elem->NextSiblingElement())
-	{
-		pXml->AddElem( elem->Value());
-		pXml->IntoElem();
-
-		for (pChild = elem->FirstChild(); pChild != 0; pChild = pChild->IterateChildren(pChild))
-		{
-			if (pChild->FirstChild() != NULL) 
-			{
-				if (!pXml->AddChildElem(pChild->Value(), pChild->FirstChild()->Value()))
-				{
-					m_pLogger->log( LOG_PRIORITY_WARNING, _T( "Failed to save %s: %s"), pChild->Value(), pChild->FirstChild()->Value());
-				}
-				pXml->ResetChildPos();
-			}
-		}
-
-		pXml->OutOfElem();
-	}
-*/	return TRUE;
 }

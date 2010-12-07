@@ -31,8 +31,6 @@ protected:
 	// Execute VBS scripts find into plugins directory if bScript = TRUE
 	// Execute executable files find into plugins directory if bScript = FALSE
 	BOOL execute( BOOL bScript, LPCTSTR lpstrPath = NULL);
-	// Copy XML content from pSource to pDest
-	BOOL copyXML( CMarkup *pSource, CMarkup *pDest);
 };
 
 #endif // _CAPSCRIPT_H_INCLUDED_
