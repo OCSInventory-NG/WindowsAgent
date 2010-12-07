@@ -14,6 +14,7 @@
 
 #include "stdafx.h"
 #include "ConnexionLocal.h"
+#include "OcsUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -61,12 +62,7 @@ CByteArray * CConnexionLocal::sendRequest( CRequestAbstract *pRequest)
 		cOcsFile.Write( pRequest->getRawMessage(), pRequest->getRawMessageLength());	
 		cOcsFile.Close();
 		// Respond to SEND inventory each time
-#ifdef _MBCS
-		pResponse = CZip::deflate( _T( "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<REPLY>\n<RESPONSE>SEND</RESPONSE>\n</REPLY>\r\n"));
-#else
-// UTF-8 / Unicode
-		pResponse = CZip::deflate( _T( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<REPLY>\n<RESPONSE>SEND</RESPONSE>\n</REPLY>\r\n"));
-#endif
+		pResponse = CZip::deflate( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<REPLY>\n<RESPONSE>SEND</RESPONSE>\n</REPLY>\r\n");
 		return pResponse;
 	}
 	catch( CException *pEx)
