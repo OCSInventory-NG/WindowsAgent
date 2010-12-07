@@ -40,7 +40,7 @@ public: // Methods
 	// Return the xml content in CMarkup format
 	CMarkup *getXmlContent();
 	// Return the xml content in CString format
-	CString getCStringContent();
+	CStringA getStringContent();
 	// Return the error status (the OCS_RESPONSE_ERROR_SUCCESS is the good one)
 	DWORD getErrorStatus();
 	BOOL isSuccess();
@@ -59,7 +59,7 @@ protected: // Attributes
 
 	CByteArray	*m_pRawData;
 	CMarkup		m_cmXml;
-	CString		m_csContent;
+	CStringA	m_csContent;
 	DWORD		m_dwErrorStatus;
 	CString		m_csErrorString;
 

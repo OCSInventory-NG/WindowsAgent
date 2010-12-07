@@ -32,8 +32,8 @@ public: // Methods
 	virtual ~CRequestAbstract() = 0;
 
 	// Return the raw message in CString format
-	CString getMessage() { return m_cmXml.GetDoc(); }
-	DWORD getMessageLength() { return (_tcslen( m_cmXml.GetDoc())*sizeof(TCHAR)); }
+	CStringA getMessage() { return m_cmXml.GetDoc(); }
+	DWORD getMessageLength() { return (strlen( m_cmXml.GetDoc())*sizeof(TCHAR)); }
 
 	// Return the compressed sent message 
 	CByteArray* getRawMessage() { return m_pRawMessage; }
