@@ -356,7 +356,7 @@ BOOL COCSInventoryState::WriteToFile(LPCTSTR lpstrFilename)
 	CMarkup	myXml;
 
 	FormatXML( &myXml);
-	if (!WriteTextToFile( myXml.GetDoc(), _tcslen( myXml.GetDoc()), lpstrFilename))
+	if (!WriteVoidToFile( myXml.GetDoc(), strlen( myXml.GetDoc()), lpstrFilename))
 		return FALSE;
 	return TRUE;
 }
