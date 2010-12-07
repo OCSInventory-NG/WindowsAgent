@@ -1878,27 +1878,19 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Software infos"));
+	m_List.AddString( _T( "Services infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
-	if (myWmiDll.BeginEnumClassObject( _T( "Win32_Product")))
+	if (myWmiDll.BeginEnumClassObject( _T( "Win32_Service")))
 	{
 		while (myWmiDll.MoveNextEnumClassObject())
 		{
 			CString str, res;
 
-			str = _T( "Vendor  = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "Vendor"));
+			str = _T( "DisplayName = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "DisplayName"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "Name = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
-			str += res;
-			m_List.AddString( str);
-			str = _T( "Version = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "Version"));
-			str += res;
-			m_List.AddString( str);
-			str = _T( "Caption = ");
+			str = _T( "Caption  = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "Caption"));
 			str += res;
 			m_List.AddString( str);
@@ -1906,24 +1898,66 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			res = myWmiDll.GetClassObjectStringValue( _T( "Description"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "InstallLocation = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "InstallLocation"));
+			str = _T( "Name = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "Language = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "Language"));
+			str = _T( "PathName = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "PathName"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "InstallDate = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "InstallDate"));
+			str = _T( "StartMode = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "StartMode"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "SKUNumber = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "SKUNumber"));
+			str = _T( "Start account = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "StartName"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "IdentifyingNumber = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "IdentifyingNumber"));
+			str = _T( "State = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "State"));
+			str += res;
+			m_List.AddString( str);
+			m_List.AddString( _T( ""));
+		}
+		myWmiDll.CloseEnumClassObject();
+	}
+
+	m_List.AddString( _T( "------------------------------------------------------"));
+	m_List.AddString( _T( "Scheduled Job infos"));
+	m_List.AddString( _T( "------------------------------------------------------"));
+	if (myWmiDll.BeginEnumClassObject( _T( "Win32_ScheduledJob")))
+	{
+		while (myWmiDll.MoveNextEnumClassObject())
+		{
+			CString str, res;
+
+			str = _T( "Caption  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Caption"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Description  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Description"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Name = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Command = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Command"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "JobStatus = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "JobStatus"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Owner account = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Owner"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Priority = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Priority"));
 			str += res;
 			m_List.AddString( str);
 			m_List.AddString( _T( ""));
