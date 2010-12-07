@@ -29,9 +29,9 @@ public: // Methods
 	virtual ~CZip();
 
 	// The two simple tools provided
-	static CString inflate(CByteArray*);
-	static CByteArray* deflate(CString);
-
+	static CStringA inflate(CByteArray*);
+	static CByteArray* deflate(CStringA);
+	static CByteArray* deflate( LPBYTE pByte, UINT nLength);
 };
 
 #endif // !defined(AFX_ZIP_H__6285B091_15B6_49B9_AAAD_DBE203883E53__INCLUDED_)

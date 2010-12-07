@@ -38,10 +38,10 @@ CZip::~CZip()
 /**
  *	Returns a decompressed String of the "data" byte array
  */
-CString CZip::inflate(CByteArray* data) {
+CStringA CZip::inflate(CByteArray* data) {
 
 	if( data == NULL )
-		return CString("");
+		return CStringA("");
 	
 	CByteArray* inflated = new CByteArray();
 	Flate myZip;
@@ -52,7 +52,7 @@ CString CZip::inflate(CByteArray* data) {
 	}
 
 	if(inflated == NULL)
-		return CString("");
+		return CStringA("");
 
 /*  Bug Windows 2003 - Copy BYTE TO BYTE to create CString result
 	CString result = inflated->GetData();
@@ -61,7 +61,7 @@ CString CZip::inflate(CByteArray* data) {
 		result.SetAt(inflated->GetSize(),0);
 */
 
-	CString result("");
+	CStringA result("");
 	for (int i=0;i<inflated->GetSize();i++){
  		result += inflated->GetAt(i);
  	}
@@ -74,7 +74,7 @@ CString CZip::inflate(CByteArray* data) {
 /**
  *	Returns a deflate compressed byte array of the "data" string
  */
-CByteArray* CZip::deflate(CString data)
+CByteArray* CZip::deflate(CStringA data)
 {	
 	CByteArray *pDeflated = new CByteArray();
 	CByteArray src;
@@ -84,7 +84,20 @@ CByteArray* CZip::deflate(CString data)
 		src.Add( data.GetAt(i)) ;
 	}
 
+	myZip.Compress(*pDeflated, src);
+	return pDeflated;
+}
+
+CByteArray* CZip::deflate( LPBYTE pByte, UINT nLength)
+{	
+	CByteArray *pDeflated = new CByteArray();
+	CByteArray src;
+	Flate myZip;
 	
+	for(UINT i=0;i<nLength;i++) {
+		src.Add( pByte[i]) ;
+	}
+
 	myZip.Compress(*pDeflated, src);
 	return pDeflated;
 }
