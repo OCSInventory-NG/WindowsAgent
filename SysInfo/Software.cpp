@@ -209,7 +209,7 @@ void CSoftware::Clear()
 	m_csFilename.Empty();	
 	m_ulFilesize = 0;	
 	m_bFromRegistry = FALSE;
-	m_csInstallDate.Empty();
+	m_csInstallDate = _T( "0000/00/00");
 	m_dwAddressWidth = 0;
 }
 

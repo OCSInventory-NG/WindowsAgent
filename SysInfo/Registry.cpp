@@ -5296,7 +5296,7 @@ BOOL CRegistry::GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive)
 				csComments = NOT_AVAILABLE;
 				csLanguage = NOT_AVAILABLE;
 				csUninstall = NOT_AVAILABLE;
-				csInstallDate = NOT_AVAILABLE;
+				csInstallDate = _T( "0000/00/00");
 				// Read the Publisher
 				if (GetValue( hKeyObject, WIN_APPS_VENDOR_VALUE, csPublisher) == ERROR_SUCCESS)
 				{
@@ -5376,7 +5376,7 @@ BOOL CRegistry::GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive)
 				{
 					AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for %s\\%s\\%s !\n"),csCurHive,
 									   csSubKey, WIN_APPS_INSTALLDATE_VALUE);
-					csInstallDate = NOT_AVAILABLE;
+					csInstallDate = _T( "0000/00/00");
 				}
 				// Read the uninstall string
 				if ((GetValue( hKeyObject, WIN_APPS_UNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
@@ -5492,7 +5492,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 				csComments = NOT_AVAILABLE;
 				csLanguage = NOT_AVAILABLE;
 				csUninstall = NOT_AVAILABLE;
-				csInstallDate = NOT_AVAILABLE;
+				csInstallDate = _T( "0000/00/00");
 				// Read the Publisher
 				if (GetValue( hKeyObject, NT_APPS_VENDOR_VALUE, csPublisher) == ERROR_SUCCESS)
 				{
@@ -5572,7 +5572,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 				{
 					AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for %s\\%s\\%s !\n"),csCurHive,
 									   csSubKey, NT_APPS_INSTALLDATE_VALUE);
-					csInstallDate = NOT_AVAILABLE;
+					csInstallDate = _T( "0000/00/00");
 				}
 				// Read the uninstall string
 				if ((GetValue( hKeyObject, NT_APPS_UNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
