@@ -179,7 +179,7 @@ BOOL CDeviceid::writeDeviceid()
 	// Set Device ID into first line and MAC adresses into second line
 	csContent.Format( _T( "%s\n%s"), m_csDeviceid, m_csMacConcat);
 	// Compress buffer
-	if ((pCb = CZip::deflate(  csContent)) == NULL)
+	if ((pCb = CZip::deflate(  GetAnsiFromUnicode( csContent))) == NULL)
 	{
 		// Unable to compress
 		pLogger->log( LOG_PRIORITY_WARNING, _T( "DID_CHECK => could not write file <%s\\%s>"), getDataFolder(), DEVICEID_DAT_FILE);
