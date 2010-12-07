@@ -63,7 +63,7 @@ UINT WINAPI IpDiscoverWorkerThread( LPVOID pParam )
 		// Set up sockaddr_in structure which is passed
 		// to the getnameinfo function
 		saIn.sin_family = AF_INET;
-		saIn.sin_addr.s_addr = inet_addr( GetAnsiFromTString( csSent) );
+		saIn.sin_addr.s_addr = inet_addr( GetAnsiFromUnicode( csSent) );
 		//saGNI.sin_port = htons(port);
 
 		// Call getnameinfo (either NetBios or DNS request)
@@ -183,9 +183,9 @@ BOOL CCapIpdiscover::scanLocalNetwork()
 				pXml->AddElem( _T( "IPDISCOVER"));
 
 				m_pLogger->log( LOG_PRIORITY_DEBUG, _T("IPDISCOVER => Scanning to detect IPv4 enabled hosts for network <%s> with <%i> ms between each request"),m_csLan.GetBuffer(0),m_ulIpDisc_lat);
-				ulIpMask = lpfn_htonl( lpfn_inet_addr( GetAnsiFromTString( csMask)));
+				ulIpMask = lpfn_htonl( lpfn_inet_addr( GetAnsiFromUnicode( csMask)));
 
-				m_ulNetNumber = lpfn_ntohl( lpfn_inet_addr( GetAnsiFromTString( m_csLan)));
+				m_ulNetNumber = lpfn_ntohl( lpfn_inet_addr( GetAnsiFromUnicode( m_csLan)));
 				ulMaxIp = ~ulIpMask;		
 									
 				// Launching worker threads
