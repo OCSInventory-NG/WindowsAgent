@@ -391,7 +391,7 @@ int COptDownloadPackage::downloadInfoFile()
 		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Cannot read Metadata file <%s>"), getLocalMetadataFilename());
 		return FALSE;
 	}
-	// Parse metadata and ensure XML well formatted
+	// Parse metadata and ensure XML well formed
 	if(!xml.SetDoc( csBuffer))
 	{
 		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Metadata file <%s> is not XML"), getLocalMetadataFilename());
