@@ -93,7 +93,7 @@ int COcsService::generateRandNumber(int nMax)
 	CString csNamePath;
 	csNamePath.Format( _T( "%s\\%s"), getDataFolder(), OCS_SERVICE_RAND_FILE);
 	
-	RAND_write_file( GetAnsiFromTString( csNamePath));
+	RAND_write_file( GetAnsiFromUnicode( csNamePath));
 	BYTE* randBuf= new BYTE[sizeof(UINT)];
 	CFile fRand;
 	CFileException e;
