@@ -455,8 +455,8 @@ BOOL CXMLInteract::UpdateAccountInfo( LPCTSTR lpstrAccountFile)
 			GetPrivateProfileString( OCS_AGENT_SECTION, szToken1, _T(""), szToken2, myFileStatus.m_size, lpstrAccountFile);
 			// Write it in XML
 			m_pXml->AddElem( _T( "ACCOUNTINFO"));
-				m_pXml->AddElem( _T( "KEYNAME"), szToken1);
-				m_pXml->AddElem( _T( "KEYVALUE"), szToken2);
+				m_pXml->AddChildElem( _T( "KEYNAME"), szToken1);
+				m_pXml->AddChildElem( _T( "KEYVALUE"), szToken2);
 			m_pXml->OutOfElem();				
 			// Get next key name
 			szToken1 = _tcstok( NULL, szSeps );
