@@ -18,11 +18,17 @@
 #include "stdafx.h"
 #include "OCSInventory Front Classes.h"
 
-// Transform UNICODE or MBCS string to ANSI string (1024*1024 char max)
-LPCSTR OCSINVENTORYFRONT_API GetAnsiFromTString(LPCTSTR a_wstrString);
+// Transform UNICODE string to ANSI string
+CStringA OCSINVENTORYFRONT_API GetAnsiFromUnicode(LPCTSTR a_wstrString);
 
-// Transform ANSI string to UNICODE or MBCS string (1024*1024 char max)
-LPCTSTR OCSINVENTORYFRONT_API GetTStringFromAnsi(LPCSTR a_strString);
+// Transform ANSI string to UNICODE string
+CStringW OCSINVENTORYFRONT_API GetUnicodeFromAnsi(LPCSTR a_strString);
+
+// Transform Unicode source text string to UTF8
+CStringA OCSINVENTORYFRONT_API GetUTF8FromUnicode( LPCTSTR a_wstrString);
+
+// Transform UTF-8 source text string to Unicode
+CStringW OCSINVENTORYFRONT_API GetUnicodeFromUTF8( LPCSTR a_strString);
 
 // Create directory (and every missing parent directories if needed)
 BOOL OCSINVENTORYFRONT_API directoryCreate( LPCTSTR lpstrDir);
@@ -47,6 +53,9 @@ BOOL OCSINVENTORYFRONT_API LoadFileToText( CString &csBuffer, LPCTSTR lpstrFilen
 
 // Write text content into file
 BOOL OCSINVENTORYFRONT_API WriteTextToFile( LPCTSTR lpstrText, UINT uLength, LPCTSTR lpstrFilename);
+
+// Write content into file
+BOOL OCSINVENTORYFRONT_API WriteVoidToFile( LPCVOID lpVoid, UINT uLength, LPCTSTR lpstrFilename);
 
 // Compute digest on a file, using algorithm lpstralgo, and return result encode in base64 or hexa
 BOOL OCSINVENTORYFRONT_API fileDigest( LPCTSTR lpstrFile, CString &csDigest, LPCTSTR lpstrAlgo = _T( "sha1"), BOOL bBase64 = TRUE);

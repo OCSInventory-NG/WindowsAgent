@@ -19,26 +19,59 @@
 #include <openssl/hmac.h>
 
 
-LPCSTR OCSINVENTORYFRONT_API GetAnsiFromTString(LPCTSTR a_wstrString)
+CStringA OCSINVENTORYFRONT_API GetAnsiFromUnicode(LPCTSTR a_wstrString)
 {
-   USES_CONVERSION;
-   static char	szBuffer[1024*1024+1]; // 1MB buffer to handle string 
-   
-   if (_tcslen( a_wstrString) > 1024*1024)
-	   AfxThrowMemoryException();
-   strcpy_s( szBuffer, 1024*1024, CT2CA(a_wstrString));
-   return szBuffer;
+	USES_CONVERSION;
+/*	static char	szBuffer[1024*1024+1]; // 1MB buffer to handle string 
+
+	if (_tcslen( a_wstrString) > 1024*1024)
+		AfxThrowMemoryException();
+	strcpy_s( szBuffer, 1024*1024, CT2CA(a_wstrString));
+	return szBuffer;
+*/
+	static CStringA csAnsi;
+
+	csAnsi = CT2CA(a_wstrString);
+	return csAnsi;
 }
 
-LPCTSTR OCSINVENTORYFRONT_API GetTStringFromAnsi(LPCSTR a_strString)
+CStringW OCSINVENTORYFRONT_API GetUnicodeFromAnsi(LPCSTR a_strString)
 {
-   USES_CONVERSION;
-   static TCHAR szBuffer[1024*1024]; // 1MB buffer to handle string 
-  
-   if (strlen( a_strString) > 1024*1024)
-	   AfxThrowMemoryException();
-   _tcscpy_s( szBuffer, 1024*1024, CA2CT( a_strString));
-   return szBuffer;
+	USES_CONVERSION;
+/*	static TCHAR szBuffer[1024*1024]; // 1MB buffer to handle string 
+
+	if (strlen( a_strString) > 1024*1024)
+		AfxThrowMemoryException();
+	_tcscpy_s( szBuffer, 1024*1024, CA2CT( a_strString));
+	return szBuffer;
+*/
+	static CStringW csWide;
+
+	csWide = A2CW(a_strString);
+	return csWide;
+
+}
+
+CStringA OCSINVENTORYFRONT_API GetUTF8FromUnicode( LPCTSTR a_wstrString)
+{
+	// http://weblogs.asp.net/kennykerr/archive/2008/07/24/visual-c-in-short-converting-between-unicode-and-utf-8.aspx
+
+	USES_CONVERSION;
+	static CStringA utf8;
+	
+	utf8 = CT2CA( a_wstrString, CP_UTF8);
+	return utf8;
+}
+
+CStringW OCSINVENTORYFRONT_API GetUnicodeFromUTF8( LPCSTR a_strString)
+{
+	// http://weblogs.asp.net/kennykerr/archive/2008/07/24/visual-c-in-short-converting-between-unicode-and-utf-8.aspx
+
+	USES_CONVERSION;
+	static CStringW unicode;
+	
+	unicode = CA2T( a_strString, CP_UTF8);
+	return unicode;
 }
 
 BOOL OCSINVENTORYFRONT_API directoryCreate( LPCTSTR lpstrDir)
@@ -259,6 +292,27 @@ BOOL OCSINVENTORYFRONT_API WriteTextToFile( LPCTSTR lpstrText, UINT uLength, LPC
 	return TRUE;
 }
 
+BOOL OCSINVENTORYFRONT_API WriteVoidToFile( LPCVOID lpVoid, UINT uLength, LPCTSTR lpstrFilename)
+{
+	CFile	cFile;
+
+	try
+	{
+		if (!cFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite))
+			return FALSE;
+		cFile.Write( lpVoid, uLength);
+		cFile.Close();
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		cFile.Abort();
+		return FALSE;
+	}
+	return TRUE;
+}
+
 BOOL OCSINVENTORYFRONT_API fileDigest( LPCTSTR lpstrFile, CString &csDigest, LPCTSTR lpstrAlgo, BOOL bBase64)
 {
 	CFile	fRead;
@@ -279,7 +333,7 @@ BOOL OCSINVENTORYFRONT_API fileDigest( LPCTSTR lpstrFile, CString &csDigest, LPC
 
 	OpenSSL_add_all_digests();
 	// Set the algorythm
-	if (!(evpMD = EVP_get_digestbyname( GetAnsiFromTString( lpstrAlgo))))
+	if (!(evpMD = EVP_get_digestbyname( GetAnsiFromUnicode( lpstrAlgo))))
 		// Unsupported digest
 		return FALSE;
 	// Computing the checksum
@@ -381,7 +435,7 @@ LPBYTE OCSINVENTORYFRONT_API base64_decode( LPCTSTR lpstrBase64, UINT *uLength)
 		if ((pRet = (LPBYTE) malloc( uOutLength)) == NULL)
 			return NULL;
 
-		if (EVP_DecodeBlock( pRet, (LPBYTE) GetAnsiFromTString( lpstrBase64), _tcslen( lpstrBase64)) < 0)
+		if (EVP_DecodeBlock( pRet, (LPBYTE) LPCSTR( GetAnsiFromUnicode( lpstrBase64)), _tcslen( lpstrBase64)) < 0)
 		{
 			free( pRet);
 			return NULL;
