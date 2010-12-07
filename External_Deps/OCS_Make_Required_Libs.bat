@@ -120,27 +120,6 @@ cd ..
 echo.
 echo *************************************************************************
 echo *                                                                       *
-echo * Preparing for OCS Inventory NG : Building tinyXML DLL...              *
-echo *                                                                       *
-echo *************************************************************************
-echo.
-Rem cd "%LIBXML2_PATH%\win32"
-Rem Configure LibXML2 for MS Visual C++
-Rem cscript.exe configure.js compiler=msvc iconv=no
-Rem Build LibXML2 dll
-Rem nmake /f Makefile.msvc
-if ERRORLEVEL 1 goto ERROR
-
-Rem copy libs to use them in OCS
-Rem copy "bin.msvc\libxml2.lib" ..\..
-Rem copy "bin.msvc\libxml2.dll" ..\..\..\Release
-Rem copy "bin.msvc\libxml2.dll" ..\..\..\Debug
-if ERRORLEVEL 1 goto ERROR
-
-cd ..\..
-echo.
-echo *************************************************************************
-echo *                                                                       *
 echo * Preparing for OCS Inventory NG : Configuring ZipArchive DLL...        *
 echo *                                                                       *
 echo *************************************************************************
@@ -153,6 +132,18 @@ copy "ZipArchive.dll" ..\..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
 cd ..\..
+echo.
+echo *************************************************************************
+echo *                                                                       *
+echo * Preparing for OCS Inventory NG : Compiling service message file...    *
+echo *                                                                       *
+echo *************************************************************************
+echo.
+cd "..\Service"
+mc.exe NTServiceMsg.mc
+if ERRORLEVEL 1 goto ERROR
+
+cd ..\External_Deps
 echo.
 echo *************************************************************************
 echo *                                                                       *
