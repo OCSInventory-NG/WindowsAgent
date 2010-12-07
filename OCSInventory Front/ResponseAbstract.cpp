@@ -34,7 +34,7 @@ CResponseAbstract::CResponseAbstract(CByteArray* rawResponse)
 	m_pRawData =  rawResponse;
 	if (m_pRawData != NULL)
 		m_csContent = CZip::inflate(m_pRawData);
-	getOcsLogger()->log( LOG_PRIORITY_TRACE, m_csContent);
+	getOcsLogger()->log( LOG_PRIORITY_TRACE, GetUnicodeFromAnsi( m_csContent));
 	m_cmXml.SetDoc( m_csContent);
 	if(!getErrorStatus())
 		setErrorStatus( OCS_RESPONSE_ERROR_SUCCESS);
@@ -57,7 +57,7 @@ CMarkup* CResponseAbstract::getXmlContent()
 	return &m_cmXml;
 }
 
-CString CResponseAbstract::getCStringContent()
+CStringA CResponseAbstract::getStringContent()
 {
 	return m_csContent;
 }

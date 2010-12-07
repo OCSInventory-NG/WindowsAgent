@@ -22,6 +22,7 @@
 #include "Log.h"
 #include "Deviceid.h"
 #include "Zip.h"
+#include "OcsUtils.h"
 
 class OCSINVENTORYFRONT_API CRequestAbstract  
 {

@@ -22,6 +22,7 @@
 #include "Ocsinventory Front Classes.h"
 #include "Markup.h"
 #include "Zip.h"
+#include "OcsUtils.h"
 
 #define OCS_RESPONSE_ERROR_SUCCESS	0
 #define OCS_RESPONSE_ERROR_FILE		1

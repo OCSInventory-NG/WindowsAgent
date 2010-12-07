@@ -63,7 +63,7 @@ DWORD CRequestAbstract::getRawMessageLength()
  */
 void CRequestAbstract::cleanXml()
 {
-	CString bef = m_cmXml.GetDoc();
+	CStringA bef = m_cmXml.GetDoc();
 	
 	for (int i=0;i<bef.GetLength();i++)
 	{	
@@ -71,7 +71,7 @@ void CRequestAbstract::cleanXml()
 		if( (cut<32 || cut>244) && cut!=10 && cut!=13 )
 			bef.SetAt(i,'x');		
 	}
-	m_cmXml.SetDoc(bef);
+	m_cmXml.SetDoc( bef);
 
 }
 
@@ -83,8 +83,8 @@ BOOL CRequestAbstract::final()
 	if(!m_bFinal)
 	{
 		cleanXml();
-		m_pLogger->log( LOG_PRIORITY_TRACE, m_cmXml.GetDoc());
-		m_pRawMessage = CZip::deflate( m_cmXml.GetDoc());
+		m_pLogger->log( LOG_PRIORITY_TRACE, GetUnicodeFromUTF8( getMessage()));
+		m_pRawMessage = CZip::deflate( getMessage());
 		m_bFinal = TRUE;
 		return (m_pRawMessage != NULL);
 	}
