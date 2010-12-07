@@ -399,7 +399,7 @@ int COptDownloadPackage::downloadInfoFile()
 	}
 	xml.FindFirstElem( _T( "DOWNLOAD"));
 	xml.SetAttrib( _T( "LOC"), m_csRemotePackLoc);
-	if (!WriteTextToFile( xml.GetDoc(), _tcslen( xml.GetDoc()), getLocalMetadataFilename()))
+	if (!WriteVoidToFile( xml.GetDoc(), strlen( xml.GetDoc()), getLocalMetadataFilename()))
 	{
 		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't update Metadata file <%s>"), getLocalMetadataFilename());
 		return FALSE;
