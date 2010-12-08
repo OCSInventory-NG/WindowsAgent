@@ -608,22 +608,25 @@ FunctionEnd
 
 #####################################################################
 # This function try to stop service when installing/upgrading
+# Service Key to stop is passed into top of stack
 #####################################################################
 Function StopService
-	StrCmp $OcsService "TRUE" 0 end_loop_stop_service
+	; Get service key
+    Pop $9
 	; Save used register
 	Push $R0
+	StrCmp $OcsService "TRUE" 0 end_loop_stop_service
 	; Check service status
-	StrCpy $logBuffer "Is ${PRODUCT_SERVICE_NAME} running..."
+	StrCpy $logBuffer "Is Service <$9> running..."
 	Call Write_Log
-	services::IsServiceRunning "${PRODUCT_SERVICE_NAME}"
+	services::IsServiceRunning "$9"
 	pop $0
 	StrCpy $logBuffer "$0$\r$\n"
 	Call Write_Log
 	; Stop service
-	StrCpy $logBuffer "Trying to stop ${PRODUCT_SERVICE_NAME}..."
+	StrCpy $logBuffer "Trying to stop Service <$9>..."
 	Call Write_Log
-	services::SendServiceCommand "stop" "${PRODUCT_SERVICE_NAME}" ; This command dies silently on Win9x
+	services::SendServiceCommand "stop" "$9" ; This command dies silently on Win9x
 	pop $0
 	StrCpy $logBuffer "$0$\r$\n"
 	Call Write_Log
@@ -632,9 +635,9 @@ loop_stop_service:
 	intop $1 $1 + 1
 	strcmp ${Service_Time_Out} $1 Err_time_out_reached
 	sleep 950
-	StrCpy $logBuffer "Is ${PRODUCT_SERVICE_NAME} running..."
+	StrCpy $logBuffer "Is Service <$9> running..."
 	Call Write_Log
-	services::IsServiceRunning "${PRODUCT_SERVICE_NAME}"
+	services::IsServiceRunning "$9"
 	pop $0
 	StrCpy $logBuffer "$0 - Waiting 1 second(s) for Service to stop...$\r$\n"
 	Call Write_Log
@@ -858,6 +861,7 @@ TestInstall_Kill_Process:
 	; If yes, stop it then kill processes
 	StrCpy $logBuffer "Trying to stop service and kill processes...$\r$\n"
 	Call Write_Log
+	Push "${PRODUCT_SERVICE_NAME}"
 	Call StopService
 	; Restore used register
 	Pop $R0
@@ -879,11 +883,17 @@ Function UpgradeFrom4000
     FileClose $R0
 	StrCpy $logBuffer "Old agent 4000 series detected, running migration process...$\r$\n"
 	Call Write_Log
+	; First, stop service
+	StrCpy $logBuffer "Trying to stop service and kill processes...$\r$\n"
+	Call Write_Log
+	Push "OCS INVENTORY"
+	Call StopService
     ; Copy existing data files to new folder
     SetShellVarContext All
-	StrCpy $logBuffer "Moving data files from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
+	StrCpy $logBuffer "Moving data files from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
 	Call Write_Log
 	ClearErrors
+    IfErrors TestInstall_Upgrade_Error
     CopyFiles /SILENT "$INSTDIR\admininfo.conf" "$APPDATA\OCS Inventory NG\Agent\admininfo.conf"
     IfErrors TestInstall_Upgrade_Error
     CopyFiles /SILENT "$INSTDIR\cacert.pem" "$APPDATA\OCS Inventory NG\Agent\cacert.pem"
@@ -901,27 +911,31 @@ Function UpgradeFrom4000
     WriteINIStr "$APPDATA\OCS Inventory NG\Agent\ocsinventory.ini" "${PRODUCT_SERVICE_NAME}" "PROLOG_FREQ" $R0
     ReadINIStr $R0 "$INSTDIR\service.ini" "OCS_SERVICE" "OLD_PROLOG_FREQ"
     WriteINIStr "$APPDATA\OCS Inventory NG\Agent\ocsinventory.ini" "${PRODUCT_SERVICE_NAME}" "OLD_PROLOG_FREQ" $R0
-	StrCpy $logBuffer "Removing previous release..."
+	StrCpy $logBuffer "Starting previous release silent uninstall...$\r$\n"
 	Call Write_Log
     nsExec::ExecToLog '"$INSTDIR\uninst.exe" /S'
     pop $0
-    StrCpy $logBuffer "Result: $0$\r$\n"
+    StrCpy $logBuffer "Previous release uninstall ended with exit code $0$\r$\n"
     Call Write_Log
-	Delete "$STARTMENU\Ocs_Contact.lnk"
+	Delete /REBOOTOK "$STARTMENU\Ocs_Contact.lnk"
 	Sleep 1000
     ; Remove old data files
-	StrCpy $logBuffer "OK$\r$\nRemoving old data files from <$INSTDIR>...$\r$\n"
+	StrCpy $logBuffer "Removing old data files from <$INSTDIR>...$\r$\n"
 	Call Write_Log
-    Delete "$INSTDIR\admininfo.conf"
-    Delete "$INSTDIR\cacert.pem"
-    Delete "$INSTDIR\label"
-    Delete "$INSTDIR\last_state"
-    Delete "$INSTDIR\ocsinventory.dat"
-    Delete "$INSTDIR\service.ini"
+    Delete /REBOOTOK "$INSTDIR\admininfo.conf"
+    Delete /REBOOTOK "$INSTDIR\cacert.pem"
+    Delete /REBOOTOK "$INSTDIR\label"
+    Delete /REBOOTOK "$INSTDIR\last_state"
+    Delete /REBOOTOK "$INSTDIR\ocsinventory.dat"
+    Delete /REBOOTOK "$INSTDIR\service.ini"
+    Delete /REBOOTOK "$INSTDIR\*.log"
+	StrCpy $logBuffer "Migration process from old agent 4000 series succesfull, continuing setup...$\r$\n"
+	Call Write_Log
     goto TestInstall_End_Upgrade
 TestInstall_Upgrade_Error:
-	StrCpy $logBuffer "Failed ! Removing files skipped$\r$\n"
+	StrCpy $logBuffer "Migration process from old agent 4000 series failed ! ABORTING$\r$\n"
 	Call Write_Log
+	Abort "Migration process from old agent 4000 series failed !"
 TestInstall_End_Upgrade:
 	; Restore used register
 	Pop $R0
@@ -977,21 +991,21 @@ WriteServiceIni_Socks5_Proxy:
     StrCpy $R0 "3"
     goto WriteServiceIni_End_Proxy
 WriteServiceIni_End_Proxy:
-	StrCpy $R1 "$R2 PROXY_TYPE=$R0"
+	StrCpy $R1 "$R2 /PROXY_TYPE=$R0"
 	StrCpy $R2 $R1
 	; Proxy address and port
 	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 8" "State"
-	StrCpy $R1 "$R2 PROXY=$R0"
+	StrCpy $R1 "$R2 /PROXY=$R0"
 	StrCpy $R2 $R1
 	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 9" "State"
-	StrCpy $R1 "$R2 PROXY_PORT=$R0"
+	StrCpy $R1 "$R2 /PROXY_PORT=$R0"
 	StrCpy $R2 $R1
 	; Proxy credentials
 	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 10" "State"
-	StrCpy $R1 "$R2 PROXY_USER=$R0"
+	StrCpy $R1 "$R2 /PROXY_USER=$R0"
 	StrCpy $R2 $R1
 	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 11" "State"
-	StrCpy $R1 "$R2 PROXY_PWD=$R0"
+	StrCpy $R1 "$R2 /PROXY_PWD=$R0"
 	StrCpy $R2 $R1
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; AGENT AND SETUP PROPERTIES
@@ -1155,9 +1169,9 @@ FunctionEnd
 #####################################################################
 Section "OCS Inventory Agent" SEC01
     ; Create data directory for agent = working directory
+    SetShellVarContext All
  	StrCpy $logBuffer "Creating directory <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
 	Call Write_Log
-    SetShellVarContext All
     CreateDirectory "$APPDATA\OCS Inventory NG\Agent"
     ; Set authenticated users right to modify data
     StrCpy $logBuffer "SetACL on <$APPDATA\OCS Inventory NG\Agent>..."
