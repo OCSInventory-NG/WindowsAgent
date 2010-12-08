@@ -213,21 +213,21 @@ BOOL CEdid::Disconnect()
 
 BOOL CEdid::ParseEDID(LPBYTE lpByte, Standard_EDID &myEDID)
 {
-	EDIDRecord tmpEDID;  //données brutes
+	EDIDRecord tmpEDID;  // EDID data structure
 
-	// copie les données brutes dans la structure donnée brute
-	memcpy( &tmpEDID, lpByte, sizeof(EDIDRecord));
+	// Copy byte to EDID data structure
+	memcpy( &tmpEDID, lpByte, sizeof( EDIDRecord));
 
-	// transfert les données dans la structure préformatée
+	// Copy some well non data to EDID data structure
 	myEDID.Checksum = tmpEDID.Checksum;
 
-	//copie toutes les infos Chroma Information
+	// Chroma Information
 	memcpy( &(myEDID.Chroma_Information_Green_X_Y_Red_X_Y), &(tmpEDID.Chroma_Information_Green_X_Y_Red_X_Y), 10*sizeof(BYTE));
 
-	// copie les 4 Detailed_Timing_Descriptions
+	// 4 Detailed_Timing_Descriptions
 	memcpy( &(myEDID.Detailed_Timing_Description1), &(tmpEDID.Detailed_Timing_Description1), 72);
 
-	// copie les autres valeurs
+	// Others values
 	myEDID.DPMS_Flags = tmpEDID.DPMS_Flags;
 	myEDID.EDID_ID_Code = tmpEDID.EDID_ID_Code;
 	myEDID.EDID_Revision = tmpEDID.EDID_Revision;
@@ -235,13 +235,13 @@ BOOL CEdid::ParseEDID(LPBYTE lpByte, Standard_EDID &myEDID)
 	myEDID.Established_Timings_1 = tmpEDID.Established_Timings_1;
 	myEDID.Established_Timings_2 = tmpEDID.Established_Timings_2;
 	myEDID.Gamma_Factor = tmpEDID.Gamma_Factor;
-	myEDID.Manufacture_Year = int(tmpEDID.Manufacture_Year) + 1990;
-	_tcsncpy( myEDID.Manufacturer_ID, GetManufacturerID(tmpEDID.Manufacturer_ID), 4);
+	myEDID.Manufacture_Year = int( tmpEDID.Manufacture_Year) + 1990;
+	strncpy( myEDID.Manufacturer_ID, GetManufacturerID( tmpEDID.Manufacturer_ID), 4);
 	myEDID.Manufacturer_Reserved_Timing = tmpEDID.Manufacturer_Reserved_Timing;
 	myEDID.Maximum_Horizontal_Size = tmpEDID.Maximum_Horizontal_Size;
 	myEDID.Maximum_Vertical_Size = tmpEDID.Maximum_Vertical_Size;
 	myEDID.Serial_Number = tmpEDID.Serial_Number;
-	//myEDID.Standard_Timing_Identification = DecodeStandardTimingIdentification(tmpEDID.Standard_Timing_Identification);
+//	myEDID.Standard_Timing_Identification = DecodeStandardTimingIdentification(tmpEDID.Standard_Timing_Identification);
 	myEDID.Video_Input_Type = tmpEDID.Video_Input_Type;
 	myEDID.Week_Number_Manufacture = tmpEDID.Week_Number_Manufacture;
 
@@ -270,14 +270,13 @@ DetailTiming CEdid::GetDetailledTimingDescriptionType(BYTE Detailed_Timing_Descr
 
 }
 
-LPCTSTR CEdid::GetManufacturerID(BYTE ID[2])
+LPCSTR CEdid::GetManufacturerID(BYTE ID[2])
 {
 	int		littleEndianID, // ID en little-endian
 			i = ID[0];
 	BYTE	FirstLetter,
 			SecondLetter,
 			ThirdLetter; // les trois lettres de l'ID
-	static CString strID;
 
 	// transforme le big-endian en little-endian
 	littleEndianID = ID[1] ;
@@ -288,177 +287,179 @@ LPCTSTR CEdid::GetManufacturerID(BYTE ID[2])
 	SecondLetter = (littleEndianID & (32 + 64 + 128 + 256 + 512)) / 32;
 	FirstLetter = (littleEndianID & (1024 + 2048 + 4096 + 8192 + 16384)) / 1024;
 	// renvoie l'ID dans une chaine de 3 caracteres
-	strID.Format( _T( "%c%c%c"), 64 + FirstLetter, 64 + SecondLetter, 64 + ThirdLetter);
-	return strID;
-}
-
-LPCTSTR CEdid::GetManufacturerName(LPCTSTR lpstrID)
-{
-	if (_tcsicmp( lpstrID, _T( "ACR")) == 0)
-		return _T("Acer, Inc.");
-	else if (_tcsicmp( lpstrID, _T( "ACT")) == 0)
-		return _T(  "Targa");
-	else if (_tcsicmp( lpstrID, _T( "ADI")) == 0)
-		return _T(  "ADI Corporation http://www.adi.com.tw");
-	else if (_tcsicmp( lpstrID, _T( "AOC")) == 0)
-		return _T(  "AOC International (USA) Ltd.");
-	else if (_tcsicmp( lpstrID, _T( "API")) == 0)
-		return _T(  "Acer America Corp.");
-	else if (_tcsicmp( lpstrID, _T( "APP")) == 0)
-		return _T(  "Apple Computer, Inc.");
-	else if (_tcsicmp( lpstrID, _T( "ART")) == 0)
-		return _T(  "ArtMedia");
-	else if (_tcsicmp( lpstrID, _T( "AST")) == 0)
-		return _T(  "AST Research");
-	else if (_tcsicmp( lpstrID, _T( "CPL")) == 0)
-		return _T(  "Compal Electronics, Inc. / ALFA");
-	else if (_tcsicmp( lpstrID, _T( "CPQ")) == 0)
-		return _T(  "COMPAQ Computer Corp.");
-	else if (_tcsicmp( lpstrID, _T( "CTX")) == 0)
-		return _T(  "CTX - Chuntex Electronic Co.");
-	else if (_tcsicmp( lpstrID, _T( "DEC")) == 0)
-		return _T(  "Digital Equipment Corporation");
-	else if (_tcsicmp( lpstrID, _T( "DEL")) == 0)
-		return _T(  "Dell Computer Corp.");
-	else if (_tcsicmp( lpstrID, _T( "DPC")) == 0)
-		return _T(  "Delta Electronics, Inc.");
-	else if (_tcsicmp( lpstrID, _T( "DWE")) == 0)
-		return _T(  "Daewoo Telecom Ltd");
-	else if (_tcsicmp( lpstrID, _T( "ECS")) == 0)
-		return _T(  "ELITEGROUP Computer Systems");
-	else if (_tcsicmp( lpstrID, _T( "EIZ")) == 0)
-		return _T(  "EIZO");
-	else if (_tcsicmp( lpstrID, _T( "FCM")) == 0)
-		return _T(  "Funai Electric Company of Taiwan");
-	else if (_tcsicmp( lpstrID, _T( "FUS")) == 0)
-		return _T(  "Fujitsu Siemens");
-	else if (_tcsicmp( lpstrID, _T( "GSM")) == 0)
-		return _T(  "LG Electronics Inc. (GoldStar Technology, Inc.)");
-	else if (_tcsicmp( lpstrID, _T( "GWY")) == 0)
-		return _T(  "Gateway 2000");
-	else if (_tcsicmp( lpstrID, _T( "HEI")) == 0)
-		return _T(  "Hyundai Electronics Industries Co., Ltd.");
-	else if (_tcsicmp( lpstrID, _T( "HIT")) == 0)
-		return _T(  "Hitachi");
-	else if (_tcsicmp( lpstrID, _T( "HSL")) == 0)
-		return _T(  "Hansol Electronics");
-	else if (_tcsicmp( lpstrID, _T( "HTC")) == 0)
-		return _T(  "Hitachi Ltd. / Nissei Sangyo America Ltd.");
-	else if (_tcsicmp( lpstrID, _T( "HWP")) == 0)
-		return _T(  "Hewlett Packard");
-	else if (_tcsicmp( lpstrID, _T( "IBM")) == 0)
-		return _T(  "IBM PC Company");
-	else if (_tcsicmp( lpstrID, _T( "ICL")) == 0)
-		return _T(  "Fujitsu ICL");
-	else if (_tcsicmp( lpstrID, _T( "IVM")) == 0)
-		return _T(  "Idek Iiyama North America, Inc.");
-	else if (_tcsicmp( lpstrID, _T( "KFC")) == 0)
-		return _T(  "KFC Computek");
-	else if (_tcsicmp( lpstrID, _T( "LKM")) == 0)
-		return _T(  "ADLAS / AZALEA");
-	else if (_tcsicmp( lpstrID, _T( "LNK")) == 0)
-		return _T(  "LINK Technologies, Inc.");
-	else if (_tcsicmp( lpstrID, _T( "LTN")) == 0)
-		return _T(  "Lite-On");
-	else if (_tcsicmp( lpstrID, _T( "MAG")) == 0)
-		return _T(  "MAG InnoVision");
-	else if (_tcsicmp( lpstrID, _T( "MAX")) == 0)
-		return _T(  "Maxdata Computer GmbH");
-	else if (_tcsicmp( lpstrID, _T( "MEI")) == 0)
-		return _T(  "Panasonic Comm. & Systems Co.");
-	else if (_tcsicmp( lpstrID, _T( "MEL")) == 0)
-		return _T(  "Mitsubishi Electronics");
-	else if (_tcsicmp( lpstrID, _T( "MIR")) == 0)
-		return _T(  "miro Computer Products AG");
-	else if (_tcsicmp( lpstrID, _T( "MTC")) == 0)
-		return _T(  "MITAC");
-	else if (_tcsicmp( lpstrID, _T( "NAN")) == 0)
-		return _T(  "NANAO");
-	else if (_tcsicmp( lpstrID, _T( "NEC")) == 0)
-		return _T(  "NEC Technologies, Inc.");
-	else if (_tcsicmp( lpstrID, _T( "NOK")) == 0)
-		return _T(  "Nokia");
-	else if (_tcsicmp( lpstrID, _T( "OQI")) == 0)
-		return _T(  "OPTIQUEST");
-	else if (_tcsicmp( lpstrID, _T( "PBN")) == 0)
-		return _T(  "Packard Bell");
-	else if (_tcsicmp( lpstrID, _T( "PGS")) == 0)
-		return _T(  "Princeton Graphic Systems");
-	else if (_tcsicmp( lpstrID, _T( "PHL")) == 0)
-		return _T(  "Philips Consumer Electronics Co.");
-	else if (_tcsicmp( lpstrID, _T( "REL")) == 0)
-		return _T(  "Relisys");
-	else if (_tcsicmp( lpstrID, _T( "SAM")) == 0)
-		return _T(  "Samsung");
-	else if (_tcsicmp( lpstrID, _T( "SDI")) == 0)
-		return _T(  "Samtron");
-	else if (_tcsicmp( lpstrID, _T( "SEC")) == 0)
-		return _T(  "Fujitsu Siemens");
-	else if (_tcsicmp( lpstrID, _T( "SMI")) == 0)
-		return _T(  "Smile");
-	else if (_tcsicmp( lpstrID, _T( "SNI")) == 0)
-		return _T(  "Siemens Nixdorf");
-	else if (_tcsicmp( lpstrID, _T( "SNY")) == 0)
-		return _T(  "Sony Corporation");
-	else if (_tcsicmp( lpstrID, _T( "SPT")) == 0)
-		return _T(  "Sceptre");
-	else if (_tcsicmp( lpstrID, _T( "SRC")) == 0)
-		return _T(  "Shamrock Technology");
-	else if (_tcsicmp( lpstrID, _T( "STP")) == 0)
-		return _T(  "Sceptre");
-	else if (_tcsicmp( lpstrID, _T( "TAT")) == 0)
-		return _T(  "Tatung Co. of America, Inc.");
-	else if (_tcsicmp( lpstrID, _T( "TRL")) == 0)
-		return _T(  "Royal Information Company");
-	else if (_tcsicmp( lpstrID, _T( "TSB")) == 0)
-		return _T(  "Toshiba, Inc.");
-	else if (_tcsicmp( lpstrID, _T( "UNM")) == 0)
-		return _T(  "Unisys Corporation");
-	else if (_tcsicmp( lpstrID, _T( "VSC")) == 0)
-		return _T(  "ViewSonic Corporation");
-	else if (_tcsicmp( lpstrID, _T( "WTC")) == 0)
-		return _T(  "Wen Technology");
-	else if (_tcsicmp( lpstrID, _T( "ZCM")) == 0)
-		return _T(  "Zenith Data Systems");
-	else if (_tcsicmp( lpstrID, _T( "___")) == 0)
-		return _T(  "Targa");
-	m_csBuffer.Format( _T( "Unknown manufacturer code %s"), lpstrID);
+	m_csBuffer.Format( "%c%c%c", 64 + FirstLetter, 64 + SecondLetter, 64 + ThirdLetter);
 	return m_csBuffer;
 }
 
-LPCTSTR CEdid::GetEdidText(BYTE lpByte[18])
+LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 {
-	static TCHAR	szResult[15];
-	int i;
+	if (_strnicmp( lpstrID, "ACR", 3) == 0)
+		return "Acer, Inc.";
+	else if (_strnicmp( lpstrID, "ACT", 3) == 0)
+		return "Targa";
+	else if (_strnicmp( lpstrID, "ADI", 3) == 0)
+		return "ADI Corporation http://www.adi.com.tw";
+	else if (_strnicmp( lpstrID, "AOC", 3) == 0)
+		return "AOC International (USA) Ltd.";
+	else if (_strnicmp( lpstrID, "API", 3) == 0)
+		return "Acer America Corp.";
+	else if (_strnicmp( lpstrID, "APP", 3) == 0)
+		return "Apple Computer, Inc.";
+	else if (_strnicmp( lpstrID, "ART", 3) == 0)
+		return "ArtMedia";
+	else if (_strnicmp( lpstrID, "AST", 3) == 0)
+		return "AST Research";
+	else if (_strnicmp( lpstrID, "CPL", 3) == 0)
+		return "Compal Electronics, Inc. / ALFA";
+	else if (_strnicmp( lpstrID, "CPQ", 3) == 0)
+		return "COMPAQ Computer Corp.";
+	else if (_strnicmp( lpstrID, "CTX", 3) == 0)
+		return "CTX - Chuntex Electronic Co.";
+	else if (_strnicmp( lpstrID, "DEC", 3) == 0)
+		return "Digital Equipment Corporation";
+	else if (_strnicmp( lpstrID, "DEL", 3) == 0)
+		return "Dell Computer Corp.";
+	else if (_strnicmp( lpstrID, "DPC", 3) == 0)
+		return "Delta Electronics, Inc.";
+	else if (_strnicmp( lpstrID, "DWE", 3) == 0)
+		return "Daewoo Telecom Ltd";
+	else if (_strnicmp( lpstrID, "ECS", 3) == 0)
+		return "ELITEGROUP Computer Systems";
+	else if (_strnicmp( lpstrID, "EIZ", 3) == 0)
+		return "EIZO";
+	else if (_strnicmp( lpstrID, "FCM", 3) == 0)
+		return "Funai Electric Company of Taiwan";
+	else if (_strnicmp( lpstrID, "FUS", 3) == 0)
+		return "Fujitsu Siemens";
+	else if (_strnicmp( lpstrID, "GSM", 3) == 0)
+		return "LG Electronics Inc. (GoldStar Technology, Inc.)";
+	else if (_strnicmp( lpstrID, "GWY", 3) == 0)
+		return "Gateway 2000";
+	else if (_strnicmp( lpstrID, "HEI", 3) == 0)
+		return "Hyundai Electronics Industries Co., Ltd.";
+	else if (_strnicmp( lpstrID, "HIT", 3) == 0)
+		return "Hitachi";
+	else if (_strnicmp( lpstrID, "HSL", 3) == 0)
+		return "Hansol Electronics";
+	else if (_strnicmp( lpstrID, "HTC", 3) == 0)
+		return "Hitachi Ltd. / Nissei Sangyo America Ltd.";
+	else if (_strnicmp( lpstrID, "HWP", 3) == 0)
+		return "Hewlett Packard";
+	else if (_strnicmp( lpstrID, "IBM", 3) == 0)
+		return "IBM PC Company";
+	else if (_strnicmp( lpstrID, "ICL", 3) == 0)
+		return "Fujitsu ICL";
+	else if (_strnicmp( lpstrID, "IVM", 3) == 0)
+		return "Idek Iiyama North America, Inc.";
+	else if (_strnicmp( lpstrID, "KFC", 3) == 0)
+		return "KFC Computek";
+	else if (_strnicmp( lpstrID, "LKM", 3) == 0)
+		return "ADLAS / AZALEA";
+	else if (_strnicmp( lpstrID, "LNK", 3) == 0)
+		return "LINK Technologies, Inc.";
+	else if (_strnicmp( lpstrID, "LTN", 3) == 0)
+		return "Lite-On";
+	else if (_strnicmp( lpstrID, "MAG", 3) == 0)
+		return "MAG InnoVision";
+	else if (_strnicmp( lpstrID, "MAX", 3) == 0)
+		return "Maxdata Computer GmbH";
+	else if (_strnicmp( lpstrID, "MEI", 3) == 0)
+		return "Panasonic Comm. & Systems Co.";
+	else if (_strnicmp( lpstrID, "MEL", 3) == 0)
+		return "Mitsubishi Electronics";
+	else if (_strnicmp( lpstrID, "MIR", 3) == 0)
+		return "miro Computer Products AG";
+	else if (_strnicmp( lpstrID, "MTC", 3) == 0)
+		return "MITAC";
+	else if (_strnicmp( lpstrID, "NAN", 3) == 0)
+		return "NANAO";
+	else if (_strnicmp( lpstrID, "NEC", 3) == 0)
+		return "NEC Technologies, Inc.";
+	else if (_strnicmp( lpstrID, "NOK", 3) == 0)
+		return "Nokia";
+	else if (_strnicmp( lpstrID, "OQI", 3) == 0)
+		return "OPTIQUEST";
+	else if (_strnicmp( lpstrID, "PBN", 3) == 0)
+		return "Packard Bell";
+	else if (_strnicmp( lpstrID, "PGS", 3) == 0)
+		return "Princeton Graphic Systems";
+	else if (_strnicmp( lpstrID, "PHL", 3) == 0)
+		return "Philips Consumer Electronics Co.";
+	else if (_strnicmp( lpstrID, "REL", 3) == 0)
+		return "Relisys";
+	else if (_strnicmp( lpstrID, "SAM", 3) == 0)
+		return "Samsung";
+	else if (_strnicmp( lpstrID, "SDI", 3) == 0)
+		return "Samtron";
+	else if (_strnicmp( lpstrID, "SEC", 3) == 0)
+		return "Fujitsu Siemens";
+	else if (_strnicmp( lpstrID, "SMI", 3) == 0)
+		return "Smile";
+	else if (_strnicmp( lpstrID, "SNI", 3) == 0)
+		return "Siemens Nixdorf";
+	else if (_strnicmp( lpstrID, "SNY", 3) == 0)
+		return "Sony Corporation";
+	else if (_strnicmp( lpstrID, "SPT", 3) == 0)
+		return "Sceptre";
+	else if (_strnicmp( lpstrID, "SRC", 3) == 0)
+		return "Shamrock Technology";
+	else if (_strnicmp( lpstrID, "STP", 3) == 0)
+		return "Sceptre";
+	else if (_strnicmp( lpstrID, "TAT", 3) == 0)
+		return "Tatung Co. of America, Inc.";
+	else if (_strnicmp( lpstrID, "TRL", 3) == 0)
+		return "Royal Information Company";
+	else if (_strnicmp( lpstrID, "TSB", 3) == 0)
+		return "Toshiba, Inc.";
+	else if (_strnicmp( lpstrID, "UNM", 3) == 0)
+		return "Unisys Corporation";
+	else if (_strnicmp( lpstrID, "VSC", 3) == 0)
+		return "ViewSonic Corporation";
+	else if (_strnicmp( lpstrID, "WTC", 3) == 0)
+		return "Wen Technology";
+	else if (_strnicmp( lpstrID, "ZCM", 3) == 0)
+		return "Zenith Data Systems";
+	else if (_strnicmp( lpstrID, "___", 3) == 0)
+		return "Targa";
+	m_csBuffer.Format( "Unknown manufacturer code %s", lpstrID);
+	return m_csBuffer;
+}
+
+LPCSTR CEdid::GetEdidText(BYTE lpByte[18])
+{
+	char	szResult[15];
+	int		i;
 
 	for (i=0; i<18;i++)
 	{
 		if (lpByte[i]==0) lpByte[i]=' ';
 		if (lpByte[i]==10) lpByte[i]=0;
 	}
-	_tcsncpy( szResult, (LPCTSTR) (lpByte+4), 14);
-	return szResult;
+	memset( szResult, 0, 15);
+	strncpy( szResult, (LPCSTR) (lpByte+DESCRIPTOR_DATA_OFFSET), 14);
+	m_csBuffer.Format( "%s", szResult);
+	return m_csBuffer;
 }
 
-LPCTSTR CEdid::DecodeDPMSFlag(BYTE Flag)
+LPCSTR CEdid::DecodeDPMSFlag(BYTE Flag)
 {
 	// 2 - 0
 	// unused???
 	// Display type
 	if ((Flag & 8) == 8)
-		m_csBuffer = _T( "RGB color");
+		m_csBuffer = "RGB color";
 	else
-		m_csBuffer = _T( "non-RGB multicolor");
+		m_csBuffer = "non-RGB multicolor";
  
 	// 4
 	// unused???
 	// Power support
 /*	if ((Flag & 32) == 32)
-		m_csBuffer += _T( ", Active Off supported");
+		m_csBuffer += ", Active Off supported";
 	if ((Flag & 64) == 64)
-		m_csBuffer += _T( ", Suspend supported");
+		m_csBuffer += ", Suspend supported";
 	if ((Flag & 128) == 128)
-		m_csBuffer += _T( ", Standby supported");
+		m_csBuffer += ", Standby supported";
 */	return m_csBuffer;
 }
 
@@ -503,50 +504,40 @@ BOOL CEdid::GetDisplayEDID(HDEVINFO hDeviceInfoSet, SP_DEVINFO_DATA *pDevInfoDat
 	return TRUE;
 }
 
-void CEdid::AcerHack (CMonitor *myMonitor, Standard_EDID *myRecord)
+BOOL CEdid::AcerHack( CStringA &csSerial, Standard_EDID *myRecord)
 {
-	TCHAR Buf1[32], Buf2[32], Buffer[32];
+	char szBuf1[32], szBuf2[32], szBuffer[32];
 
-	AddLog( _T( "\tEDID : Monitor %s.%04X.%8X (%s)\n"), 
-		myRecord->Manufacturer_ID, (DWORD)myRecord->EDID_ID_Code, (DWORD)myRecord->Serial_Number,
-		myMonitor->GetSerial());
-	
-	if (!lstrcmpi(myRecord->Manufacturer_ID, _T( "ACR")))
+	if (_strnicmp( myRecord->Manufacturer_ID, "ACR", 3) == 0)
 	{
 		// This an Acer monitor
-		lstrcpyn(Buf1, myMonitor->GetSerial(), sizeof(Buf1));
-		if (lstrlen( Buf1)==12) {
+		strncpy( szBuf1, csSerial, sizeof( szBuf1));
+		if (strlen( szBuf1)==12)
+		{
 			// Heuristic confirm for
 			// AL1916 (0xAD49), AL1923 (0x0783) B223W (0x0018 et 0x0020)
 			// P243W  (0xADAF), X233H  (0x00A8)
-			wsprintf( Buf2, _T( "%08x"), myRecord->Serial_Number);
-			lstrcpyn( Buffer,    Buf1, 9);
-			lstrcpyn( Buffer+8,  Buf2, 9);
-			lstrcpyn(Buffer+16, Buf1+8, 5);
-
-			AddLog( _T( "\tEDID Acer Fix: Change Serial Number to %s\n"), Buffer);
-			myMonitor->SetSerial( Buffer);
-
+			sprintf( szBuf2, "%08x", myRecord->Serial_Number);
+			strncpy( szBuffer, szBuf1, 9);
+			strncpy( szBuffer+8, szBuf2, 9);
+			strncpy( szBuffer+16, szBuf1+8, 5);
+			csSerial = szBuffer;
+			return TRUE;
 		}
 	}
+	return FALSE;
 }
 
-LPCTSTR CEdid::GetDescription(Standard_EDID *myRecord)
+LPCSTR CEdid::GetDescription(Standard_EDID *myRecord)
 {
-	static TCHAR	szResult[64];
-
-	// Standard OCS agent
-	// wsprintf(szResult, "%d/%d", myRecord->Week_Number_Manufacture, myRecord->Manufacture_Year);
-
-	// Gediff agent
-	wsprintf(szResult, _T( "%s.%04X.%08X (%d/%d)"), 
+	m_csBuffer.Format( "%s.%04X.%08X (%d/%d)", 
 		myRecord->Manufacturer_ID, (DWORD)myRecord->EDID_ID_Code, (DWORD)myRecord->Serial_Number,
 		myRecord->Week_Number_Manufacture, myRecord->Manufacture_Year);
 
-	return szResult;
+	return m_csBuffer;
 }
 
-BOOL CEdid::GetMonitors(CMonitorList *pMyList)
+BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 {
     HDEVINFO		hDeviceInfoSet;
 	SP_DEVINFO_DATA spDeviceInfo;
@@ -554,6 +545,11 @@ BOOL CEdid::GetMonitors(CMonitorList *pMyList)
 	DWORD			dwIndex = 0;
 	Standard_EDID	myRecord;
 	CMonitor		myMonitor;
+	CStringA		csSerial,
+					csCaption,
+					csDescription;
+
+	USES_CONVERSION;
 
     // Retrieve the device information set for the interface class.
 	// First, try DISPLAY devices
@@ -571,49 +567,57 @@ BOOL CEdid::GetMonitors(CMonitorList *pMyList)
 			myMonitor.Clear();
 			if (GetDisplayEDID( hDeviceInfoSet, &spDeviceInfo, myRecord))
 			{
-				myMonitor.SetManufacturer( GetManufacturerName( myRecord.Manufacturer_ID));
+				myMonitor.SetManufacturer( CA2CT( GetManufacturerName( myRecord.Manufacturer_ID)));
 				switch (GetDetailledTimingDescriptionType( myRecord.Detailed_Timing_Description1))
 				{
 				case Serial_Number:
-					myMonitor.SetDescription( GetDescription(&myRecord));
-					myMonitor.SetSerial(GetEdidText( myRecord.Detailed_Timing_Description1));
+					csDescription = GetDescription( &myRecord);
+					csSerial = GetEdidText( myRecord.Detailed_Timing_Description1);
 					break;
 				case Model_Name:
-					myMonitor.SetCaption( GetEdidText( myRecord.Detailed_Timing_Description1));
+					csCaption = GetEdidText( myRecord.Detailed_Timing_Description1);
 					break;
 				}
 				switch (GetDetailledTimingDescriptionType( myRecord.Detailed_Timing_Description2))
 				{
 				case Serial_Number:
-					myMonitor.SetDescription( GetDescription(&myRecord));
-					myMonitor.SetSerial(GetEdidText( myRecord.Detailed_Timing_Description2));
+					csDescription = GetDescription( &myRecord);
+					csSerial = GetEdidText( myRecord.Detailed_Timing_Description2);
 					break;
 				case Model_Name:
-					myMonitor.SetCaption( GetEdidText( myRecord.Detailed_Timing_Description2));
+					csCaption = GetEdidText( myRecord.Detailed_Timing_Description2);
 					break;
 				}
 				switch (GetDetailledTimingDescriptionType( myRecord.Detailed_Timing_Description3))
 				{
 				case Serial_Number:
-					myMonitor.SetDescription( GetDescription(&myRecord));
-					myMonitor.SetSerial(GetEdidText( myRecord.Detailed_Timing_Description3));
+					csDescription = GetDescription( &myRecord);
+					csSerial = GetEdidText( myRecord.Detailed_Timing_Description3);
 					break;
 				case Model_Name:
-					myMonitor.SetCaption( GetEdidText( myRecord.Detailed_Timing_Description3));
+					csCaption = GetEdidText( myRecord.Detailed_Timing_Description3);
 					break;
 				}
 				switch (GetDetailledTimingDescriptionType( myRecord.Detailed_Timing_Description4))
 				{
 				case Serial_Number:
-					myMonitor.SetDescription( GetDescription(&myRecord));
-					myMonitor.SetSerial(GetEdidText( myRecord.Detailed_Timing_Description4));
+					csDescription = GetDescription( &myRecord);
+					csSerial = GetEdidText( myRecord.Detailed_Timing_Description4);
 					break;
 				case Model_Name:
-					myMonitor.SetCaption( GetEdidText( myRecord.Detailed_Timing_Description4));
+					csCaption = GetEdidText( myRecord.Detailed_Timing_Description4);
 					break;
 				}
-				myMonitor.SetType( DecodeDPMSFlag( myRecord.DPMS_Flags));
-				AcerHack(&myMonitor, &myRecord);
+				myMonitor.SetType( CA2CT( DecodeDPMSFlag( myRecord.DPMS_Flags)));
+				AddLog( _T( "\tEDID : Monitor %s.%04X.%8X (%s)\n"), 
+					myRecord.Manufacturer_ID, (DWORD)myRecord.EDID_ID_Code, (DWORD)myRecord.Serial_Number,
+					csSerial);
+				// Acer monitors have bogus serial
+				if (AcerHack( csSerial, &myRecord))
+					AddLog( _T( "\tEDID Acer Fix: Change Serial Number to %s\n"), csSerial);
+				myMonitor.SetCaption( CA2CT( csCaption));
+				myMonitor.SetDescription( CA2CT( csDescription));
+				myMonitor.SetSerial( CA2CT( csSerial));
 				pMyList->AddTail( myMonitor);
 			}
 			dwIndex++;
@@ -629,7 +633,8 @@ BOOL CEdid::GetMonitors(CMonitorList *pMyList)
 	{
 			AddLog( _T( "\tSetupAPI: SetupDiGetClassDevs DISPLAY failed with error %ld.\n"), GetLastError());
 	}
-	lpfnSetupDiDestroyDeviceInfoList( hDeviceInfoSet);
+	if( hDeviceInfoSet != INVALID_HANDLE_VALUE)
+		lpfnSetupDiDestroyDeviceInfoList( hDeviceInfoSet);
 	AddLog( _T( "SetupAPI: Enumerates DISPLAY devices finished (%ld objects)...\n"), dwIndex);
 	// Next, try MONITOR devices
 	dwIndex = 0;
@@ -646,49 +651,57 @@ BOOL CEdid::GetMonitors(CMonitorList *pMyList)
 			myMonitor.Clear();
 			if (GetDisplayEDID( hDeviceInfoSet, &spDeviceInfo, myRecord))
 			{
-				myMonitor.SetManufacturer( GetManufacturerName( myRecord.Manufacturer_ID));
+				myMonitor.SetManufacturer( CA2CT( GetManufacturerName( myRecord.Manufacturer_ID)));
 				switch (GetDetailledTimingDescriptionType( myRecord.Detailed_Timing_Description1))
 				{
 				case Serial_Number:
-					myMonitor.SetDescription( GetDescription(&myRecord));
-					myMonitor.SetSerial(GetEdidText( myRecord.Detailed_Timing_Description1));
+					csDescription = GetDescription( &myRecord);
+					csSerial = GetEdidText( myRecord.Detailed_Timing_Description1);
 					break;
 				case Model_Name:
-					myMonitor.SetCaption( GetEdidText( myRecord.Detailed_Timing_Description1));
+					csCaption = GetEdidText( myRecord.Detailed_Timing_Description1);
 					break;
 				}
 				switch (GetDetailledTimingDescriptionType( myRecord.Detailed_Timing_Description2))
 				{
 				case Serial_Number:
-					myMonitor.SetDescription( GetDescription(&myRecord));
-					myMonitor.SetSerial(GetEdidText( myRecord.Detailed_Timing_Description2));
+					csDescription = GetDescription( &myRecord);
+					csSerial = GetEdidText( myRecord.Detailed_Timing_Description2);
 					break;
 				case Model_Name:
-					myMonitor.SetCaption( GetEdidText( myRecord.Detailed_Timing_Description2));
+					csCaption = GetEdidText( myRecord.Detailed_Timing_Description2);
 					break;
 				}
 				switch (GetDetailledTimingDescriptionType( myRecord.Detailed_Timing_Description3))
 				{
 				case Serial_Number:
-					myMonitor.SetDescription( GetDescription(&myRecord));
-					myMonitor.SetSerial(GetEdidText( myRecord.Detailed_Timing_Description3));
+					csDescription = GetDescription( &myRecord);
+					csSerial = GetEdidText( myRecord.Detailed_Timing_Description3);
 					break;
 				case Model_Name:
-					myMonitor.SetCaption( GetEdidText( myRecord.Detailed_Timing_Description3));
+					csCaption = GetEdidText( myRecord.Detailed_Timing_Description3);
 					break;
 				}
 				switch (GetDetailledTimingDescriptionType( myRecord.Detailed_Timing_Description4))
 				{
 				case Serial_Number:
-					myMonitor.SetDescription( GetDescription(&myRecord));
-					myMonitor.SetSerial(GetEdidText( myRecord.Detailed_Timing_Description4));
+					csDescription = GetDescription( &myRecord);
+					csSerial = GetEdidText( myRecord.Detailed_Timing_Description4);
 					break;
 				case Model_Name:
-					myMonitor.SetCaption( GetEdidText( myRecord.Detailed_Timing_Description4));
+					csCaption = GetEdidText( myRecord.Detailed_Timing_Description4);
 					break;
 				}
-				myMonitor.SetType( DecodeDPMSFlag( myRecord.DPMS_Flags));
-				AcerHack(&myMonitor, &myRecord);
+				myMonitor.SetType( CA2CT( DecodeDPMSFlag( myRecord.DPMS_Flags)));
+				AddLog( _T( "\tEDID : Monitor %s.%04X.%8X (%s)\n"), 
+					myRecord.Manufacturer_ID, (DWORD)myRecord.EDID_ID_Code, (DWORD)myRecord.Serial_Number,
+					csSerial);
+				// Acer monitors have bogus serial
+				if (AcerHack( csSerial, &myRecord))
+					AddLog( _T( "\tEDID Acer Fix: Change Serial Number to %s\n"), csSerial);
+				myMonitor.SetCaption( CA2CT( csCaption));
+				myMonitor.SetDescription( CA2CT( csDescription));
+				myMonitor.SetSerial( CA2CT( csSerial));
 				pMyList->AddTail( myMonitor);
 			}
 			dwIndex++;
@@ -705,7 +718,7 @@ BOOL CEdid::GetMonitors(CMonitorList *pMyList)
 			AddLog( _T( "\tSetupAPI: SetupDiGetClassDevs MONITOR failed with error %ld.\n"), GetLastError());
 	}
 
-	if( hDeviceInfoSet != INVALID_HANDLE_VALUE )
+	if( hDeviceInfoSet != INVALID_HANDLE_VALUE)
 		lpfnSetupDiDestroyDeviceInfoList( hDeviceInfoSet);
 	AddLog( _T( "SetupAPI: Enumerates MONITOR devices finished (%ld objects)...\n"), dwIndex);
 	return (pMyList->GetCount() > 0);

@@ -118,15 +118,16 @@ typedef struct tag_EDID_Text_Frequency_Range
 } EDID_Text_Frequency_Range;
 
 // Format of Detailed_Timing_DescriptionX (from offset 4) if it is a text zone Text (Serial Number, Model Name,Vendor Name)
+#define DESCRIPTOR_DATA_OFFSET 4
 typedef struct tag_EDID_Text_String
 {
-    TCHAR Text[14]; // may be terminated with either a NUL (00h) or LF (0Ah)
+    char Text[14]; // may be terminated with either a NUL (00h) or LF (0Ah)
 } EDID_Text_String;
 
 // EDID Structure for this module
 typedef struct tag_Standard_EDID
 {
-    TCHAR Manufacturer_ID[4];
+    char Manufacturer_ID[4];
     WORD EDID_ID_Code;
     DWORD Serial_Number;
     BYTE Week_Number_Manufacture;
@@ -189,27 +190,27 @@ protected: // Methods
 	// Parse EDID data and fill structure
 	BOOL		ParseEDID( LPBYTE lpByte, Standard_EDID &myEDID);
 	// Return manufacturer code (3 letters)
-	LPCTSTR		GetManufacturerID(BYTE ID[2]);
+	LPCSTR		GetManufacturerID(BYTE ID[2]);
 	// Retreive EDID data from registry
 	BOOL		GetDisplayEDID( HDEVINFO hDeviceInfoSet, SP_DEVINFO_DATA *pDevInfoData, Standard_EDID &myEDID);
 	// Decode DPMS flags to get monitor type
-	LPCTSTR		DecodeDPMSFlag( BYTE Flag);
+	LPCSTR		DecodeDPMSFlag( BYTE Flag);
 	// Parse TEXT zone of Detailed_Timing
-	LPCTSTR		GetEdidText( BYTE lpByte[18]);
+	LPCSTR		GetEdidText( BYTE lpByte[18]);
 	// Get manufacturer name from manufacturer code
-	LPCTSTR		GetManufacturerName( LPCTSTR ID);
+	LPCSTR		GetManufacturerName( LPCSTR ID);
 	// Get Detailed_Timing type
 	DetailTiming GetDetailledTimingDescriptionType(BYTE Detailed_Timing_Descript[]);
-	LPCTSTR		GetDescription (Standard_EDID *myRecord);
+	LPCSTR		GetDescription (Standard_EDID *myRecord);
 
-	// Acer monitor specific
-	void		AcerHack (CMonitor *myMonitor, Standard_EDID *myRecord);
+	// Acer monitor specific because of bogus serial
+	BOOL		AcerHack( CStringA &csSerial, Standard_EDID *myRecord);
 	
 protected: // Members variables
 	HINSTANCE	m_hDll;		// Handle to setupapi.dll loaded
 	HDEVINFO	m_hDevInfo;	// Device Enumerator
 	CString		m_csDevice;	// Device to connect to
-	CString		m_csBuffer;	// Temporary buffer
+	CStringA	m_csBuffer;	// Temporary buffer
 	BOOL		m_bIsWin2K;	// Flag to know if is Win 2K or higher, or Win 98/Me (95 and NT4 unsupported !)
 };
 
