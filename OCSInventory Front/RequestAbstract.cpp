@@ -63,7 +63,7 @@ DWORD CRequestAbstract::getRawMessageLength()
  */
 void CRequestAbstract::cleanXml()
 {
-	CStringA bef = m_cmXml.GetDoc();
+/*	CStringA bef = m_cmXml.GetDoc();
 	
 	for (int i=0;i<bef.GetLength();i++)
 	{	
@@ -72,7 +72,7 @@ void CRequestAbstract::cleanXml()
 			bef.SetAt(i,'x');		
 	}
 	m_cmXml.SetDoc( bef);
-
+*/
 }
 
 /**
