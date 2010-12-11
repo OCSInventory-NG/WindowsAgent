@@ -46,7 +46,6 @@ CInventoryRequest::~CInventoryRequest()
 void CInventoryRequest::setSuccess()
 {
 	writeLastInventoryState();
-	m_pDeviceid->writeDeviceid();
 }
 
 BOOL CInventoryRequest::initInventory()
