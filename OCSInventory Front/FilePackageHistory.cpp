@@ -46,6 +46,8 @@ BOOL CFilePackageHistory::Open(LPCTSTR lpstrFile, BOOL bForWriting, BOOL bExclus
 			nOpenFlags |= CFile::modeRead;
 		if (bExclusive)
 			nOpenFlags |= CFile::shareExclusive;
+		else
+			nOpenFlags |= CFile::shareDenyNone;
 		bReturn = m_File.Open( lpstrFile, nOpenFlags);
 	}
 	catch ( CException *pEx)

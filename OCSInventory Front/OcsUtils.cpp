@@ -203,7 +203,7 @@ CByteArray OCSINVENTORYFRONT_API * LoadFileToByteArray( LPCTSTR lpstrFilename)
 		CFile	myFile;
 
 		res = new CByteArray();
-		if( myFile.Open( lpstrFilename,CFile::modeRead))
+		if( myFile.Open( lpstrFilename,CFile::modeRead|CFile::shareDenyNone))
 		{
 			while (myFile.Read(&lu,1))
 				res->Add( lu );
@@ -233,7 +233,7 @@ BOOL OCSINVENTORYFRONT_API WriteByteArrayToFile( CByteArray* pByte, LPCTSTR lpst
 	try
 	{
 		CFile myFile;
-		if (!myFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite))
+		if (!myFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite|CFile::shareDenyWrite))
 		{
 			return FALSE;
 		}
@@ -255,7 +255,7 @@ BOOL OCSINVENTORYFRONT_API LoadFileToText( CString &csBuffer, LPCTSTR lpstrFilen
 
 	try
 	{
-		if (!cFile.Open( lpstrFilename,CFile::modeRead|CFile::typeText))
+		if (!cFile.Open( lpstrFilename,CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
 			return NULL;
 		while (cFile.ReadString( csLine))
 			csBuffer += csLine;
@@ -277,7 +277,7 @@ BOOL OCSINVENTORYFRONT_API WriteTextToFile( LPCTSTR lpstrText, UINT uLength, LPC
 
 	try
 	{
-		if (!cFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite|CFile::typeText))
+		if (!cFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite))
 			return FALSE;
 		cFile.WriteString( lpstrText);
 		cFile.Close();
@@ -298,7 +298,7 @@ BOOL OCSINVENTORYFRONT_API WriteVoidToFile( LPCVOID lpVoid, UINT uLength, LPCTST
 
 	try
 	{
-		if (!cFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite))
+		if (!cFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite|CFile::shareDenyWrite))
 			return FALSE;
 		cFile.Write( lpVoid, uLength);
 		cFile.Close();
@@ -323,7 +323,7 @@ BOOL OCSINVENTORYFRONT_API fileDigest( LPCTSTR lpstrFile, CString &csDigest, LPC
 	ASSERT( lpstrAlgo);
 
 	// Compute digest on file
-	if( ! fRead.Open( lpstrFile, CFile::modeRead))
+	if( ! fRead.Open( lpstrFile, CFile::modeRead|CFile::shareDenyNone))
 		return FALSE;
 
 	// Initialize checksum computing

@@ -36,7 +36,7 @@ void OpenLog( LPCTSTR lpstrFolder)
 			csFileName = _T( "SysInfo.log");
 		else
 			csFileName.Format( _T( "%s\\SysInfo.log"), lpstrFolder);
-		if (!m_fileSysInfoLog.Open( csFileName, CFile::modeCreate|CFile::modeWrite|CFile::typeText))
+		if (!m_fileSysInfoLog.Open( csFileName, CFile::modeCreate|CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite))
 			// Unable to open file
 			return;
 		m_bSysInfoLog = TRUE;

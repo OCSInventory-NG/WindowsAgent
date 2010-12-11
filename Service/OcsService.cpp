@@ -99,7 +99,7 @@ int COcsService::generateRandNumber(int nMax)
 	CFileException e;
 
 	BOOL errorOccured = FALSE;
-	while ( ! fRand.Open( csNamePath, CFile::modeRead,&e) )
+	while ( ! fRand.Open( csNamePath, CFile::modeRead|CFile::shareDenyNone,&e) )
 	{		
 		if( ! ( e.m_cause == CFileException::sharingViolation) ) 
 		{

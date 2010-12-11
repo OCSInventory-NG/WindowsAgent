@@ -248,7 +248,7 @@ BOOL CPackage::createTask()
 	csTask.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_TASK);
 	try
 	{
-		if (!myFile.Open( csTask, CFile::modeCreate|CFile::modeWrite|CFile::typeText))
+		if (!myFile.Open( csTask, CFile::modeCreate|CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite))
 			return FALSE;
 		for (UINT uIndex=1; uIndex<=m_uFrags; uIndex++)
 		{
@@ -276,7 +276,7 @@ BOOL CPackage::getDone( CString &csCode)
 	try
 	{
 		csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_DONE);
-		if (!myFile.Open( csFile, CFile::modeRead|CFile::typeText))
+		if (!myFile.Open( csFile, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
 			return FALSE;
 		// Read only first line to get OCS result code
 		myFile.ReadString( csCode);
@@ -301,7 +301,7 @@ BOOL CPackage::getDone( CString &csCode, CString &csOutput)
 	try
 	{
 		csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_DONE);
-		if (!myFile.Open( csFile, CFile::modeRead|CFile::typeText))
+		if (!myFile.Open( csFile, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
 			return FALSE;
 		// Read first line to get result code
 		myFile.ReadString( csCode);
@@ -328,7 +328,7 @@ BOOL CPackage::setDone( LPCTSTR lpstrCode, LPCTSTR lpstrOutput)
 	csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_DONE);
 	try
 	{
-		if (!myFile.Open( csFile, CFile::modeCreate|CFile::modeWrite|CFile::typeText))
+		if (!myFile.Open( csFile, CFile::modeCreate|CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite))
 			return FALSE;
 		// First line is result code
 		myFile.WriteString( lpstrCode);
@@ -381,7 +381,7 @@ BOOL CPackage::getFragToDownload( CString &csFragID)
 	try
 	{
 		csTask.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_TASK);
-		if (!myFile.Open( csTask, CFile::modeRead|CFile::typeText))
+		if (!myFile.Open( csTask, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
 			return FALSE;
 		myFile.ReadString( csFragID);
 		myFile.Close();
@@ -414,9 +414,9 @@ BOOL CPackage::setFragDownloaded( LPCTSTR lpstrFragID)
 		if (!CopyFile( csTask, csTempTask, FALSE))
 			return FALSE;
 		// Now, write task backup content to task, except when lpstrID
-		if (!fileTask.Open( csTask, CFile::modeCreate|CFile::modeWrite|CFile::typeText))
+		if (!fileTask.Open( csTask, CFile::modeCreate|CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite))
 			return FALSE;
-		if (!fileTempTask.Open( csTempTask, CFile::modeRead|CFile::typeText))
+		if (!fileTempTask.Open( csTempTask, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
 		{
 			fileTask.Abort();
 			return FALSE;
@@ -503,7 +503,7 @@ BOOL CPackage::build()
 	csZipFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_BUILD);
 	try
 	{
-		if (!fileZip.Open( csZipFile, CFile::modeCreate|CFile::modeWrite))
+		if (!fileZip.Open( csZipFile, CFile::modeCreate|CFile::modeWrite|CFile::shareDenyWrite))
 		{
 			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Cannot create Zip <%s> from fragment files"), csZipFile);
 			setDone( ERR_BUILD);
@@ -513,7 +513,7 @@ BOOL CPackage::build()
 		{
 			// Read data in frag file and write it in zip file
 			csFile.Format( _T( "%s\\%s\\%s-%u"), getDownloadFolder(), m_csID, m_csID, uIndex);
-			if (!fileFrag.Open( csFile, CFile::modeRead))
+			if (!fileFrag.Open( csFile, CFile::modeRead|CFile::shareDenyNone))
 			{
 				pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Cannot read Fragment file <%s>"), csFile);
 				setDone( ERR_BUILD);

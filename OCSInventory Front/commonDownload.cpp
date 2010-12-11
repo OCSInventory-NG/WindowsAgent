@@ -38,7 +38,7 @@ BOOL suspendDownload()
 	try
 	{
 		csSuspend.Format( _T( "%s\\%s\\%s"), getDataFolder(), OCS_DOWNLOAD_FOLDER, OCS_DOWNLOAD_SUSPEND);
-		if (!fSuspend.Open( csSuspend, CFile::modeCreate|CFile::modeWrite))
+		if (!fSuspend.Open( csSuspend, CFile::modeCreate|CFile::modeWrite|CFile::shareExclusive))
 			return FALSE;
 		fSuspend.Close();
 		return TRUE;

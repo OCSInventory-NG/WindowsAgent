@@ -600,7 +600,7 @@ BOOL CHTTPConnexion::getFile( LPCTSTR lpstrURL, LPCTSTR lpstrFilename)
 	m_dwErrorCode = OCS_RESPONSE_ERROR_SUCCESS;
 	m_csErrorString = _T( "No error");
 	// Open file
-	if (!myFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite))
+	if (!myFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite|CFile::shareDenyWrite))
 	{
 		m_dwErrorCode = OCS_RESPONSE_ERROR_FILE;
 		m_csErrorString.Format( _T( "Failed to open file <%s> for writing"), lpstrFilename);

@@ -2689,7 +2689,7 @@ void CTestSysInfoDlg::OnBnClickedLoadXml()
 	TiXmlElement *pXmlRequest, *pXmlLine;
 
 
-	myFile.Open( cDlg.GetPathName(), CFile::modeRead|CFile::typeText);
+	myFile.Open( cDlg.GetPathName(), CFile::modeRead|CFile::typeText|CFile::shareDenyNone);
 	while (myFile.ReadString( csLine))
 		csFile += csLine;
 	myFile.Close();
@@ -2746,7 +2746,7 @@ void CTestSysInfoDlg::OnBnClickedSaveXml()
 	myPrinter.SetIndent( "    " );
 	pXmlDoc->Accept( &myPrinter );
 	csLine = myPrinter.CStr();
-	myFile.Open( cDlg.GetPathName(), CFile::modeCreate|CFile::modeWrite|CFile::typeText);
+	myFile.Open( cDlg.GetPathName(), CFile::modeCreate|CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite);
 	myFile.WriteString( csLine);
 	myFile.Close();
 }
