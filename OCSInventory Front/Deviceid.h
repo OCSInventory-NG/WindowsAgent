@@ -24,6 +24,7 @@
 #include "sysinfo.h"
 
 #define DEVICEID_DAT_FILE			_T( "ocsinventory.dat")
+#define MAC_STRING_LENGTH			17	// XX:XX:XX:XX:XX:XX
 
 class OCSINVENTORYFRONT_API CDeviceid : public CSingleton<CDeviceid>
 {
@@ -37,11 +38,14 @@ public: // Methods
 	CString getDeviceID();
 	// Returns the computer name
 	CString getComputerName();
-	// Write the current to .dat
+	// Write the current deviceid into .dat
 	BOOL writeDeviceid(); 
 	// Returns the oldDeviceid if exists
 	CString getOldDeviceID();
-	// Check the current deviceid
+	// Check the current deviceid. There is changes if
+	// - Hostname has changed
+	// - There is only one MAC, and it has changed
+	// - There is 2 or more MACs, and at least 2 has changed has changed
 	void checkDeviceid();
 
 private: // Methods
@@ -65,6 +69,13 @@ private: // Methods
 	BOOL loadDeviceid(CString &, CString &);
 	// Retrieve the system MAC addresses
 	CString getMacs();
+	// Parse MACs from a string and set them into a StringArray
+	// return the number of MAC found, 0 if error
+	UINT parseMacs( CString &csMac, CStringArray &csMacArray);
+	// Compare MAC addresses, return FALSE if changes detected in the following cases
+	// - There is only one MAC, and it has changed
+	// - There is 2 or more MACs, and at least 2 has changed has changed
+	BOOL CompareMacs( CString &csRefList, CString &csActualList);
 	// Generate a deviceid
 	CString generate( LPCTSTR );
 };

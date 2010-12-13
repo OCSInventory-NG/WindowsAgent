@@ -51,6 +51,7 @@ CString CDeviceid::getComputerName()
 	return m_csHostName;
 }
 
+/* Generate a new deviceid */
 CString CDeviceid::generate( LPCTSTR lpstrHostname)
 {
 	CString csDeviceID;
@@ -63,14 +64,16 @@ CString CDeviceid::generate( LPCTSTR lpstrHostname)
 /* Concatenate MAC adresses in a CString and return it */
 CString CDeviceid::getMacs()
 {
-	CSysInfo				cSysinfo;
+	CSysInfo			cSysinfo;
 	CNetworkAdapter		cObject;
 	CNetworkAdapterList cNetworkAdapterList;
 	POSITION			position;
 	BOOL				bContinue;
 	CString				csMacConcat;
 
-	cSysinfo.getNetworkAdapters( &cNetworkAdapterList );
+	m_csMacConcat.Empty();
+	if (!cSysinfo.getNetworkAdapters( &cNetworkAdapterList ))
+		return m_csMacConcat;
 
 	position = cNetworkAdapterList.GetHeadPosition();
 	bContinue = (position != NULL);
@@ -89,59 +92,7 @@ CString CDeviceid::getMacs()
 	return m_csMacConcat;
 }
 
-/*****
- *
- *	Deviceid checkings and renewal if needed
- *
- ****/
-void CDeviceid::checkDeviceid()
-{
-	CString csDeviceID, csFileDeviceID, csActualMac, csFileMac, csFileHname;
-	TCHAR lpHostname[MAX_COMPUTERNAME_LENGTH + 1];
-	CLog *pLogger = getOcsLogger();
-
-	DWORD size = sizeof( lpHostname );
-	GetComputerName( lpHostname,  &size);
-	m_csHostName = lpHostname;
-
-	// Load deviceid from .dat file
-	if (!loadDeviceid( csDeviceID, csFileMac))
-		pLogger->log( LOG_PRIORITY_WARNING, _T( "DID_CHECK => Failed to read file <%s>"), DEVICEID_DAT_FILE);
-	else
-		pLogger->log( LOG_PRIORITY_DEBUG, _T( "DID_CHECK => Read DeviceID <%s> and MACs <%s> in file <%s>"), csDeviceID, csFileMac, DEVICEID_DAT_FILE);
-	// Get list of MC Addresses
-	csActualMac = getMacs();
-
-	csFileHname		= csDeviceID.Left(csDeviceID.GetLength()-20);
-	csFileDeviceID	= csDeviceID;
-
-	if(csActualMac != csFileMac && lpHostname != csFileHname)
-	{
-		csDeviceID.Empty();
-		pLogger->log( LOG_PRIORITY_NOTICE, _T( "DID_CHECK => Mac changed new:<%s> old:<%s>, hname changed new:<%s> old:<%s>"), 
-			csActualMac, csFileMac, lpHostname, csFileHname ); 
-	}
-	else if( csActualMac != csFileMac || lpHostname != csFileHname )
-	{
-		m_csOldDeviceid = csDeviceID;
-		csDeviceID.Empty();
-		if( csActualMac != csFileMac )				
-			pLogger->log( LOG_PRIORITY_NOTICE, _T( "DID_CHECK => Mac changed new:<%s> old:<%s>"), csActualMac, csFileMac);
-		else
-			pLogger->log(LOG_PRIORITY_NOTICE, _T( "DID_CHECK => hname changed new:<%s> old:<%s>"), lpHostname, csFileHname);
-	}
-
-	if (csDeviceID.IsEmpty())
-	{
-		// This is the first time we inventory the device => generate a new device unique ID
-		pLogger->log( LOG_PRIORITY_NOTICE, _T( "DID_CHECK => Generating Unique ID for device <%s>"), lpHostname);
-		m_csDeviceid = generate( lpHostname);
-		writeDeviceid();
-	}
-	else
-		m_csDeviceid = csDeviceID;
-}
-
+/* Load deviceid and MACs concatenated from the .dat file (compressed)  */
 BOOL CDeviceid::loadDeviceid( CString &csDeviceID, CString &csMac)
 {
 	CString csContent;
@@ -167,7 +118,7 @@ BOOL CDeviceid::loadDeviceid( CString &csDeviceID, CString &csMac)
 		return TRUE;
 }
 
-/* Store the deviceid and macs concatenated in a .dat file (compressed) */
+/* Store the deviceid and macs concatenated in the .dat file (compressed) */
 BOOL CDeviceid::writeDeviceid()
 {
 	CString csContent;
@@ -198,3 +149,147 @@ BOOL CDeviceid::writeDeviceid()
 	delete pCb;
 	return TRUE;
 }
+
+/* Parse MAC concatened into String Array */
+UINT CDeviceid::parseMacs( CString &csMac, CStringArray &csMacArray)
+{
+	UINT uNumber = 0,
+		 uIndex = 0;
+	CString csOneMac;
+
+	try
+	{
+		csMacArray.RemoveAll();
+		while (csMac.Mid( uIndex, MAC_STRING_LENGTH).GetLength() > 0)
+		{
+			csOneMac = csMac.Mid( uIndex, MAC_STRING_LENGTH);
+			if (csOneMac.GetLength() == MAC_STRING_LENGTH)
+			{
+				// This a MAC address
+				csMacArray.Add( csOneMac);
+				uNumber ++;
+			}
+			uIndex += MAC_STRING_LENGTH;
+		}
+		return uNumber;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		return 0;
+	}
+}
+
+/* Compares 2 string array of MAC */
+BOOL CDeviceid::CompareMacs( CString &csRefList, CString &csActualList)
+{
+	CStringArray csRefArray, csActualArray;
+	CString	csMac;
+	BOOL	bFound;
+	INT_PTR	uCount = 0,
+			uRefIndex,
+			uActualIndex,
+			uChanged = 0;
+	BOOL	bContinue = TRUE;
+
+	// Parse reference list into array, and set his number of MAC addresses as reference count
+	if ((uCount = parseMacs( csRefList, csRefArray)) == 0)
+		return FALSE;
+	// Parse new computed list into array
+	if (parseMacs( csActualList, csActualArray) == 0)
+		return FALSE;
+	// For each MAC from computed list
+	for (uActualIndex = 0; uActualIndex < csActualArray.GetCount(); uActualIndex ++)
+	{
+		csMac = csActualArray.GetAt( uActualIndex);
+		bFound = FALSE; 
+		// Try to find MAC from computed list into reference array
+		for (uRefIndex = 0; uRefIndex < csRefArray.GetCount() && !bFound; uRefIndex ++)
+		{
+			if (csMac == csRefArray.GetAt( uRefIndex))
+			{
+				// We found it into reference array => remove it from reference array
+				csRefArray.RemoveAt( uRefIndex);
+				bFound = TRUE;
+			}
+		}
+	}
+	switch (csRefArray.GetCount())
+	{
+	case 0: 
+		// All MAC from reference were found (all MAC are the same or there is only MAC added),
+		// so no changes du to MAC address
+		return FALSE;
+	case 1: // One MAC from reference not found (only one changed)
+		if (uCount == 1)
+			// There was only one MAC in the reference, so changed
+			return TRUE;
+		// At least 2 or more MAC in the reference, so assuming no change du to MAC address
+		return FALSE;
+	case 2:
+	default: // At least 2 MAC changed, assuming changes du to MAC address
+		return TRUE;
+	}
+}
+
+/*****
+ *
+ *	Deviceid checkings and renewal if needed
+ *
+ ****/
+void CDeviceid::checkDeviceid()
+{
+	CString csDeviceID, csFileDeviceID, csActualMac, csFileMac, csFileHname;
+	TCHAR lpHostname[MAX_COMPUTERNAME_LENGTH + 1];
+	CLog *pLogger = getOcsLogger();
+	BOOL bMacChanged = FALSE;
+
+	DWORD size = sizeof( lpHostname );
+	GetComputerName( lpHostname,  &size);
+	m_csHostName = lpHostname;
+
+	// Load deviceid from .dat file
+	if (!loadDeviceid( csDeviceID, csFileMac))
+		pLogger->log( LOG_PRIORITY_WARNING, _T( "DID_CHECK => Failed to read file <%s>"), DEVICEID_DAT_FILE);
+	else
+		pLogger->log( LOG_PRIORITY_DEBUG, _T( "DID_CHECK => Read DeviceID <%s> and MACs <%s> in file <%s>"), csDeviceID, csFileMac, DEVICEID_DAT_FILE);
+	// Get list of MC Addresses
+	csActualMac = getMacs();
+
+	csFileHname		= csDeviceID.Left( csDeviceID.GetLength()-20);
+	csFileDeviceID	= csDeviceID;
+
+	// Compare reference to actual. There is changes if
+	// - Hostname has changed
+	// - There is only one MAC, and it has changed
+	// - There is 2 or more MACs, and at least 2 has changed has changed
+	bMacChanged = CompareMacs( csFileMac, csActualMac);
+	if (bMacChanged && (m_csHostName != csFileHname))
+	{
+		// Both MAC and hostname changes
+		csDeviceID.Empty();
+		pLogger->log( LOG_PRIORITY_NOTICE, _T( "DID_CHECK => MAC Address changed new:<%s> old:<%s>, Hostname changed new:<%s> old:<%s>"), 
+			csActualMac, csFileMac, m_csHostName, csFileHname ); 
+	}
+	else if (bMacChanged || (m_csHostName != csFileHname))
+	{
+		m_csOldDeviceid = csDeviceID;
+		csDeviceID.Empty();
+		if (bMacChanged)				
+			pLogger->log( LOG_PRIORITY_NOTICE, _T( "DID_CHECK => MAC Address changed new:<%s> old:<%s>"), csActualMac, csFileMac);
+		else
+			pLogger->log(LOG_PRIORITY_NOTICE, _T( "DID_CHECK => Hostname changed new:<%s> old:<%s>"), m_csHostName, csFileHname);
+	}
+
+	if (csDeviceID.IsEmpty())
+	{
+		// This is the first time we inventory the device => generate a new device unique ID
+		pLogger->log( LOG_PRIORITY_NOTICE, _T( "DID_CHECK => Generating new unique ID for device <%s>"), m_csHostName);
+		m_csDeviceid = generate( m_csHostName);
+	}
+	else
+		m_csDeviceid = csDeviceID;
+	// Always rewrite file, in case of minor changes on MAC addresses
+	writeDeviceid();
+}
+
