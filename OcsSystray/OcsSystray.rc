@@ -50,6 +50,19 @@ BEGIN
     LTEXT           "ComProvider Version xx.xx.xx.xx",IDC_VERSION_COM_PROVIDER,35,167,252,8
 END
 
+IDD_SHOW_INVENTORY_DIALOG DIALOGEX 0, 0, 600, 400
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "OCS Inventory NG Agent for Windows"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "&OK",IDCANCEL,274,380,50,14
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    LTEXT           "OCS Inventory NG Agent for Windows",IDC_STATIC,42,7,218,8
+    LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
+    CTEXT           "<Browser location>",IDC_BROWSER,13,51,572,320,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_STATICEDGE
+    GROUPBOX        "Inventory informaations for computer...",IDC_STATIC,7,41,584,335
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -115,6 +128,12 @@ BEGIN
         RIGHTMARGIN, 294
         TOPMARGIN, 7
         BOTTOMMARGIN, 205
+    END
+
+    IDD_SHOW_INVENTORY_DIALOG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 503
+        BOTTOMMARGIN, 350
     END
 END
 #endif    // APSTUDIO_INVOKED

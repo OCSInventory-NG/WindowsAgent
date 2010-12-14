@@ -16,6 +16,7 @@
 #include "OCSInventory Front.h"
 #include <winsvc.h>
 #include "Config.h"
+#include "ShowInventoryDlg.h"
 
 #pragma once
 

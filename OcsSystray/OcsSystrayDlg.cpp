@@ -210,7 +210,24 @@ void COcsSystrayDlg::OnRunAgent()
 
 void COcsSystrayDlg::OnShowInventory()
 {
+	CString csXml;
+	CShowInventoryDlg cDlg;
+
 	ServiceSendMessage( OCS_SERVICE_CONTROL_SHOW_INVENTORY);
+	// Now, XML must be generated, try to display it
+	csXml.Format( _T( "%s\\OCSInventory.xml"), getDataFolder());
+	if (!fileExists( csXml))
+	{
+		AfxMessageBox( _T( "Cannot display inventory informations !\n\nService did not generate XML file."), MB_OK|MB_ICONEXCLAMATION);
+		return;
+	}
+	cDlg.SetInventory( csXml);
+	if (cDlg.DoModal() != IDCANCEL)
+	{
+		AfxMessageBox( _T( "Cannot display inventory informations !"), MB_OK|MB_ICONEXCLAMATION);
+		return;
+	}
+	DeleteFile( csXml);
 }
 
 BOOL COcsSystrayDlg::IsServiceRunning( CString &csStatusText)
