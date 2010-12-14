@@ -63,7 +63,9 @@ protected:
 	// Check if something changed in inventory
 	BOOL CheckInventoryState();
 	// Launch OCS Inventory Agent, using notify mode or not
-	BOOL runAgent( BOOL bNotify = FALSE);	
+	BOOL runAgent( BOOL bNotify = FALSE);
+	// Show inventory informations
+	BOOL showInventory();
 
 protected:
 	int			m_iTToWait;				// Time to wait before next agent run (in seconds)

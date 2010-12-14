@@ -22,6 +22,7 @@
 #include "Config.h"
 #include "ServerConfig.h"
 #include "ComProvider.h"
+#include "InventoryRequest.h"
 
 COcsService::COcsService():CNTService( OCS_SERVICE_SECTION)
 {
@@ -413,9 +414,60 @@ BOOL COcsService::OnUserControl( DWORD dwOpcode)
     case OCS_SERVICE_CONTROL_SHOW_INVENTORY:
         // Show inventory using XSLT
 		LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, _T( "User manually ask local inventory informations"));
+		showInventory();
         return TRUE;
     default:
         break;
     }
     return FALSE; // say not handled
+}
+
+BOOL COcsService::showInventory()
+{
+	try
+	{
+		CRequestAbstract *pRequest;
+		CStringA		 csXml, csXsl;
+		CString			 csFile;
+		int				 nIndex;
+
+		// Generate XML file name
+		csFile.Format( _T( "%s\\OCSInventory.xml"), getDataFolder());
+		// Create inventory
+		if ((pRequest = new CInventoryRequest()) == NULL)
+		{
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to retreive inventory informations"));
+			return FALSE;
+		}
+		if (!pRequest->final())
+		{
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to generate XML of inventory informations"));
+			return FALSE;
+		}
+		// Get inventory XML
+		csXml = pRequest->getMessage();
+		// Delete inventory
+		delete pRequest;
+		// Add XSL transform to XM
+		csXsl.Format( "\n<?xml-stylesheet type=\"text/xsl\" href=\"%s\\OCS-Transform.xsl\" ?>", GetAnsiFromUnicode( getInstallFolder()));
+		if ((nIndex = csXml.Find( "?>")) == -1)
+		{
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to add XSL stylesheet to inventory informations"));
+			return FALSE;
+		}
+		csXml.Insert( nIndex+2, csXsl);
+		// Write XML to data directory
+		if (!WriteVoidToFile( csXml, csXml.GetLength(), csFile))
+		{
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to write XML inventory informations to file"));
+			return FALSE;
+		}
+		return TRUE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "an unknown error occured while trying to generate inventory informations"));
+		return FALSE;
+	}
 }
