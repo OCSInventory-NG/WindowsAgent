@@ -30,7 +30,7 @@
 </head>
 <body>
   <div align="center">
-    <H1> OCS Inventory NG Informations for Computer
+    <H1> OCS Inventory NG Informations for Computer<br />
       <xsl:value-of select="CONTENT/HARDWARE/NAME"/>
     </H1>
     <hr/>
