@@ -205,11 +205,16 @@ void COcsSystrayDlg::OnCancel()
 
 void COcsSystrayDlg::OnRunAgent()
 {
-	ServiceSendMessage( OCS_SERVICE_CONTROL_RUN_INVENTORY_NOW);
+	CWaitCursor myCursor;
+
+	if (ServiceSendMessage( OCS_SERVICE_CONTROL_RUN_INVENTORY_NOW))
+		AfxMessageBox( _T( "Start inventory notification successfully sent to OCS Inventory NG Service"),
+						MB_OK|MB_ICONINFORMATION);
 }
 
 void COcsSystrayDlg::OnShowInventory()
 {
+	CWaitCursor myCursor;
 	CString csXml;
 	CShowInventoryDlg cDlg;
 
