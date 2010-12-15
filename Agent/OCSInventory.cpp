@@ -111,17 +111,17 @@ BOOL COCSInventoryApp::InitInstance()
 		// Server connection object
 		CConnexionAbstract	*pConnexion = NULL;
 
-		// Phases objects
-		CPrologRequest		cProlog;
-		CInventoryRequest	*pInventory = NULL;
-		CPrologResponse		*pPrologResp = NULL;
-		CInventoryResponse	*pInventoryResponse = NULL;
-
 		// Capacities
 		CCapRegistry		cCapRegistry;
 		CCapIpdiscover		cCapIpdiscover;
 		CCapDownload		cCapDownload;
 		CCapExecute			cCapExec;
+
+		// Phases objects
+		CPrologRequest		*pProlog = NULL;
+		CInventoryRequest	*pInventory = NULL;
+		CPrologResponse		*pPrologResp = NULL;
+		CInventoryResponse	*pInventoryResponse = NULL;
 
 		/*****
 		*
@@ -314,20 +314,27 @@ BOOL COCSInventoryApp::InitInstance()
 
 		/*****
 		 *
+		 *	Create prolog object
+		 *
+		 ****/
+		pProlog = new CPrologRequest();
+
+		/*****
+		 *
 		 *	PrologWrite hooks from Plugins
 		 *
 		 ****/
-		m_pPlugins->prologWriteHook( &cProlog);
+		m_pPlugins->prologWriteHook( pProlog);
 
 		/*****
 		 *
 		 *	Initialize prolog in capacities
 		 *
 		 ****/
-		cCapRegistry.setProlog( &cProlog);
-		cCapIpdiscover.setProlog( &cProlog);
-		cCapDownload.setProlog( &cProlog);
-		cCapExec.setProlog( &cProlog);
+		cCapRegistry.setProlog( pProlog);
+		cCapIpdiscover.setProlog( pProlog);
+		cCapDownload.setProlog( pProlog);
+		cCapExec.setProlog( pProlog);
 
 		/*****
 		 *
@@ -336,13 +343,13 @@ BOOL COCSInventoryApp::InitInstance()
 		 ****/
 		m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "AGENT => Sending Prolog"));
 		// send the prolog
-		pPrologResp = new CPrologResponse( pConnexion->sendRequest( &cProlog ));
+		pPrologResp = new CPrologResponse( pConnexion->sendRequest( pProlog ));
 		pPrologResp->setErrorStatus( pConnexion->getErrorStatus());
 		pPrologResp->setErrorString( pConnexion->getErrorString());
 		if (pPrologResp->isSuccess())
 		{
 			m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "AGENT => Prolog successfully sent"));
-			cProlog.setSuccess();
+			pProlog->setSuccess();
 		}
 		else
 		{
@@ -522,6 +529,14 @@ BOOL COCSInventoryApp::InitInstance()
 			m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "AGENT => No task required"));
 
 CLEAN_AND_EXIT:
+		/*****
+		 *
+		 * Free prolog sent to server
+		 *
+		 ****/
+		if (pProlog != NULL)
+			delete pProlog;
+
 		/*****
 		 *
 		 * Free prolog response received from server
