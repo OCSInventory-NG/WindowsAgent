@@ -55,12 +55,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "OCS Inventory NG Agent for Windows"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    PUSHBUTTON      "&OK",IDCANCEL,274,380,50,14
-    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    DEFPUSHBUTTON   "&OK",IDCANCEL,274,380,50,14
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
     LTEXT           "OCS Inventory NG Agent for Windows",IDC_STATIC,42,7,218,8
     LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
-    CTEXT           "<Browser location>",IDC_BROWSER,13,51,572,320,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_STATICEDGE
-    GROUPBOX        "Inventory informaations for computer...",IDC_STATIC,7,41,584,335
+    CTEXT           "<Browser location>",IDC_BROWSER,13,55,572,316,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_STATICEDGE
+    GROUPBOX        "Inventory informations for computer...",IDC_STATIC,7,41,584,335
 END
 
 
