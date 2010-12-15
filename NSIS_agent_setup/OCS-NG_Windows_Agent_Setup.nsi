@@ -12,7 +12,7 @@ setcompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "OCS Inventory NG Agent"
-!define PRODUCT_VERSION "2.0.0.5"
+!define PRODUCT_VERSION "2.0.0.6"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
@@ -1224,6 +1224,10 @@ Section "OCS Inventory Agent" SEC01
 	File "..\Release\OcsSystray.exe"
 	Iferrors 0 +3
 	StrCpy $logBuffer "$logBuffer ERROR copying OcsSystray.exe $\r$\n"
+	clearerrors
+	File "Ocs-Transform.xsl"
+	Iferrors 0 +3
+	StrCpy $logBuffer "$logBuffer ERROR copying Ocs-Transform.xsl $\r$\n"
 	clearerrors
 	File "..\Release\OcsWmi.dll"
 	Iferrors 0 +3
