@@ -314,9 +314,10 @@ BOOL COCSInventoryApp::InitInstance()
 
 		/*****
 		 *
-		 *	Create prolog object
+		 *	Create prolog object and send it
 		 *
 		 ****/
+		m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "AGENT => Sending Prolog"));
 		pProlog = new CPrologRequest();
 
 		/*****
@@ -341,7 +342,6 @@ BOOL COCSInventoryApp::InitInstance()
 		 *	Sending prolog
 		 *
 		 ****/
-		m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "AGENT => Sending Prolog"));
 		// send the prolog
 		pPrologResp = new CPrologResponse( pConnexion->sendRequest( pProlog ));
 		pPrologResp->setErrorStatus( pConnexion->getErrorStatus());
