@@ -571,7 +571,7 @@ BOOL CInventoryRequest::runInventory()
 	if (!m_pSysInfo->getWindowsRegistration( cs1, cs2, cs3))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve system registration"));
 	else
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Registered company <%s>, registered owner <%s>, Product ID <%.08s>"),
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Registered company <%s>, registered owner <%s>, Product ID <%.08s...>"),
 					  cs1, cs2, cs3);
 	m_Device.SetWindowsRegistration( cs1, cs2, cs3);
 	// Get Windows product key
