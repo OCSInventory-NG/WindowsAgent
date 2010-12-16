@@ -218,7 +218,8 @@ void COcsSystrayDlg::OnShowInventory()
 	CString csXml;
 	CShowInventoryDlg cDlg;
 
-	ServiceSendMessage( OCS_SERVICE_CONTROL_SHOW_INVENTORY);
+	if (!ServiceSendMessage( OCS_SERVICE_CONTROL_SHOW_INVENTORY))
+		return;
 	// Now, XML must be generated, try to display it
 	csXml.Format( _T( "%s\\OCSInventory.xml"), getDataFolder());
 	if (!fileExists( csXml))
