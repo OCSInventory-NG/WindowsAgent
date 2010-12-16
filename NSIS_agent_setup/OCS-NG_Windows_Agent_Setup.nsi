@@ -911,14 +911,26 @@ Function UpgradeFrom4000
     WriteINIStr "$APPDATA\OCS Inventory NG\Agent\ocsinventory.ini" "${PRODUCT_SERVICE_NAME}" "PROLOG_FREQ" $R0
     ReadINIStr $R0 "$INSTDIR\service.ini" "OCS_SERVICE" "OLD_PROLOG_FREQ"
     WriteINIStr "$APPDATA\OCS Inventory NG\Agent\ocsinventory.ini" "${PRODUCT_SERVICE_NAME}" "OLD_PROLOG_FREQ" $R0
-	StrCpy $logBuffer "Starting previous release silent uninstall...$\r$\n"
+	StrCpy $logBuffer "Unregistering service from Windows Service Manager...$\r$\n"
 	Call Write_Log
-    nsExec::ExecToLog '"$INSTDIR\uninst.exe" /S'
+	; Uninstall service
+    nsExec::ExecToLog '"$INSTDIR\OcsService" -uninstall'
     pop $0
-    StrCpy $logBuffer "Previous release uninstall ended with exit code $0$\r$\n"
+    StrCpy $logBuffer "Service unregister ended with exit code $0$\r$\n"
     Call Write_Log
-	Delete /REBOOTOK "$STARTMENU\Ocs_Contact.lnk"
 	Sleep 1000
+    ; Remove no more used files
+	StrCpy $logBuffer "Removing unused binary files from <$INSTDIR>...$\r$\n"
+	Call Write_Log
+    Delete /REBOOTOK "$INSTDIR\BiosInfo.exe"
+    Delete /REBOOTOK "$INSTDIR\inst32.exe"
+    Delete /REBOOTOK "$INSTDIR\Mfc42.dll"
+    Delete /REBOOTOK "$INSTDIR\OcsService.dll"
+    Delete /REBOOTOK "$INSTDIR\PsApi.dll"
+    Delete /REBOOTOK "$INSTDIR\Zlib.dll"
+	Delete /REBOOTOK "$STARTMENU\Ocs_Contact.lnk"
+	ClearErrors
+    IfErrors TestInstall_Upgrade_Error
     ; Remove old data files
 	StrCpy $logBuffer "Removing old data files from <$INSTDIR>...$\r$\n"
 	Call Write_Log
@@ -929,6 +941,8 @@ Function UpgradeFrom4000
     Delete /REBOOTOK "$INSTDIR\ocsinventory.dat"
     Delete /REBOOTOK "$INSTDIR\service.ini"
     Delete /REBOOTOK "$INSTDIR\*.log"
+	ClearErrors
+    IfErrors TestInstall_Upgrade_Error
 	StrCpy $logBuffer "Migration process from old agent 4000 series succesfull, continuing setup...$\r$\n"
 	Call Write_Log
     goto TestInstall_End_Upgrade
