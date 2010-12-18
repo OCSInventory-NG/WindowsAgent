@@ -561,7 +561,7 @@ BOOL CDownloadApp::executePackage( CPackage *pPack)
 {
 	CString csFragID;
 
-	// All fragment downloaded => execute package
+	// Create ZIP if not already done
 	if (!pPack->isBuilt())
 	{
 		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Building package <%s>"), pPack->getID());
@@ -572,6 +572,7 @@ BOOL CDownloadApp::executePackage( CPackage *pPack)
 		}
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Package <%s> built successfully"), pPack->getID());
 	}
+	// Notify user if needed
 	if (pPack->isNotifyUserRequired())
 	{
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Notifying user for package <%s>"), pPack->getID());
@@ -597,18 +598,19 @@ BOOL CDownloadApp::executePackage( CPackage *pPack)
 			return FALSE;
 		}
 	}
+	// Execute package
 	m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Executing action <%s> for package <%s>"), pPack->getAction(), pPack->getID());
 	if (!pPack->execute())
 	{
 		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to execute action <%s> for package <%s>"), pPack->getAction(), pPack->getID());
 		return FALSE;
 	}
+	// Notify user if needed
 	if (pPack->isDoneNotifyUserRequired())
 	{
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Notifying user for package <%s> action end"), pPack->getID());
 		AfxMessageBox( pPack->getDoneNotifyText(), MB_OK|MB_ICONINFORMATION|MB_SYSTEMMODAL, 0);
 	}
-	// Execution successfull
-	pPack->setDone( CODE_SUCCESS);
+	// Execution finished
 	return TRUE;
 }
