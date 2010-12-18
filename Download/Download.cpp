@@ -208,6 +208,8 @@ BOOL CDownloadApp::InitInstance()
 			// Process 
 			runPeriod();
 			unlockDownload();
+			m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Pausing for period latency (%u seconds)"), m_uDownloadPeriodLatency);
+			Sleep( m_uDownloadPeriodLatency * 1000 );
 			// At least, wait 1 second
 			Sleep( 1000);
 		}
@@ -517,8 +519,6 @@ BOOL CDownloadApp::runPeriod()
 		m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Pausing for cycle latency (%u seconds)"), m_uDownloadCycleLatency);
 		Sleep( m_uDownloadCycleLatency * 1000 );
 	}
-	m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Pausing for period latency (%u seconds)"), m_uDownloadPeriodLatency);
-	Sleep( m_uDownloadPeriodLatency * 1000 );
 	return TRUE;
 }
 
