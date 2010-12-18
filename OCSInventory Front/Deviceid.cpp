@@ -239,7 +239,7 @@ BOOL CDeviceid::CompareMacs( CString &csRefList, CString &csActualList)
  ****/
 void CDeviceid::checkDeviceid()
 {
-	CString csDeviceID, csFileDeviceID, csActualMac, csFileMac, csFileHname;
+	CString csDeviceID, csFileDeviceID, csActualMac, csFileMac, csFileHostname;
 	TCHAR lpHostname[MAX_COMPUTERNAME_LENGTH + 1];
 	CLog *pLogger = getOcsLogger();
 	BOOL bMacChanged = FALSE;
@@ -256,7 +256,7 @@ void CDeviceid::checkDeviceid()
 	// Get list of MC Addresses
 	csActualMac = getMacs();
 
-	csFileHname		= csDeviceID.Left( csDeviceID.GetLength()-20);
+	csFileHostname	= csDeviceID.Left( csDeviceID.GetLength()-20);
 	csFileDeviceID	= csDeviceID;
 
 	// Compare reference to actual. There is changes if
@@ -264,21 +264,21 @@ void CDeviceid::checkDeviceid()
 	// - There is only one MAC, and it has changed
 	// - There is 2 or more MACs, and at least 2 has changed has changed
 	bMacChanged = CompareMacs( csFileMac, csActualMac);
-	if (bMacChanged && (m_csHostName != csFileHname))
+	if (bMacChanged && (m_csHostName != csFileHostname))
 	{
 		// Both MAC and hostname changes
 		csDeviceID.Empty();
 		pLogger->log( LOG_PRIORITY_NOTICE, _T( "DID_CHECK => MAC Address changed new:<%s> old:<%s>, Hostname changed new:<%s> old:<%s>"), 
-			csActualMac, csFileMac, m_csHostName, csFileHname ); 
+			csActualMac, csFileMac, m_csHostName, csFileHostname ); 
 	}
-	else if (bMacChanged || (m_csHostName != csFileHname))
+	else if (bMacChanged || (m_csHostName != csFileHostname))
 	{
 		m_csOldDeviceid = csDeviceID;
 		csDeviceID.Empty();
 		if (bMacChanged)				
 			pLogger->log( LOG_PRIORITY_NOTICE, _T( "DID_CHECK => MAC Address changed new:<%s> old:<%s>"), csActualMac, csFileMac);
 		else
-			pLogger->log(LOG_PRIORITY_NOTICE, _T( "DID_CHECK => Hostname changed new:<%s> old:<%s>"), m_csHostName, csFileHname);
+			pLogger->log(LOG_PRIORITY_NOTICE, _T( "DID_CHECK => Hostname changed new:<%s> old:<%s>"), m_csHostName, csFileHostname);
 	}
 
 	if (csDeviceID.IsEmpty())
@@ -289,7 +289,8 @@ void CDeviceid::checkDeviceid()
 	}
 	else
 		m_csDeviceid = csDeviceID;
-	// Always rewrite file, in case of minor changes on MAC addresses
-	writeDeviceid();
+	// Write file if something changes, even if DeviceID not regenerated (case of minor changes on MAC addresses)
+	if (( csFileMac != csActualMac) || (m_csHostName != csFileHostname))
+		writeDeviceid();
 }
 
