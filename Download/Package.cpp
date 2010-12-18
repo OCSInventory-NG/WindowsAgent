@@ -737,6 +737,8 @@ UINT CPackage::execute()
 		return TRUE;
 	}
 	// Unknown action
+	pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unknown action <%s> for package <%s>"), m_csAction, m_csID);
+	setDone( ERR_BAD_PARAM);
 	return FALSE;
 }
 
