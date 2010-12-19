@@ -1965,6 +1965,100 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		myWmiDll.CloseEnumClassObject();
 	}
 
+	m_List.AddString( _T( "------------------------------------------------------"));
+	m_List.AddString( _T( "Hot fix infos"));
+	m_List.AddString( _T( "------------------------------------------------------"));
+	if (myWmiDll.BeginEnumClassObject( _T( "Win32_QuickFixEngineering")))
+	{
+		while (myWmiDll.MoveNextEnumClassObject())
+		{
+			CString str, res;
+
+			str = _T( "Name  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Caption  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Caption"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "CSName  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "CSName"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Description  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Description"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "FixComments = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "FixComments"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "HotFixID = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "HotFixID"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "InstallDate = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "InstallDate"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "InstalledOn = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "InstalledOn"));
+			str += res;
+			m_List.AddString( str);
+			m_List.AddString( _T( ""));
+		}
+		myWmiDll.CloseEnumClassObject();
+	}
+
+
+	m_List.AddString( _T( "------------------------------------------------------"));
+	m_List.AddString( _T( "Software infos"));
+	m_List.AddString( _T( "------------------------------------------------------"));
+	if (myWmiDll.BeginEnumClassObject( _T( "Win32_Product")))
+	{
+		while (myWmiDll.MoveNextEnumClassObject())
+		{
+			CString str, res;
+
+			str = _T( "Name  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Caption  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Caption"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Description  = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Description"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "InstallDate = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "InstallDate"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "InstallLocation = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "InstallLocation"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Language = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Language"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Vendor = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Vendor"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Version = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Version"));
+			str += res;
+			m_List.AddString( str);
+			m_List.AddString( _T( ""));
+		}
+		myWmiDll.CloseEnumClassObject();
+	}
+
+
 	myWmiDll.DisconnectWMI();
 	m_List.AddString( _T( ""));
 	m_List.AddString( _T( "Disconnected from WMI"));
