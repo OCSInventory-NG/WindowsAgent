@@ -1989,3 +1989,57 @@ BOOL CWmi::GetInputDevices(CInputDeviceList *pMyList)
 	AddLog( _T( "WMI GetInputDevices: Failed because no input device found !\n"));
 	return FALSE;
 }
+
+BOOL CWmi::GetHotFixes( CSoftwareList *pMyList)
+{
+	ASSERT( pMyList);
+
+	// If not WMI connected => cannot do this
+	if (!m_bConnected)
+		return FALSE;
+
+	AddLog( _T( "WMI GetHotFixes: Trying to find Win32_QuickFixEngineering WMI objects..."));
+	try
+	{
+		CSoftware	myObject;
+		UINT		uIndex = 0;
+		CString		csBuffer;
+
+		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_QuickFixEngineering")))
+		{
+			while (m_dllWMI.MoveNextEnumClassObject())
+			{
+				myObject.Clear();
+				// Publisher only Microsoft
+				myObject.SetPublisher( MICROSOFT_CORP_STRING);
+				// Set Name
+				csBuffer.Format( _T( "%s %s"),  m_dllWMI.GetClassObjectStringValue( _T( "Description")),
+								m_dllWMI.GetClassObjectStringValue( _T( "HotFixID")));
+				myObject.SetName( csBuffer);
+				// Set comments
+				csBuffer.Format( _T( "%s (%s)"),  m_dllWMI.GetClassObjectStringValue( _T( "FixComments")),
+								m_dllWMI.GetClassObjectStringValue( _T( "Caption")));
+				myObject.SetComments( csBuffer);
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "InstalledOn"));
+				myObject.SetInstallDate( csBuffer);
+				// Software is OK
+				pMyList->AddTail( myObject);
+				uIndex ++;
+			}
+			m_dllWMI.CloseEnumClassObject();
+		}
+		if (uIndex > 0)
+		{
+			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			return TRUE;
+		}
+		AddLog( _T( "Failed because no Win32_QuickFixEngineering object !\n"));
+		return FALSE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		AddLog( _T( "Failed because unknown exception !\n"));
+		return FALSE;
+	}
+}

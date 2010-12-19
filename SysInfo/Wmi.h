@@ -65,6 +65,7 @@ public: // Methods
 	BOOL GetVideoAdapters( CVideoAdapterList *pMyList);
 	BOOL GetWindowsRegistration( CString &csCompany, CString &csUser, CString &csSN);
 	BOOL IsNotebook();
+	BOOL GetHotFixes( CSoftwareList *pMyList);
 
 protected: // Methods
 	BOOL ParseChassisType( CString &csType);
