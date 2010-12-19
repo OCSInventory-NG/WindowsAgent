@@ -2003,7 +2003,7 @@ BOOL CWmi::GetHotFixes( CSoftwareList *pMyList)
 	{
 		CSoftware	myObject;
 		UINT		uIndex = 0;
-		CString		csBuffer;
+		CString		csBuffer1, csBuffer2;
 
 		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_QuickFixEngineering")))
 		{
@@ -2013,15 +2013,17 @@ BOOL CWmi::GetHotFixes( CSoftwareList *pMyList)
 				// Publisher only Microsoft
 				myObject.SetPublisher( MICROSOFT_CORP_STRING);
 				// Set Name
-				csBuffer.Format( _T( "%s %s"),  m_dllWMI.GetClassObjectStringValue( _T( "Description")),
-								m_dllWMI.GetClassObjectStringValue( _T( "HotFixID")));
-				myObject.SetName( csBuffer);
+				csBuffer1 = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
+				csBuffer2 = m_dllWMI.GetClassObjectStringValue( _T( "HotFixID"));
+				csBuffer1.AppendFormat( _T( " %s"), csBuffer2);
+				myObject.SetName( csBuffer1);
 				// Set comments
-				csBuffer.Format( _T( "%s (%s)"),  m_dllWMI.GetClassObjectStringValue( _T( "FixComments")),
-								m_dllWMI.GetClassObjectStringValue( _T( "Caption")));
-				myObject.SetComments( csBuffer);
-				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "InstalledOn"));
-				myObject.SetInstallDate( csBuffer);
+				csBuffer1 = m_dllWMI.GetClassObjectStringValue( _T( "FixComments"));
+				csBuffer2 = m_dllWMI.GetClassObjectStringValue( _T( "Caption"));
+				csBuffer1.AppendFormat( _T( " (%s)"), csBuffer2);
+				myObject.SetComments( csBuffer1);
+				csBuffer1 = m_dllWMI.GetClassObjectStringValue( _T( "InstalledOn"));
+				myObject.SetInstallDate( csBuffer1);
 				// Software is OK
 				pMyList->AddTail( myObject);
 				uIndex ++;
