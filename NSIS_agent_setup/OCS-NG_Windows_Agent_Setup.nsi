@@ -615,7 +615,7 @@ Function StopService
     Pop $9
 	; Save used register
 	Push $R0
-	StrCmp $OcsService "TRUE" 0 end_loop_stop_service
+	StrCmp $OcsService "TRUE" 0 stop_service_end_loop
 	; Check service status
 	StrCpy $logBuffer "Is Service <$9> running..."
 	Call Write_Log
@@ -631,9 +631,9 @@ Function StopService
 	StrCpy $logBuffer "$0$\r$\n"
 	Call Write_Log
 	strcpy $1 0
-loop_stop_service:
+stop_service_loop:
 	intop $1 $1 + 1
-	strcmp ${Service_Time_Out} $1 Err_time_out_reached
+	strcmp ${Service_Time_Out} $1 stop_service_time_out_reached
 	sleep 950
 	StrCpy $logBuffer "Is Service <$9> running..."
 	Call Write_Log
@@ -641,13 +641,13 @@ loop_stop_service:
 	pop $0
 	StrCpy $logBuffer "$0 - Waiting 1 second(s) for Service to stop...$\r$\n"
 	Call Write_Log
-	strcmp $0 "YES" loop_stop_service end_loop_stop_service
-Err_time_out_reached:
+	strcmp $0 "YES" stop_service_loop stop_service_end_loop
+stop_service_time_out_reached:
 	StrCpy $logBuffer "Error time out reached while waiting for service stop!$\r$\n"
 	Call Write_Log
 	StrCpy $logBuffer "Will try to kill processes..$\r$\n"
 	Call Write_Log
-end_loop_stop_service:
+stop_service_end_loop:
 	; KillProcDLL ©2003 by DITMan, based upon the KILL_PROC_BY_NAME function programmed by Ravi, reach him at: http://www.physiology.wisc.edu/ravi/
 	;* 0 = Process was successfully Trying to kill process d
 	;* 603 = Process was not currently running
@@ -708,9 +708,9 @@ Function un.StopService
 	StrCpy $logBuffer "$0$\r$\n"
 	Call un.Write_Log
 	strcpy $1 0
-loop_stop_service:
+un.stop_service_loop:
 	intop $1 $1 + 1
-	strcmp ${Service_Time_Out} $1 Err_time_out_reached 0
+	strcmp ${Service_Time_Out} $1 un.stop_service_time_out_reached 0
 	sleep 950
 	StrCpy $logBuffer "Is ${PRODUCT_SERVICE_NAME} running..."
 	Call un.Write_Log
@@ -718,13 +718,13 @@ loop_stop_service:
 	pop $0
 	StrCpy $logBuffer "$0 - waiting 1 second(s) for service to stop...$\r$\n"
 	Call un.Write_Log
-	strcmp $0 "YES" loop_stop_service end_loop_stop_service
-Err_time_out_reached:
+	strcmp $0 "YES" un.stop_service_loop un.stop_service_end_loop
+un.stop_service_time_out_reached:
 	StrCpy $logBuffer "Error time out reached while waiting for service stop!$\r$\n"
 	Call un.Write_Log
 	StrCpy $logBuffer "Will try to kill processes..$\r$\n"
 	Call un.Write_Log
-end_loop_stop_service:
+un.stop_service_end_loop:
 	; KillProcDLL ©2003 by DITMan, based upon the KILL_PROC_BY_NAME function programmed by Ravi, reach him at: http://www.physiology.wisc.edu/ravi/
 	;* 0 = Process was successfully Trying to kill process d
 	;* 603 = Process was not currently running
@@ -884,26 +884,31 @@ Function UpgradeFrom4000
 	StrCpy $logBuffer "Old agent 4000 series detected, running migration process...$\r$\n"
 	Call Write_Log
 	; First, stop service
-	StrCpy $logBuffer "Trying to stop service and kill processes...$\r$\n"
-	Call Write_Log
+	StrCpy $OcsService "TRUE"
 	Push "OCS INVENTORY"
 	Call StopService
     ; Copy existing data files to new folder
     SetShellVarContext All
-	StrCpy $logBuffer "Moving data files from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
+	StrCpy $logBuffer "Moving admininfo.conf file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
 	Call Write_Log
 	ClearErrors
-    IfErrors TestInstall_Upgrade_Error
     CopyFiles /SILENT "$INSTDIR\admininfo.conf" "$APPDATA\OCS Inventory NG\Agent\admininfo.conf"
     IfErrors TestInstall_Upgrade_Error
-    CopyFiles /SILENT "$INSTDIR\cacert.pem" "$APPDATA\OCS Inventory NG\Agent\cacert.pem"
-    IfErrors TestInstall_Upgrade_Error
-    CopyFiles /SILENT "$INSTDIR\label" "$APPDATA\OCS Inventory NG\Agent\label"
-    IfErrors TestInstall_Upgrade_Error
-    CopyFiles /SILENT "$INSTDIR\last_state" "$APPDATA\OCS Inventory NG\Agent\last_state"
-    IfErrors TestInstall_Upgrade_Error
+	StrCpy $logBuffer "Moving ocsinventory.dat file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
+	Call Write_Log
     CopyFiles /SILENT "$INSTDIR\ocsinventory.dat" "$APPDATA\OCS Inventory NG\Agent\ocsinventory.dat"
     IfErrors TestInstall_Upgrade_Error
+	StrCpy $logBuffer "Moving last_state file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
+	Call Write_Log
+    CopyFiles /SILENT "$INSTDIR\last_state" "$APPDATA\OCS Inventory NG\Agent\last_state"
+    IfErrors TestInstall_Upgrade_Error
+	StrCpy $logBuffer "Moving cacert.pem file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
+	Call Write_Log
+    CopyFiles /SILENT "$INSTDIR\cacert.pem" "$APPDATA\OCS Inventory NG\Agent\cacert.pem"
+	StrCpy $logBuffer "Moving label file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
+	Call Write_Log
+    CopyFiles /SILENT "$INSTDIR\label" "$APPDATA\OCS Inventory NG\Agent\label"
+    ClearErrors
     ; Transfer old service config to new file (TTO_WAIT, PROLOG_FREQ...)
     ReadINIStr $R0 "$INSTDIR\service.ini" "OCS_SERVICE" "TTO_WAIT"
     WriteINIStr "$APPDATA\OCS Inventory NG\Agent\ocsinventory.ini" "${PRODUCT_SERVICE_NAME}" "TTO_WAIT" $R0
