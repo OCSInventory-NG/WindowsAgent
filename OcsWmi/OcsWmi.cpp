@@ -243,7 +243,7 @@ BOOL COcsWmi::MoveNextEnumClassObject()
 		m_pClassObject = NULL;
 
 		// Enumerate through the resultset.
-		m_hResult = m_pEnumClassObject->Next( 2000,				// Timeout
+		m_hResult = m_pEnumClassObject->Next( 30000,			// Timeout 30 s
 											  1,				// Return just one storage device
 											  &m_pClassObject,	// Pointer to storage device
 											  &uReturned);		// Number obtained: one or zero
