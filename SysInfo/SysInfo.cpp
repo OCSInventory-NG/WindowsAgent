@@ -581,8 +581,13 @@ BOOL CSysInfo::getUserName(CString &csUserName)
 
 	// Try to use kernel32 to enum process
 	if(  (*(FARPROC*)&pCreateToolhelp32Snapshot	= GetProcAddress( GetModuleHandle( _T("KERNEL32.DLL")), "CreateToolhelp32Snapshot") ) &&
+#ifdef _UNICODE
+		 (*(FARPROC*)&pProcess32First			= GetProcAddress( GetModuleHandle( _T("KERNEL32.DLL")), "Process32FirstW") ) &&
+		 (*(FARPROC*)&pProcess32Next			= GetProcAddress( GetModuleHandle( _T("KERNEL32.DLL")), "Process32NextW") ) ) 
+#else
 		 (*(FARPROC*)&pProcess32First			= GetProcAddress( GetModuleHandle( _T("KERNEL32.DLL")), "Process32First") ) &&
 		 (*(FARPROC*)&pProcess32Next			= GetProcAddress( GetModuleHandle( _T("KERNEL32.DLL")), "Process32Next") ) ) 
+#endif
 	{
 		AddLog( _T( "getUserName: Using Process32 library...OK\n"));		
 	}
