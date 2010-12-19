@@ -6093,7 +6093,7 @@ BOOL CRegistry::GetLastLoggedUser(CString &csLastLoggedUser)
 
   	AddLog( _T( "Registry NT GetLastLoggedUser: Trying to get the last user who'd been logged in..."));
 	// Since Vista 
-	if (RegOpenKeyEx( HKEY_CURRENT_USER, VISTA_LASTLOGGEDUSER_USER_KEY, 0, KEY_READ, &hKey) == ERROR_SUCCESS)
+	if ((lResult = RegOpenKeyEx( HKEY_CURRENT_USER, VISTA_LASTLOGGEDUSER_USER_KEY, 0, KEY_READ, &hKey)) == ERROR_SUCCESS)
 	{
 		lResult = GetValue( hKey, VISTA_LASTLOGGEDUSER_USER_VALUE, csLastLoggedUser);
 		RegCloseKey( hKey);	
