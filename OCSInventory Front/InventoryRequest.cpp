@@ -452,7 +452,7 @@ BOOL CInventoryRequest::runInventory()
 	m_Device.SetAddressWidthOS( m_pSysInfo->getAddressWidthOS());
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Operating System uses %u bits memory address width"),  m_pSysInfo->getAddressWidthOS());
 	// Prepare to also store OS information to software list
-	cSoftOS.Set( _T( "Microsoft Corporation"), cs1, cs2, NOT_AVAILABLE, cs3, NOT_AVAILABLE, 0, TRUE);
+	cSoftOS.Set( MICROSOFT_CORP_STRING, cs1, cs2, NOT_AVAILABLE, cs3, NOT_AVAILABLE, 0, TRUE);
 	cSoftOS.SetInstallDate( cs5, TRUE);
 	cSoftOS.SetMemoryAddressWidth( m_pSysInfo->getAddressWidthOS());
 	// Get NT Domain or Workgroup
@@ -582,7 +582,7 @@ BOOL CInventoryRequest::runInventory()
 					  cs1);
 	m_Device.SetWindowsProductKey( cs1);
 	// Get Software list
-	if (!m_pSysInfo->getRegistryApplications( &m_SoftwareList, getAgentConfig()->isHkcuRequired()))
+	if (!m_pSysInfo->getInstalledApplications( &m_SoftwareList, getAgentConfig()->isHkcuRequired()))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve software from Registry"));
 	else
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %d software found"),

@@ -19,6 +19,7 @@
 
 #include "SysInfoClasses.h"
 
+#define MICROSOFT_CORP_STRING	 _T( "Microsoft Corporation")
 
 class SYSINFO_API CSoftware  
 {

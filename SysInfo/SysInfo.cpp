@@ -751,11 +751,29 @@ BOOL CSysInfo::getLastLoggedUser(CString &csLastLoggedUser)
 	return m_registryInfo.GetLastLoggedUser( csLastLoggedUser);
 }
 
-BOOL CSysInfo::getRegistryApplications(CSoftwareList *pList, BOOL hkcu)
+BOOL CSysInfo::getInstalledApplications(CSoftwareList *pList, BOOL hkcu)
 {
+	OSVERSIONINFO	osVersion;
+	BOOL			bIsNT6orHigher = FALSE;
+
+	osVersion.dwOSVersionInfoSize = sizeof( OSVERSIONINFO);
+	if (GetVersionEx( &osVersion))
+	{
+		bIsNT6orHigher = (osVersion.dwPlatformId == VER_PLATFORM_WIN32_NT) && (osVersion.dwMajorVersion >= 6);
+	}
 	// Use registry
 	m_registryInfo.SetAddressWidthOS( getAddressWidthOS());
-	return m_registryInfo.GetRegistryApplications( pList, hkcu);
+	if (bIsNT6orHigher)
+	{
+		// Under Vista, 2008 or higher, Registry do not include Hotfix
+		// We have to also query WMI for Hotfixes
+		return (m_registryInfo.GetRegistryApplications( pList, hkcu) && m_wmiInfo.GetHotFixes( pList));
+	}
+	else
+	{
+		// 2000/XP/2003, Hotfixes are in the registry
+		return m_registryInfo.GetRegistryApplications( pList, hkcu);
+	}
 }
 
 BOOL CSysInfo::getDomainOrWorkgroup(CString &csDomain)

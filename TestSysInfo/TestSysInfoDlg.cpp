@@ -2699,68 +2699,92 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	CSysInfo    *m_pSysInfo	= new CSysInfo( TRUE, _T( "c:\\"));
 
 	// Get logged on user
-	m_pSysInfo->getUserName( cs1);
+	if (!m_pSysInfo->getUserName( cs1))
+		AfxMessageBox( _T( "Failed to get username !"));
 	m_Device.SetLoggedOnUser( cs1);
 	// Last logged on user
-	m_pSysInfo->getLastLoggedUser( cs1);
+	if (!m_pSysInfo->getLastLoggedUser( cs1))
+		AfxMessageBox( _T( "Failed to get last logged on username !"));
 	m_Device.SetLastLoggedUser( cs1);
 	// Get OS informations and device type (windows station or windows server)
-	m_pSysInfo->getOS( cs1, cs2, cs3, cs4, cs5);
+	if (!m_pSysInfo->getOS( cs1, cs2, cs3, cs4, cs5))
+		AfxMessageBox( _T( "Failed to get OS informations !"));
 	m_Device.SetOS( cs1, cs2, cs3);
 	m_Device.SetDescription (cs4);
 	m_Device.SetAddressWidthOS( m_pSysInfo->getAddressWidthOS());
 	// Prepare to also store OS information to software list
-	cSoftOS.Set( _T( "Microsoft Corporation"), cs1, cs2, NOT_AVAILABLE, cs3, NOT_AVAILABLE, 0, TRUE);
+	cSoftOS.Set( MICROSOFT_CORP_STRING, cs1, cs2, NOT_AVAILABLE, cs3, NOT_AVAILABLE, 0, TRUE);
 	cSoftOS.SetInstallDate( cs5);
 	cSoftOS.SetMemoryAddressWidth( m_pSysInfo->getAddressWidthOS());
 	// Get NT Domain or Workgroup
-	m_pSysInfo->getDomainOrWorkgroup( cs1);
+	if (!m_pSysInfo->getDomainOrWorkgroup( cs1))
+		AfxMessageBox( _T( "Failed to get Domain or Workgroup informations !"));
 	m_Device.SetDomainOrWorkgroup( cs1);
 	// Get NT user Domain
-	m_pSysInfo->getUserDomain( cs1);
+	if (!m_pSysInfo->getUserDomain( cs1))
+		AfxMessageBox( _T( "Failed to get User Domain informations !"));
 	m_Device.SetUserDomain( cs1);
 	// Get BIOS informations
-	m_pSysInfo->getBiosInfo( &m_BIOS);
+	if (!m_pSysInfo->getBiosInfo( &m_BIOS))
+		AfxMessageBox( _T( "Failed to get BIOS informations !"));
 	// Get Processor infos (0 means error)
-	dwValue = m_pSysInfo->getProcessors( cs1, cs2);
+	if ((dwValue = m_pSysInfo->getProcessors( cs1, cs2)) == 0)
+		AfxMessageBox( _T( "Failed to get Processors informations !"));
 	m_Device.SetProcessor( cs1, cs2, dwValue);
 	// Get memory informations
-	m_pSysInfo->getMemory( &ulPhysicalMemory, &ulSwapSize);
+	if (!m_pSysInfo->getMemory( &ulPhysicalMemory, &ulSwapSize))
+		AfxMessageBox( _T( "Failed to get Memory informations !"));
 	m_Device.SetMemory( ulPhysicalMemory, ulSwapSize);
-	m_pSysInfo->getMemorySlots( &m_MemoryList);
+	if (!m_pSysInfo->getMemorySlots( &m_MemoryList))
+		AfxMessageBox( _T( "Failed to get Memory Slots informations !"));
 	// Get Input Devices
-	m_pSysInfo->getInputDevices( &m_InputList);
+	if (!m_pSysInfo->getInputDevices( &m_InputList))
+		AfxMessageBox( _T( "Failed to get Input Devices informations !"));
 	// Get System ports
-	m_pSysInfo->getSystemPorts( &m_PortList);
+	if (!m_pSysInfo->getSystemPorts( &m_PortList))
+		AfxMessageBox( _T( "Failed to get System Ports informations !"));
 	// Get System Slots
-	m_pSysInfo->getSystemSlots( &m_SlotList);
+	if (!m_pSysInfo->getSystemSlots( &m_SlotList))
+		AfxMessageBox( _T( "Failed to get System slots informations !"));
 	// Get System controlers
-	m_pSysInfo->getSystemControllers( &m_SystemControllerList);
+	if (!m_pSysInfo->getSystemControllers( &m_SystemControllerList))
+		AfxMessageBox( _T( "Failed to get System Controllers informations !"));
 	// Get Physical storage devices
-	m_pSysInfo->getStoragePeripherals( &m_StorageList);
+	if (!m_pSysInfo->getStoragePeripherals( &m_StorageList))
+		AfxMessageBox( _T( "Failed to get Physical Storages informations !"));
 	// Get Logical Drives
-	m_pSysInfo->getLogicalDrives( &m_DriveList);
+	if (!m_pSysInfo->getLogicalDrives( &m_DriveList))
+		AfxMessageBox( _T( "Failed to get Logical Drives informations !"));
 	// Get Sound Devices
-	m_pSysInfo->getSoundDevices( &m_SoundList);
+	if (!m_pSysInfo->getSoundDevices( &m_SoundList))
+		AfxMessageBox( _T( "Failed to get Sound Devices informations !"));
 	// Get Modems
-	m_pSysInfo->getModems( &m_ModemList);
+	if (!m_pSysInfo->getModems( &m_ModemList))
+		AfxMessageBox( _T( "Failed to get Modems informations !"));
 	// Get network adapter(s) hardware and IP informations
-	m_pSysInfo->getNetworkAdapters( &m_NetworkList);
+	if (!m_pSysInfo->getNetworkAdapters( &m_NetworkList))
+		AfxMessageBox( _T( "Failed to get Network Adapters informations !"));
 	// Get Printer(s) informations
-	m_pSysInfo->getPrinters( &m_PrinterList);
+	if (!m_pSysInfo->getPrinters( &m_PrinterList))
+		AfxMessageBox( _T( "Failed to get Printers informations !"));
 	// Get Video adapter(s) informations
-	m_pSysInfo->getVideoAdapters( &m_VideoList);
-	m_pSysInfo->getMonitors( &m_MonitorList);
+	if (!m_pSysInfo->getVideoAdapters( &m_VideoList))
+		AfxMessageBox( _T( "Failed to get Video Adapters informations !"));
+	if (!m_pSysInfo->getMonitors( &m_MonitorList))
+		AfxMessageBox( _T( "Failed to get Monitors informations !"));
 	// Get the primary local IP Address 
 	m_Device.SetIPAddress( m_pSysInfo->getLocalIP());
 	// Get Windows registration infos
-	m_pSysInfo->getWindowsRegistration( cs1, cs2, cs3);
+	if (!m_pSysInfo->getWindowsRegistration( cs1, cs2, cs3))
+		AfxMessageBox( _T( "Failed to get Windows Registration informations !"));
 	m_Device.SetWindowsRegistration( cs1, cs2, cs3);
 	// Get Windows product key
-	m_pSysInfo->getWindowsProductKey( cs1);
+	if (!m_pSysInfo->getWindowsProductKey( cs1))
+		AfxMessageBox( _T( "Failed to get Windows Product Key informations !"));
 	m_Device.SetWindowsProductKey( cs1);
 	// Get Software list
-	m_pSysInfo->getRegistryApplications( &m_SoftwareList, TRUE);
+	if (!m_pSysInfo->getInstalledApplications( &m_SoftwareList, TRUE))
+		AfxMessageBox( _T( "Failed to get Installed Softwares informations !"));
 	m_SoftwareList.AddTail( cSoftOS);
 	delete m_pSysInfo;
 	return TRUE;

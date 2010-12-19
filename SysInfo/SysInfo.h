@@ -136,7 +136,7 @@ public: // Methods
 	BOOL getLastLoggedUser( CString &csLastLoggedUser);
 
 	// Software informations
-	BOOL getRegistryApplications( CSoftwareList *pList, BOOL hkcu);
+	BOOL getInstalledApplications( CSoftwareList *pList, BOOL hkcu);
 
 	// Registry informations
 	BOOL getRegistryValue( UINT uKeyTree, LPCTSTR lpstrSubKey, LPCTSTR lpstrValue, CString &csResult);
