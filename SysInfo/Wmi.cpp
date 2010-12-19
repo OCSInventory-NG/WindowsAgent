@@ -2027,9 +2027,6 @@ BOOL CWmi::GetHotFixes( CSoftwareList *pMyList)
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
-		}
-		if (uIndex > 0)
-		{
 			AddLog( _T( "OK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
