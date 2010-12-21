@@ -5212,6 +5212,7 @@ BOOL CRegistry::GetRegistryApplications(CSoftwareList *pList, BOOL hkcu)
 	case VER_PLATFORM_WIN32_WINDOWS:
 		// Windows 9X/Me
 		if( hkcu )
+			// HKEY_CURRENT_USER => Don't care about result
 			GetRegistryApplications9X( pList, HKEY_CURRENT_USER);
 		return GetRegistryApplications9X( pList, HKEY_LOCAL_MACHINE);
 
@@ -5219,27 +5220,27 @@ BOOL CRegistry::GetRegistryApplications(CSoftwareList *pList, BOOL hkcu)
 		// Windows NT/2000/XP/2003
 		if (hkcu)
 		{
-			// HKEY_CURRENT_USER
+			// HKEY_CURRENT_USER => Don't care about result
 			if (m_dwAddressWidth == 64)
 			{
 				// 64 bits OS
-				bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_CURRENT_USER, HIVE_WOW64_64KEY);
-				bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_CURRENT_USER, HIVE_WOW64_32KEY);
+				GetRegistryApplicationsNT( pList, HKEY_CURRENT_USER, HIVE_WOW64_64KEY);
+				GetRegistryApplicationsNT( pList, HKEY_CURRENT_USER, HIVE_WOW64_32KEY);
 			}
 			else
 				// 32 bits OS
-				bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_CURRENT_USER);
+				GetRegistryApplicationsNT( pList, HKEY_CURRENT_USER, HIVE_WOW32_32KEY);
 		}
 		// HKEY_LOCAL_MACHINE
 		if (m_dwAddressWidth == 64)
 		{
 			// 64 bits OS
-			bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE, HIVE_WOW64_64KEY);
+			bResult = GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE, HIVE_WOW64_64KEY);
 			bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE, HIVE_WOW64_32KEY);
 		}
 		else
 			// 32 bits OS
-			bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE);
+			bResult = GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE, HIVE_WOW32_32KEY);
 		return bResult;
 	default:
 		// Unknown
