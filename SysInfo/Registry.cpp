@@ -5235,8 +5235,8 @@ BOOL CRegistry::GetRegistryApplications(CSoftwareList *pList, BOOL hkcu)
 		if (m_dwAddressWidth == 64)
 		{
 			// 64 bits OS
+			GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE, HIVE_WOW64_32KEY);
 			bResult = GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE, HIVE_WOW64_64KEY);
-			bResult = bResult && GetRegistryApplicationsNT( pList, HKEY_LOCAL_MACHINE, HIVE_WOW64_32KEY);
 		}
 		else
 			// 32 bits OS
