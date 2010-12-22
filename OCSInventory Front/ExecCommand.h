@@ -32,6 +32,19 @@ public:
 	~CExecCommand();
 
   /**
+   Set process execution timeout, in milliseconds
+   By default, wait is INFINITE
+   */
+  void setTimeout( DWORD dwTimeout = INFINITE);
+
+  /**
+   Use COMSPEC environnement variable to start process (e.g cmd.exe /C command) 
+   or not (Does not allow searching in path for command => must provide full path
+   for command)
+   */
+   void useComspec( BOOL bUse = TRUE);
+
+  /**
    * Exec command in the directory path. Make sure that the
    * executable is either in the path or specify the full path.
    * We don't care about command ending, so stdout and stderr
@@ -118,7 +131,8 @@ protected:
   HANDLE m_hChildStdinWrDup;
   HANDLE m_hChildStdoutRdDup;
   HANDLE m_hChildStderrRdDup;
-  
+  DWORD  m_dwTimeout;
+  BOOL	 m_bComspec;
   
   int m_fdStdIn;
   int m_fdStdOut;
