@@ -80,16 +80,25 @@ void CRequestAbstract::cleanXml()
  */
 BOOL CRequestAbstract::final()
 {
-	if(!m_bFinal)
+	try
 	{
-		cleanXml();
-		m_pLogger->log( LOG_PRIORITY_TRACE, GetUnicodeFromUTF8( getMessage()));
-		m_pRawMessage = CZip::deflate( getMessage());
-		m_bFinal = TRUE;
-		return (m_pRawMessage != NULL);
+		if(!m_bFinal)
+		{
+			cleanXml();
+			m_pLogger->log( LOG_PRIORITY_TRACE, GetUnicodeFromUTF8( getMessage()));
+			m_pRawMessage = CZip::deflate( getMessage());
+			m_bFinal = TRUE;
+			return (m_pRawMessage != NULL);
+		}
+		else
+			return FALSE;
 	}
-	else
+	catch (CException *pEx)
+	{
+		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "REQUEST => Generic deflate error"));
+		pEx->Delete();
 		return FALSE;
+	}
 }
 
 /**
