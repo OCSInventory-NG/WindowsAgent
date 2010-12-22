@@ -684,7 +684,7 @@ stop_service_end_loop:
 	StrCpy $logBuffer "Trying to kill process inst32.exe...Result: $R0$\r$\n"
 	Call Write_Log
 	sleep 1000
-	StrCpy $logBuffer "Waiting 10 seconds for processes to terminate...\r$\n"
+	StrCpy $logBuffer "Waiting 10 seconds for processes to terminate...$\r$\n"
 	Call Write_Log
 	sleep 10000
 	; Restore used register
@@ -760,7 +760,7 @@ un.stop_service_end_loop:
 	StrCpy $logBuffer "Trying to kill process download.exe...Result: $R0$\r$\n"
 	Call un.Write_Log
 	sleep 1000
-	StrCpy $logBuffer "Waiting 10 seconds for processes to terminate...\r$\n"
+	StrCpy $logBuffer "Waiting 10 seconds for processes to terminate...$\r$\n"
 	Call un.Write_Log
 	sleep 10000
 	; Restore used register
