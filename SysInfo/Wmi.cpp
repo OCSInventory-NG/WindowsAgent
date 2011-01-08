@@ -457,13 +457,13 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 				if (!myObject.IsValidSN( csBuffer) && (lDiskIndex < lFixedDisk))
 				{
 					// 2000/XP/2003 => use DiskInfo (DeviceIoControl)
-					csBuffer.Format( _T( "%s"), di.SerialNumber( lDiskIndex));
+					csBuffer = di.SerialNumber( lDiskIndex);
 					if (myObject.IsValidSN( csBuffer))
 						myObject.SetSN( csBuffer);
-					csBuffer.Format( _T( "%s"), di.ModelNumber( lDiskIndex));
+					csBuffer = di.ModelNumber( lDiskIndex);
 					if (myObject.IsValidModel( csBuffer))
 						myObject.SetModel( csBuffer);
-					csBuffer.Format( _T( "%s"), di.RevisionNumber( lDiskIndex));
+					csBuffer = di.RevisionNumber( lDiskIndex);
 					if (myObject.IsValidFirmware( csBuffer))
 						myObject.SetFirmware( csBuffer);
 				}
