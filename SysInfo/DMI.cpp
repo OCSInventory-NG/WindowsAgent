@@ -680,6 +680,8 @@ BOOL CDMI::GetMemorySlots( CMemorySlotList *pMyList)
 		// Speed
 		csBuffer.Format( _T( "%u"), MAKEWORD( pPointer[0x15], pPointer[0x16]));
 		myObject.SetSpeed( csBuffer);
+		// Manufacturer
+//		csBuffer = DmiString(dmi, pPointer[0x17]);
 		// Serial Number
 		csBuffer = DmiString(dmi, pPointer[0x18]);
 /*		// If S/N is empty, get Part number
