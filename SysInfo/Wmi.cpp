@@ -459,11 +459,11 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 					// 2000/XP/2003 => use DiskInfo (DeviceIoControl)
 					CString csTemp;
 
-					csBuffer = di.SerialNumber( lDiskIndex);
+					csBuffer.Format( _T( "%s"), di.SerialNumber( lDiskIndex));
 					myObject.SetSN( csBuffer);
-					csBuffer = di.ModelNumber( lDiskIndex);
+					csBuffer.Format( _T( "%s"), di.ModelNumber( lDiskIndex));
 					myObject.SetModel( csBuffer);
-					csTemp = di.RevisionNumber( lDiskIndex);
+					csTemp.Format( _T( "%s"), di.RevisionNumber( lDiskIndex));
 					myObject.SetFirmware( csTemp);
 				}
 				else
