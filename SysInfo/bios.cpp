@@ -206,7 +206,7 @@ BOOL CBios::IsValidSystemModel()
 
 BOOL CBios::IsValidSystemSerialNumber()
 {
-	return ((m_csSystemSerialNumber.GetLength() > 4) && (m_csSystemSerialNumber.Compare( NOT_AVAILABLE) != 0));
+	return ((m_csSystemSerialNumber.GetLength() > SYSINFO_MIN_SN_LENGTH) && (m_csSystemSerialNumber.Compare( NOT_AVAILABLE) != 0));
 }
 
 BOOL CBios::IsValidAssetTag()

@@ -48,6 +48,8 @@ public: // Methods
 	UINT	GetSlotNumber();
 	// Get memory device serial number
 	LPCTSTR GetSN();
+	// Is provided serial number valid (check already stored SN if null)
+	BOOL IsValidSN( LPCTSTR lpstrSN = NULL);
 
 	//////////////////////////////////
 	// Set attributes values

@@ -50,6 +50,8 @@ public: // Methods
 	void SetType( LPCTSTR lpstrType);
 	void SetManufacturer( LPCTSTR lpstrManufacturer);
 	void SetSerial( LPCTSTR lpstrSerial);
+	// Is provided serial number valid (check already stored SN if null)
+	BOOL IsValidSerial( LPCTSTR lpstrSN = NULL);
 
 	//////////////////////////////////
 	// Comparison operators

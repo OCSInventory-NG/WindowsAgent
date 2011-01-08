@@ -272,6 +272,17 @@ void CMemorySlot::SetSN( LPCTSTR lpstrSN)
 	StrForSQL( m_csSN);
 }
 
+BOOL CMemorySlot::IsValidSN( LPCTSTR lpstrSN)
+{
+	CString csSN;
+
+	if (lpstrSN == NULL)
+		csSN = m_csSN;
+	else
+		csSN = lpstrSN;
+	return (csSN.GetLength() > SYSINFO_MIN_SN_LENGTH);
+}
+
 void CMemorySlot::Clear()
 {
 	m_csCaption.Empty();	

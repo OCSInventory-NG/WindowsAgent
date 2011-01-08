@@ -617,7 +617,8 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 					AddLog( _T( "\tEDID Acer Fix: Change Serial Number to %s\n"), csSerial);
 				myMonitor.SetCaption( CA2CT( csCaption));
 				myMonitor.SetDescription( CA2CT( csDescription));
-				myMonitor.SetSerial( CA2CT( csSerial));
+				if (myMonitor.IsValidSerial( CA2CT( csSerial)))
+					myMonitor.SetSerial( CA2CT( csSerial));
 				pMyList->AddTail( myMonitor);
 			}
 			dwIndex++;

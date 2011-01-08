@@ -685,7 +685,8 @@ BOOL CDMI::GetMemorySlots( CMemorySlotList *pMyList)
 /*		// If S/N is empty, get Part number
 		if (csBuffer.IsEmpty())
 			csBuffer = DmiString(dmi, pPointer[0x1A]);
-*/		if (wCapacity > 0)
+*/
+		if ((wCapacity > 0) && myObject.IsValidSN( csBuffer))
 			myObject.SetSN( csBuffer);
 		pMyList->AddTail( myObject);
 		// next 

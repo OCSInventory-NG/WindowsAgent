@@ -27,11 +27,12 @@
 #include <tchar.h>
 
 
-#define NOT_AVAILABLE	_T( "N/A")
-#define ONE_KILOBYTE	1024
-#define ONE_MEGABYTE	1048576 // (1024 * 1024)
-#define MAX_OBJECTS		128		// Max number of processes and modules we can check
-
+#define NOT_AVAILABLE				_T( "N/A")
+#define ONE_KILOBYTE				1024
+#define ONE_MEGABYTE				1048576 // (1024 * 1024)
+#define MAX_OBJECTS					128		// Max number of processes and modules we can check
+#define SYSINFO_MIN_SN_LENGTH		4		// Valid serial number must have more then 4 characters
+#define SYSINFO_MIN_DEFAULT_LENGTH	1		// A valid filed retrieved from system must have more than 1 character
 
 //------------------------------------------------------
 // this allows us to export/import a class

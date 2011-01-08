@@ -90,6 +90,17 @@ void CMonitor::SetSerial(LPCTSTR lpstrSerial)
 	StrForSQL( m_csSerial);
 }
 
+BOOL CMonitor::IsValidSerial( LPCTSTR lpstrSN)
+{
+	CString csSN;
+
+	if (lpstrSN == NULL)
+		csSN = m_csSerial;
+	else
+		csSN = lpstrSN;
+	return (csSN.GetLength() > SYSINFO_MIN_SN_LENGTH);
+}
+
 void CMonitor::Clear()
 {
 	m_csManufacturer.Empty();

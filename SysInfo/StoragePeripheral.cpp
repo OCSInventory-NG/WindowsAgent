@@ -111,6 +111,17 @@ void CStoragePeripheral::SetModel(LPCTSTR lpstrModel)
 	StrForSQL( m_csModel);
 }
 
+BOOL CStoragePeripheral::IsValidModel( LPCTSTR lpstrModel)
+{
+	CString csModel;
+
+	if (lpstrModel == NULL)
+		csModel = m_csModel;
+	else
+		csModel = lpstrModel;
+	return (csModel.GetLength() > SYSINFO_MIN_DEFAULT_LENGTH);
+}
+
 void CStoragePeripheral::SetDescription(LPCTSTR lpstrDescription)
 {
 	m_csDescription = lpstrDescription;
@@ -128,10 +139,32 @@ void CStoragePeripheral::SetSN(LPCTSTR lpstrSN)
 	StrForSQL( m_csSN);
 }
 
+BOOL CStoragePeripheral::IsValidSN( LPCTSTR lpstrSN)
+{
+	CString csSN;
+
+	if (lpstrSN == NULL)
+		csSN = m_csSN;
+	else
+		csSN = lpstrSN;
+	return (csSN.GetLength() > SYSINFO_MIN_SN_LENGTH);
+}
+
 void CStoragePeripheral::SetFirmware( LPCTSTR lpstrRev)
 {
 	m_csFirmware = lpstrRev;
 	StrForSQL( m_csFirmware);
+}
+
+BOOL CStoragePeripheral::IsValidFirmware( LPCTSTR lpstrRev)
+{
+	CString csRev;
+
+	if (lpstrRev == NULL)
+		csRev = m_csFirmware;
+	else
+		csRev = lpstrRev;
+	return (csRev.GetLength() > SYSINFO_MIN_DEFAULT_LENGTH);
 }
 
 void CStoragePeripheral::Clear()

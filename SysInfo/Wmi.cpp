@@ -454,26 +454,30 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 				myObject.SetSize( m_dllWMI.GetClassObjectU64Value( _T( "Size")) / ONE_MEGABYTE);
 				// Vista, 2008, Seven and higher only
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "SerialNumber"));
-				if (csBuffer.IsEmpty() && (lDiskIndex < lFixedDisk))
+				if (!myObject.IsValidSN( csBuffer) && (lDiskIndex < lFixedDisk))
 				{
 					// 2000/XP/2003 => use DiskInfo (DeviceIoControl)
-					CString csTemp;
-
 					csBuffer.Format( _T( "%s"), di.SerialNumber( lDiskIndex));
-					myObject.SetSN( csBuffer);
+					if (myObject.IsValidSN( csBuffer))
+						myObject.SetSN( csBuffer);
 					csBuffer.Format( _T( "%s"), di.ModelNumber( lDiskIndex));
-					myObject.SetModel( csBuffer);
-					csTemp.Format( _T( "%s"), di.RevisionNumber( lDiskIndex));
-					myObject.SetFirmware( csTemp);
+					if (myObject.IsValidModel( csBuffer))
+						myObject.SetModel( csBuffer);
+					csBuffer.Format( _T( "%s"), di.RevisionNumber( lDiskIndex));
+					if (myObject.IsValidFirmware( csBuffer))
+						myObject.SetFirmware( csBuffer);
 				}
 				else
 				{
 					// Vista, 2008, Seven or higher => Use WMI
-					myObject.SetSN( csBuffer);
+					if (myObject.IsValidSN( csBuffer))
+						myObject.SetSN( csBuffer);
 					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Model"));
-					myObject.SetModel( csBuffer);
+					if (myObject.IsValidModel( csBuffer))
+						myObject.SetModel( csBuffer);
 					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "FirmwareRevision"));
-					myObject.SetFirmware( csBuffer);
+					if (myObject.IsValidFirmware( csBuffer))
+						myObject.SetFirmware( csBuffer);
 				}
 				pMyList->AddTail( myObject);
 				uIndex ++;
@@ -1808,7 +1812,7 @@ BOOL CWmi::GetMemorySlots(CMemorySlotList *pMyList)
 				if (csBuffer.IsEmpty())
 					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "PartNumber"));
 */
-				if (u64Value > 0)
+				if ((u64Value > 0) && myObject.IsValidSN( csBuffer))
 					myObject.SetSN( csBuffer);
 				// Device is OK
 				pMyList->AddTail( myObject);

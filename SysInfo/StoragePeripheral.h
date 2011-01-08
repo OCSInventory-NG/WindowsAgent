@@ -51,12 +51,18 @@ public: // Methods
 
 	void SetDescription( LPCTSTR lpstrDescription);
 	void SetModel( LPCTSTR lpstrModel);
+	// Is provided Model valid (check already stored Model if null)
+	BOOL IsValidModel( LPCTSTR lpstrModel = NULL);
 	void SetName( LPCTSTR lpstrName);
 	void SetType( LPCTSTR lpstrType);
 	void SetSize( unsigned __int64 u64Size);
 	void SetManufacturer( LPCTSTR lpstrManufacturer);
 	void SetSN( LPCTSTR lpstrSN);
+	// Is provided serial number valid (check already stored SN if null)
+	BOOL IsValidSN( LPCTSTR lpstrSN = NULL);
 	void SetFirmware( LPCTSTR lpstrRev);
+	// Is provided Firmware valid (check already stored Firmware if null)
+	BOOL IsValidFirmware( LPCTSTR lpstrRev = NULL);
 
 	//////////////////////////////////
 	// Comparison operators
