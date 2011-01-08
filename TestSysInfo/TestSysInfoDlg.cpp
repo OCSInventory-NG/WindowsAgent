@@ -312,7 +312,7 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 		SysInfoLog( str);
 		str.Format( _T( "Slot Number: %u"), myMemSlot.GetSlotNumber());
 		SysInfoLog( str);
-		str.Format( _T( "Serial Number: %u"), myMemSlot.GetSN());
+		str.Format( _T( "Serial Number: %s"), myMemSlot.GetSN());
 		SysInfoLog( str);
 		if (pos != NULL)
 		{
@@ -2148,7 +2148,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		SysInfoLog( str);
 		str.Format( _T( "Slot Number: %u"), myMemSlot.GetSlotNumber());
 		SysInfoLog( str);
-		str.Format( _T( "Serial Number: %u"), myMemSlot.GetSN());
+		str.Format( _T( "Serial Number: %s"), myMemSlot.GetSN());
 		SysInfoLog( str);
 		if (pos != NULL)
 		{
