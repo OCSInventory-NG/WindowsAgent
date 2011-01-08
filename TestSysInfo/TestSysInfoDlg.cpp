@@ -2826,7 +2826,7 @@ void CTestSysInfoDlg::OnBnClickedLoadXml()
 	}
 	else
 	{
-		AfxMessageBox( _T( "XML file is an OCS Inventory TextSysinfo file !"));
+		AfxMessageBox( _T( "XML file is not an OCS Inventory TextSysinfo file !"));
 		return;
 	}
 }
