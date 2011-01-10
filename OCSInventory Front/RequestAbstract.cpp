@@ -63,16 +63,21 @@ DWORD CRequestAbstract::getRawMessageLength()
  */
 void CRequestAbstract::cleanXml()
 {
-/*	CStringA bef = m_cmXml.GetDoc();
-	
-	for (int i=0;i<bef.GetLength();i++)
-	{	
-		UCHAR cut = (UCHAR)bef.GetAt(i);
-		if( (cut<32 || cut>244) && cut!=10 && cut!=13 )
-			bef.SetAt(i,'x');		
+	CStringA csXml = m_cmXml.GetDoc();
+	int		nIndex,
+			nCount;
+
+	// Remove "&#x...;" encoded binary characters produced by MS UTF-8 encoder, like "&#x01F;"
+	nIndex = csXml.Find( "&#x");
+	while (nIndex != -1)
+	{
+		if ((nCount = csXml.Find( ";", nIndex)) <= 3)
+			// No ending ; => only delete first 3 characters "&#x"
+			nCount = 3;
+		csXml.Delete( nIndex, nCount);
+		nIndex = csXml.Find( "&#x", nIndex);
 	}
-	m_cmXml.SetDoc( bef);
-*/
+	m_cmXml.SetDoc( csXml);
 }
 
 /**
