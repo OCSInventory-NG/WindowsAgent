@@ -97,9 +97,7 @@ BOOL CRequestAbstract::final()
 		if(!m_bFinal)
 		{
 			cleanXml();
-/* TO FIX
 			m_pLogger->log( LOG_PRIORITY_TRACE, GetUnicodeFromUTF8( getMessage()));
-*/
 			m_pRawMessage = CZip::deflate( getMessage());
 			m_bFinal = TRUE;
 			return (m_pRawMessage != NULL);
