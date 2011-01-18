@@ -2843,7 +2843,7 @@ void CTestSysInfoDlg::OnBnClickedSaveXml()
 					  _T( "XML files|*.xml|All files|*.*||"));
 
 	TiXmlDocument *pXmlDoc = new TiXmlDocument();
-	TiXmlDeclaration *pXmlDecl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+	TiXmlDeclaration *pXmlDecl = new TiXmlDeclaration( "1.0", "ISO-8859-1", "" );
 	pXmlDoc->LinkEndChild( pXmlDecl);
 	TiXmlElement *pXmlRequest = new TiXmlElement( "Request");
 	pXmlDoc->LinkEndChild( pXmlRequest);
