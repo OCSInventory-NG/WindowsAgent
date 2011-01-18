@@ -73,8 +73,15 @@ void CRequestAbstract::cleanXml()
 	{
 		if ((nCount = csXml.Find( ";", nIndex)) <= 3)
 			// No ending ; => only delete first 3 characters "&#x"
-			nCount = 3;
-		csXml.Delete( nIndex, nCount);
+			nCount = nIndex + 3;
+		else
+			// Also delete ;
+			nCount++;
+		// Delete chars
+		csXml.Delete( nIndex, nCount - nIndex);
+		// and insert space
+		csXml.Insert( nIndex, " ");
+		// Find next occurence
 		nIndex = csXml.Find( "&#x", nIndex);
 	}
 	m_cmXml.SetDoc( csXml);
