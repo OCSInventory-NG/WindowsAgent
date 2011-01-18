@@ -27,7 +27,7 @@
 #include <tchar.h>
 
 
-#define NOT_AVAILABLE				_T( "N/A")
+#define NOT_AVAILABLE				_T( "")
 #define ONE_KILOBYTE				1024
 #define ONE_MEGABYTE				1048576 // (1024 * 1024)
 #define MAX_OBJECTS					128		// Max number of processes and modules we can check

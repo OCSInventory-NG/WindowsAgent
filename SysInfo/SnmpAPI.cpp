@@ -271,7 +271,7 @@ LPCTSTR GetIfType( UINT uType)
 	case 144: return _T( "IEEE1394 High Perf Serial Bus");
 	case 145: return _T( "TV adapter type");
 	case 162: return _T( "Cisco Express Forwarding Interface");
-	default: return _T( "N/A");
+	default: return _T( "");
 	}
 }
 

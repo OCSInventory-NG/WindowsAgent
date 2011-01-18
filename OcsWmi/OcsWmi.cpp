@@ -878,7 +878,7 @@ LPCTSTR COcsWmi::strVariant( VARIANT pVal)
 {
 	static CString strRet;
 
-	strRet = _T( "N/A");
+	strRet = _T( "");
 	switch(pVal.vt)
 	{
 		case VT_EMPTY:

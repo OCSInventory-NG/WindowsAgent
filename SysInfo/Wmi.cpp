@@ -1844,7 +1844,7 @@ BOOL CWmi::GetMemorySlots(CMemorySlotList *pMyList)
 					myObject.SetDescription( _T(""));
 					myObject.SetCapacity( _T("0"));
 					myObject.SetSlotNumber( nbFilled+1 );
-					myObject.SetSpeed( _T("N/A"));
+					myObject.SetSpeed( _T(""));
 					myObject.SetType( _T("Empty slot"));
 					pMyList->AddTail( myObject);
 					nbFilled++;

@@ -202,7 +202,7 @@ void CNetworkAdapter::SetStatus( LONG lOperStatus)
 		m_csOperStatus = _T( "Testing");
 		break;
 	default: // Unknown
-		m_csOperStatus = _T( "N/A");
+		m_csOperStatus = _T( "");
 		break;
 	}
 }
@@ -224,7 +224,7 @@ void CNetworkAdapter::SetIpHelperStatus( LONG lOperStatus)
 		m_csOperStatus = _T( "Up");
 		break;
 	default: // Unknown
-		m_csOperStatus = _T( "N/A");
+		m_csOperStatus = _T( "");
 		break;
 	}
 }
