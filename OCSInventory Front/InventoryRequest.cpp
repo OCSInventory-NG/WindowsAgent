@@ -196,10 +196,6 @@ BOOL CInventoryRequest::final()
 
 BOOL CInventoryRequest::writeLastInventoryState()
 {
-	if (m_bNotify)
-		// Do not write inventory state changes in NOTIFY mode
-		return TRUE;
-
 	// Write inventory state
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Writing new inventory state"));
 	CString csFileName;
