@@ -497,9 +497,8 @@ BOOL CDownloadApp::runPeriod()
 			pPack = (CPackage*)m_listPack.GetAt( nIndex);
 			if (m_BlackList.IsListed( pPack->getID())) 
 				continue;
-			if ((pPack->getPriority() != 0) && 
-				(((uPeriod % pPack->getPriority()) != 0) || ((uPeriod / pPack->getPriority()) != 1)))
-				// This is not a high priority package or priority is not equal to cycle
+			if ((pPack->getPriority() != 0) && (uPeriod % pPack->getPriority() != 0))
+				// This is not a high priority package or period is not a multiple of package priority
 				continue;
 			// Check if package execution finished, and only missing to send result to server
 			if (!setFinished( pPack))
