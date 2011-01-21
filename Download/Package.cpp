@@ -630,6 +630,11 @@ BOOL CPackage::unZip()
 		cZip.Close( CZipArchive::afAfterException);
 		return FALSE;			
 	}
+	catch (std::exception *pEx)
+	{
+		cZip.Close( CZipArchive::afAfterException);
+		return FALSE;			
+	}
 	return TRUE;
 }
 
