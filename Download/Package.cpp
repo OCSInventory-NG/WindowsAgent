@@ -91,8 +91,13 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 			}
 		}
 		else
+		{
 			// Put into tmp folder to unzip package into path
-			m_csPath.Format( _T( "%s\\%s\\tmp"), getDownloadFolder(), m_csID);
+			if (GetTempPath( _MAX_PATH, m_csPath.GetBufferSetLength( _MAX_PATH+1)) == 0)
+				return FALSE;
+			m_csPath.ReleaseBuffer();
+			m_csPath.AppendFormat( _T( "\\%s.OCS"), m_csID);
+		}
 
 		if (m_csAction == OCS_DOWNLOAD_ACTION_LAUNCH)
 		{
@@ -176,6 +181,10 @@ BOOL CPackage::clean()
 {
 	CString csPath;
 
+	// Only delete unzip directory if is not a store action 
+	if ((m_csAction != OCS_DOWNLOAD_ACTION_STORE) && !m_csPath.IsEmpty() && fileExists( m_csPath))
+		directoryDelete( m_csPath);
+	// Delete download package directory
 	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), m_csID);
 	return directoryDelete( csPath);
 }
