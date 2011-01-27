@@ -10,37 +10,37 @@ echo *                                                                       *
 echo *************************************************************************
 echo.
 
-REM ========= UPDATE CONSTANTS BELOW TO MEET YOUR CONFIGURATION NEED =========  
+Rem ========= UPDATE CONSTANTS BELOW TO MEET YOUR CONFIGURATION NEED =========  
 
-REM Set path to MS Visual C++
+Rem Set path to MS Visual C++
 set VC_PATH=C:\Program Files\Microsoft Visual Studio 9.0\VC
 
-REM Set path to MS Windows SDK, needed to build cURL
+Rem Set path to MS Windows SDK, needed to build cURL
 set WINDOWS_SDK_PATH="C:\Program Files\Microsoft SDKs\Windows\v6.0A"
 
-REM Set path to Perl 5.6 or higher binary
+Rem Set path to Perl 5.6 or higher binary
 set PERL_PATH=c:\xampp\perl\bin
 
-REM Set path to Zlib sources
+Rem Set path to Zlib sources
 set ZLIB_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\zlib-1.2.5
 
-REM Set path to OpenSSL sources
+Rem Set path to OpenSSL sources
 set OPENSSL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\openssl-1.0.0c
 
-REM Set path to cURL sources
+Rem Set path to cURL sources
 set CURL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\curl-7.21.2
 
-REM Set path to tinyXML sources
+Rem Set path to tinyXML sources
 SET XML_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\tinyxml
 
-REM Set path to ZipArchive sources, for example
+Rem Set path to ZipArchive sources, for example
 SET ZIP_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\ZipArchive
 
-REM ========= DO NOT MODIFY BELOW, UNTIL YOU KNOW WHAT YOU ARE DOING =========
+Rem ========= DO NOT MODIFY BELOW, UNTIL YOU KNOW WHAT YOU ARE DOING =========
 
-REM Ensure MS Visual C++ environnement is set
+Rem Ensure MS Visual C++ environnement is set
 call "%VC_PATH%\VCVARSALL.BAT"
-REM Add perl to PATH
+Rem Add perl to PATH
 set PATH=%PATH%;%PERL_PATH%
 
 echo.
@@ -51,7 +51,8 @@ echo *                                                                       *
 echo *************************************************************************
 echo.
 cd "%ZLIB_PATH%"
-nmake -f Win32\Makefile.msc LOC="-DASMV -DASMINF" OBJA="inffas32.obj match686.obj"
+Rem Build Zlib using precompiled asm code for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
+nmake -f Win32\Makefile.msc LOC="-DASMV -DASMINF -D_BIND_TO_CURRENT_VCLIBS_VERSION" OBJA="inffas32.obj match686.obj"
 if ERRORLEVEL 1 goto ERROR
 
 Rem copy libs to use them in OCS
@@ -71,16 +72,16 @@ echo *                                                                       *
 echo *************************************************************************
 echo.
 cd "%OPENSSL_PATH%"
-REM Configure OpenSSL for MS Visual C++
-perl.exe configure VC-WIN32
+Rem Configure OpenSSL for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
+perl.exe configure VC-WIN32 -D_BIND_TO_CURRENT_VCLIBS_VERSION
 if ERRORLEVEL 1 goto ERROR
-REM Prepare OpenSSL build for MS Visual C++
+Rem Prepare OpenSSL build for MS Visual C++
 call ms\do_ms.bat
 if ERRORLEVEL 1 goto ERROR
-REM Build OpenSSL
+Rem Build OpenSSL
 nmake -f ms\ntdll.mak
 if ERRORLEVEL 1 goto ERROR
-REM Test OpenSSL build
+Rem Test OpenSSL build
 cd out32dll
 call "..\ms\test.bat"
 if ERRORLEVEL 1 goto ERROR
@@ -104,16 +105,23 @@ echo *                                                                       *
 echo *************************************************************************
 echo.
 cd "%CURL_PATH%"
-REM Disable LDAP support, not needed in OCS Inventory NG Agent
+Rem Disable LDAP support, not needed in OCS Inventory NG Agent
 set WINDOWS_SSPI=0
-REM Build cURL dll using OpenSSL Dlls and Zlib dll
-nmake vc-dll-ssl-dll-zlib-dll
+Rem Build cURL dll using OpenSSL Dlls and Zlib dll
+cd lib
+nmake /f Makefile.vc9 cfg=release-dll-ssl-dll-zlib-dll
 if ERRORLEVEL 1 goto ERROR
+cd ..\src
+nmake /f Makefile.vc9 cfg=release-dll-ssl-dll-zlib-dll
+if ERRORLEVEL 1 goto ERROR
+cd..
 
 Rem copy libs to use them in OCS
 copy "lib\release-dll-ssl-dll-zlib-dll\libcurl_imp.lib" ..
 copy "lib\release-dll-ssl-dll-zlib-dll\libcurl.dll" ..\..\Release
+copy "lib\release-dll-ssl-dll-zlib-dll\libcurl.dll.manifest" ..\..\Release
 copy "lib\release-dll-ssl-dll-zlib-dll\libcurl.dll" ..\..\Debug
+copy "lib\release-dll-ssl-dll-zlib-dll\libcurl.dll.manifest" ..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
 cd ..

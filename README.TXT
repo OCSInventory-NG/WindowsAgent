@@ -23,7 +23,7 @@
 REQUIREMENTS
 ============
 
-- Microsoft Visual C++ 2008 or higher
+- Microsoft Visual C++ 2008 SP1 or higher
 - Perl 5.8 or newer for building dependancies (you can use XAMPP perl addon)
 - Source code exported from Launchpad Bazaar repository. 
   svn co https://
@@ -49,8 +49,14 @@ the followong directory structures.
 - External_Deps\ZipArchive
 
 Open "ZipArchive.sln" Visual C++ 2008 solution in folder
-"External_Deps\ZipArchive" and build configuration "Release Unicode STL MD DLL"
-to create unicode DLL for ZipArchive Library.
+"External_Deps\ZipArchive", select configuration "Release Unicode STL MD DLL"
+for plateform Win32, and edit project properties. Add 
+_BIND_TO_CURRENT_VCLIBS_VERSION preprocessor define to "Configuration 
+properties / C/C++ / Preprocessor" section to automatically bind DLL to Visual 
+C++ 2008 SP1 CRT and MFC versions (for more explanation, see Jochen Kalmbach's Blog
+http://blog.kalmbach-software.de/2009/05/27/deployment-of-vc2008-apps-without-installing-anything/)
+Save and build to create unicode DLL for ZipArchive Library.
+
 
 Edit script "OCS_Make_Required_Libs.bat" to meet your need, especially
 
@@ -71,11 +77,13 @@ Edit script "OCS_Make_Required_Libs.bat" to meet your need, especially
 - Set path to ZipArchive sources, for example
   set ZIP_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\ZipArchive
 
-Edit cURL Makefile (file External_Deps\curl-7.20.1\Makefile) to specify MS Visual
-C++ version used to build it (VC=vc9 for MS Visual C++ 2008).
-
-
 Then, launch script "OCS_Make_Required_Libs.bat" to create all libs and prepare for building OCS agent.
+
+cURL DLL is built with an external manifest file, which refers to RTM version
+(9.0.21022.8) of MS Visual C++ 2008 CRT and MFC dll assembly. Bulding script
+copied this manifest to release and debug directory. You have to manually
+update these manifest files to set SP1 version 9.0.30729.1 (or whatever version/SP
+you have) AND remove the publicKeyToken attribute for Microsoft.VC90.CRT assembly.
 
 
 BUIDLING AGENT
