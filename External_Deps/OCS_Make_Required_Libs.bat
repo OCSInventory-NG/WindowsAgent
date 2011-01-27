@@ -156,7 +156,9 @@ echo.
 echo *************************************************************************
 echo *                                                                       *
 echo * Preparing for OCS Inventory NG : All done succesufully !              *
-echo * You are now ready to build OCS Inventory NG Agent for Windows         *
+echo *                                                                       *
+echo * DON'T FORGET to update libcurl.dll.manifest and you will be ready to  *
+echo * build OCS Inventory NG Agent for Windows                              *
 echo *                                                                       *
 echo * Enjoy OCS Inventory NG ;-)                                            *
 echo *                                                                       *
