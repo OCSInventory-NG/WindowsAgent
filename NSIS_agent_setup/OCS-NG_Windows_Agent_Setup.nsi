@@ -1231,6 +1231,10 @@ Section "OCS Inventory Agent" SEC01
 	Iferrors 0 +3
 	StrCpy $logBuffer "$logBuffer ERROR copying libcurl.dll $\r$\n"
 	clearerrors
+	File "..\Release\libcurl.dll.manifest"
+	Iferrors 0 +3
+	StrCpy $logBuffer "$logBuffer ERROR copying libcurl.dll.manifest $\r$\n"
+	clearerrors
 	File "..\Release\libeay32.dll"
 	Iferrors 0 +3
 	StrCpy $logBuffer "$logBuffer ERROR copying libeay32.dll $\r$\n"
