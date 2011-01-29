@@ -235,14 +235,20 @@ BOOL CHTTPConnexion::initLibCurl()
 	// Initialize server SSL validation if needed
 	if (m_pConfig->isSslServerValidationRequired())
 	{
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Enabling cURL SSL server validation support"));
+		// Check if CA Bundle path is a relative path
+		if (fileExists( m_pConfig->getCaBundle()))
+			csAuth = m_pConfig->getCaBundle();
+		else
+			// Assume path is relative to data folder
+			csAuth.Format( _T( "%s\\%s"), getDataFolder(), m_pConfig->getCaBundle());
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Enabling cURL SSL server validation support using CA Bundle <%s>"), csAuth);
 		// Disconnect if we can't validate server's cert
 		if ((codeCurl = curl_easy_setopt( m_pCurl,CURLOPT_SSL_VERIFYPEER,1)) != CURLE_OK)
 		{
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to enable cURL SSL server certificate validation <%s>"), curl_easy_strerror( codeCurl));
 		}
 		// Set default CA certificate chain file path
-	    if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_CAINFO, GetAnsiFromUnicode( m_pConfig->getCaBundle()))) != CURLE_OK)
+	    if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_CAINFO, GetAnsiFromUnicode( csAuth))) != CURLE_OK)
 		{
 			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL CA chain file <%s>"), curl_easy_strerror( codeCurl));
 		}
