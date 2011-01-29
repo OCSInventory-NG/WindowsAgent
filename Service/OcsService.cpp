@@ -251,7 +251,11 @@ void COcsService::Run()
 	csStatus.Format( _T( "Service start parameters FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i"), m_iPrologFreq, m_iOldPrologFreq, m_iTToWait);
 	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csStatus);
 
+#ifdef _DEBUG
+	while (TRUE)
+#else
 	while (IsRunning())
+#endif
 	{
 		if( m_iTToWait % (m_iWriteIniLatency ? m_iWriteIniLatency:WRITE_TTOWAIT_EACH) == 0 )
 		{
