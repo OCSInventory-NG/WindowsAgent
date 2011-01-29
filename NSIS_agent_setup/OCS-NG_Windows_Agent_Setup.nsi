@@ -56,10 +56,6 @@ Page custom AskAgentOptions ValidateAgentOptions ""
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "French"
 
-; Registry values for checking service
-!define WIN_NT_SERVICE_KEY "System\CurrentControlSet\Services\OCS INVENTORY"
-!define WIN_NT_SERVICE_VALUE "ImagePath"
-
 ; Setup log file
 !define SETUP_LOG_FILE "$exedir\OCS-NG-Windows-Agent-Setup.log"
 !define Service_Time_Out "10"
