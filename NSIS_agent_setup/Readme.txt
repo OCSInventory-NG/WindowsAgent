@@ -23,6 +23,15 @@ compile OCS-NG_Windows_Agent_Setup.nsi (Script assume that agent's binary
 are on directory "../release", and that MS VC++ 2008 is installed into
 default folder "C:\Program Files\Microsoft Visual Studio 9.0\VC").
 
+It's quite difficult to build libcurl for target Windows 2000 using MS Visual
+C++ 2008 or higher. It needs to modify code and Microsoft Windows SDK 6.X,
+shipped with Visual Studio 2008, does not mention Windows 2000 as a valid build
+target, only Windows XP and higher.  
+
+So, for Windows 2000 target only, we prefer using a precompiled binary distribution
+from Günter Knauf, built using MingW32 compiler, and available at location
+http://www.gknw.net/mirror/curl/win32/curl-7.21.3-ssl-sspi-zlib-static-bin-w32.zip
+Just download this package and unzip it into nsis_agent_setup folder.
 
 
 INSTALLER COMMAND LINE OPTIONS

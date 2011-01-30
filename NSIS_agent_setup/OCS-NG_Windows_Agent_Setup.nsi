@@ -21,6 +21,7 @@ setcompressor /SOLID lzma
 !define PRODUCT_SERVICE_NAME "OCS Inventory Service"
 !include "FileFunc.nsh"
 !include "WordFunc.nsh"
+!include "WinVer.nsh"
 !insertmacro GetTime
 !insertmacro WordReplace
 ;!insertmacro un.GetParent
@@ -77,6 +78,7 @@ OutFile "OCS-NG-Windows-Agent-Setup.exe"
 InstallDir "$PROGRAMFILES\OCS Inventory Agent"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowUnInstDetails show
+
 
 #####################################################################
 # Global variables
@@ -1094,6 +1096,17 @@ Function .onInit
 	Call Write_Log
 	Abort
 not_running:
+    ; Check if Windows 2000 or higher
+	StrCpy $logBuffer "OK.$\r$\nChecking Operating System..."
+	Call Write_Log
+    ${If} ${AtLeastWin2000}
+   	    StrCpy $logBuffer "OK, Windows 2000 or higher.$\r$\n"
+	    Call Write_Log
+    ${Else}
+   	    StrCpy $logBuffer "ABORT: Setup running on unsupported Windows 9X or NT4 !$\r$\n"
+	    Call Write_Log
+	    Abort
+    ${EndIf}
     ; Initializing plugins dir and extracting custom option pages
 	InitPluginsDir
 	File /oname=$PLUGINSDIR\server.ini "server.ini"
@@ -1107,7 +1120,7 @@ not_running:
 	FileClose $9
 	StrCmp $9 "" +2 0
 	StrCpy $CMDLINE '"$PLUGINSDIR\" $2'
-	StrCpy $logBuffer "OK.$\r$\nCommand line is: $CMDLINE$\r$\n"
+	StrCpy $logBuffer "Command line is: $CMDLINE$\r$\n"
 	Call Write_Log
 	StrCpy $logBuffer "Parsing command line arguments..."
 	Call Write_Log
@@ -1186,10 +1199,11 @@ FunctionEnd
 Function ValidateAgentOptions
 FunctionEnd
 
+
 #####################################################################
 # This section copy files service, install and start service
 #####################################################################
-Section "OCS Inventory Agent" SEC01
+Section "!OCS Inventory Agent" SEC01
     ; Create data directory for agent = working directory
     SetShellVarContext All
  	StrCpy $logBuffer "Creating directory <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
@@ -1215,62 +1229,39 @@ Section "OCS Inventory Agent" SEC01
 	clearerrors
     ; Communication provider
     WriteINIStr "$APPDATA\OCS Inventory NG\Agent\ocsinventory.ini" "OCS Inventory Agent" "ComProvider" "ComHTTP.dll"
-	File "..\Release\ComHTTP.dll"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying ComHTTP.dll $\r$\n"
-	clearerrors
-	File "..\Release\download.exe"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying download.exe $\r$\n"
-	clearerrors
-	File "..\Release\libcurl.dll"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying libcurl.dll $\r$\n"
-	clearerrors
-	File "..\Release\libcurl.dll.manifest"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying libcurl.dll.manifest $\r$\n"
-	clearerrors
-	File "..\Release\libeay32.dll"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying libeay32.dll $\r$\n"
-	clearerrors
-	File "..\Release\OCSInventory Front.dll"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying OCSInventory Front.dll $\r$\n"
-	clearerrors
-	File "..\Release\OCSInventory.exe"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying OCSInventory.exe $\r$\n"
-	clearerrors
-	File "..\Release\OcsService.exe"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying OcsService.exe $\r$\n"
-	clearerrors
-	File "..\Release\OcsSystray.exe"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying OcsSystray.exe $\r$\n"
-	clearerrors
-	File "Ocs-Transform.xsl"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying Ocs-Transform.xsl $\r$\n"
-	clearerrors
-	File "..\Release\OcsWmi.dll"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying OcsWmi.dll $\r$\n"
-	clearerrors
-	File "..\Release\ssleay32.dll"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying ssleay32.dll $\r$\n"
-	clearerrors
-	File "..\Release\SysInfo.dll"
-	Iferrors 0 +3
-	StrCpy $logBuffer "$logBuffer ERROR copying SysInfo.dll $\r$\n"
-	clearerrors
-;	File "..\Release\uac.manifest"
-;	Iferrors 0 +3
-;	StrCpy $logBuffer "$logBuffer ERROR copying uac.manifest $\r$\n"
-;	clearerrors
+    ; Openssl and libcurl needs special version for Windows 2000
+    ${If} ${IsWin2000}
+        File "curl-7.21.3-ssl-sspi-zlib-static-bin-w32\libcurl.dll"
+        Iferrors 0 +3
+        StrCpy $logBuffer "$logBuffer ERROR copying libcurl.dll $\r$\n"
+        clearerrors
+        File "curl-7.21.3-ssl-sspi-zlib-static-bin-w32\libeay32.dll"
+        Iferrors 0 +3
+        StrCpy $logBuffer "$logBuffer ERROR copying libeay32.dll $\r$\n"
+        clearerrors
+        File "curl-7.21.3-ssl-sspi-zlib-static-bin-w32\libssl32.dll"
+        Iferrors 0 +3
+        StrCpy $logBuffer "$logBuffer ERROR copying libssl32.dll $\r$\n"
+        clearerrors
+    ${Else}
+        File "..\Release\libcurl.dll"
+        Iferrors 0 +3
+        StrCpy $logBuffer "$logBuffer ERROR copying libcurl.dll $\r$\n"
+        clearerrors
+        File "..\Release\libcurl.dll.manifest"
+        Iferrors 0 +3
+        StrCpy $logBuffer "$logBuffer ERROR copying libcurl.dll.manifest $\r$\n"
+        clearerrors
+        File "..\Release\libeay32.dll"
+        Iferrors 0 +3
+        StrCpy $logBuffer "$logBuffer ERROR copying libeay32.dll $\r$\n"
+        clearerrors
+        File "..\Release\ssleay32.dll"
+        Iferrors 0 +3
+        StrCpy $logBuffer "$logBuffer ERROR copying ssleay32.dll $\r$\n"
+        clearerrors
+    ${EndIf}
+    ; Zlib and ZipArchive library
 	File "..\Release\ZipArchive.dll"
 	Iferrors 0 +3
 	StrCpy $logBuffer "$logBuffer ERROR copying ZipArchive.dll $\r$\n"
@@ -1279,6 +1270,53 @@ Section "OCS Inventory Agent" SEC01
 	Iferrors 0 +3
 	StrCpy $logBuffer "$logBuffer ERROR copying zlib1.dll $\r$\n"
 	clearerrors
+	; Commuication provider
+	File "..\Release\ComHTTP.dll"
+	Iferrors 0 +3
+	StrCpy $logBuffer "$logBuffer ERROR copying ComHTTP.dll $\r$\n"
+	clearerrors
+	; System informations
+	File "..\Release\OcsWmi.dll"
+	Iferrors 0 +3
+	StrCpy $logBuffer "$logBuffer ERROR copying OcsWmi.dll $\r$\n"
+	clearerrors
+	File "..\Release\SysInfo.dll"
+	Iferrors 0 +3
+	StrCpy $logBuffer "$logBuffer ERROR copying SysInfo.dll $\r$\n"
+	clearerrors
+	; Common framework
+	File "..\Release\OCSInventory Front.dll"
+	Iferrors 0 +3
+	StrCpy $logBuffer "$logBuffer ERROR copying OCSInventory Front.dll $\r$\n"
+	clearerrors
+	; Agent
+	File "..\Release\OCSInventory.exe"
+	Iferrors 0 +3
+	StrCpy $logBuffer "$logBuffer ERROR copying OCSInventory.exe $\r$\n"
+	clearerrors
+	; Downloader and Installer
+	File "..\Release\download.exe"
+	Iferrors 0 +3
+	StrCpy $logBuffer "$logBuffer ERROR copying download.exe $\r$\n"
+	clearerrors
+	; Windows service
+	File "..\Release\OcsService.exe"
+	Iferrors 0 +3
+	StrCpy $logBuffer "$logBuffer ERROR copying OcsService.exe $\r$\n"
+	clearerrors
+	; Windows systray applet
+	File "..\Release\OcsSystray.exe"
+	Iferrors 0 +3
+	StrCpy $logBuffer "$logBuffer ERROR copying OcsSystray.exe $\r$\n"
+	clearerrors
+	File "Ocs-Transform.xsl"
+	Iferrors 0 +3
+	StrCpy $logBuffer "$logBuffer ERROR copying Ocs-Transform.xsl $\r$\n"
+	clearerrors
+;	File "..\Release\uac.manifest"
+;	Iferrors 0 +3
+;	StrCpy $logBuffer "$logBuffer ERROR copying uac.manifest $\r$\n"
+;	clearerrors
 	SetOutPath "$INSTDIR\Plugins"
 	File "..\Release\Plugins\DO_NOT_REMOVE.txt"
 	Iferrors 0 +3
@@ -1346,6 +1384,10 @@ WriteServiceIni_Skip_Now:
 	Call CreateMenu
 SectionEnd
 
+
+#####################################################################
+# This function start menu items
+#####################################################################
 Function CreateMenu
 	; Read /NO_SYSTRAY
 	ReadINIStr $R0 "$PLUGINSDIR\Agent.ini" "Field 8" "State"
@@ -1363,6 +1405,7 @@ CreateMenu_NO_SYSTRAY:
 	Delete /REBOOTOK "$SMSTARTUP\OCS Inventory NG Systray.lnk"
 CreateMenu_End:
 FunctionEnd
+
 
 #####################################################################
 # This section writes uninstall into Windows
@@ -1386,6 +1429,7 @@ Section -Post
 Post_end:
 SectionEnd
 
+
 #####################################################################
 # This function writes install status into log file when sucessfull install
 #####################################################################
@@ -1399,6 +1443,7 @@ onInstSuccess_Error:
 onInstSuccess_end:
 	Call Write_Log
 FunctionEnd
+
 
 #####################################################################
 # This function writes install status into log file when install failed
@@ -1424,6 +1469,7 @@ Function un.onInit
 	Abort
 unOnInit_silent:
 FunctionEnd
+
 
 #####################################################################
 # This section stop service, uninstall service and remove files
@@ -1457,6 +1503,7 @@ Section Uninstall
 	DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
 	SetAutoClose true
 SectionEnd
+
 
 #####################################################################
 # This function ask to restart computer when uninstalling, if not
