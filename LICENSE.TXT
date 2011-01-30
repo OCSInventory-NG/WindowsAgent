@@ -2,23 +2,13 @@
 	  OCS Inventory NG Licence 
 **************************************************
 
-This product is subordinate to the License Agreements of the different software 
-components included in OCS Inventory NG Agent for Windows:
-- Zlib
-- OpenSSL
-- cURL 
-- TinyXML
-- ZipArchive
+OCS Inventory NG software is released under the GNU GPL version 2 license
+(see below). 
 
-IMPORTANT: BEFORE USING OCS INVENTORY NG, PLEASE READ AND AGREE THE TERMS
-OF THE LICENCES FOR ALL THE PRODUCTS CONTAINED IN OCS INVENTORY NG.
-YOU WILL FIND THE LICENSES IN THE LICENSE DIRECTORY.
+However, this product is also subordinate to the License Agreements of the
+software components included in OCS Inventory NG Agent for Windows,
+Zlib, OpenSSL, cURL, TinyXML and ZipArchive.
 
-OCS Inventory NG software is released under the GNU GPL version 2 license. 
-
-**************************************************
-	   GNU General Public License
-**************************************************
 
 GNU GENERAL PUBLIC LICENSE
 
