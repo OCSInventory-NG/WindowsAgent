@@ -883,7 +883,7 @@ Function UpgradeFrom4000
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Check if it is an upgrade from old agent 4000 series
     ClearErrors
-    FileOpen $R0 "$INSTDIR\ocsinventory.dat" r
+    FileOpen $R0 "$INSTDIR\OcsService.dll" r
     IfErrors TestInstall_End_Upgrade
     FileClose $R0
 	StrCpy $logBuffer "Old agent 4000 series detected, running migration process...$\r$\n"
@@ -892,58 +892,72 @@ Function UpgradeFrom4000
 	StrCpy $OcsService "TRUE"
 	Push "OCS INVENTORY"
 	Call StopService
-    ; Copy existing data files to new folder
+    ; Copy ocsinventory.dat file to new folder, continue on error
     SetShellVarContext All
-	StrCpy $logBuffer "Moving admininfo.conf file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
+	StrCpy $logBuffer "Copying ocsinventory.dat file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
+	Call Write_Log
+	ClearErrors
+    CopyFiles /SILENT "$INSTDIR\ocsinventory.dat" "$APPDATA\OCS Inventory NG\Agent\ocsinventory.dat"
+    IfErrors 0 +3
+	StrCpy $logBuffer "Failed, but non blocking !"
+	Call Write_Log
+    ; Copy admininfo.conf file to new folder, continue on error
+	StrCpy $logBuffer "$\r$\nCopying admininfo.conf file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
 	ClearErrors
     CopyFiles /SILENT "$INSTDIR\admininfo.conf" "$APPDATA\OCS Inventory NG\Agent\admininfo.conf"
-    IfErrors TestInstall_Upgrade_Error
-	StrCpy $logBuffer "Moving ocsinventory.dat file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
+    IfErrors 0 +3
+	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
-    CopyFiles /SILENT "$INSTDIR\ocsinventory.dat" "$APPDATA\OCS Inventory NG\Agent\ocsinventory.dat"
-    IfErrors TestInstall_Upgrade_Error
-	StrCpy $logBuffer "Moving last_state file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
+    ; Copy lasy_state file to new folder, continue on error
+	StrCpy $logBuffer "$\r$\nCopying last_state file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
+	ClearErrors
     CopyFiles /SILENT "$INSTDIR\last_state" "$APPDATA\OCS Inventory NG\Agent\last_state"
-    IfErrors TestInstall_Upgrade_Error
-	StrCpy $logBuffer "Moving cacert.pem file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
+    IfErrors 0 +3
+	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
+    ; Copy cacert.pem file to new folder, continue on error
+	StrCpy $logBuffer "$\r$\nCopying cacert.pem file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
+	Call Write_Log
+	ClearErrors
     CopyFiles /SILENT "$INSTDIR\cacert.pem" "$APPDATA\OCS Inventory NG\Agent\cacert.pem"
-	StrCpy $logBuffer "Moving label file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
+    IfErrors 0 +3
+	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
+    ; Copy label file to new folder, continue on error
+	StrCpy $logBuffer "$\r$\nCopying label file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
+	Call Write_Log
+	ClearErrors
     CopyFiles /SILENT "$INSTDIR\label" "$APPDATA\OCS Inventory NG\Agent\label"
-    ClearErrors
+    IfErrors 0 +3
+	StrCpy $logBuffer "Failed, but non blocking !"
+	Call Write_Log
     ; Transfer old service config to new file (TTO_WAIT, PROLOG_FREQ...)
+	StrCpy $logBuffer "$\r$\nCopying service configuration from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
+	Call Write_Log
+	ClearErrors
     ReadINIStr $R0 "$INSTDIR\service.ini" "OCS_SERVICE" "TTO_WAIT"
     WriteINIStr "$APPDATA\OCS Inventory NG\Agent\ocsinventory.ini" "${PRODUCT_SERVICE_NAME}" "TTO_WAIT" $R0
     ReadINIStr $R0 "$INSTDIR\service.ini" "OCS_SERVICE" "PROLOG_FREQ"
     WriteINIStr "$APPDATA\OCS Inventory NG\Agent\ocsinventory.ini" "${PRODUCT_SERVICE_NAME}" "PROLOG_FREQ" $R0
     ReadINIStr $R0 "$INSTDIR\service.ini" "OCS_SERVICE" "OLD_PROLOG_FREQ"
     WriteINIStr "$APPDATA\OCS Inventory NG\Agent\ocsinventory.ini" "${PRODUCT_SERVICE_NAME}" "OLD_PROLOG_FREQ" $R0
-	StrCpy $logBuffer "Unregistering service from Windows Service Manager...$\r$\n"
+    IfErrors 0 +3
+	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
-	; Uninstall service
-    nsExec::ExecToLog '"$INSTDIR\OcsService" -uninstall'
+	; Uninstall old service
+	StrCpy $logBuffer "$\r$\nUnregistering service from Windows Service Manager...$\r$\n"
+	Call Write_Log
+    nsExec::ExecToLog '"$INSTDIR\OcsService.exe" -uninstall'
     pop $0
     StrCpy $logBuffer "Service unregister ended with exit code $0$\r$\n"
     Call Write_Log
 	Sleep 1000
-    ; Remove no more used files
-	StrCpy $logBuffer "Removing unused binary files from <$INSTDIR>...$\r$\n"
-	Call Write_Log
-    Delete /REBOOTOK "$INSTDIR\BiosInfo.exe"
-    Delete /REBOOTOK "$INSTDIR\inst32.exe"
-    Delete /REBOOTOK "$INSTDIR\Mfc42.dll"
-    Delete /REBOOTOK "$INSTDIR\OcsService.dll"
-    Delete /REBOOTOK "$INSTDIR\PsApi.dll"
-    Delete /REBOOTOK "$INSTDIR\Zlib.dll"
-	Delete /REBOOTOK "$STARTMENU\Ocs_Contact.lnk"
-	ClearErrors
-    IfErrors TestInstall_Upgrade_Error
     ; Remove old data files
-	StrCpy $logBuffer "Removing old data files from <$INSTDIR>...$\r$\n"
+	StrCpy $logBuffer "Removing old data files from <$INSTDIR>..."
 	Call Write_Log
+	ClearErrors
     Delete /REBOOTOK "$INSTDIR\admininfo.conf"
     Delete /REBOOTOK "$INSTDIR\cacert.pem"
     Delete /REBOOTOK "$INSTDIR\label"
@@ -951,13 +965,31 @@ Function UpgradeFrom4000
     Delete /REBOOTOK "$INSTDIR\ocsinventory.dat"
     Delete /REBOOTOK "$INSTDIR\service.ini"
     Delete /REBOOTOK "$INSTDIR\*.log"
+    IfErrors 0 +3
+	StrCpy $logBuffer "One or more file remove failed (perhaps missing file), but non blocking !"
+	Call Write_Log
+    ; Remove no more used files
+	StrCpy $logBuffer "$\r$\nRemoving unused binary files from <$INSTDIR>..."
+	Call Write_Log
 	ClearErrors
-    IfErrors TestInstall_Upgrade_Error
-	StrCpy $logBuffer "Migration process from old agent 4000 series succesfull, continuing setup...$\r$\n"
+    Delete /REBOOTOK "$INSTDIR\BiosInfo.exe"
+    Delete /REBOOTOK "$INSTDIR\inst32.exe"
+    Delete /REBOOTOK "$INSTDIR\Mfc42.dll"
+    Delete /REBOOTOK "$INSTDIR\OcsService.dll"
+    Delete /REBOOTOK "$INSTDIR\PsApi.dll"
+    Delete /REBOOTOK "$INSTDIR\Zlib.dll"
+	Delete /REBOOTOK "$STARTMENU\Ocs_Contact.lnk"
+    IfErrors 0 +3
+	StrCpy $logBuffer "One or more file remove failed (perhaps missing file), but non blocking !"
+	Call Write_Log
+	; Ensure service uninstall and migration process successfull
+    IfFileExists "$INSTDIR\OcsService.dll" TestInstall_Upgrade_Error
+    
+	StrCpy $logBuffer "$\r$\nMigration process from old agent 4000 series succesfull, continuing setup...$\r$\n"
 	Call Write_Log
     goto TestInstall_End_Upgrade
 TestInstall_Upgrade_Error:
-	StrCpy $logBuffer "Migration process from old agent 4000 series failed ! ABORTING$\r$\n"
+	StrCpy $logBuffer "$\r$\nMigration process from old agent 4000 series failed ! ABORTING$\r$\n"
 	Call Write_Log
 	Abort "Migration process from old agent 4000 series failed !"
 TestInstall_End_Upgrade:
