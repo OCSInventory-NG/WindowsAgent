@@ -425,16 +425,21 @@ LPBYTE OCSINVENTORYFRONT_API base64_decode( LPCTSTR lpstrBase64, UINT *uLength)
 		if (uOutLength < 2)
 			// Buffer to small, not base 64 encoded
 			return NULL;
-		if ((lpstrBase64[uOutLength-1] == '"') &&
-			(lpstrBase64[uOutLength-2] == '"'))
+		if ((lpstrBase64[uOutLength-1] == '=') &&
+			(lpstrBase64[uOutLength-2] == '='))
 			// end with "=="
 			uOutLength = 3 * (_tcslen( lpstrBase64) / 4) - 2;
 		else
+		{
+			if (lpstrBase64[uOutLength-1] != '=')
+				// Not base64 encoded
+				return NULL;
 			// end with "="
 			uOutLength = 3 * (_tcslen( lpstrBase64) / 4) - 1;
+		}
 		if ((pRet = (LPBYTE) malloc( uOutLength)) == NULL)
 			return NULL;
-
+		memset( pRet, 0, uOutLength);
 		if (EVP_DecodeBlock( pRet, (LPBYTE) LPCSTR( GetAnsiFromUnicode( lpstrBase64)), _tcslen( lpstrBase64)) < 0)
 		{
 			free( pRet);
