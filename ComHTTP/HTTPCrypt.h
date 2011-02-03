@@ -22,7 +22,7 @@
 #include <openssl/rand.h>
 
 // 32 Bytes = 256 bits key
-#define OCS_HTTP_KEY_VALUE			_T( "v1{!\b-'6C8E56eI'&OA/m7!^&l:e23E#")
+#define OCS_HTTP_KEY_VALUE			"v1{!\b-'6C8E56eI'&OA/m7!^&l:e23E#"
 #define OCS_HTTP_SEPARATOR_VALUE	_T( "|||")
 
 class CHTTPCrypt
@@ -50,7 +50,7 @@ private: // Methods
 	BOOL retrievePreKey();
 
 private: //Attributes
-	CString	m_csKey;
+	CStringA	m_csKey;
 };
 
 #endif // !defined(AFX_HTTPCRYPT_H__BC0469FF_3E9D_446B_8D7A_CBE161DA8D6A__INCLUDED_)
