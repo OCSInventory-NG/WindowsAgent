@@ -449,7 +449,7 @@ BOOL CMarkup::AddXml( CMarkup *pSource)
 {
 	TiXmlHandle hdl( pSource->GetTiXmlDocument());
 
-	TiXmlElement *pElem; // = hdl.FirstChildElement().Element();
+	TiXmlElement *pElem;
 	TiXmlElement *pChild;
 
 	CString csSection, csProperty, csValue;
@@ -457,14 +457,14 @@ BOOL CMarkup::AddXml( CMarkup *pSource)
 	for (pElem = hdl.FirstChildElement().Element(); pElem; pElem = pElem->NextSiblingElement())
 	{
 		// Add section to destination document
-		csSection.Format( _T( "%s"), pElem->Value());
+		csSection.Format( _T( "%s"), CA2CT( pElem->Value()));
 		if (!AddElem( csSection))
 			return FALSE;
-		for (pChild = pElem->FirstChildElement(); pChild; pChild = pChild->IterateChildren( pChild)->ToElement())
+		for (pChild = pElem->FirstChildElement(); pChild; pChild = pChild->NextSiblingElement())
 		{
 			// Add child elem to destination document
-			csProperty.Format( _T( "%s"), pChild->Value());
-			csValue.Format( _T( "%s"), pChild->GetText());
+			csProperty.Format( _T( "%s"), CA2CT( pChild->Value()));
+			csValue.Format( _T( "%s"), CA2CT( pChild->GetText()));
 			if (!AddChildElem( csProperty, csValue))
 				return FALSE;
 		}
