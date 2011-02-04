@@ -13,6 +13,7 @@
 
 #include "StdAfx.h"
 #include "ExecCommand.h"
+#include "OcsUtils.h"
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -449,7 +450,7 @@ BOOL  CExecCommand::waitCapture()
 	char	bBuffer[1024];
 	int		nLength;
 
-	CString csOutput = _T( "");
+	CStringA csOutput = "";
 	BOOL bDone = false;
 
 	try
@@ -470,14 +471,14 @@ BOOL  CExecCommand::waitCapture()
 			{
 				nLength = _read( m_fdStdErr, bBuffer, 1023);
 				bBuffer[nLength] = 0;
-				csOutput.AppendFormat( _T( "%s"), bBuffer);
+				csOutput.AppendFormat( "%s", bBuffer);
 				bHaveSome = TRUE;
 			}
 			if (fsout.st_size > 0)
 			{
 				nLength = _read( m_fdStdOut, bBuffer, 1023);
 				bBuffer[nLength] = 0;
-				csOutput.AppendFormat( _T( "%s"), bBuffer);
+				csOutput.AppendFormat( "%s", bBuffer);
 				bHaveSome = TRUE;
 			}
 			if (!bHaveSome)
@@ -494,17 +495,17 @@ BOOL  CExecCommand::waitCapture()
 			GetExitCodeProcess( m_hProcessHandle, &dwExitCode)) 
 		{
 			nResult = dwExitCode;
+			m_csOutput.Format( GetUnicodeFromAnsi( csOutput));
 		} 
 		else 
 		{
-			m_csOutput.AppendFormat( _T( "GetExitCode Error: %s"), LookupError( GetLastError()));
+			m_csOutput.Format( _T( "GetExitCode Error: %s"), LookupError( GetLastError()));
 			nResult = -1;
 		}
 
 		// Free up the native handle at this point
 		CloseHandle( m_hProcessHandle);
 		m_nExitValue = nResult;
-		m_csOutput += csOutput;
 		if (nResult < 0 || !closeHandles())
 		{
 			return FALSE;
