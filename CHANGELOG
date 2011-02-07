@@ -1,3 +1,14 @@
+2.0 rc2 aka 2.0.0.13
+  * Fix crash when deployement ZIP contains too much sub directories => uncompress ZIP to system %TEMP%
+  * Bug #695843: deleting "&#x...;" encoded binary characters from XML
+  * In some cases, logging XML sent crash agent, so disable it while searching a workaround
+  * Replace N/A default value by empty string
+  * Allow CA Bundle using relative path to OCS data folder
+  * Upgrade libcurl to 7.21.3
+  * Bug #704043:Ensure setup only runs on Windows 2000 and higher, and use Günter Knauf libcurl 7.21.3 binary distribution for Windows 2000 target only.  
+  * Fix setup bug when agent series 4000 installed, but never launched (no data file) 
+  * Fix enryption/decryption methods, not really working before :(
+  * Fix bug appending plugin XML to the inventory XML       
 2.0 rc1 aka 2.0.0.8
   * Bug #438759 and #457595: silent windows installation and OcsService.dll upgrade
 	* On NT 6 and higher (Vista/2008/7/2008R2...), Microsoft Hotfixes are no more stored in the registry. so we have to query WMI to get Hotfixes
