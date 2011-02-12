@@ -1092,6 +1092,13 @@ WriteServiceIni_Skip_NoService:
 	StrCpy $R2 $R1
 WriteServiceIni_Skip_NoSystray:
 	Sleep 1000
+	; Write TAG if provided
+	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 6" "State"
+    StrCmp "$R0" "" WriteServiceIni_Skip_TAG
+    StrCpy $logBuffer "Writing TAG <$R0> into <$APPDATA\OCS Inventory NG\Agent\admininfo.conf> file...$\r$\n"
+    Call Write_Log
+    WriteINIStr "$APPDATA\OCS Inventory NG\Agent\admininfo.conf" "OCS Inventory Agent" "TAG" "$R0"
+WriteServiceIni_Skip_TAG:
     ; Ask agent to create config file
     StrCpy $logBuffer "Writing agent configuration file by launching ocsinventory.exe /SAVE_CONF..."
     Call Write_Log
