@@ -1,4 +1,6 @@
 2.0 rc2 aka 2.0.0.13
+  * Remove old uninstall key when upgrading
+  * Fix setup not writing TAG value when provided  
   * Fix crash when deployement ZIP contains too much sub directories => uncompress ZIP to system %TEMP%
   * Bug #695843: deleting "&#x...;" encoded binary characters from XML
   * In some cases, logging XML sent crash agent, so disable it while searching a workaround
