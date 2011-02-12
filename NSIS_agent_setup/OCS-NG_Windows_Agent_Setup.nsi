@@ -982,9 +982,16 @@ Function UpgradeFrom4000
     IfErrors 0 +3
 	StrCpy $logBuffer "One or more file remove failed (perhaps missing file), but non blocking !"
 	Call Write_Log
+	; Remove old uninstall registry key
+	StrCpy $logBuffer "$\r$\nRemoving old uninstall key <HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory Agent>..."
+	Call Write_Log
+	ClearErrors
+	DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory Agent"
+    IfErrors 0 +3
+	StrCpy $logBuffer "Failed to remove key, but non blocking !"
+	Call Write_Log
 	; Ensure service uninstall and migration process successfull
     IfFileExists "$INSTDIR\OcsService.dll" TestInstall_Upgrade_Error
-    
 	StrCpy $logBuffer "$\r$\nMigration process from old agent 4000 series succesfull, continuing setup...$\r$\n"
 	Call Write_Log
     goto TestInstall_End_Upgrade
