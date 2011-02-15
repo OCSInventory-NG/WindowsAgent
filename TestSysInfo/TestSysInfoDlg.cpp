@@ -2688,6 +2688,31 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 	myReg.GetRegistryValue( HKLM_TREE, _T( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup"), _T( "PrivateHash"), csValue);
 	str.Format( _T( "REG_BINARY PrivateHash=%s"), csValue);
 	m_List.AddString( str);
+	m_List.AddString( _T( ""));
+	m_List.AddString( _T( "------------------------------------------------------"));
+	m_List.AddString( _T( "Checking multiple registry value on key SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\BITS"));
+	m_List.AddString( _T( "------------------------------------------------------"));
+	CRegistryValueList	myRegValueList;
+	CRegistryValue		myRegValue;
+	myReg.GetRegistryMultipleValues( _T( "BITS Multiple Search"), HKLM_TREE, _T( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\BITS"), &myRegValueList);
+	pos = myRegValueList.GetHeadPosition();
+	bContinue = (pos != NULL);
+	if (bContinue)
+		// There is one record => get the first
+		myRegValue = myRegValueList.GetNext( pos);
+	while (bContinue)
+	{
+		bContinue = (pos != NULL);
+		str.Format( _T( "Name: %s"), myRegValue.GetName());
+		SysInfoLog( str);
+		str.Format( _T( "Value: %s"), myRegValue.GetValue());
+		SysInfoLog( str);
+		if (pos != NULL)
+		{
+			myRegValue = myRegValueList.GetNext( pos);
+			SysInfoLog( _T( ""));
+		}
+	}
 }
 
 BOOL CTestSysInfoDlg::runSysInfo()
