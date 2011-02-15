@@ -341,8 +341,9 @@ BOOL CPackage::setDone( LPCTSTR lpstrCode, LPCTSTR lpstrOutput)
 			return FALSE;
 		// First line is result code
 		myFile.WriteString( lpstrCode);
-		// Following lines are command ouput
-		myFile.WriteString( lpstrOutput);
+		if (lpstrOutput)
+			// Following lines are command ouput
+			myFile.WriteString( lpstrOutput);
 		myFile.Close();
 	}
 	catch( CException *pEx)
