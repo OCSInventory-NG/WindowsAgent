@@ -483,40 +483,62 @@ LONG CRegistry::GetValue( HKEY hKey, LPCTSTR lpstrValue, CString &csData)
 	LPCTSTR pSZ = NULL;
 	CString	csTemp;
 	LONG	lResult;
+	DWORD	dwValue;
+	unsigned __int64 qwValue;
 
 	csData.Empty();
 	if ((hKey == NULL) || (lpstrValue == NULL))
 		return ERROR_INVALID_HANDLE;
 
-	// First call to get size of data
-	lResult = RegQueryValueEx( hKey, lpstrValue, NULL, NULL, lpData, &dwSize);
+	// First call to get size and type of data
+	lResult = RegQueryValueEx( hKey, lpstrValue, NULL, &dwType, NULL, &dwSize);
 	if ((lResult == ERROR_MORE_DATA) || (lResult == ERROR_SUCCESS))
 	{
-		// Now, allocate buffer to receive data
+		// Allocate buffer to receive data
 		if ((lpData = (LPBYTE) malloc ((dwSize+2)*sizeof( BYTE))) == NULL)
 			return ERROR_NOT_ENOUGH_MEMORY;
 		// Get data
-		if ((lResult = RegQueryValueEx( hKey, lpstrValue, NULL, &dwType, lpData, &dwSize)) != ERROR_SUCCESS)
-		{
-			free( lpData);
-			return ERROR_INVALID_DATA;
-		}
-		// Ensure string is null terminated
-		lpData[dwSize]=0;
-		lpData[dwSize+1]=0;
 		switch (dwType)
 		{
 		case REG_DWORD:
-			csData.Format( _T( "%I32u"), lpData);
+			dwSize = sizeof( DWORD);
+			if ((lResult = RegQueryValueEx( hKey, lpstrValue, NULL, &dwType, (LPBYTE) &dwValue, &dwSize)) != ERROR_SUCCESS)
+			{
+				free( lpData);
+				return ERROR_INVALID_DATA;
+			}
+			csData.Format( _T( "%I32u"), dwValue);
 			break;
 		case REG_QWORD:
-			csData.Format( _T( "%I64u"), lpData);
+			dwSize = sizeof( unsigned __int64);
+			if ((lResult = RegQueryValueEx( hKey, lpstrValue, NULL, &dwType, (LPBYTE) &qwValue, &dwSize)) != ERROR_SUCCESS)
+			{
+				free( lpData);
+				return ERROR_INVALID_DATA;
+			}
+			csData.Format( _T( "%I64u"), qwValue);
 			break;
 		case REG_SZ:
 		case REG_EXPAND_SZ:
+			if ((lResult = RegQueryValueEx( hKey, lpstrValue, NULL, &dwType, lpData, &dwSize)) != ERROR_SUCCESS)
+			{
+				free( lpData);
+				return ERROR_INVALID_DATA;
+			}
+			// Ensure string is null terminated
+			lpData[dwSize]=0;
+			lpData[dwSize+1]=0;
 			csData.Format( _T( "%s"), lpData);
 			break;
 		case REG_MULTI_SZ:
+			if ((lResult = RegQueryValueEx( hKey, lpstrValue, NULL, &dwType, lpData, &dwSize)) != ERROR_SUCCESS)
+			{
+				free( lpData);
+				return ERROR_INVALID_DATA;
+			}
+			// Ensure string is null terminated
+			lpData[dwSize]=0;
+			lpData[dwSize+1]=0;
 			// Parse multistring registry value
 			pSZ = ParseMultiSZ( (LPCTSTR) lpData);
 			while (pSZ != NULL)
@@ -527,6 +549,14 @@ LONG CRegistry::GetValue( HKEY hKey, LPCTSTR lpstrValue, CString &csData)
 			}
 			break;
 		case REG_BINARY:
+			if ((lResult = RegQueryValueEx( hKey, lpstrValue, NULL, &dwType, lpData, &dwSize)) != ERROR_SUCCESS)
+			{
+				free( lpData);
+				return ERROR_INVALID_DATA;
+			}
+			// Ensure string is null terminated
+			lpData[dwSize]=0;
+			lpData[dwSize+1]=0;
 			for (dwCpt=0; dwCpt<dwSize; dwCpt++)
 			{
 				csTemp.Format( _T( "%.02X "), lpData[ dwCpt]);
