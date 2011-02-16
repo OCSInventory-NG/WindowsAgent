@@ -340,7 +340,8 @@ BOOL CPackage::setDone( LPCTSTR lpstrCode, LPCTSTR lpstrOutput)
 		if (!myFile.Open( csFile, CFile::modeCreate|CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite))
 			return FALSE;
 		// First line is result code
-		myFile.WriteString( lpstrCode);
+		csResult.Format( _T( "%s\n"), lpstrCode);
+		myFile.WriteString( csResult);
 		if (lpstrOutput)
 			// Following lines are command ouput
 			myFile.WriteString( lpstrOutput);
