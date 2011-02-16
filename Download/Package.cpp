@@ -626,6 +626,10 @@ BOOL CPackage::unZip()
 	CZipArchive cZip;
 	CString		csFile;
 
+	// If there is no fragement, assume package unzipped
+	if (m_uFrags == 0)
+		// No fragment
+		return TRUE;
 	csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_BUILD);
 	try
 	{
