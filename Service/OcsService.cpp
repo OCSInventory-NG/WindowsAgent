@@ -251,6 +251,12 @@ void COcsService::Run()
 	csStatus.Format( _T( "Service start parameters FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i"), m_iPrologFreq, m_iOldPrologFreq, m_iTToWait);
 	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csStatus);
 
+	// Check if system starting (system uptime < 2 min)
+	if (GetTickCount64() < SYSTEM_START_MAX_UPTIME)
+	{
+		// Start download for package to be installed at boot time
+	}
+
 #ifdef _DEBUG
 	while (TRUE)
 #else

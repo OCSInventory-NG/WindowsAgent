@@ -26,9 +26,11 @@
 #define	OCS_SERVICE_TTO_WAIT		_T( "TTO_WAIT")
 #define	OCS_SERVICE_OLD_PROLOG_FREQ	_T( "OLD_PROLOG_FREQ")
 #define	RUN_OCS						_T( "ocsinventory.exe")
-#define	PROLOG_FREQ_UNIT			3600 //seconds
+#define	PROLOG_FREQ_UNIT			3600 // seconds
 #define	DEFAULT_PROLOG_FREQ			10	// * PROLOG_FREQ_UNIT
 #define	WRITE_TTOWAIT_EACH			60	// seconds
+// System must have an uptime less than 2 minutes for considering it is starting
+#define SYSTEM_START_MAX_UPTIME		120000 // milliseconds
 
 class COcsService :
 	public CNTService
