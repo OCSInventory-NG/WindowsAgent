@@ -12,9 +12,6 @@
 
 #include "OCSInventory Front Classes.h"
 
-#define MAPSTRINGTOSTRINGARRAY_INITIAL_SIZE	16
-#define MAPSTRINGTOSTRINGARRAY_GROW_SIZE	1
-
 class OCSINVENTORYFRONT_API CMapStringToStringArray
 {
 public:

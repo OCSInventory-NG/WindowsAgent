@@ -14,7 +14,7 @@
 
 CMapStringToStringArray::CMapStringToStringArray(void)
 {
-	m_MapArray.SetSize( MAPSTRINGTOSTRINGARRAY_INITIAL_SIZE, MAPSTRINGTOSTRINGARRAY_GROW_SIZE);
+	m_MapArray.SetSize( 0, 1);
 }
 
 CMapStringToStringArray::~CMapStringToStringArray(void)
