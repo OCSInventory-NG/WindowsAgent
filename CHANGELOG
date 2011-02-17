@@ -1,3 +1,7 @@
+  * Allow having more than 64 simultaneous registry queries or downloads
+  * Append log to existing log file instead of overriding, but rotate logs each time service start  
+  * Unzip only if there is downloaded fragment
+  * Fix bug with DWORD/QWORD values in registry    
 2.0 rc2 aka 2.0.0.13
   * Remove old uninstall key when upgrading
   * Fix setup not writing TAG value when provided  
