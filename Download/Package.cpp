@@ -639,7 +639,7 @@ BOOL CPackage::unZip()
 			cZip.ExtractFile(i, m_csPath);
 		cZip.Close();
 	}
-	catch (CException * pE)
+	catch (CException *pE)
 	{		
 		pE->Delete();
 		cZip.Close( CZipArchive::afAfterException);

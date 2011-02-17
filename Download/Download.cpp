@@ -100,7 +100,7 @@ BOOL CDownloadApp::InitInstance()
 		// Logger
 		m_pLogger			= getOcsLogger();
 		m_pLogger->setApplication( AfxGetAppName());
-		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "=============================================================="));
+		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "=============================================================================="));
 		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "Starting OCS Inventory NG Package Download and Setup Tool on %s."), cStartTime.Format( _T( "%#c")));
 
 		// Agent Configuration
@@ -486,12 +486,13 @@ BOOL CDownloadApp::runPeriod()
 	CPackage	*pPack;
 	INT_PTR		nIndex;
 	UINT		uPeriod;
+	CTime		cCycleTime;		// Start time of the cycle
 
 	// Start period length cycle of download
 	for (uPeriod=1; uPeriod<=m_uDownloadPeriodLength; uPeriod++)
 	{
 		// Start a cycle to download one fragament of each package of prioity uPeriod
-		m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Processing packages for cycle %u"), uPeriod);
+		m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Processing packages for cycle %u on %s"), uPeriod, cCycleTime.Format( _T( "%#c")));
 		for (nIndex=0; nIndex< m_listPack.GetCount(); nIndex++)
 		{
 			pPack = (CPackage*)m_listPack.GetAt( nIndex);

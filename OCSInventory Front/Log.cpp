@@ -60,7 +60,7 @@ BOOL CLog::isOpen()
 		return TRUE;
 
 	// Only try to open if filename ok
-	if (!m_csFileName.IsEmpty() && m_hLogFile.Open( m_csFileName, CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite))
+	if (!m_csFileName.IsEmpty() && m_hLogFile.Open( m_csFileName, CFile::modeCreate|CFile::modeNoTruncate|CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite))
 		m_bLogOpened = TRUE;
 	else
 		m_bLogOpened = FALSE;
