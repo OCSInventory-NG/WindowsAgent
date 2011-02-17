@@ -48,9 +48,13 @@ CCapDownload::~CCapDownload()
 
 BOOL CCapDownload::retrievePackages()
 {
-	CString csCertFile, csId, csLoc, csType, csTmpValue;
-	COptDownloadPackage* pOptDownloadPackage;
-	LONG lPackNum = 0;
+	CString					csCertFile,
+							csId,
+							csValue;
+	COptDownloadPackage		*pOptDownloadPackage;
+	CMapStringToStringArray	*pMapArray = NULL;
+	CMapStringToString		*pMap = NULL;
+	INT_PTR					nPack = 0;
 
 	/***
 	*
@@ -90,34 +94,41 @@ BOOL CCapDownload::retrievePackages()
 		return FALSE;
 	}
 	// Get generic download parameters and write them for using with download tool
-	CMapStringToString *pmConf = m_pPrologResp->getDownloadParameters();
-	if ( pmConf->GetCount() == 0 )
+	pMapArray = m_pPrologResp->getDownloadParameters();
+	if ((pMapArray == NULL) || pMapArray->IsEmpty())
 	{
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => No download parameter available"));
 		unlockDownload();
 		resumeDownload();
 		return FALSE;
 	}
-	pmConf->Lookup( _T( "FRAG_LATENCY"), m_csDownloadFragLatency);
-	pmConf->Lookup( _T( "CYCLE_LATENCY"), m_csDownloadCycleLatency);
-	pmConf->Lookup( _T( "PERIOD_LATENCY"), m_csDownloadPeriodLatency);
-	pmConf->Lookup( _T( "PERIOD_LENGTH"), m_csDownloadPeriodLength);
-	pmConf->Lookup( _T( "TIMEOUT"), m_csDownloadTimeout);
-	pmConf->Lookup( _T( "ON"), m_csDownloadOn);
+	// There is only one record for download parameters
+	pMap = pMapArray->GetAt(0);
+	pMap->Lookup( _T( "FRAG_LATENCY"), m_csDownloadFragLatency);
+	pMap->Lookup( _T( "CYCLE_LATENCY"), m_csDownloadCycleLatency);
+	pMap->Lookup( _T( "PERIOD_LATENCY"), m_csDownloadPeriodLatency);
+	pMap->Lookup( _T( "PERIOD_LENGTH"), m_csDownloadPeriodLength);
+	pMap->Lookup( _T( "TIMEOUT"), m_csDownloadTimeout);
+	pMap->Lookup( _T( "ON"), m_csDownloadOn);
 	writeConfig();
+	delete pMapArray;
+	pMapArray = NULL;
 	
 	// Now get each package information
-	CMapStringToString *pmPack = m_pPrologResp->getDownloadPackages();
-	while (pmPack[lPackNum].GetCount())
+	pMapArray = m_pPrologResp->getDownloadPackages();
+	for (nPack=0; (pMapArray!=NULL) && (nPack<pMapArray->GetCount()); nPack++)
 	{
-		pmPack[lPackNum].Lookup( _T( "ID"), csTmpValue);
+		if (((pMap = pMapArray->GetAt(nPack)) == NULL) || pMap->IsEmpty())
+			continue;
+		csId.Empty();
+		pMap->Lookup( _T( "ID"), csId);
 		// Try to find if package was not previously downloaded, parsing package history file
 		CString csHistBuf;
 		BOOL	bFound = FALSE;
 		cFileHistory.SeekToBegin();
 		while (cFileHistory.ReadPackage( csHistBuf))
 		{
-			if( csHistBuf.Find( csTmpValue) != -1 )
+			if( csHistBuf.Find( csId) != -1 )
 			{
 				// Package ID found in history
 				bFound = TRUE;
@@ -125,29 +136,28 @@ BOOL CCapDownload::retrievePackages()
 			}
 		}
 		pOptDownloadPackage = new COptDownloadPackage( this);
-		pOptDownloadPackage->setId( csTmpValue);
+		pOptDownloadPackage->setId( csId);
 		// If CERT_PATH or CERT_FILE option is provided
-		pmPack[lPackNum].Lookup( _T( "CERT_PATH"), csTmpValue);
-		pOptDownloadPackage->setCertPath( csTmpValue);
-		pmPack[lPackNum].Lookup( _T( "CERT_FILE"), csTmpValue);
-		pOptDownloadPackage->setCertFile( csTmpValue);
+		pMap->Lookup( _T( "CERT_PATH"), csValue);
+		pOptDownloadPackage->setCertPath( csValue);
+		pMap->Lookup( _T( "CERT_FILE"), csValue);
+		pOptDownloadPackage->setCertFile( csValue);
 		// Set URL where to download INFO metadata
-		pmPack[lPackNum].Lookup( _T( "INFO_LOC"), csTmpValue);
-		pOptDownloadPackage->setInfoLocation( csTmpValue);
+		pMap->Lookup( _T( "INFO_LOC"), csValue);
+		pOptDownloadPackage->setInfoLocation( csValue);
 		// Set URL where to download fragment
-		pmPack[lPackNum].Lookup( _T( "PACK_LOC"), csTmpValue);
-		pOptDownloadPackage->setPackLocation( csTmpValue);
+		pMap->Lookup( _T( "PACK_LOC"), csValue);
+		pOptDownloadPackage->setPackLocation( csValue);
 		if (bFound)				
 		{
 			// Package ID found in history, do not download
-			m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Will not download package <%s>, already in the package history"), csTmpValue);
-			sendMessage( csTmpValue, ERR_ALREADY_SETUP);
+			m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Will not download package <%s>, already in the package history"), csId);
+			sendMessage( csId, ERR_ALREADY_SETUP);
 			delete pOptDownloadPackage;
 		}
 		else
 			// Package not already downloaded, put it in the download queue
 			m_tPackages.Add(pOptDownloadPackage);
-		lPackNum++;							
 	}	
 	cFileHistory.Close();
 	// Cleaning file history for duplicates
@@ -165,15 +175,13 @@ BOOL CCapDownload::retrievePackages()
 	}
 
 	// Now, prepare directories and download instructions for download tool
-	lPackNum = 0;
-	while (lPackNum < m_tPackages.GetSize())
+	for (nPack=0; nPack<m_tPackages.GetSize(); nPack++)
 	{
-		pOptDownloadPackage = (COptDownloadPackage*) (m_tPackages[lPackNum]);
+		pOptDownloadPackage = (COptDownloadPackage*) (m_tPackages[nPack]);
 		if (pOptDownloadPackage->makeDirectory() && !fileExists( pOptDownloadPackage->getLocalMetadataFilename()))
 			// Download metadata from deployment server
 			if (pOptDownloadPackage->downloadInfoFile())
 				m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Package <%s> added to download queue"), pOptDownloadPackage->getId());
-		lPackNum++;
 	}
 	// Now, allow Download tool
 	unlockDownload();

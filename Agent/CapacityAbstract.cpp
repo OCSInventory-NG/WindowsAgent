@@ -32,17 +32,10 @@ CCapacityAbstract::CCapacityAbstract()
 	m_pPrologResp		= NULL;
 	m_pInventory		= NULL;
 	m_pInventoryResp	= NULL;
-	m_pParameters		= NULL;
 }
 
 CCapacityAbstract::~CCapacityAbstract()
 {
-	// Free the CMapStringToString array
-	if(m_pParameters!=NULL)
-	{
-		delete [] m_pParameters;
-	}
-	m_pParameters=NULL;
 }
 
 // Intialization

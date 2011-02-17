@@ -43,51 +43,73 @@ CCapRegistry::~CCapRegistry()
  ***/
 BOOL CCapRegistry::retrieveKeys()
 {
-	// Retrieve the CMapStringToString array (we have to delete it, or it will be done in destructor)
-	DWORD dwParameterNumber = 0;
-	m_pParameters = m_pPrologResp->getRegistryParameters();
+	INT_PTR nIndex = 0;
+	CMapStringToStringArray *pQueryArray = NULL;
+	CMapStringToString		*pQuery = NULL;
 
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "REGISTRY => Starting scanning"), dwParameterNumber);
-
-	while (!m_pParameters[dwParameterNumber].IsEmpty())
+	try
 	{
-		CRegistry		myRegistry;
-		CRegistryValue  myObject;
-		CString	csName,
-				csRegKey,
-				csRegValue,
-				csResult,
-				csRegTree;
-		int		nRegTree;
-
-		if (!m_pParameters[dwParameterNumber].Lookup( _T( "REGTREE"),csRegTree))
-			csRegTree.Empty();
-		if (!m_pParameters[dwParameterNumber].Lookup( _T( "VAL"),csRegValue))
-			csRegValue.Empty();
-		if (!m_pParameters[dwParameterNumber].Lookup( _T( "REGKEY"),csRegKey))
-			csRegKey.Empty();
-		if (!m_pParameters[dwParameterNumber].Lookup( _T( "NAME"),csName))
-			csName.Empty();
-		
-		nRegTree = _ttoi( csRegTree );
-
-		if (csRegValue == REGISTRY_ALL_VALUES_OF_KEY)
+		// Retrieve the CMapStringToString array (we have to delete it)
+		pQueryArray = m_pPrologResp->getRegistryParameters();
+		if ((pQueryArray == NULL) || pQueryArray->IsEmpty())
 		{
-			// Get all values of a key
-			myRegistry.GetRegistryMultipleValues( csName, nRegTree, csRegKey, &(m_pInventory->m_RegistryList));
+			// No registry query defined
+			m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "REGISTRY => No query asked by server"));
+			return TRUE;
 		}
-		else
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "REGISTRY => Executing query asked by server"));
+		for (nIndex=0; nIndex<pQueryArray->GetCount(); nIndex++)
 		{
-			// Get single value
-			if (myRegistry.GetRegistryValue( nRegTree, csRegKey, csRegValue, csResult))
+			CRegistry		myRegistry;
+			CRegistryValue  myObject;
+			CString	csName,
+					csRegKey,
+					csRegValue,
+					csResult,
+					csRegTree;
+			int		nRegTree;
+
+			pQuery = pQueryArray->GetAt( nIndex);
+			if ((pQuery == NULL) || pQuery->IsEmpty())
+				continue;
+			if (!pQuery->Lookup( _T( "REGTREE"),csRegTree))
+				csRegTree.Empty();
+			if (!pQuery->Lookup( _T( "VAL"),csRegValue))
+				csRegValue.Empty();
+			if (!pQuery->Lookup( _T( "REGKEY"),csRegKey))
+				csRegKey.Empty();
+			if (!pQuery->Lookup( _T( "NAME"),csName))
+				csName.Empty();
+			
+			nRegTree = _ttoi( csRegTree );
+
+			if (csRegValue == REGISTRY_ALL_VALUES_OF_KEY)
 			{
-				// Add result to list
-				myObject.Set( csName, csResult);
-				m_pInventory->m_RegistryList.AddTail( myObject);								
+				// Get all values of a key
+				myRegistry.GetRegistryMultipleValues( csName, nRegTree, csRegKey, &(m_pInventory->m_RegistryList));
+			}
+			else
+			{
+				// Get single value
+				if (myRegistry.GetRegistryValue( nRegTree, csRegKey, csRegValue, csResult))
+				{
+					// Add result to list
+					myObject.Set( csName, csResult);
+					m_pInventory->m_RegistryList.AddTail( myObject);								
+				}
 			}
 		}
-		dwParameterNumber++;							
+		delete pQueryArray;
+		pQueryArray = NULL;
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "REGISTRY => %d query successfully executed"), nIndex);
+		return TRUE;
 	}
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "REGISTRY => scan finished (%d query executed)"), dwParameterNumber);
-	return TRUE;
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		if (pQueryArray)
+			delete pQueryArray;
+		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "REGISTRY => Unknown error while executing query %d"), nIndex+1);
+		return FALSE;
+	}
 }

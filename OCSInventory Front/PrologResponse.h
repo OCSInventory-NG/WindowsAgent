@@ -17,11 +17,11 @@
 
 #pragma once
 
-#define MAX_OPTION_PARAMETERS	64
 #define DEFAULT_PROLOG_FREQ		10
 
 #include "OCSInventory Front Classes.h"
 #include "ResponseAbstract.h"
+#include "MapStringToStringArray.h"
 
 class OCSINVENTORYFRONT_API CPrologResponse : public CResponseAbstract
 {
@@ -36,12 +36,12 @@ public:
 	
 	/* Registry */
 	BOOL	isRegistryRequired();
-	CMapStringToString* getRegistryParameters();
+	CMapStringToStringArray* getRegistryParameters();
 
 	/* Download */
 	BOOL isDownloadRequired();
-	CMapStringToString* getDownloadPackages();
-	CMapStringToString* getDownloadParameters();
+	CMapStringToStringArray* getDownloadPackages();
+	CMapStringToStringArray* getDownloadParameters();
 
 	/* Inventory */
 	BOOL	isInventoryRequired();
@@ -55,7 +55,7 @@ private: // Methods
 
 	/* Generic functions */
 	BOOL isActivatedOption(CString);
-	CMapStringToString* getOptionAttributes(CString option,...);
+	CMapStringToStringArray* getOptionAttributes(CString option,...);
 
 private: // Attributes
 

@@ -94,7 +94,7 @@ BOOL CPrologResponse::isRegistryRequired()
 	return isActivatedOption( _T( "REGISTRY"));
 }
 
-CMapStringToString* CPrologResponse::getRegistryParameters()
+CMapStringToStringArray* CPrologResponse::getRegistryParameters()
 {
 	return getOptionAttributes( _T( "REGISTRY"), _T( "REGTREE"), _T( "REGKEY"), _T( "NAME"), _T( ""));
 }
@@ -106,25 +106,29 @@ BOOL CPrologResponse::isIpdiscoverRequired()
 
 CString CPrologResponse::getIpdiscoverLatency()
 {
-	CMapStringToString* cmParams;
-	CString csLatency;
+	CMapStringToStringArray* cmParams;
+	CString csLatency = _T( "");
 
-	cmParams = getOptionAttributes( _T( "IPDISCOVER"), _T( "IPDISC_LAT"), _T( ""));
-	cmParams->Lookup( _T( "IPDISC_LAT"), csLatency);
-	if(cmParams)
+	if ((cmParams = getOptionAttributes( _T( "IPDISCOVER"), _T( "IPDISC_LAT"), _T( ""))) == NULL)
+		return csLatency;
+	// There is only one record for IpDiscover parameters
+	cmParams->GetAt(0)->Lookup( _T( "IPDISC_LAT"), csLatency);
+	if (cmParams)
 		delete cmParams;
 	return csLatency;
 }
 
 CString	CPrologResponse::getIpdiscoverLan()
 {
-	CMapStringToString* pParams;
-	CString csLan;
+	CMapStringToStringArray* cmParams;
+	CString csLan = _T( "");
 
-	pParams = getOptionAttributes( _T( "IPDISCOVER"), _T( "IPDISC_LAT"), _T( ""));
-	pParams->Lookup( _T( "VAL"), csLan);
-	if(pParams)
-		delete [] pParams;
+	if ((cmParams = getOptionAttributes( _T( "IPDISCOVER"), _T( "IPDISC_LAT"), _T( ""))) == NULL)
+		return csLan;
+	// There is only one record for IpDiscover parameters
+	cmParams->GetAt(0)->Lookup( _T( "VAL"), csLan);
+	if (cmParams)
+		delete cmParams;
 	return csLan;
 }
 
@@ -133,86 +137,98 @@ BOOL CPrologResponse::isDownloadRequired()
 	return isActivatedOption( _T( "DOWNLOAD"));
 }
 
-CMapStringToString* CPrologResponse::getDownloadPackages()
+CMapStringToStringArray* CPrologResponse::getDownloadPackages()
 {
 	return getOptionAttributes( _T( "DOWNLOAD"), _T( "ID"), _T( "CERT_FILE"), _T( "CERT_PATH"), _T( "PACK_LOC"), _T( "INFO_LOC"), _T( ""));
 }
 
-CMapStringToString* CPrologResponse::getDownloadParameters()
+CMapStringToStringArray* CPrologResponse::getDownloadParameters()
 {
 	return getOptionAttributes( _T( "DOWNLOAD"), _T( "FRAG_LATENCY"), _T( "PERIOD_LATENCY"), _T( "CYCLE_LATENCY"), _T( "PERIOD_LENGTH"), _T( "TIMEOUT"), _T( "ON"), _T( ""));
 }
 
-CMapStringToString* CPrologResponse::getOptionAttributes(CString option,...)
+CMapStringToStringArray* CPrologResponse::getOptionAttributes(CString option,...)
 {
-	CString csOptionName = option;
-	CString csAttribute;
-	CString csValue;
-	BOOL bValid;
-	TiXmlElement *pXmlReply, 
-				 *pXmlOption,
-				 *pXmlElement;
-
-	// Go to response content
-	m_cmXml.ResetPos();
-	pXmlReply = m_cmXml.FindFirstElem( _T( "REPLY"));
-
-	CMapStringToString *pMap = new CMapStringToString[MAX_OPTION_PARAMETERS];
-
-	DWORD dwParameterNumber = 0;
-	
-	// Parsing options
-	pXmlOption = m_cmXml.FindFirstElem( _T( "OPTION"), pXmlReply);
-	while (pXmlOption)
+	CMapStringToStringArray *pMapArray = NULL;
+	CMapStringToString		*pMap = NULL;
+	try
 	{
-		pXmlElement = m_cmXml.FindFirstElem( _T( "NAME"), pXmlOption);
-		
-		// Finding the rigth option
-		if( csOptionName.CompareNoCase( m_cmXml.GetData( pXmlElement)) != 0 )
-		{
-			pXmlOption = m_cmXml.FindNextElem( _T( "OPTION"), pXmlOption);
-			continue;
-		}		
-		
-		// Finally retrieving the paramaters for the option
-		pXmlElement = m_cmXml.FindFirstElem( _T( "PARAM"), pXmlOption);
-		while (pXmlElement)
-		{
-			bValid = FALSE;
-			if(dwParameterNumber>=MAX_OPTION_PARAMETERS)
-				break;
+		CString csOptionName = option;
+		CString csAttribute;
+		CString csValue;
+		BOOL bValid;
+		TiXmlElement *pXmlReply, 
+					 *pXmlOption,
+					 *pXmlElement;
 
-			// "VAL" is the effective xml tag value
-			pMap[dwParameterNumber].SetAt( _T( "VAL"), m_cmXml.GetData( pXmlElement));
+		// Go to response content
+		m_cmXml.ResetPos();
+		pXmlReply = m_cmXml.FindFirstElem( _T( "REPLY"));
+
+		pMapArray = new CMapStringToStringArray();
+
+		// Parsing options
+		pXmlOption = m_cmXml.FindFirstElem( _T( "OPTION"), pXmlReply);
+		while (pXmlOption)
+		{
+			pXmlElement = m_cmXml.FindFirstElem( _T( "NAME"), pXmlOption);
 			
-			// Now we retrieve the xml attributes for the option (asked on the stack)
-			va_list marker;
-			va_start( marker,option  );     /* Initialize variable arguments. */
+			// Finding the rigth option
+			if( csOptionName.CompareNoCase( m_cmXml.GetData( pXmlElement)) != 0 )
+			{
+				pXmlOption = m_cmXml.FindNextElem( _T( "OPTION"), pXmlOption);
+				continue;
+			}		
+			
+			// Finally retrieving the paramaters for the option
+			pXmlElement = m_cmXml.FindFirstElem( _T( "PARAM"), pXmlOption);
+			while (pXmlElement)
+			{
+				pMap = new CMapStringToString();
+				bValid = FALSE;
 
-			do
-			{				
-				csAttribute = va_arg( marker, LPCTSTR);
-				if (csAttribute !=  _T( ""))
-				{
-					csValue = m_cmXml.GetAttrib( csAttribute);
-					// If an attribute is NULL, we do not feed the cmap array with it
-					if (csValue != _T( ""))
+				// "VAL" is the effective xml tag value
+				pMap->SetAt( _T( "VAL"), m_cmXml.GetData( pXmlElement));
+				
+				// Now we retrieve the xml attributes for the option (asked on the stack)
+				va_list marker;
+				va_start( marker,option  );     /* Initialize variable arguments. */
+
+				do
+				{				
+					csAttribute = va_arg( marker, LPCTSTR);
+					if (csAttribute !=  _T( ""))
 					{
-						pMap[dwParameterNumber].SetAt( csAttribute, csValue);
-						bValid = TRUE;
+						csValue = m_cmXml.GetAttrib( csAttribute);
+						// If an attribute is NULL, we do not feed the cmap array with it
+						if (csValue != _T( ""))
+						{
+							pMap->SetAt( csAttribute, csValue);
+							bValid = TRUE;
+						}
 					}
 				}
+				while (csAttribute != _T( ""));
+				va_end( marker );
+				// If all asked attibutes are NULL, we do not store element
+				if (bValid)
+					pMapArray->Add( pMap);
+				else
+					delete pMap;
+				pMap = NULL;
+				pXmlElement = m_cmXml.FindNextElem( _T( "PARAM"), pXmlElement);
 			}
-			while (csAttribute != _T( ""));
-			va_end( marker );
-			// If all asked attibutes are NULL, we do not store element
-			if (bValid)
-				dwParameterNumber++;
-			else
-				pMap[dwParameterNumber].RemoveAll();
-			pXmlElement = m_cmXml.FindNextElem( _T( "PARAM"), pXmlElement);
+			pXmlOption = m_cmXml.FindNextElem( _T( "OPTION"), pXmlOption);
 		}
-		pXmlOption = m_cmXml.FindNextElem( _T( "OPTION"), pXmlOption);
+		return pMapArray;
 	}
-	return pMap;
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		if (pMap)
+			delete pMap;
+		if (pMapArray)
+			delete pMapArray;
+		return NULL;
+	}
 }

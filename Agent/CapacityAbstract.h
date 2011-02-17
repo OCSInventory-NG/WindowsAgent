@@ -39,8 +39,6 @@ public: // Methods
 
 
 protected: // Attributes
-	// Keys to retrieve
-	CMapStringToString* m_pParameters;
 	// The logger object
 	CLog *m_pLogger;
 	// The prolog
