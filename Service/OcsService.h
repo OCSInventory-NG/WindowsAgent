@@ -57,17 +57,19 @@ protected:
 	// Open required OCS files to prevent delete
 	BOOL protectFiles();
 	// Close all file object referenced into m_tHandles
-	BOOL UnprotectFiles();
+	BOOL unProtectFiles();
 	// Load service configuration from file
 	BOOL loadConfig();
 	// Store service configuration to file (if not full, just write TTO_WAIT)
 	BOOL writeConfig( BOOL bFull = TRUE);
 	// Check if something changed in inventory
-	BOOL CheckInventoryState();
+	BOOL checkInventoryState();
 	// Launch OCS Inventory Agent, using notify mode or not
 	BOOL runAgent( BOOL bNotify = FALSE);
 	// Show inventory informations
 	BOOL showInventory();
+	// Rotate log files from data folder
+	BOOL rotateLogs();
 
 protected:
 	int			m_iTToWait;				// Time to wait before next agent run (in seconds)

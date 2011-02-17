@@ -183,6 +183,8 @@ BOOL COcsService::OnInit()
 		m_iOldPrologFreq = m_iPrologFreq;
 		writeConfig();
 	}
+	// Rotate log files
+	rotateLogs();
 	// Open required OCS files to prevent delete
 	protectFiles();
 	return TRUE;
@@ -220,7 +222,7 @@ BOOL COcsService::protectFiles()
 	return TRUE;
 }
 
-BOOL COcsService::UnprotectFiles()
+BOOL COcsService::unProtectFiles()
 {
 	CFile *pFile;
 
@@ -237,7 +239,7 @@ BOOL COcsService::UnprotectFiles()
 void COcsService::OnStop()
 {
 	// Close all file object referenced into m_tHandles
-	UnprotectFiles();
+	unProtectFiles();
 }
 
 void COcsService::Run()
@@ -270,7 +272,7 @@ void COcsService::Run()
 			// Check inventory state for changes, and launch agent if needed
 			if (m_iTToWait > m_iWriteIniLatency)
 			{
-				if (!bNotifyInventory && CheckInventoryState())
+				if (!bNotifyInventory && checkInventoryState())
 				{
 					// Inventory state changed, force inventory immediatly
 					LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Inventory state change detected, OCS Inventory NG Agent launched in NOTIFY mode"));
@@ -282,7 +284,7 @@ void COcsService::Run()
 		if( m_iTToWait <= 0 )
 		{
 			// Unprotect files to allow agent change them if needed
-			UnprotectFiles();
+			unProtectFiles();
 			UINT vOld = m_iOldPrologFreq;
 			if (!runAgent( bNotifyInventory))
 			{
@@ -323,7 +325,7 @@ void COcsService::Run()
 }
 
 
-BOOL COcsService::CheckInventoryState()
+BOOL COcsService::checkInventoryState()
 {
 	CStdioFile cFile;
 
@@ -477,7 +479,40 @@ BOOL COcsService::showInventory()
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "an unknown error occured while trying to generate inventory informations"));
+		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "An unknown error occured while trying to generate inventory informations"));
 		return FALSE;
 	}
+}
+
+BOOL COcsService::rotateLogs()
+{
+	try
+	{
+		CString		csFile;
+		CFileFind	myFinder;
+		BOOL		bWorking;
+
+		csFile.Format( _T( "%s\\*.log"), getDataFolder());
+		bWorking = myFinder.FindFile( csFile);
+		while (bWorking)
+		{
+			bWorking = myFinder.FindNextFile();
+			// There is log file => rename each with .bak extension and delete original
+			csFile.Format( _T("%s.bak"), myFinder.GetFilePath());
+			if (!CopyFile( myFinder.GetFilePath(), csFile, FALSE) ||
+				!DeleteFile( myFinder.GetFilePath()))
+			{
+				csFile.Format( _T( "Failed to rotate log file <%s>"), myFinder.GetFilePath());
+				LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csFile);
+				continue;
+			}
+		}
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "An unknown error occured while rotating log files"));
+		return FALSE;
+	}
+	return TRUE;
 }
