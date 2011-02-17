@@ -337,17 +337,28 @@ LPCTSTR CSysInfo::getLocalIP()
 DWORD CSysInfo::getProcessors( CString &csProcType, CString &csProcSpeed)
 {
 	CString csRegType = NOT_AVAILABLE,
-			csRegSpeed = NOT_AVAILABLE;
-	static DWORD	dwRegNumber = 0;
+			csRegSpeed = NOT_AVAILABLE,
+			csWmiType = NOT_AVAILABLE,
+			csWmiSpeed = NOT_AVAILABLE;
+	static DWORD	dwRegNumber = 0,
+					dwWmiNumber = 0;
 
-	// First, try WMI
-	if ((dwRegNumber = m_wmiInfo.GetProcessors( csProcType, csProcSpeed)) > 0)	
+	// First, check registry
+	dwRegNumber = m_registryInfo.GetProcessors( csRegType, csRegSpeed);
+	// Better to use WMI, but fails in some cases
+	if ((dwWmiNumber = m_wmiInfo.GetProcessors( csWmiType, csWmiSpeed)) > 0)	
 	{
-		AddLog( _T( "WMI GetProcessors: %lu processor(s) found.\n"), dwRegNumber);
-		return dwRegNumber;
+		if (csWmiType.Find( _T( "Intel Pentium III Xeon")) != -1)
+			// Bogus WMI, use registry for ProcType
+			csProcType = csRegType;
+		else
+			csProcType = csWmiType;
+		csProcSpeed = csWmiSpeed;
+		return dwWmiNumber;
 	}
-	// Last, use registry
-	return m_registryInfo.GetProcessors( csProcType, csProcSpeed);
+	csProcType = csRegType;
+	csProcSpeed = csRegSpeed;
+	return dwRegNumber;
 }
 
 DWORD CSysInfo::getAddressWidthOS()

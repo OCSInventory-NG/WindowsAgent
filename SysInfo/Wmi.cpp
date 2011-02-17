@@ -1392,7 +1392,7 @@ DWORD CWmi::GetProcessors(CString &csProcType, CString &csProcSpeed)
 		}
 		if (dwNumber > 0)
 		{
-			AddLog( _T( "%s %s. OK\n"), csProcType, csProcSpeed);
+			AddLog( _T( "%lu x %s at %s. OK\n"), dwNumber, csProcType, csProcSpeed);
 			return dwNumber;
 		}
 		AddLog( _T( "Failed because no Win32_Processor object !\n"));
