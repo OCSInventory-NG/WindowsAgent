@@ -1,0 +1,11 @@
+; OCSPlugin_Example.def : Declares the module parameters for the DLL.
+
+LIBRARY      "OCSPlugin_Example"
+
+EXPORTS
+    ; Explicit exports can go here
+	OCS_CALL_START_EXPORTED
+	OCS_CALL_PROLOGWRITE_EXPORTED
+	OCS_CALL_PROLOGRESP_EXPORTED
+	OCS_CALL_INVENTORY_EXPORTED
+	OCS_CALL_END_EXPORTED
