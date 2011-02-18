@@ -1421,7 +1421,8 @@ BOOL CWmi::GetOS(CString &csName, CString &csVersion, CString &csComment, CStrin
 		{
 			while (m_dllWMI.MoveNextEnumClassObject())
 			{
-				csName = m_dllWMI.GetClassObjectStringValue( _T( "Caption"));
+				csName = m_dllWMI.GetClassObjectStringValue( _T( "Name"));
+				csName = csName.Left( csName.Find( _T( "|"), 0));
 				StrForSQL( csName);
 				csVersion = m_dllWMI.GetClassObjectStringValue( _T( "Version"));
 				StrForSQL( csVersion);
