@@ -51,6 +51,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestSysInfo", "TestSysInfo\
 		{08DCFABA-1B27-4850-B5BF-92929CFA75B1} = {08DCFABA-1B27-4850-B5BF-92929CFA75B1}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OCSPlugin_Example", "OCSPlugin_Example\OCSPlugin_Example.vcproj", "{35E43197-A12B-4C25-AEDD-5624239A0DD9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{04364624-39D4-488D-A538-66CB442A5F0B} = {04364624-39D4-488D-A538-66CB442A5F0B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -93,6 +98,10 @@ Global
 		{DBA26440-AC45-4C37-8C9B-E532B5F5F110}.Debug|Win32.Build.0 = Debug|Win32
 		{DBA26440-AC45-4C37-8C9B-E532B5F5F110}.Release|Win32.ActiveCfg = Release|Win32
 		{DBA26440-AC45-4C37-8C9B-E532B5F5F110}.Release|Win32.Build.0 = Release|Win32
+		{35E43197-A12B-4C25-AEDD-5624239A0DD9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{35E43197-A12B-4C25-AEDD-5624239A0DD9}.Debug|Win32.Build.0 = Debug|Win32
+		{35E43197-A12B-4C25-AEDD-5624239A0DD9}.Release|Win32.ActiveCfg = Release|Win32
+		{35E43197-A12B-4C25-AEDD-5624239A0DD9}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
