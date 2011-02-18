@@ -492,6 +492,7 @@ BOOL CDownloadApp::runPeriod()
 	for (uPeriod=1; uPeriod<=m_uDownloadPeriodLength; uPeriod++)
 	{
 		// Start a cycle to download one fragament of each package of prioity uPeriod
+		cCycleTime = CTime::GetCurrentTime();
 		m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Processing packages for cycle %u on %s"), uPeriod, cCycleTime.Format( _T( "%#c")));
 		for (nIndex=0; nIndex< m_listPack.GetCount(); nIndex++)
 		{
