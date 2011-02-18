@@ -12,7 +12,7 @@ setcompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "OCS Inventory NG Agent"
-!define PRODUCT_VERSION "2.0.0.13"
+!define PRODUCT_VERSION "2.0.0.14"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
@@ -664,6 +664,9 @@ stop_service_end_loop:
 	KillProcDLL::KillProc "OcsSystray.exe"
 	StrCpy $logBuffer "Trying to kill process OcsSystray.exe...Result: $R0$\r$\n"
 	Call Write_Log
+	; If OcsSystray killed, perhaps there is another process running under antoher user session,
+	; So try to kill OcsSystray.exe until there no process detected
+	StrCmp "$R0" "0" stop_service_end_loop
 	sleep 1000
 	KillProcDLL::KillProc "OcsService.exe"
 	StrCpy $logBuffer "Trying to kill process OcsService.exe...Result: $R0$\r$\n"
