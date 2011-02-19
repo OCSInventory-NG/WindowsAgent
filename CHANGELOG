@@ -1,3 +1,7 @@
+  * Also migrate current downloads when upgrading from 4000 series
+  * Use WMI OS Name instead of OS Caption to get OS Name
+  * Try to kill OcsSystray.exe until there is no more process to kill (in case there is multiple user session opened)
+  * Uses WMI to get processor information, except when WMI get bogus processor name "Intel Pentium III Xeon"
   * Allow having more than 64 simultaneous registry queries or downloads
   * Append log to existing log file instead of overriding, but rotate logs each time service start  
   * Unzip only if there is downloaded fragment
