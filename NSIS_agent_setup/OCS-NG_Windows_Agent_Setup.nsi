@@ -1488,11 +1488,11 @@ Section -Post
 	FileOpen $1 "..\done" w
 	FileWrite $1 "SUCCESS"
 	FileClose $1
-	; WRITE done into Download directory, because in 2.0 or higher, package is unzipped into system TEMP directory
-	; and no more under "$APPDATA\OCS Inventory NG\Agent\Download\PackID\Temp"
-	FileOpen $1 "$APPDATA\OCS Inventory NG\Agent\Download\done" w
-	FileWrite $1 "SUCCESS"
-	FileClose $1
+	; WRITE done into "$APPDATA\OCS Inventory NG\Agent\Download" directory, because in 2.0 or higher, package is unzipped
+    ; into system TEMP directory and no more under "$APPDATA\OCS Inventory NG\Agent\Download\PackID\Temp"
+;	FileOpen $1 "$APPDATA\OCS Inventory NG\Agent\Download\done" w
+;	FileWrite $1 "SUCCESS"
+;	FileClose $1
 Post_end:
 SectionEnd
 
