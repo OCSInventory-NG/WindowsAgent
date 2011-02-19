@@ -664,8 +664,8 @@ stop_service_end_loop:
 	KillProcDLL::KillProc "OcsSystray.exe"
 	StrCpy $logBuffer "Trying to kill process OcsSystray.exe...Result: $R0$\r$\n"
 	Call Write_Log
-	; If OcsSystray killed, perhaps there is another process running under antoher user session,
-	; So try to kill OcsSystray.exe until there no process detected
+	; If OcsSystray killed, perhaps there is another process running under another user session,
+	; So try to kill OcsSystray.exe until there no process or error detected
 	StrCmp "$R0" "0" stop_service_end_loop
 	sleep 1000
 	KillProcDLL::KillProc "OcsService.exe"
@@ -748,6 +748,9 @@ un.stop_service_end_loop:
 	KillProcDLL::KillProc "OcsSystray.exe"
 	StrCpy $logBuffer "Trying to kill process OcsSystray.exe...Result: $R0$\r$\n"
 	Call un.Write_Log
+	; If OcsSystray killed, perhaps there is another process running under another user session,
+	; So try to kill OcsSystray.exe until there no process or error detected
+	StrCmp "$R0" "0" un.stop_service_end_loop
 	sleep 1000
 	KillProcDLL::KillProc "OcsService.exe"
 	StrCpy $logBuffer "Trying to kill process OcsService.exe...Result: $R0$\r$\n"
@@ -949,6 +952,15 @@ Function UpgradeFrom4000
     IfErrors 0 +3
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
+	; Transfer Downloads
+	StrCpy $logBuffer "$\r$\nCopying current downloads from <$INSTDIR\download> to <$APPDATA\OCS Inventory NG\Agen\download>...$\r$\n"
+	Call Write_Log
+	ClearErrors
+    CreateDirectory "$APPDATA\OCS Inventory NG\Agent\download"
+    CopyFiles /SILENT "$INSTDIR\download\*.*" "$APPDATA\OCS Inventory NG\Agen\download"
+    IfErrors 0 +3
+	StrCpy $logBuffer "Failed, but non blocking !"
+	Call Write_Log
 	; Uninstall old service
 	StrCpy $logBuffer "$\r$\nUnregistering service from Windows Service Manager...$\r$\n"
 	Call Write_Log
@@ -968,6 +980,7 @@ Function UpgradeFrom4000
     Delete /REBOOTOK "$INSTDIR\ocsinventory.dat"
     Delete /REBOOTOK "$INSTDIR\service.ini"
     Delete /REBOOTOK "$INSTDIR\*.log"
+    rmdir /r /REBOOTOK "$INSTDIR\download"
     IfErrors 0 +3
 	StrCpy $logBuffer "One or more file remove failed (perhaps missing file), but non blocking !"
 	Call Write_Log
