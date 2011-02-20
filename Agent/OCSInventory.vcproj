@@ -215,6 +215,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CapKeyFinder.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CapRegistry.cpp"
 				>
 			</File>
@@ -286,6 +290,10 @@
 			</File>
 			<File
 				RelativePath=".\CapIpdiscover.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CapKeyFinder.h"
 				>
 			</File>
 			<File
