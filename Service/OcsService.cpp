@@ -254,7 +254,7 @@ void COcsService::Run()
 	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csStatus);
 
 	// Check if system starting (system uptime < 2 min)
-	if (GetTickCount64() < SYSTEM_START_MAX_UPTIME)
+	if (GetTickCount() < SYSTEM_START_MAX_UPTIME)
 	{
 		// Start download for package to be installed at boot time
 	}
