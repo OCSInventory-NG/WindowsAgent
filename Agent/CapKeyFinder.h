@@ -17,4 +17,9 @@ class CCapKeyFinder : public CCapacityAbstract
 public:
 	CCapKeyFinder(void);
 	~CCapKeyFinder(void);
+	// Do the job
+	BOOL retrieveKeys();
+
+protected:
+	BOOL decodeMicrosoftKey( LPBYTE lpData, UINT uLength, CString csKey);
 };
