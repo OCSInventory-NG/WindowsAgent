@@ -340,7 +340,7 @@ LPCTSTR CMarkup::GetData( TiXmlElement *pXmlNode)
 		const char *szValue = pNode->GetText();
 		if (szValue)
 		{
-			csResult.Format( _T( "%s"), CA2CT( szValue, CP_UTF8));
+			csResult.Format( _T( "%s"), CA2CT( szValue));
 			return csResult;
 		}
 		return NULL;
@@ -365,7 +365,7 @@ LPCTSTR CMarkup::GetAttrib( LPCTSTR szAttrib)
 		const char *szValue = m_pCurrentNode->Attribute( CT2CA( szAttrib, CP_UTF8));
 		if (szValue)
 		{
-			csResult.Format( _T( "%s"), CA2CT( szValue, CP_UTF8));
+			csResult.Format( _T( "%s"), CA2CT( szValue));
 			return csResult;
 		}
 		return NULL;

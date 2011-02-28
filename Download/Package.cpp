@@ -52,7 +52,7 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 		if (!LoadFileToText( csBuffer, lpstrFile))
 			return FALSE;
 		// Parse XML
-		if (!myXml.SetDoc( GetAnsiFromUnicode( csBuffer)))
+		if (!myXml.SetDoc( csBuffer))
 			return FALSE;
 		myXml.ResetPos();
 		if (!myXml.FindFirstElem( _T( "DOWNLOAD")))

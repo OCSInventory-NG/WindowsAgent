@@ -430,7 +430,7 @@ int COptDownloadPackage::downloadInfoFile()
 	// Now create a timestamp 
 	csBuffer.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csId, OCS_DOWNLOAD_TIMESTAMP);
 	_ltot( time( NULL), szDummy, 10);
-	if (!WriteTextToFile( szDummy, _tcslen( szDummy), csBuffer))
+	if (!WriteTextToFile( szDummy, csBuffer))
 		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't create timestamp file <%s>"), csBuffer);
 	m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Retrieve info file...OK (pack %s)"), m_csId );
     return TRUE;
