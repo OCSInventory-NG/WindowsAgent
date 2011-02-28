@@ -255,8 +255,9 @@ BOOL OCSINVENTORYFRONT_API LoadFileToText( CString &csBuffer, LPCTSTR lpstrFilen
 
 	try
 	{
-		if (!cFile.Open( lpstrFilename,CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
-			return NULL;
+		// Open the file for reading, using file specified encoding
+		if (!cFile.Open( lpstrFilename, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
+			return FALSE;
 		while (cFile.ReadString( csLine))
 			csBuffer += csLine;
 		cFile.Close();
@@ -271,12 +272,13 @@ BOOL OCSINVENTORYFRONT_API LoadFileToText( CString &csBuffer, LPCTSTR lpstrFilen
 	return TRUE;
 }
 
-BOOL OCSINVENTORYFRONT_API WriteTextToFile( LPCTSTR lpstrText, UINT uLength, LPCTSTR lpstrFilename)
+BOOL OCSINVENTORYFRONT_API WriteTextToFile( LPCTSTR lpstrText, LPCTSTR lpstrFilename)
 {
 	CStdioFile	cFile;
 
 	try
 	{
+		// Open the file for writing using OS default encoding
 		if (!cFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite))
 			return FALSE;
 		cFile.WriteString( lpstrText);
@@ -287,6 +289,30 @@ BOOL OCSINVENTORYFRONT_API WriteTextToFile( LPCTSTR lpstrText, UINT uLength, LPC
 		// Exception=> free exception, but continue
 		pEx->Delete();
 		cFile.Abort();
+		return FALSE;
+	}
+	return TRUE;
+}
+
+BOOL OCSINVENTORYFRONT_API WriteTextToUTF8File( LPCTSTR lpstrText, LPCTSTR lpstrFilename)
+{
+	FILE *pFile = NULL;
+
+	try
+	{
+		// Open the file for writing with UTF-8 encoding
+		if (_tfopen_s( &pFile, lpstrFilename, _T( "wt,ccs=UTF-8")) != 0)
+			return FALSE;
+		CStdioFile	cFile( pFile);
+		cFile.WriteString( lpstrText);
+		cFile.Close();
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		if (pFile != NULL)
+			fclose( pFile);
 		return FALSE;
 	}
 	return TRUE;

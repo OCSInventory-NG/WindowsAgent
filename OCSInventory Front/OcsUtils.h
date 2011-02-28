@@ -48,11 +48,14 @@ CByteArray OCSINVENTORYFRONT_API * LoadFileToByteArray( LPCTSTR lpstrFilename);
 // Write CByteArray content into file
 BOOL OCSINVENTORYFRONT_API WriteByteArrayToFile( CByteArray* pByte, LPCTSTR lpstrFilename);
 
-// Load file content into a text buffer
+// Load file into a text buffer (using file specified encoding)
 BOOL OCSINVENTORYFRONT_API LoadFileToText( CString &csBuffer, LPCTSTR lpstrFilename);
 
-// Write text content into file
-BOOL OCSINVENTORYFRONT_API WriteTextToFile( LPCTSTR lpstrText, UINT uLength, LPCTSTR lpstrFilename);
+// Write text buffer into file using default OS charset
+BOOL OCSINVENTORYFRONT_API WriteTextToFile( LPCTSTR lpstrText, LPCTSTR lpstrFilename);
+
+// Write text buffer into UTF-8 encoded file
+BOOL OCSINVENTORYFRONT_API WriteTextToUTF8File( LPCTSTR lpstrText, LPCTSTR lpstrFilename);
 
 // Write content into file
 BOOL OCSINVENTORYFRONT_API WriteVoidToFile( LPCVOID lpVoid, UINT uLength, LPCTSTR lpstrFilename);
