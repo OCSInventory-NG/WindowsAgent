@@ -405,11 +405,26 @@ int COptDownloadPackage::downloadInfoFile()
 		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Metadata file <%s> is not XML"), getLocalMetadataFilename());
 		return FALSE;
 	}
+	// Add fragment location to meta data
 	xml.FindFirstElem( _T( "DOWNLOAD"));
 	xml.SetAttrib( _T( "LOC"), m_csRemotePackLoc);
+	// Write meta data file
 	if (!WriteVoidToFile( xml.GetDoc(), strlen( xml.GetDoc()), getLocalMetadataFilename()))
 	{
 		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't update Metadata file <%s>"), getLocalMetadataFilename());
+		return FALSE;
+	}
+	// Compute digest on meta data and add it to Registry
+	if (!fileDigest( getLocalMetadataFilename(), csBuffer))
+	{
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't register package <%s> into Registry"), m_csId);
+		DeleteFile( getLocalMetadataFilename());
+		return FALSE;
+	}
+	if (!regAddPackageDigest( m_csId, csBuffer))
+	{
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't register package <%s> into Registry"), m_csId);
+		DeleteFile( getLocalMetadataFilename());
 		return FALSE;
 	}
 	// Now create a timestamp 
@@ -419,4 +434,22 @@ int COptDownloadPackage::downloadInfoFile()
 		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't create timestamp file <%s>"), csBuffer);
 	m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Retrieve info file...OK (pack %s)"), m_csId );
     return TRUE;
+}
+
+BOOL COptDownloadPackage::regAddPackageDigest( LPCTSTR lpstrPackID, LPCTSTR lpstrDigest)
+{
+	HKEY  hKey;
+	DWORD dwValue;
+
+	if (RegCreateKeyEx( HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, NULL, REG_OPTION_NON_VOLATILE,
+						KEY_WRITE, NULL, &hKey, &dwValue) != ERROR_SUCCESS) 
+		return FALSE;
+	dwValue = _tcslen( lpstrDigest)*sizeof( TCHAR);
+	if (RegSetValueEx( hKey, lpstrPackID, 0, REG_SZ, (LPBYTE) lpstrDigest, dwValue) != ERROR_SUCCESS)
+	{
+		RegCloseKey( hKey); 
+		return FALSE;
+	}
+	RegCloseKey( hKey); 
+	return TRUE;
 }

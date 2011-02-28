@@ -87,6 +87,10 @@ protected:
 	BOOL isBase64();
 	// Is Digest hexadecimal encoded
 	BOOL isHexadecimal();
+	// Read package digest from registry
+	BOOL regReadPackageDigest( CString &csDigest);
+	// Delete package digest from registry
+	BOOL regDeletePackageDigest();
 
 protected:
 	CString m_csID;

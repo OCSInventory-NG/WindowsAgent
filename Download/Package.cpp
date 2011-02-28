@@ -184,9 +184,9 @@ BOOL CPackage::clean()
 	// Only delete unzip directory if is not a store action 
 	if ((m_csAction != OCS_DOWNLOAD_ACTION_STORE) && !m_csPath.IsEmpty() && fileExists( m_csPath))
 		directoryDelete( m_csPath);
-	// Delete download package directory
+	// Delete download package directory and registry key
 	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), m_csID);
-	return directoryDelete( csPath);
+	return (regDeletePackageDigest() && directoryDelete( csPath));
 }
 
 BOOL CPackage::clean( LPCTSTR lpstrID)
@@ -570,23 +570,42 @@ BOOL CPackage::build()
 
 BOOL CPackage::checkSignature()
 {
-	CString csZipFile,
-			csHash;
+	CString csFile,
+			csDigest,
+			csRegDigest;
 	BOOL	bRes;
 
-	// Compute digest on build.zip file
-	csZipFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_BUILD);
-	if (isBase64())
-		bRes = fileDigest( csZipFile, csHash, m_csDigestAlgo);
-	else if (isHexadecimal())
-		bRes = fileDigest( csZipFile, csHash, m_csDigestAlgo, FALSE);
-	else
-		// Unsupported encoding
+	// Read meta data digest in the registry and verify it
+	if (!regReadPackageDigest( csRegDigest))
+		// No digest registered in Registry
 		return FALSE;
-	// Digest compute successfully
-	if (bRes && (m_csDigest.Compare( csHash) == 0))
-		return TRUE;
-	return FALSE;
+	csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_METADATA);
+	if (!fileDigest( csFile, csDigest))
+		// Unable to compute digest on meta data
+		return FALSE;
+	if (csRegDigest.Compare( csDigest) != 0)
+		// Digest registered in Registry is not the same
+		return FALSE;
+	// Now, check ZIP digest
+	if (m_uFrags > 0)
+	{
+		// Compute digest on build.zip file
+		csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_BUILD);
+		if (isBase64())
+			bRes = fileDigest( csFile, csDigest, m_csDigestAlgo);
+		else if (isHexadecimal())
+			bRes = fileDigest( csFile, csDigest, m_csDigestAlgo, FALSE);
+		else
+			// Unsupported encoding
+			return FALSE;
+		// Digest compute successfully
+		if (bRes && (m_csDigest.Compare( csDigest) == 0))
+			return TRUE;
+		else
+			return FALSE;
+	}
+	// No ZIP file
+	return TRUE;
 }
 
 BOOL CPackage::isBuilt()
@@ -659,6 +678,13 @@ UINT CPackage::execute()
 	CExecCommand cmProcess;
 	CString csBuffer;
 
+	// Check signature before executing package
+	if (!checkSignature())
+	{
+		pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Failed verifying signature for Package <%s>"), m_csID);
+		setDone( ERR_BAD_DIGEST);
+		return FALSE;
+	}
 	if (m_csAction == OCS_DOWNLOAD_ACTION_LAUNCH)
 	{
 		// We need to wait for all threads/processes started
@@ -797,3 +823,39 @@ LPCTSTR CPackage::getDoneNotifyText()
 	return m_csNeedDoneActionText;
 }
 
+BOOL CPackage::regReadPackageDigest( CString &csDigest)
+{
+	HKEY  hKey;
+	DWORD dwType, dwSize;
+	LPBYTE pBuffer;
+
+	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, KEY_READ, &hKey) != ERROR_SUCCESS)
+		return FALSE;
+	pBuffer = (LPBYTE) csDigest.GetBuffer( _MAX_PATH+1);
+	dwSize = _MAX_PATH;
+	if (RegQueryValueEx( hKey, m_csID, NULL, &dwType, pBuffer, &dwSize) != ERROR_SUCCESS)
+	{
+		RegCloseKey( hKey);
+		return FALSE;
+	}
+	RegCloseKey( hKey);
+	pBuffer[dwSize]=0;
+	pBuffer[dwSize+1]=0;
+	csDigest.ReleaseBuffer();
+	return TRUE;
+}
+
+BOOL CPackage::regDeletePackageDigest()
+{
+	HKEY  hKey;
+
+	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+		return FALSE;
+	if (RegDeleteValue( hKey, m_csID) != ERROR_SUCCESS)
+	{
+		RegCloseKey( hKey);
+		return FALSE;
+	}
+	RegCloseKey( hKey);
+	return TRUE;
+}

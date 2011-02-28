@@ -37,6 +37,8 @@
 #define OCS_DOWNLOAD_DONE		_T( "done")
 // Fragment files assembled create build.zip
 #define OCS_DOWNLOAD_BUILD		_T( "build.zip")
+// HKLM registry key to store package ID and digest
+#define OCS_DOWNLOAD_REGISTRY	_T( "SOFTWARE\\OCS Inventory NG\\Agent\\Download")
 
 // Download tool default configuration parameter
 #define FRAG_LATENCY_DEFAULT	_T( "10")

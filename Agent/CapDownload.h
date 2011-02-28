@@ -82,6 +82,10 @@ public: // Methods
 	// Download metadata from remote server to local
 	BOOL downloadInfoFile();
 
+protected:
+	// Add package digest to registry
+	BOOL regAddPackageDigest( LPCTSTR lpstrPackID, LPCTSTR lpstrDigest);
+
 protected: // Attributes
 	CString		m_csId;				// Download package ID
 	CString		m_csCertFile;		// Certificate file to use to validate server
