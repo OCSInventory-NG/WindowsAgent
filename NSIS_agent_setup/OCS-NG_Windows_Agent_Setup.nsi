@@ -1272,20 +1272,6 @@ Section "!OCS Inventory Agent" SEC01
 	Call Write_Log
     CreateDirectory "$APPDATA\OCS Inventory NG\Agent"
     CreateDirectory "$APPDATA\OCS Inventory NG\Agent\Download"
-    ; Set Administrators as owner
-    StrCpy $logBuffer "SetACL setting Administrators as owner on <$APPDATA\OCS Inventory NG\Agent>..."
-    Call Write_Log
-    nsExec::ExecToLog 'SetACL -on "$APPDATA\OCS Inventory NG\Agent" -ot file -rec cont_obj -actn setowner -ownr "n:S-1-5-32-544;s:y"'
-    pop $0
-    StrCpy $logBuffer "Result: $0$\r$\n"
-    Call Write_Log
-    ; Set System/Administrators full permissions
-    StrCpy $logBuffer "SetACL setting System and Administrators full permissions on <$APPDATA\OCS Inventory NG\Agent>..."
-    Call Write_Log
-    nsExec::ExecToLog 'SetACL -on "$APPDATA\OCS Inventory NG\Agent" -ot file -rec cont_obj -actn ace -ace "n:S-1-5-18;p:full;s:y;m:set" -ace "n:S-1-5-32-544;p:full;s:y;m:set"'
-    pop $0
-    StrCpy $logBuffer "Result: $0$\r$\n"
-    Call Write_Log
     ; Set users and power users permission to read/execute/change
     StrCpy $logBuffer "SetACL allowing Users / Power users read/write permissions on <$APPDATA\OCS Inventory NG\Agent>..."
     Call Write_Log
@@ -1293,11 +1279,22 @@ Section "!OCS Inventory Agent" SEC01
     pop $0
     StrCpy $logBuffer "Result: $0$\r$\n"
     Call Write_Log
-    ; Set authenticated users right to modify data file only into first level directory
-    StrCpy $logBuffer "SetACL removing Users / Power Users write permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
+    ; Set specific permissions for Download directory
+    StrCpy $logBuffer "SetACL removing inherited permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
     Call Write_Log
-    nsExec::ExecToLog 'SetACL -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -actn setprot -op "dacl:p_c"'
-    nsExec::ExecToLog 'SetACL -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -rec cont_obj -actn ace -ace "n:S-1-5-32-545;p:read_ex;s:y;m:set" -ace "n:S-1-5-32-547;p:read_ex;s:y;m:set"'
+    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -rec cont_obj -actn setprot -op "dacl:p_nc;sacl:p_nc"'
+    pop $0
+    StrCpy $logBuffer "Result: $0$\r$\n"
+    Call Write_Log
+    StrCpy $logBuffer "SetACL allowing System and Administrators full permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
+    Call Write_Log
+    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -rec cont_obj -actn ace -ace "n:S-1-5-18;p:full;m:set;s:y" -ace "n:S-1-5-32-544;p:full;m:set;s:y"'
+    pop $0
+    StrCpy $logBuffer "Result: $0$\r$\n"
+    Call Write_Log
+     StrCpy $logBuffer "SetACL allowing Users / Power Users read only permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
+    Call Write_Log
+    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -rec cont_obj -actn ace -ace "n:S-1-5-32-545;p:read_ex;m:set;s:y" -ace "n:S-1-5-32-547;p:read_ex;m:set;s:y"'
     pop $0
     StrCpy $logBuffer "Result: $0$\r$\n"
     Call Write_Log
