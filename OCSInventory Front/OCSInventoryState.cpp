@@ -142,84 +142,81 @@ LPCTSTR COCSInventoryState::GetSoftwares()
 	return m_csSoftwares;
 }
 
-BOOL COCSInventoryState::ParseFromXML( LPCTSTR lpstrXml)
+BOOL COCSInventoryState::ParseFromXML( CMarkup* pXml)
 {
 	try
 	{
-		CMarkup x;
 		TiXmlElement *pState, *pNode;
 
-		x.SetDoc( lpstrXml);
+		pState = pXml->FindFirstElem( _T( "LAST_STATE"));
 
-		pState = x.FindFirstElem( _T( "LAST_STATE"));
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "HARDWARE"));		
+		m_csHardware = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "HARDWARE"));		
-		m_csHardware = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "BIOS"));
+		m_csBios = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "BIOS"));
-		m_csBios = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "MEMORIES"));
+		m_csMemories = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "MEMORIES"));
-		m_csMemories = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "SLOTS"));
+		m_csSlots = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "SLOTS"));
-		m_csSlots = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "REGISTRY"));
+		m_csRegistry = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "REGISTRY"));
-		m_csRegistry = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "CONTROLLERS"));
+		m_csControllers = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "CONTROLLERS"));
-		m_csControllers = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "MONITORS"));
+		m_csMonitors = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "MONITORS"));
-		m_csMonitors = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "PORTS"));
+		m_csPorts = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "PORTS"));
-		m_csPorts = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "STORAGES"));
+		m_csStorages = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "STORAGES"));
-		m_csStorages = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "DRIVES"));
+		m_csDrives = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "DRIVES"));
-		m_csDrives = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "INPUTS"));
+		m_csInputs = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "INPUTS"));
-		m_csInputs = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "MODEMS"));
+		m_csModems = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "MODEMS"));
-		m_csModems = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "NETWORKS"));
+		m_csNetworks = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "NETWORKS"));
-		m_csNetworks = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "PRINTERS"));
+		m_csPrinters = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "PRINTERS"));
-		m_csPrinters = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "SOUNDS"));
+		m_csSounds = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "SOUNDS"));
-		m_csSounds = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "VIDEOS"));
+		m_csVideos = pXml->GetData( pNode);
 
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "VIDEOS"));
-		m_csVideos = x.GetData( pNode);
-
-		x.ResetPos( pState);
-		pNode = x.FindFirstElem( _T( "SOFTWARES"));
-		m_csSoftwares = x.GetData( pNode);
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "SOFTWARES"));
+		m_csSoftwares = pXml->GetData( pNode);
 
 		return TRUE;
 	}
@@ -230,27 +227,27 @@ BOOL COCSInventoryState::ParseFromXML( LPCTSTR lpstrXml)
 	}
 }
 
-BOOL COCSInventoryState::FormatXML(CMarkup* pX)
+BOOL COCSInventoryState::FormatXML(CMarkup* pXml)
 {
-	pX->AddElem( _T( "LAST_STATE"));
-		pX->AddChildElem( _T( "HARDWARE"),m_csHardware);
-		pX->AddChildElem( _T( "BIOS"), m_csBios);
-		pX->AddChildElem( _T( "MEMORIES"),m_csMemories);
-		pX->AddChildElem( _T( "SLOTS"),m_csSlots);
-		pX->AddChildElem( _T( "REGISTRY"),m_csRegistry);
-		pX->AddChildElem( _T( "CONTROLLERS"),m_csControllers);
-		pX->AddChildElem( _T( "MONITORS"),m_csMonitors);
-		pX->AddChildElem( _T( "PORTS"),m_csPorts);
-		pX->AddChildElem( _T( "STORAGES"),m_csStorages);
-		pX->AddChildElem( _T( "DRIVES"),m_csDrives);
-		pX->AddChildElem( _T( "INPUTS"),m_csInputs);
-		pX->AddChildElem( _T( "MODEMS"),m_csModems);
-		pX->AddChildElem( _T( "NETWORKS"),m_csNetworks);
-		pX->AddChildElem( _T( "PRINTERS"),m_csPrinters);
-		pX->AddChildElem( _T( "SOUNDS"),m_csSounds);
-		pX->AddChildElem( _T( "VIDEOS"),m_csVideos);
-		pX->AddChildElem( _T( "SOFTWARES"),m_csSoftwares);
-	pX->OutOfElem();
+	pXml->AddElem( _T( "LAST_STATE"));
+		pXml->AddChildElem( _T( "HARDWARE"),m_csHardware);
+		pXml->AddChildElem( _T( "BIOS"), m_csBios);
+		pXml->AddChildElem( _T( "MEMORIES"),m_csMemories);
+		pXml->AddChildElem( _T( "SLOTS"),m_csSlots);
+		pXml->AddChildElem( _T( "REGISTRY"),m_csRegistry);
+		pXml->AddChildElem( _T( "CONTROLLERS"),m_csControllers);
+		pXml->AddChildElem( _T( "MONITORS"),m_csMonitors);
+		pXml->AddChildElem( _T( "PORTS"),m_csPorts);
+		pXml->AddChildElem( _T( "STORAGES"),m_csStorages);
+		pXml->AddChildElem( _T( "DRIVES"),m_csDrives);
+		pXml->AddChildElem( _T( "INPUTS"),m_csInputs);
+		pXml->AddChildElem( _T( "MODEMS"),m_csModems);
+		pXml->AddChildElem( _T( "NETWORKS"),m_csNetworks);
+		pXml->AddChildElem( _T( "PRINTERS"),m_csPrinters);
+		pXml->AddChildElem( _T( "SOUNDS"),m_csSounds);
+		pXml->AddChildElem( _T( "VIDEOS"),m_csVideos);
+		pXml->AddChildElem( _T( "SOFTWARES"),m_csSoftwares);
+	pXml->OutOfElem();
 	return TRUE;
 }
 
@@ -341,12 +338,12 @@ void COCSInventoryState::SetSoftwares( LPCTSTR lpstrValue)
 
 BOOL COCSInventoryState::ReadFromFile(LPCTSTR lpstrFilename)
 {
-	CString csBuffer;
+	CMarkup	myXml;
 
 	// Fill Device hardware properties from string
-	if (!LoadFileToText( csBuffer, lpstrFilename))
+	if (!myXml.LoadFile( lpstrFilename))
 		return FALSE;
-	if (!ParseFromXML( csBuffer))
+	if (!ParseFromXML( &myXml))
 		return FALSE;
 	return TRUE;
 }
@@ -355,8 +352,9 @@ BOOL COCSInventoryState::WriteToFile(LPCTSTR lpstrFilename)
 {
 	CMarkup	myXml;
 
-	FormatXML( &myXml);
-	if (!WriteVoidToFile( myXml.GetDoc(), strlen( myXml.GetDoc()), lpstrFilename))
+	if (!FormatXML( &myXml))
+		return FALSE;
+	if (!myXml.SaveFile( lpstrFilename))
 		return FALSE;
 	return TRUE;
 }

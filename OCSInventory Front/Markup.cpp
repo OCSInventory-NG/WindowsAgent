@@ -472,3 +472,27 @@ BOOL CMarkup::AddXml( CMarkup *pSource)
 	}
 	return TRUE;
 }
+
+// Load XML document from file
+BOOL CMarkup::LoadFile( LPCTSTR lpstrFile)
+{
+    USES_CONVERSION;
+
+	if (m_pDoc->LoadFile( CT2CA( lpstrFile)))
+	{
+		ResetPos();
+		return TRUE;
+	}
+	return FALSE;
+}
+
+// Save XML document to file
+BOOL CMarkup::SaveFile( LPCTSTR lpstrFile)
+{
+    USES_CONVERSION;
+
+	if (m_pDoc->SaveFile( CT2CA( lpstrFile)))
+		return TRUE;
+	return FALSE;
+}
+

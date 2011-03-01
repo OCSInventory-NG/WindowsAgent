@@ -105,9 +105,9 @@ public: // Methods
 
 protected: // Methods
 	// Format informations in a XML string
-	BOOL FormatXML( CMarkup* pX );
+	BOOL FormatXML( CMarkup* pXml);
 	// Read informations in a XML string
-	BOOL ParseFromXML( LPCTSTR lpstrXml);
+	BOOL ParseFromXML( CMarkup* pXml);
 
 protected: // Attributes
 	CString m_csHardware;

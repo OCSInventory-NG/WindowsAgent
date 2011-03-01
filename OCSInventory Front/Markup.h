@@ -21,6 +21,11 @@ public:
 	CMarkup();
 	virtual ~CMarkup();
 
+	// Load XML document from file
+	BOOL LoadFile( LPCTSTR lpstrFile);
+	// Save XML document to file
+	BOOL SaveFile( LPCTSTR lpstrFile);
+
 	// Get XML document in UTF-8 text format
 	LPCSTR GetDoc();
 	// Get XML document in TinyXML object
