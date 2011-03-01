@@ -34,11 +34,11 @@ public: // Methods
 
 	// Return the raw message in CString format
 	CStringA getMessage() { return m_cmXml.GetDoc(); }
-	DWORD getMessageLength() { return (strlen( m_cmXml.GetDoc())*sizeof(TCHAR)); }
+	size_t getMessageLength() { return (strlen( m_cmXml.GetDoc())*sizeof(char)); }
 
 	// Return the compressed sent message 
 	CByteArray* getRawMessage() { return m_pRawMessage; }
-	DWORD getRawMessageLength();  
+	INT_PTR getRawMessageLength();  
 
 	// Final operations before a request can be sent
 	virtual BOOL final();

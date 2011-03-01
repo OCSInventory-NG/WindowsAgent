@@ -50,7 +50,7 @@ CRequestAbstract::~CRequestAbstract()
 /**
  *	Return the compressed sent message length
  */
-DWORD CRequestAbstract::getRawMessageLength()
+INT_PTR CRequestAbstract::getRawMessageLength()
 {
 	if (m_pRawMessage == NULL)
 		return 0;

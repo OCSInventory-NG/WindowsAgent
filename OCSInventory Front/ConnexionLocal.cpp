@@ -59,7 +59,7 @@ CByteArray * CConnexionLocal::sendRequest( CRequestAbstract *pRequest)
 		// Open and write file
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "LOCAL => Writing compressed XML file <%s> required by argument /LOCAL"), m_csFileName);
 		CFile cOcsFile( m_csFileName, CFile::modeCreate|CFile::modeWrite);
-		cOcsFile.Write( pRequest->getRawMessage(), pRequest->getRawMessageLength());	
+		cOcsFile.Write( pRequest->getRawMessage()->GetData(), pRequest->getRawMessageLength());	
 		cOcsFile.Close();
 		// Respond to SEND inventory each time
 		pResponse = CZip::deflate( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<REPLY>\n<RESPONSE>SEND</RESPONSE>\n</REPLY>\r\n");
