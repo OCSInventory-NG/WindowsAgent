@@ -1,3 +1,5 @@
+  * Fix security issue in deployment feature
+  * Fix bug writing local .ocs file
   * Also migrate current downloads when upgrading from 4000 series
   * Use WMI OS Name instead of OS Caption to get OS Name
   * Try to kill OcsSystray.exe until there is no more process to kill (in case there is multiple user session opened)
