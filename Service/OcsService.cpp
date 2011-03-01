@@ -260,7 +260,9 @@ void COcsService::Run()
 	}
 
 #ifdef _DEBUG
-	while (TRUE)
+	showInventory();
+
+	for (int i=0; i<10; i++)
 #else
 	while (IsRunning())
 #endif
@@ -319,7 +321,6 @@ void COcsService::Run()
 		Sleep(1000);
 		m_iTToWait--;
 	}
-
 	// Report to the event log that the service has stopped successfully
 	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_STOPPED, m_csServiceName);
 }
