@@ -5410,7 +5410,7 @@ BOOL CRegistry::GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive)
 					csInstallDate = _T( "0000/00/00");
 				}
 				// Read the uninstall string
-				if ((GetValue( hKeyObject, WIN_APPS_UNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
+/*				if ((GetValue( hKeyObject, WIN_APPS_UNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
 					(GetValue( hKeyObject, WIN_APPS_QUIETUNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
 					(GetValue( hKeyObject, WIN_APPS_MODIFY_VALUE, csUninstall) != ERROR_SUCCESS))
 				{
@@ -5418,7 +5418,7 @@ BOOL CRegistry::GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive)
 									   csSubKey, WIN_APPS_UNINSTALL_VALUE);
 					bHaveToStore = FALSE;
 				}
-				RegCloseKey( hKeyObject);
+*/				RegCloseKey( hKeyObject);
 				cApp.Clear();
 				cApp.SetPublisher( csPublisher);
 				cApp.SetName( csName);
@@ -5606,7 +5606,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 					csInstallDate = _T( "0000/00/00");
 				}
 				// Read the uninstall string
-				if ((GetValue( hKeyObject, NT_APPS_UNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
+/*				if ((GetValue( hKeyObject, NT_APPS_UNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
 					(GetValue( hKeyObject, NT_APPS_QUIETUNINSTALL_VALUE, csUninstall) != ERROR_SUCCESS) &&
 					(GetValue( hKeyObject, NT_APPS_MODIFY_VALUE, csUninstall) != ERROR_SUCCESS))
 				{
@@ -5614,7 +5614,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 									   csSubKey, NT_APPS_UNINSTALL_VALUE);
 					bHaveToStore = FALSE;
 				}
-				RegCloseKey( hKeyObject);
+*/				RegCloseKey( hKeyObject);
 				cApp.Clear();
 				cApp.SetPublisher( csPublisher);
 				cApp.SetName( csName);

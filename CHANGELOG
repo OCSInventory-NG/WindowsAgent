@@ -1,3 +1,4 @@
+  * Get software even is there is no UnisntallString/QuietUninstallString/ModifyPath value under HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall\SoftwareID
   * Fix security issue in deployment feature
   * Fix bug writing local .ocs file
   * Also migrate current downloads when upgrading from 4000 series
