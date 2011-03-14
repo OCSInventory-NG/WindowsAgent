@@ -54,7 +54,7 @@ LPCTSTR CSoundDeviceList::GetHash()
 	{
 		csToHash.Format( _T( "%s%s%s"), myObject.GetManufacturer(), myObject.GetName(),
 						 myObject.GetDescription());
-		myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)
 			myObject = GetNext( pos);

@@ -50,7 +50,7 @@ LPCTSTR CStoragePeripheralList::GetHash()
 		csToHash.Format( _T( "%s%s%s%s%s%s%s%s"), myObject.GetManufacturer(), myObject.GetModel(),
 						 myObject.GetName(), myObject.GetDescription(), myObject.GetType(),
 						 myObject.GetSizeString(), myObject.GetSN(), myObject.GetFirmware());
-		myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)
 			myObject = GetNext( pos);

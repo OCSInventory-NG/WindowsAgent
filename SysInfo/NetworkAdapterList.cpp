@@ -184,7 +184,7 @@ LPCTSTR CNetworkAdapterList::GetHash()
 						 myObject.GetTypeMIB(), myObject.GetSpeed(), myObject.GetMACAddress(),
 						 myObject.GetOperationalStatus(), myObject.GetIPAddress(), myObject.GetIPNetMask(),
 						 myObject.GetGateway(), myObject.GetDhcpServer());
-		myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)
 			myObject = GetNext( pos);

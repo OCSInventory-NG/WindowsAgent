@@ -47,7 +47,7 @@ LPCTSTR CInputDeviceList::GetHash()
 		csToHash.Format( _T( "%s%s%s%s%s%s"), myObject.GetType(), myObject.GetManufacturer(),
 						 myObject.GetCaption(), myObject.GetDescription(), myObject.GetPointingInterface(),
 						 myObject.GetPointingType());
-		myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)
 			myObject = GetNext( pos);

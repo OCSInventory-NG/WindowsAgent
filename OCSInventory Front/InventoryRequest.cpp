@@ -328,7 +328,7 @@ BOOL CInventoryRequest::isStateChanged()
 		// Changed
 		ulChecksum += OCS_CHECKSUM_NETWORKS;
 		m_pState->SetNetworks( csBuffer);
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => etwork adapters inventory state changed"));
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Network adapters inventory state changed"));
 	}
 	// Checking if printers changes
 	csBuffer = m_PrinterList.GetHash();

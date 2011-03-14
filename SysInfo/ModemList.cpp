@@ -51,7 +51,7 @@ LPCTSTR CModemList::GetHash()
 	{
 		csToHash.Format( _T( "%s%s%s%s"), myObject.GetName(), myObject.GetModel(),
 						 myObject.GetDescription(), myObject.GetType());
-		myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)
 			myObject = GetNext( pos);

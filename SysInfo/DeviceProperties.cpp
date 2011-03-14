@@ -312,6 +312,6 @@ LPCTSTR CDeviceProperties::GetHash()
 					 m_csOSVersion, m_csOSComment, m_csProcessorType,
 					 m_csProcessorSpeed,m_dwNumberOfProcessor,m_ulPhysicalMemory,
 					 m_csWinRegCompany, m_csWinRegOwner, m_csWinRegProductID);
-	myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+	myHash.HashUpdate( csToHash);
 	return myHash.HashFinal();
 }

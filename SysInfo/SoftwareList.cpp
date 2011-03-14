@@ -52,7 +52,7 @@ LPCTSTR CSoftwareList::GetHash()
 	{
 		csToHash.Format( _T( "%s%s%s%s%s"), myObject.GetPublisher(), myObject.GetName(),
 						 myObject.GetVersion(), myObject.GetFolder(), myObject.GetComments());
-		myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)
 			myObject = GetNext( pos);

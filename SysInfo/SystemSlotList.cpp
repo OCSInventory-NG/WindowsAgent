@@ -48,7 +48,7 @@ LPCTSTR CSystemSlotList::GetHash()
 	{
 		csToHash.Format( _T( "%s%s%s%s%s"), myObject.GetName(), myObject.GetDescription(),
 						 myObject.GetSlotDesignation(), myObject.GetUsage(), myObject.GetStatus());
-		myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)
 			myObject = GetNext( pos);

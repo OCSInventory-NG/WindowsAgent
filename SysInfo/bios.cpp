@@ -236,7 +236,7 @@ LPCTSTR CBios::GetHash()
 	csToHash.Format( _T( "%s%s%s%s%s%s%s%s"), m_csSystemManufacturer, m_csSystemModel,
 					 m_csSystemSerialNumber, m_csBiosManufacturer, m_csBiosVersion,
 					 m_csBiosDate,m_csMachineType,m_csAssetTag);
-	myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+	myHash.HashUpdate( csToHash);
 	return myHash.HashFinal();
 }
 

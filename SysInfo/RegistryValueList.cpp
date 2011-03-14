@@ -46,7 +46,7 @@ LPCTSTR CRegistryValueList::GetHash()
 	while (bContinue)
 	{
 		csToHash.Format( _T( "%s%s"), myObject.GetName(), myObject.GetValue());
-		myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)
 			myObject = GetNext( pos);

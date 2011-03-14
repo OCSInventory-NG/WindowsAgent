@@ -55,7 +55,7 @@ LPCTSTR CSystemControllerList::GetHash()
 		csToHash.Format( _T( "%s%s%s%s%s%s"), myObject.GetManufacturer(), myObject.GetName(),
 						 myObject.GetCaption(), myObject.GetDescription(), myObject.GetHardwareVersion(),
 						 myObject.GetType());
-		myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)
 			myObject = GetNext( pos);

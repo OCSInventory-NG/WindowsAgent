@@ -28,6 +28,9 @@ public:
 	// Initialize hash algorithm, actually SHA1
 	// Must be called before any Hash operation
 	BOOL HashInit();
+	// Compute Hash on NULL terminated string
+	// Can be called as many time as you want
+	BOOL HashUpdate( LPCTSTR pData);
 	// Compute Hash on pData which have length of ulLength
 	// Can be called as many time as you want
 	BOOL HashUpdate( LPCVOID pData, ULONG ulLength);

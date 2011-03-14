@@ -47,7 +47,7 @@ LPCTSTR CMemorySlotList::GetHash()
 		csToHash.Format( _T( "%s%s%s%s%s%s%u%s"), myObject.GetCaption(), myObject.GetDescription(),
 						 myObject.GetCapacity(), myObject.GetUsage(), myObject.GetType(),
 						 myObject.GetSpeed(), myObject.GetSlotNumber(), myObject.GetSN());
-		myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)
 			myObject = GetNext( pos);

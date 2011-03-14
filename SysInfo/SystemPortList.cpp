@@ -48,7 +48,7 @@ LPCTSTR CSystemPortList::GetHash()
 	{
 		csToHash.Format( _T( "%s%s%s%s"), myObject.GetType(), myObject.GetName(),
 						 myObject.GetCaption(), myObject.GetDescription());
-		myHash.HashUpdate( LPCTSTR( csToHash), csToHash.GetLength());
+		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)
 			myObject = GetNext( pos);
