@@ -309,6 +309,8 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "ArtMedia";
 	else if (_strnicmp( lpstrID, "AST", 3) == 0)
 		return "AST Research";
+	else if (_strnicmp( lpstrID, "BNQ", 3) == 0)
+		return "BenQ Corporation";
 	else if (_strnicmp( lpstrID, "CPL", 3) == 0)
 		return "Compal Electronics, Inc. / ALFA";
 	else if (_strnicmp( lpstrID, "CPQ", 3) == 0)
