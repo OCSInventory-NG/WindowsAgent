@@ -106,6 +106,8 @@ BOOL CXMLInteract::UpdateDeviceProperties( CDeviceProperties &pPC)
 		m_pXml->AddChildElem( _T( "WINOWNER"), pPC.GetWindowsRegisteredOwner());
 		m_pXml->AddChildElem( _T( "WINPRODID"), pPC.GetWindowsProductID());
 		m_pXml->AddChildElem( _T( "WINPRODKEY"), pPC.GetWindowsProductKey());
+		m_pXml->AddChildElem( _T( "UUID"), pPC.GetUUID());
+		m_pXml->AddChildElem( _T( "VMSYSTEM"), pPC.GetVMSystem());
 		m_pXml->AddChildElem( _T( "CHECKSUM"), pPC.GetChecksum());
 	m_pXml->OutOfElem();
 	return TRUE;

@@ -84,7 +84,10 @@ public:
 	LPCTSTR GetWindowsProductID();
 	// Return Windows product key
 	LPCTSTR GetWindowsProductKey();
-	// Format informations in a XML string
+	// Get computer or VM UUID
+	LPCTSTR GetUUID();
+	// Get name of hypervisor we're running on (Physical if not)
+	LPCTSTR GetVMSystem();
 	// Get hash code of data, to determine if changed since last inventory
 	LPCTSTR GetHash();
 	// Get current checksum
@@ -128,10 +131,10 @@ public:
 	void SetWindowsRegistration( LPCTSTR lpstrCompany, LPCTSTR lpstrOwner, LPCTSTR lpstrProductID);
 	// Set informations about Windows key
 	void SetWindowsProductKey( LPCTSTR lpstrProductKey);
-	// Retrieve and set the attributes values from the device
-	// Set bRenewUID to TRUE to force generating a new Device ID
-	// Otherwise, a Device ID will be generated only if this is
-	// the first the Device is inventoried
+	// Set computer or VM UUID
+	void SetUUID( LPCTSTR lpstrUUID);
+	// Set name of hypervisor we're running on
+	void SetVMSystem( LPCTSTR lpstrVM);
 	// Set checksum
 	void SetChecksum( ULONG ulchecksum);
 
@@ -165,6 +168,8 @@ protected: // Attributes
 	CString	m_csWinRegOwner;	// Windows registered owner
 	CString m_csWinRegProductID;// Windows product ID
 	CString m_csWinProductKey;	// Windows product key
+	CString m_csUUID;			// Computer of VM UUID
+	CString m_csVMSystem;		// Physical or hypervisor we're running on
 	ULONG	m_ulChecksum;		// Checksum for detecting changes
 };
 #endif // !defined(AFX_DEVICEPROPERTIES_H__02015421_D9B0_11D4_8F75_00600889DFA5__INCLUDED_)

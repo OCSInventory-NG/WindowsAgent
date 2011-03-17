@@ -257,6 +257,7 @@ BOOL CDMI::Connect()
 				VariantClear(&variant_bios_data);
 				continue;
 			}
+			m_nSMBiosVersionMajor = V_I2( &variant_bios_data);
 			VariantInit(&variant_bios_data);
 			h_result = p_instance->Get(_T("SmbiosMinorVersion"),0,&variant_bios_data,&type,NULL);
 			if(h_result<0)
@@ -265,6 +266,7 @@ BOOL CDMI::Connect()
 				VariantClear( &variant_bios_data);
 				continue;
 			}
+			m_nSMBiosVersionMinor = V_I2( &variant_bios_data);
 			// Try to get DMI tables
 			VariantInit(&variant_bios_data);
 			h_result = p_instance->Get(_T("SMBiosData"),0,&variant_bios_data,&type,NULL);
@@ -747,5 +749,74 @@ BOOL CDMI::GetMemorySlots( CMemorySlotList *pMyList)
 		pPointer = GetNextTable( DMI_MEMORY_ARRAY);
 	}
 		AddLog( _T( "OK (%u objects updated)\n"), uCount);
+	return (uCount > 0);
+}
+
+
+BOOL CDMI::GetUUID( CString &csUUID)
+{
+	DmiHeader	*dmi;
+	UCHAR		*pPointer,
+				*pUUID;
+	UINT		uCount = 0;
+	BOOL		bOnly0xFF = TRUE, 
+				bOnly0x00 = TRUE;
+ 
+	if (m_pTables == NULL)
+		return FALSE;
+	AddLog( _T( "DMI GetUUID: Trying to find DMI Structure type 1..."));
+	// 01 System Information
+	pPointer = GetNextTable( DMI_SYSTEM_INFORMATION, TRUE);
+	while( pPointer != NULL)
+	{
+		dmi = (DmiHeader*) pPointer;
+		// Ensure there is a UUID
+		if (dmi->Length >= 0x19)
+		{
+			// UUID is at offset 0x08
+			pUUID = pPointer + 0x08;
+			// Ensure UUID (16 byte long) is available
+			for (int i = 0; i < 16 && (bOnly0x00 || bOnly0xFF); i++)
+			{
+				if (pUUID[i] != 0x00) 
+					bOnly0x00 = FALSE;
+				if (pUUID[i] != 0xFF) 
+					bOnly0xFF = FALSE;
+			}
+
+			if (bOnly0xFF)
+			{
+				csUUID = _T( "Not Present");
+				break;
+			}
+			if (bOnly0x00)
+			{
+				csUUID = _T("Not Settable");
+				break;
+			}
+
+			/*
+			 * As of version 2.6 of the SMBIOS specification, the first 3
+			 * fields of the UUID are supposed to be encoded on little-endian.
+			 * The specification says that this is the defacto standard,
+			 * however I've seen systems following RFC 4122 instead and use
+			 * network byte order, so I am reluctant to apply the byte-swapping
+			 * for older versions.
+			 */
+			if ((m_nSMBiosVersionMajor > 2) ||(m_nSMBiosVersionMajor = 2) && (m_nSMBiosVersionMinor >= 6))
+				csUUID.Format( _T( "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X"),
+					pUUID[3], pUUID[2], pUUID[1], pUUID[0], pUUID[5], pUUID[4], pUUID[7], pUUID[6],
+					pUUID[8], pUUID[9], pUUID[10], pUUID[11], pUUID[12], pUUID[13], pUUID[14], pUUID[15]);
+			else
+				csUUID.Format( _T("%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X"),
+					pUUID[0], pUUID[1], pUUID[2], pUUID[3], pUUID[4], pUUID[5], pUUID[6], pUUID[7],
+					pUUID[8], pUUID[9], pUUID[10], pUUID[11], pUUID[12], pUUID[13], pUUID[14], pUUID[15]);
+
+			uCount++;
+		}
+		// next 
+		pPointer = GetNextTable( DMI_SYSTEM_INFORMATION);
+	}
+	AddLog( _T( "OK (%u object(s)\n"), uCount);
 	return (uCount > 0);
 }

@@ -585,6 +585,19 @@ BOOL CInventoryRequest::runInventory()
 						m_SoftwareList.GetCount());
 	// Add OS to the list of detected software
 	m_SoftwareList.AddTail( cSoftOS);
+	// Get UUID
+	if (!m_pSysInfo->getUUID( cs1))
+		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve computer/VM UUID"));
+	else
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Computer/VM UUID is %s"), cs1);
+	m_Device.SetUUID( cs1);
+	// Check if we're running on VM
+	CVMSystem myVM;
+	if (!myVM.DetectVM( &m_BIOS, cs1) && !myVM.DetectVM( &m_SystemControllerList, cs1) && 
+		!myVM.DetectVM( &m_StorageList, cs1) && !myVM.DetectVM( &m_VideoList, cs1))
+		cs1 = VMSYSTEM_PHYSYCAL;
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Computer seems to be %s host"), cs1);
+	m_Device.SetVMSystem( cs1);
 	// Verify total system memory
 	ULONG ulMemTotal = m_MemoryList.GetTotalMemory();
 	if (ulMemTotal > 0)

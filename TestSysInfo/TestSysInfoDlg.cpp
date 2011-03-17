@@ -174,6 +174,7 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 	m_List.AddString( str);
 	str.Format( _T( "Date: %s"), csDate);
 	m_List.AddString( str);
+
 	m_List.AddString( _T( ""));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "System infos"));
@@ -185,6 +186,7 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 	m_List.AddString( str);
 	str.Format( _T( "S/N: %s"), csSN);
 	m_List.AddString( str);
+
 	m_List.AddString( _T( ""));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Base Board infos"));
@@ -200,6 +202,7 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 	m_List.AddString( str);
 	str.Format( _T( "Asset TAG: %s"), csAssetTag);
 	m_List.AddString( str);
+
 	m_List.AddString( _T( ""));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "System Enclosure infos"));
@@ -212,6 +215,15 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 	str.Format( _T( "S/N: %s"), csSN);
 	m_List.AddString( str);
 	str.Format( _T( "Asset TAG: %s"), csAssetTag);
+	m_List.AddString( str);
+	m_List.AddString( _T( ""));
+
+	m_List.AddString( _T( ""));
+	m_List.AddString( _T( "------------------------------------------------------"));
+	m_List.AddString( _T( "System UUID"));
+	m_List.AddString( _T( "------------------------------------------------------"));
+	myDMI.GetUUID( csSN);
+	str.Format( _T( "UUID: %s"), csSN);
 	m_List.AddString( str);
 	m_List.AddString( _T( ""));
 
@@ -397,12 +409,41 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		{
 			CString str, res;
 
-			str = _T( "System Manufacturer = ");
+			str = _T( "Manufacturer = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "Manufacturer"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "System Model = ");
+			str = _T( "Model = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "Model"));
+			str += res;
+			m_List.AddString( str);
+			m_List.AddString( _T( ""));
+		}
+		myWmiDll.CloseEnumClassObject();
+	}
+	m_List.AddString( _T( "------------------------------------------------------"));
+	m_List.AddString( _T( "Computer System Product infos"));
+	m_List.AddString( _T( "------------------------------------------------------"));
+	if (myWmiDll.BeginEnumClassObject( _T( "Win32_ComputerSystemProduct")))
+	{
+		while (myWmiDll.MoveNextEnumClassObject())
+		{
+			CString str, res;
+
+			str = _T( "Vendor = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Vendor"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Name = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Identifying Number = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Identifying Number"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "UUID = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "UUID"));
 			str += res;
 			m_List.AddString( str);
 			m_List.AddString( _T( ""));
@@ -2580,6 +2621,17 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
+	SysInfoLog( _T( "Physical or VM infos"));
+	SysInfoLog( _T( "------------------------------------------------------"));
+	str.Format( _T( "UUID: %s"), m_Device.GetUUID());
+	SysInfoLog( str);
+	str.Format( _T( "VM System: %s"), m_Device.GetVMSystem());
+	SysInfoLog( str);
+	SysInfoLog( _T( ""));
+
+
+	SysInfoLog( _T( ""));
+	SysInfoLog( _T( "------------------------------------------------------"));
 	SysInfoLog( _T( "OS infos"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	str.Format( _T( "Name: %s"), m_Device.GetOSName());
@@ -2811,6 +2863,16 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	if (!mySysInfo.getInstalledApplications( &m_SoftwareList, TRUE))
 		AfxMessageBox( _T( "Failed to get Installed Softwares informations !"));
 	m_SoftwareList.AddTail( cSoftOS);
+	// Get UUID
+	if (!mySysInfo.getUUID( cs1))
+		AfxMessageBox( _T( "Failed to get computer or VM UUID !"));
+	m_Device.SetUUID( cs1);
+	// Check if we're running on VM
+	CVMSystem myVM;
+	if (!myVM.DetectVM( &m_BIOS, cs1) && !myVM.DetectVM( &m_SystemControllerList, cs1) && 
+		!myVM.DetectVM( &m_StorageList, cs1) && !myVM.DetectVM( &m_VideoList, cs1))
+		cs1 = VMSYSTEM_PHYSYCAL;
+	m_Device.SetVMSystem( cs1);
 	return TRUE;
 }
 

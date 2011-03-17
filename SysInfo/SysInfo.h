@@ -65,6 +65,7 @@
 #include "EDID.h"
 #include "Registry.h"
 #include "DMI.h"
+#include "VMSystem.h"
 
 // CSysInfoApp
 // See CSysInfo.cpp for the implementation of this class
@@ -141,6 +142,9 @@ public: // Methods
 	// Registry informations
 	BOOL getRegistryValue( UINT uKeyTree, LPCTSTR lpstrSubKey, LPCTSTR lpstrValue, CString &csResult);
 	BOOL getRegistryMultipleValues( LPCTSTR lpstrQueryName, UINT uKeyTree, LPCTSTR lpstrSubKey, CRegistryValueList *pMyList);
+
+	// Get computer or VM UUID
+	BOOL getUUID( CString &csUUID);
 
 protected: // Attributes
 	SYSTEM_INFO m_SystemInfo;	// System informations

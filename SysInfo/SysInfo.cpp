@@ -842,3 +842,12 @@ BOOL CSysInfo::getWindowsProductKey(CString &productKey)
 	// Use registry
 	return m_registryInfo.GetWindowsProductKey( productKey );
 }
+
+BOOL CSysInfo::getUUID( CString &csUUID)
+{
+	// First, try SMBios/DMI
+	if (m_dmiInfo.GetUUID( csUUID))
+		return TRUE;
+	// Last, use WMI
+	return m_wmiInfo.GetUUID( csUUID);
+}

@@ -68,6 +68,7 @@ public:
 	BOOL GetSystemPorts( CSystemPortList *pMyList);
 	BOOL GetSystemSlots( CSystemSlotList *pMyList);
 	BOOL GetMemorySlots( CMemorySlotList *pMyList);
+	BOOL GetUUID( CString &csUUID);
 
 protected:
 	// Get string from DMI table field id
@@ -94,6 +95,8 @@ protected:
 	UCHAR *m_pTables;
 	// Raw SMBios data length
 	int m_nStructureLength;
+	// SMBios Version
+	int m_nSMBiosVersionMajor, m_nSMBiosVersionMinor;
 };
 
 #endif // _DMI_HEADER_INCLUDED_

@@ -55,6 +55,8 @@ void CDeviceProperties::Clear()
 	m_csWinRegCompany.Empty();	// Windows registered company
 	m_csWinRegOwner.Empty();	// Windows registered owner
 	m_csWinRegProductID.Empty();// Windows registered product ID
+	m_csUUID.Empty();			// Computer or VM UUID
+	m_csVMSystem = VMSYSTEM_PHYSYCAL;// Physical or hypervisor we're running on
 	oleTimeNow.SetDate( 1970, 1, 1);
 	m_csLastCheckDate = oleTimeNow.Format( _T( "%Y-%m-%d"));
 	m_ulChecksum = 0;			// No changes detected
@@ -164,7 +166,7 @@ void CDeviceProperties::SetUserDomain( LPCTSTR lpstrUserDomain)
 void CDeviceProperties::SetWindowsProductKey( LPCTSTR lpstrWindowsKey)
 {
 	m_csWinProductKey = lpstrWindowsKey;
-	StrForSQL( m_csWinProductKey );
+	StrForSQL( m_csWinProductKey);
 }
 
 void CDeviceProperties::SetWindowsRegistration( LPCTSTR lpstrCompany, LPCTSTR lpstrOwner, LPCTSTR lpstrProductID)
@@ -175,6 +177,18 @@ void CDeviceProperties::SetWindowsRegistration( LPCTSTR lpstrCompany, LPCTSTR lp
 	StrForSQL( m_csWinRegOwner);
 	m_csWinRegProductID = lpstrProductID;
 	StrForSQL( m_csWinRegProductID);
+}
+
+void CDeviceProperties::SetUUID( LPCTSTR lpstrUUID)
+{
+	m_csUUID = lpstrUUID;
+	StrForSQL( m_csUUID);
+}
+
+void CDeviceProperties::SetVMSystem( LPCTSTR lpstrVMSystem)
+{
+	m_csVMSystem = lpstrVMSystem;
+	StrForSQL( m_csVMSystem);
 }
 
 void CDeviceProperties::SetChecksum( ULONG ulChecksum)
@@ -296,6 +310,16 @@ LPCTSTR CDeviceProperties::GetWindowsProductKey()
 	return m_csWinProductKey;
 }
 
+LPCTSTR CDeviceProperties::GetUUID()
+{
+	return m_csUUID;
+}
+
+LPCTSTR CDeviceProperties::GetVMSystem()
+{
+	return m_csVMSystem;
+}
+
 ULONG CDeviceProperties::GetChecksum()
 {
 	return m_ulChecksum;
@@ -308,10 +332,10 @@ LPCTSTR CDeviceProperties::GetHash()
 
 	if (!myHash.HashInit())
 		return NULL;
-	csToHash.Format( _T( "%s%s%s%s%s%s%s%u%lu%s%s%s"), m_csDeviceName, m_csDomain, m_csOSName,
+	csToHash.Format( _T( "%s%s%s%s%s%s%s%u%lu%s%s%s%s%s"), m_csDeviceName, m_csDomain, m_csOSName,
 					 m_csOSVersion, m_csOSComment, m_csProcessorType,
-					 m_csProcessorSpeed,m_dwNumberOfProcessor,m_ulPhysicalMemory,
-					 m_csWinRegCompany, m_csWinRegOwner, m_csWinRegProductID);
+					 m_csProcessorSpeed, m_dwNumberOfProcessor, m_ulPhysicalMemory,
+					 m_csWinRegCompany, m_csWinRegOwner, m_csWinRegProductID, m_csUUID, m_csVMSystem);
 	myHash.HashUpdate( csToHash);
 	return myHash.HashFinal();
 }

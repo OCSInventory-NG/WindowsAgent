@@ -2047,3 +2047,41 @@ BOOL CWmi::GetHotFixes( CSoftwareList *pMyList)
 		return FALSE;
 	}
 }
+
+
+BOOL CWmi::GetUUID( CString &csUUID)
+{
+	UINT	uIndex = 0;
+
+	// If not WMI connected => cannot do this
+	if (!m_bConnected)
+		return FALSE;
+	
+	// GET BIOS Informations
+	AddLog( _T( "WMI GetUUID: Trying to find Win32_ComputerSystemProduct WMI objects..."));
+	try
+	{
+		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_ComputerSystemProduct")))
+		{
+			while (m_dllWMI.MoveNextEnumClassObject())
+			{
+				csUUID = m_dllWMI.GetClassObjectStringValue( _T( "UUID"));
+				uIndex ++;
+			}
+			m_dllWMI.CloseEnumClassObject();
+		}
+		if (uIndex > 0)
+		{
+			AddLog( _T( "OK (%s)\n"), csUUID);
+			return TRUE;
+		}
+		AddLog( _T( "Failed because no Win32_ComputerSystemProduct object !\n"));
+		return FALSE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		AddLog( _T( "Failed because unknown exception !\n"));
+		return FALSE;
+	}
+}

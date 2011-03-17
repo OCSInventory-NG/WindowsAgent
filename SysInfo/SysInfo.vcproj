@@ -404,6 +404,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\VMSystem.h"
+				>
+			</File>
+			<File
 				RelativePath=".\WindowsSocket.h"
 				>
 			</File>
@@ -661,6 +665,10 @@
 			</File>
 			<File
 				RelativePath=".\VideoAdapterList.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\VMSystem.cpp"
 				>
 			</File>
 			<File

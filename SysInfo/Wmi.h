@@ -66,6 +66,7 @@ public: // Methods
 	BOOL GetWindowsRegistration( CString &csCompany, CString &csUser, CString &csSN);
 	BOOL IsNotebook();
 	BOOL GetHotFixes( CSoftwareList *pMyList);
+	BOOL GetUUID( CString &csUUID);
 
 protected: // Methods
 	BOOL ParseChassisType( CString &csType);
