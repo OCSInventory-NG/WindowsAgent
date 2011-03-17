@@ -1,3 +1,4 @@
+  * Add hypervisor detection and get system UUID
   * Fix registry query not updated on server even changes detected
   * Get software even is there is no UnisntallString/QuietUninstallString/ModifyPath value under HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall\SoftwareID
   * Fix security issue in deployment feature
