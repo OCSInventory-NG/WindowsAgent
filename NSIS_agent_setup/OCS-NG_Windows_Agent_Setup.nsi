@@ -813,8 +813,9 @@ Function InstallService
         ${If} "$R0" == "Yes"
             StrCpy $logBuffer "Yes$\r$\n[/NO_SERVICE] used, so unregistering ${PRODUCT_SERVICE_NAME} from Windows Service Manager..."
             Call Write_Log
-	        nsExec::ExecToLog "$INSTDIR\OcsService.exe -uninstall" $R0
-	        StrCpy $logBuffer "OK.$\r$\n"
+	        nsExec::ExecToLog "$INSTDIR\OcsService.exe -uninstall"
+	        Pop $R0
+	        StrCpy $logBuffer "Result: $R0.$\r$\n"
 	        Call Write_Log
         ${Else}
             StrCpy $logBuffer "No$\r$\n[/NO_SERVICE] used, so no need to register ${PRODUCT_SERVICE_NAME} into Windows Service Manager.$\r$\n"
@@ -833,8 +834,9 @@ Function InstallService
         ${Else}
             StrCpy $logBuffer "No$\r$\nRegistering ${PRODUCT_SERVICE_NAME} into Windows Service Manager..."
             Call Write_Log
-    	    nsExec::ExecToLog "$INSTDIR\OcsService.exe -install" $R0
-	        StrCpy $logBuffer "OK.$\r$\n"
+    	    nsExec::ExecToLog "$INSTDIR\OcsService.exe -install"
+    	    Pop $R0
+	        StrCpy $logBuffer "Result: $R0.$\r$\n"
 	        Call Write_Log
         ${EndIf}
     ${EndIf}
@@ -1566,7 +1568,8 @@ Section "OCS Inventory Agent" SEC03
 	StrCmp $R0 "1" 0 WriteServiceIni_Skip_Now
 	StrCpy $logBuffer '[/NOW] used, so launching "$INSTDIR\ocsinventory.exe"...'
 	Call Write_Log
-	nsExec::ExecToLog "$INSTDIR\ocsinventory.exe" $R0
+	nsExec::ExecToLog "$INSTDIR\ocsinventory.exe"
+	Pop $R0
 	StrCpy $logBuffer "Result: $R0$\r$\n"
 	Call Write_Log
 WriteServiceIni_Skip_Now:
@@ -1610,10 +1613,11 @@ Section "Local inventory (no network connection)" SEC05
 	StrCpy $logBuffer '[/LOCAL] used, so launching "$INSTDIR\ocsinventory.exe"...'
 	Call Write_Log
 	${If} "$OcsLocal" == ""
-	    nsExec::ExecToLog "$INSTDIR\ocsinventory.exe /LOCAL" $R0
+	    nsExec::ExecToLog "$INSTDIR\ocsinventory.exe /LOCAL"
     ${Else}
-	    nsExec::ExecToLog "$INSTDIR\ocsinventory.exe /LOCAL=$OcsLocal" $R0
+	    nsExec::ExecToLog "$INSTDIR\ocsinventory.exe /LOCAL=$OcsLocal"
     ${EndIf}
+    Pop $R0
 	StrCpy $logBuffer "Result: $R0$\r$\n"
 	Call Write_Log
 	StrCpy $logBuffer "Now, removing setup files from <$INSTDIR>..."
@@ -1718,7 +1722,7 @@ Section Uninstall
 	Call un.Write_Log
 	Call un.StopService
 	; Uninstall NT service
-	nsExec::ExecToLog "$INSTDIR\ocsservice.exe -uninstall" $R0
+	nsExec::ExecToLog "$INSTDIR\ocsservice.exe -uninstall"
 	; Remove startup links
 	Delete /REBOOTOK "$SMSTARTUP\OCS Inventory NG Systray.lnk"
 	; Remove files
