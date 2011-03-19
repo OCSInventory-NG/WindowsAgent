@@ -145,8 +145,8 @@ BOOL COcsService::writeConfig( BOOL bFull)
 			csValue;
 	BOOL	bResult = TRUE;
 
+	unProtectConfigFiles();
 	csConfigFile.Format( _T( "%s\\%s"), getDataFolder(), OCS_CONFIG_FILENAME);
-
 	if (bFull)
 	{
 		csValue.Format( _T( "%d"), m_iPrologFreq);
@@ -156,6 +156,7 @@ BOOL COcsService::writeConfig( BOOL bFull)
 	}
 	csValue.Format( _T( "%d"), m_iTToWait);
 	bResult = bResult && WritePrivateProfileString( OCS_SERVICE_SECTION, OCS_SERVICE_TTO_WAIT, csValue, csConfigFile);
+	protectConfigFiles();
 	return bResult;
 }
 
@@ -185,12 +186,13 @@ BOOL COcsService::OnInit()
 	}
 	// Rotate log files
 	rotateLogs();
-	// Open required OCS files to prevent delete
-	protectFiles();
+	// Portect OCS files to prevent delete
+	protectCommonFiles();
+	protectConfigFiles();
 	return TRUE;
 }
 
-BOOL COcsService::protectFile(LPCTSTR lpstrFolder, LPCTSTR lpstrFile)
+CFile *COcsService::protectFile(LPCTSTR lpstrFolder, LPCTSTR lpstrFile)
 {
 	CString csFile;
 	CFile	*pFile;
@@ -198,48 +200,74 @@ BOOL COcsService::protectFile(LPCTSTR lpstrFolder, LPCTSTR lpstrFile)
 	csFile.Format( _T( "%s\\%s"), lpstrFolder, lpstrFile);
 	pFile = new CFile();
 	pFile->Open( csFile, CFile::modeRead|CFile::shareDenyWrite);
-	m_tHandles.Add( pFile);
-	return TRUE;
+	return pFile;
 }
 
-BOOL COcsService::protectFiles()
+BOOL COcsService::unProtectFile( CFile *pFile)
 {
-	protectFile( getInstallFolder(), _T( "Zlib1.dll"));
-	protectFile( getInstallFolder(), _T( "libeay32.dll"));
-	protectFile( getInstallFolder(), _T( "ssleay32.dll"));
-	protectFile( getInstallFolder(), _T( "libcurl.dll"));
-	protectFile( getInstallFolder(), _T( "ZipArchive.dll"));
-	protectFile( getInstallFolder(), _T( "ComHTTP.dll"));
-	protectFile( getInstallFolder(), _T( "OcsWmi.dll"));
-	protectFile( getInstallFolder(), _T( "Sysinfo.dll"));
-	protectFile( getInstallFolder(), _T( "OCSInventory Front.dll"));
-	protectFile( getInstallFolder(), _T( "Download.exe"));
-	protectFile( getInstallFolder(), _T( "Ocsinventory.exe"));
-	protectFile( getInstallFolder(), _T( "OcsSystray.exe"));
-	protectFile( getDataFolder(), _T( "last_state"));
-	protectFile( getDataFolder(), _T( "ocsinventory.dat"));
-	protectFile( getDataFolder(), _T( "admininfo.conf"));
+	if (pFile->m_hFile != CFile::hFileNull)
+		pFile->Close();
+	delete( pFile);		
 	return TRUE;
 }
 
-BOOL COcsService::unProtectFiles()
+BOOL COcsService::protectCommonFiles()
+{
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "Zlib1.dll")));
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "libeay32.dll")));
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "ssleay32.dll")));
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "libcurl.dll")));
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "ZipArchive.dll")));
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "ComHTTP.dll")));
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "OcsWmi.dll")));
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "Sysinfo.dll")));
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "OCSInventory Front.dll")));
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "Download.exe")));
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "Ocsinventory.exe")));
+	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "OcsSystray.exe")));
+	m_tCommonHandles.Add( protectFile( getDataFolder(), _T( "last_state")));
+	m_tCommonHandles.Add( protectFile( getDataFolder(), _T( "ocsinventory.dat")));
+	m_tCommonHandles.Add( protectFile( getDataFolder(), _T( "admininfo.conf")));
+	return TRUE;
+}
+
+BOOL COcsService::unProtectCommonFiles()
 {
 	CFile *pFile;
 
-	for (int cptHandle=0; cptHandle < m_tHandles.GetSize(); cptHandle++)
+	for (int cptHandle=0; cptHandle < m_tCommonHandles.GetSize(); cptHandle++)
 	{
-		pFile = ((CFile*)m_tHandles.GetAt(cptHandle));
-		pFile->Close();
-		delete( pFile);		
+		pFile = ((CFile*)m_tCommonHandles.GetAt(cptHandle));
+		unProtectFile( pFile);		
 	}
-	m_tHandles.RemoveAll();
+	m_tCommonHandles.RemoveAll();
+	return TRUE;
+}
+
+BOOL COcsService::protectConfigFiles()
+{
+	m_tConfigHandles.Add( protectFile( getInstallFolder(), OCS_CONFIG_FILENAME));
+	return TRUE;
+}
+
+BOOL COcsService::unProtectConfigFiles()
+{
+	CFile *pFile;
+
+	for (int cptHandle=0; cptHandle < m_tConfigHandles.GetSize(); cptHandle++)
+	{
+		pFile = ((CFile*)m_tConfigHandles.GetAt(cptHandle));
+		unProtectFile( pFile);		
+	}
+	m_tConfigHandles.RemoveAll();
 	return TRUE;
 }
 
 void COcsService::OnStop()
 {
-	// Close all file object referenced into m_tHandles
-	unProtectFiles();
+	// Unportect all files
+	unProtectCommonFiles();
+	unProtectConfigFiles();
 }
 
 void COcsService::Run()
@@ -285,8 +313,6 @@ void COcsService::Run()
 		}
 		if( m_iTToWait <= 0 )
 		{
-			// Unprotect files to allow agent change them if needed
-			unProtectFiles();
 			UINT vOld = m_iOldPrologFreq;
 			if (!runAgent( bNotifyInventory))
 			{
@@ -315,8 +341,6 @@ void COcsService::Run()
 				csStatus.Format( _T( "OCS Inventory NG Agent launched successfully. New service parameters: FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i"), m_iPrologFreq, vOld, m_iTToWait);
 				LogEvent(EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csStatus);
 			}
-			// Reportect files
-			protectFiles();
 		}
 		Sleep(1000);
 		m_iTToWait--;
@@ -377,39 +401,42 @@ BOOL COcsService::runAgent( BOOL bNotify)
 		csCmd.Format( _T( "\"%s\\%s\" /NOTIFY"), getInstallFolder(), RUN_OCS);
 	else
 		csCmd.Format( _T( "\"%s\\%s\""), getInstallFolder(), RUN_OCS);
-
+	// Unprotect files to allow agent change them if needed
+	unProtectCommonFiles();
 	switch (cmProcess.execWait( csCmd, getDataFolder()))
 	{
 		case EXEC_ERROR_START_COMMAND:
 		csMessage.Format( _T( "Can't launch OCS Inventory NG Agent (%s)"), cmProcess.getOutput());
 		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
-		return FALSE;
+		break;
 	case EXEC_ERROR_WAIT_COMMAND:
 		csMessage.Format( _T( "Cant't get OCS Inventory NG Agent exit code"));
 		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
-		return FALSE;
-	default:
-		// Success
-		break;
-	}
-	nExitCode = cmProcess.getExitValue();
-	switch (nExitCode)
-	{
-	case -1:
-		// Exit code not available
-		csMessage.Format( _T( "Cant't get OCS Inventory NG Agent exit code (%s)"), cmProcess.getOutput());
-		LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
-		break;
-	case 0:
-		// Success
-		bReturn = TRUE;
 		break;
 	default:
-		// Exit code is not a success
-		csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d)"), nExitCode);
-		LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
+		// Success, get exit code
+		nExitCode = cmProcess.getExitValue();
+		switch (nExitCode)
+		{
+		case -1:
+			// Exit code not available
+			csMessage.Format( _T( "Cant't get OCS Inventory NG Agent exit code (%s)"), cmProcess.getOutput());
+			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
+			break;
+		case 0:
+			// Success
+			bReturn = TRUE;
+			break;
+		default:
+			// Exit code is not a success
+			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d)"), nExitCode);
+			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
+			break;
+		}
 		break;
 	}
+	// Reprotect files
+	protectCommonFiles();
 	return bReturn;
 }
 

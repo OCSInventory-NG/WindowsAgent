@@ -52,12 +52,18 @@ public:
 protected:
 	// Generate random number between 0 and nMax
 	int generateRandNumber(int nMax);
-	// Open file lpstrFile in directory lpstrFolder for denying write and store opened object into m_tHandles
-	BOOL protectFile(LPCTSTR lpstrFolder, LPCTSTR lpstrFile);
-	// Open required OCS files to prevent delete
-	BOOL protectFiles();
-	// Close all file object referenced into m_tHandles
-	BOOL unProtectFiles();
+	// Open file lpstrFile in directory lpstrFolder for denying write and return file handle
+	CFile *protectFile(LPCTSTR lpstrFolder, LPCTSTR lpstrFile);
+	// Close file handle to allow file writing
+	BOOL unProtectFile( CFile *);
+	// Open all OCS common files to prevent delete and store opened handles into m_tCommonHandles
+	BOOL protectCommonFiles();
+	// Close all OCS common files referenced into m_tCommonHandles
+	BOOL unProtectCommonFiles();
+	// Open OCS configuration files to prevent delete and store opened handles into m_tHandles
+	BOOL protectConfigFiles();
+	// Close all common file object referenced into m_tHandles
+	BOOL unProtectConfigFiles();
 	// Load service configuration from file
 	BOOL loadConfig();
 	// Store service configuration to file (if not full, just write TTO_WAIT)
@@ -76,7 +82,8 @@ protected:
 	int			m_iPrologFreq;			// Time between 2 agent run
 	int			m_iOldPrologFreq;		// Last time between 2 agent run
 	int			m_iWriteIniLatency;		// Time between TTO_WAIT write to file to save it
-	CObArray	m_tHandles;				// Handle of opened files to protect them from being deleted
+	CObArray	m_tCommonHandles;		// Handle of OCS common files to protect them from being deleted
+	CObArray	m_tConfigHandles;		// Handle of OCS config files to protect them from being deleted
 };
 
 #endif // _OCSSERVICE_H_INCLUDED_
