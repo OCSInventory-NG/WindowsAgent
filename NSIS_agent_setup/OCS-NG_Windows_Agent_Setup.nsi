@@ -828,7 +828,7 @@ Function InstallService
         services::IsServiceInstalled "${PRODUCT_SERVICE_NAME}"
         Pop $R0
         ${If} "$R0" == "Yes"
-            StrCpy $logBuffer "Yes$\r$\nNothing to do to register ${PRODUCT_SERVICE_NAME} into Windows Service Manager."
+            StrCpy $logBuffer "Yes$\r$\nNothing to do to register ${PRODUCT_SERVICE_NAME} into Windows Service Manager.$\r$\n"
             Call Write_Log
         ${Else}
             StrCpy $logBuffer "No$\r$\nRegistering ${PRODUCT_SERVICE_NAME} into Windows Service Manager..."
