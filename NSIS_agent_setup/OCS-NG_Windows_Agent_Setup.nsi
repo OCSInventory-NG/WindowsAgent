@@ -63,7 +63,7 @@ Page custom AskLocalInventory ValidateLocalInventory ""
 !insertmacro MUI_LANGUAGE "French"
 
 ;Request application privileges for Windows Vista or higher ('user' or 'admin')
-RequestExecutionLevel user
+RequestExecutionLevel admin
 
 InstType /NOCUSTOM
 InstType "Network inventory"
@@ -606,8 +606,8 @@ ParseCmd_Silent_end:
 	; Remove parsed arg from command line
 	${WordReplace} "$9" "/UPGRADE" "" "+" $R1
 	StrCpy $9 $R1
-	; Parse /LOCAL
-	Push "/LOCAL"         ; push the search string onto the stack
+	; Parse /LOCAL=
+	Push "/LOCAL="         ; push the search string onto the stack
 	Push "1"              ; push a default value onto the stack
 	Call GetParameterValue
 	Pop $R0
@@ -619,6 +619,8 @@ ParseCmd_Silent_end:
 	    SetCurInstType 1
         SetShellVarContext Current
 	    StrCpy $INSTDIR "$TEMP\OCS Inventory Agent"
+	    StrCpy $OcsLocal "$R0"
+	    WriteINIStr "$PLUGINSDIR\local.ini" "Field 6" "State" "$R0"
     ${EndIf}
 	; Restore used registers
 	Pop $R1
@@ -640,7 +642,7 @@ Function StopService
 	Call Write_Log
 	services::IsServiceRunning "$9"
 	pop $0
-	StrCpy $logBuffer "$0$\r$\n"
+	StrCpy $logBuffer "$0.$\r$\n"
 	Call Write_Log
 	; Stop service
 	StrCpy $logBuffer "Trying to stop Service <$9>..."
@@ -724,7 +726,7 @@ Function un.StopService
 	Call un.Write_Log
 	services::IsServiceRunning "${PRODUCT_SERVICE_NAME}"
 	pop $0
-	StrCpy $logBuffer "$0$\r$\n"
+	StrCpy $logBuffer "$0.$\r$\n"
 	Call un.Write_Log
 	; Stop service
 	StrCpy $logBuffer "Trying to stop ${PRODUCT_SERVICE_NAME}..."
@@ -809,12 +811,13 @@ Function InstallService
         services::IsServiceInstalled "${PRODUCT_SERVICE_NAME}"
         Pop $R0
         ${If} "$R0" == "Yes"
-            StrCpy $logBuffer "Yes$\r$\nUnregistering ${PRODUCT_SERVICE_NAME} from Windows Service Manager..."
+            StrCpy $logBuffer "Yes$\r$\n[/NO_SERVICE] used, so unregistering ${PRODUCT_SERVICE_NAME} from Windows Service Manager..."
             Call Write_Log
 	        nsExec::ExecToLog "$INSTDIR\OcsService.exe -uninstall" $R0
-	        StrCpy $logBuffer "Exit code is $R0$\r$\n"
+	        StrCpy $logBuffer "OK.$\r$\n"
+	        Call Write_Log
         ${Else}
-            StrCpy $logBuffer "No$\r$\nUser requested to not use ${PRODUCT_SERVICE_NAME}, so nothing to do.$\r$\n"
+            StrCpy $logBuffer "No$\r$\n[/NO_SERVICE] used, so no need to register ${PRODUCT_SERVICE_NAME} into Windows Service Manager.$\r$\n"
             Call Write_Log
         ${EndIf}
     ${Else}
@@ -825,13 +828,14 @@ Function InstallService
         services::IsServiceInstalled "${PRODUCT_SERVICE_NAME}"
         Pop $R0
         ${If} "$R0" == "Yes"
-            StrCpy $logBuffer "Yes$\r$\nUser requested to use ${PRODUCT_SERVICE_NAME}, so nothing to do."
+            StrCpy $logBuffer "Yes$\r$\nNothing to do to register ${PRODUCT_SERVICE_NAME} into Windows Service Manager."
             Call Write_Log
         ${Else}
             StrCpy $logBuffer "No$\r$\nRegistering ${PRODUCT_SERVICE_NAME} into Windows Service Manager..."
             Call Write_Log
     	    nsExec::ExecToLog "$INSTDIR\OcsService.exe -install" $R0
-	        StrCpy $logBuffer "Exit code is $R0$\r$\n"
+	        StrCpy $logBuffer "OK.$\r$\n"
+	        Call Write_Log
         ${EndIf}
     ${EndIf}
 	; Restore used register
@@ -855,7 +859,7 @@ Function StartService
 	    Call Write_Log
 	    services::SendServiceCommand "start" "${PRODUCT_SERVICE_NAME}" ; This command dies silently on Win9x
 	    Pop $R0
-	    StrCpy $logBuffer "$R0$\r$\n"
+	    StrCpy $logBuffer "$R0.$\r$\n"
 	    Call Write_Log
 	${EndIf}
 	; Restore used register
@@ -907,8 +911,7 @@ FunctionEnd
 
 
 #####################################################################
-# This function checks if logged in user has admin rights and if
-# service was previously installed
+# This function checks if service was previously installed
 #####################################################################
 Function TestInstall
 	; Save used register
@@ -922,12 +925,12 @@ Function TestInstall
     StrCmp "$R0" "No" TestInstall_No_Service
     ; Services is installed
 	StrCpy $OcsService "TRUE"
-	StrCpy $logBuffer "Yes$\r$\n"
+	StrCpy $logBuffer "Yes.$\r$\n"
 	Call Write_Log
 	Goto TestInstall_Kill_Process
 TestInstall_No_Service:
 	StrCpy $OcsService "FALSE"
-	StrCpy $logBuffer "No$\r$\n"
+	StrCpy $logBuffer "No.$\r$\n"
 	Call Write_Log
 TestInstall_Kill_Process:
 	; If yes, stop it then kill processes
@@ -1109,7 +1112,7 @@ not_running:
 	StrCpy $logBuffer "Parsing command line arguments..."
 	Call Write_Log
 	Call ParseCmd
-	StrCpy $logBuffer "OK$\r$\n"
+	StrCpy $logBuffer "OK.$\r$\n"
 	Call Write_Log
 	; Checking if Silent mode enabled
 	StrCpy $logBuffer "Checking for silent mode..."
@@ -1148,11 +1151,11 @@ Check_User:
 	StrCmp $R0 "true" Okadmin 0
 	IfSilent 0 +2
 	messagebox MB_ICONSTOP "Your are not logged on with Administrator privileges.$\r$\nYou cannot setup ${PRODUCT_NAME} as a Windows Service!"
-	StrCpy $logBuffer "NO$\r$\nABORT: unable to install Agent as a service without Administrator privileges !$\r$\n"
+	StrCpy $logBuffer "NO.$\r$\nABORT: unable to install Agent as a service without Administrator privileges !$\r$\n"
 	Call Write_Log
 	Abort
 Okadmin:
-	StrCpy $logBuffer "OK$\r$\n"
+	StrCpy $logBuffer "OK.$\r$\n"
 	Call Write_Log
 FunctionEnd
 
@@ -1161,7 +1164,7 @@ FunctionEnd
 # This function ask user for agent and server options
 #####################################################################
 Function AskServerOptions
-    ${IfNot} ${SectionIsSelected} SEC06
+    ${If} ${SectionIsSelected} 3 ; Index of Network inventory section
 	    !insertmacro MUI_HEADER_TEXT "OCS Inventory NG Server properties" "Fill in OCS Inventory NG Server address and options..."
 	    InstallOptions::dialog "$PLUGINSDIR\server.ini"
     ${EndIf}
@@ -1171,7 +1174,7 @@ Function ValidateServerOptions
 FunctionEnd
 
 Function AskProxyOptions
-    ${IfNot} ${SectionIsSelected} SEC06
+    ${If} ${SectionIsSelected} 3 ; Index of Network inventory section
 	    !insertmacro MUI_HEADER_TEXT "Proxy Server properties" "If needed, specify proxy server to use..."
 	    InstallOptions::dialog "$PLUGINSDIR\proxy.ini"
     ${EndIf}
@@ -1181,7 +1184,7 @@ Function ValidateProxyOptions
 FunctionEnd
 
 Function AskAgentOptions
-    ${IfNot} ${SectionIsSelected} SEC06
+    ${If} ${SectionIsSelected} 3 ; Index of Network inventory section
 	    !insertmacro MUI_HEADER_TEXT "OCS Inventory NG Agent for Windows properties" "If needed, specify OCS Inventory NG Agent options..."
 	    InstallOptions::dialog "$PLUGINSDIR\agent.ini"
     ${EndIf}
@@ -1191,7 +1194,7 @@ Function ValidateAgentOptions
 FunctionEnd
 
 Function AskLocalInventory
-    ${If} ${SectionIsSelected} SEC06
+    ${If} ${SectionIsSelected} 4 ; Index of Local inventory section
         !insertmacro MUI_HEADER_TEXT "OCS Inventory NG Agent for Windows" "Choose folder to save inventory result..."
 	    InstallOptions::dialog "$PLUGINSDIR\local.ini"
     ${EndIf}
@@ -1579,12 +1582,12 @@ Section "Network inventory (server reachable)" SEC04
 	; Read /NO_SYSTRAY
 	ReadINIStr $R0 "$PLUGINSDIR\Agent.ini" "Field 8" "State"
 	${If} "$R0" == "1"
-    	StrCpy $logBuffer '[/NO_SYSTRAY] used, so disabling Systray applet shortcut in All Users Startup menu...$\r$\n'
+    	StrCpy $logBuffer '[/NO_SYSTRAY] used, so removing Systray applet startup menu shortcut <$SMSTARTUP\OCS Inventory NG Systray.lnk>...$\r$\n'
 	    Call Write_Log
 	    Delete /REBOOTOK "$SMSTARTUP\OCS Inventory NG Systray.lnk"
     ${Else}
 	    ; Create startup menu item to launch systray applet
-	    StrCpy $logBuffer 'Creating Menu ShortCut "$SMSTARTUP\OCS Inventory NG Systray.lnk" to start Systray applet...$\r$\n'
+	    StrCpy $logBuffer 'Creating startup menu shortCut <$SMSTARTUP\OCS Inventory NG Systray.lnk> to start Systray applet...$\r$\n'
 	    Call Write_Log
 	    CreateShortCut "$SMSTARTUP\OCS Inventory NG Systray.lnk" "$INSTDIR\OcsSystray.exe"
 	    Exec "$INSTDIR\OcsSystray.exe"
@@ -1606,7 +1609,11 @@ Section "Local inventory (no network connection)" SEC05
     ; Run agent in local inventory mode
 	StrCpy $logBuffer '[/LOCAL] used, so launching "$INSTDIR\ocsinventory.exe"...'
 	Call Write_Log
-	nsExec::ExecToLog "$INSTDIR\ocsinventory.exe /LOCAL=$OcsLocal" $R0
+	${If} "$OcsLocal" == ""
+	    nsExec::ExecToLog "$INSTDIR\ocsinventory.exe /LOCAL" $R0
+    ${Else}
+	    nsExec::ExecToLog "$INSTDIR\ocsinventory.exe /LOCAL=$OcsLocal" $R0
+    ${EndIf}
 	StrCpy $logBuffer "Result: $R0$\r$\n"
 	Call Write_Log
 	StrCpy $logBuffer "Now, removing setup files from <$INSTDIR>..."
@@ -1652,7 +1659,7 @@ SectionEnd
 # Sections description text
 #####################################################################
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Create folder to store working files (required to store computer identification, logs...)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Create folder to store working files (required to store computer identification, logs... Never removed)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Migrate configuration data from ${PRODUCT_NAME} 1.X (serie 4000) format"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Install ${PRODUCT_NAME} files"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Run Agent using Service or Logon/GPO script (OCS Inventory NG Server reachable through the network)"
