@@ -26,25 +26,30 @@ setcompressor /SOLID lzma
 !insertmacro WordReplace
 ;!insertmacro un.GetParent
 ;!insertmacro GetParent
-; MUI 1.67 compatible ------
+
+; Use Modern UI
 !include "MUI.nsh"
 ICON "install-ocs.ico"
 ; MUI Settings
 !define MUI_HEADERIMAGE
 !define MUI_WELCOMEPAGE_TITLE_3LINES
-;!define MUI_HEADERIMAGE_BITMAP "banner-ocs.bmp"
 !define MUI_HEADERIMAGE_BITMAP "OCS-NG-48.bmp" ; optional
-!define MUI_AbortWARNING
+!define MUI_ABORTWARNING
 !define MUI_ICON "install-ocs.ico"
 !define MUI_UNICON "uninstall-ocs.ico"
+!define MUI_COMPONENTSPAGE_SMALLDESC
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
 !insertmacro MUI_PAGE_LICENSE "..\license.txt"
+; Select install type page
+!insertmacro MUI_PAGE_COMPONENTS
 ; Server, proxy and agent option pages
 Page custom AskServerOptions ValidateServerOptions ""
 Page custom AskProxyOptions ValidateProxyOptions ""
 Page custom AskAgentOptions ValidateAgentOptions ""
+; Where to save inventory result when /LOCAL is used
+Page custom AskLocalInventory ValidateLocalInventory ""
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; View before start page
@@ -56,6 +61,13 @@ Page custom AskAgentOptions ValidateAgentOptions ""
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "French"
+
+;Request application privileges for Windows Vista or higher ('user' or 'admin')
+RequestExecutionLevel user
+
+InstType /NOCUSTOM
+InstType "Network inventory"
+InstType "Local inventory"
 
 ; Setup log file
 !define SETUP_LOG_FILE "$exedir\OCS-NG-Windows-Agent-Setup.log"
@@ -88,7 +100,8 @@ var /GLOBAL OcsService ; To store if service was previously installed (TRUE) or 
 var /GLOBAL OcsNoSplash ; To store if setup must display spash screen (FALSE) or not (TRUE)
 var /GLOBAL OcsUpgrade ; To store if /UPGRADE option used (TRUE) or not (FALSE)
 var /GLOBAL installSatus ; To store installation status
-  
+var /GLOBAL OcsLocal ; To store folder where to write local inventory file
+
 #####################################################################
 # GetParameters
 # input, none
@@ -413,25 +426,19 @@ Function ParseCmd
 	Push "0"                 ; No proxy by default
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_HTTP_Proxy
-	StrCmp "$R0" "2" ParseCmd_Socks4_Proxy
-	StrCmp "$R0" "3" ParseCmd_Socks5_Proxy
-	; No proxy
-	StrCpy $0 "None"
-	goto ParseCmd_End_Proxy
-ParseCmd_HTTP_Proxy:
-	; HTTP proxy
-	StrCpy $0 "HTTP"
-	goto ParseCmd_End_Proxy
-ParseCmd_Socks4_Proxy:
-	; Socks 4 proxy
-	StrCpy $0 "Socks 4"
-	goto ParseCmd_End_Proxy
-ParseCmd_Socks5_Proxy:
-	; Socks 5 proxy
-	StrCpy $0 "Socks 5"
-	goto ParseCmd_End_Proxy
-ParseCmd_End_Proxy:
+	${If} "$R0" == "1"
+    	; HTTP proxy
+	    StrCpy $0 "HTTP"
+    ${ElseIf} "$R0" == "2"
+        ; Socks 4 proxy
+	    StrCpy $0 "Socks 4"
+    ${ElseIf} "$R0" == "3"
+    	; Socks 5 proxy
+	    StrCpy $0 "Socks 5"
+    ${Else}
+	    ; No proxy
+	    StrCpy $0 "None"
+    ${EndIf}
 	WriteINIStr "$PLUGINSDIR\proxy.ini" "Field 7" "State" "$0"
 	; Remove parsed arg from command line
 	${WordReplace} "$9" "/PROXY_TYPE=$R0" "" "+" $R1
@@ -484,18 +491,19 @@ ParseCmd_End_Proxy:
 	StrCpy $9 $R1
 	; No TAG
 	Push "/NOTAG" ; push the search string onto the stack
-	Push "1"      ; No verbose by default
+	Push "1"      ; No TAG by default
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_NO_NOTAG
-	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 5" "State" "1"
-	goto ParseCmd_NOTAG_End
-ParseCmd_NO_NOTAG:
-	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 5" "State" "0"
+	${If} "$R0" == "1"
+	    ; TAG allowed
+        WriteINIStr "$PLUGINSDIR\agent.ini" "Field 5" "State" "0"
+    ${Else}
+        ; Never ask for TAG
+	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 5" "State" "1"
+	${EndIf}
 	; Remove parsed arg from command line
 	${WordReplace} "$9" "/NOTAG" "" "+" $R1
 	StrCpy $9 $R1
-ParseCmd_NOTAG_End:
 	; /TAG="value"
 	Push "/TAG=" ; push the search string onto the stack
 	Push ""      ; No verbose by default
@@ -510,45 +518,46 @@ ParseCmd_NOTAG_End:
 	Push "1"      ; No verbose by default
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_SERVICE
-	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 7" "State" "1"
-	goto ParseCmd_SERVICE_End
-ParseCmd_SERVICE:
-	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 7" "State" "0"
+	${If} "$R0" == "1"
+        ; Register service autostart
+	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 7" "State" "0"
+    ${Else}
+        ; Do not register service
+	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 7" "State" "1"
+	${EndIf}
 	; Remove parsed arg from command line
 	${WordReplace} "$9" "/NO_SERVICE" "" "+" $R1
 	StrCpy $9 $R1
-ParseCmd_SERVICE_End:
 	; No systray
 	Push "/NO_SYSTRAY" ; push the search string onto the stack
 	Push "1"      ; No verbose by default
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_SYSTRAY
-	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 8" "State" "1"
-	goto ParseCmd_SYSTRAY_End
-ParseCmd_SYSTRAY:
-	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 8" "State" "0"
+	${If} "$R0" == "1"
+        ; Autostart systray applet
+	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 8" "State" "0"
+    ${Else}
+        ; Do do use systray
+	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 8" "State" "1"
+	${EndIf}
 	; Remove parsed arg from command line
 	${WordReplace} "$9" "/NO_SYSTRAY" "" "+" $R1
 	StrCpy $9 $R1
-ParseCmd_SYSTRAY_End:
 	; Launch immediate inventory
 	Push "/NOW"             ; push the search string onto the stack
 	Push "1"                ; Do not launch by default
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_NOW
-	; Do not launch
-	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 9" "State" "1"
-	Goto ParseCmd_NOW_end
-ParseCmd_NOW:
-	; Launch now
-	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 9" "State" "0"
+	${If} "$R0" == "1"
+	    ; Launch now
+	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 9" "State" "0"
+	${Else}
+        ; Do not launch
+	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 9" "State" "1"
+	${EndIf}
 	; Remove parsed arg from command line
 	${WordReplace} "$9" "/NOW" "" "+" $R1
 	StrCpy $9 $R1
-ParseCmd_NOW_end:
 	; Silent install option
 	Push "$9"
 	Push "/S"
@@ -572,14 +581,13 @@ ParseCmd_Silent_end:
 	Push "1"                ; push a default value onto the stack
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_Splash
-	; Do not display spash screen
-	StrCpy $OcsNoSplash "TRUE"
-	Goto ParseCmd_Splash_end
-ParseCmd_Splash:
-	; Display spash screen
-	StrCpy $OcsNoSplash "FALSE"
-ParseCmd_Splash_end:
+	${If} "$R0" == "1"
+	    ; Display spash screen
+	    StrCpy $OcsNoSplash "FALSE"
+	${Else}
+        ; Do not display spash screen
+	    StrCpy $OcsNoSplash "TRUE"
+	${EndIf}
 	; Remove parsed arg from command line
 	${WordReplace} "$9" "/NOSPLASH" "" "+" $R1
 	StrCpy $9 $R1
@@ -588,17 +596,30 @@ ParseCmd_Splash_end:
 	Push "1"                ; push a default value onto the stack
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_NoUpgrade
-	; Write deployement status file
-	StrCpy $OcsUpgrade "TRUE"
-	Goto ParseCmd_Upgrade_end
-ParseCmd_NoUpgrade:
-	; Do not write deployement status file
-	StrCpy $OcsUpgrade "FALSE"
-ParseCmd_Upgrade_end:
+	${If} "$R0" == "1"
+	    ; Do not write deployement status file
+	    StrCpy $OcsUpgrade "FALSE"
+    ${Else}
+	    ; Write deployement status file
+	    StrCpy $OcsUpgrade "TRUE"
+	${EndIf}
 	; Remove parsed arg from command line
 	${WordReplace} "$9" "/UPGRADE" "" "+" $R1
 	StrCpy $9 $R1
+	; Parse /LOCAL
+	Push "/LOCAL"         ; push the search string onto the stack
+	Push "1"              ; push a default value onto the stack
+	Call GetParameterValue
+	Pop $R0
+	${If} "$R0" == "1"
+ 	    ; Network enabled inventory
+ 	    SetCurInstType 0
+	${Else}
+	    ; Local inventory asked
+	    SetCurInstType 1
+        SetShellVarContext Current
+	    StrCpy $INSTDIR "$TEMP\OCS Inventory Agent"
+    ${EndIf}
 	; Restore used registers
 	Pop $R1
 	Pop $R0
@@ -772,36 +793,75 @@ un.stop_service_end_loop:
 FunctionEnd
 
 #####################################################################
+# This function install service if needed
+# Uses OcsService variable initialized in TestInstall function
+#####################################################################
+Function InstallService
+	; Save used register
+	Push $R0
+	; Check if NT service is required
+	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 7" "State"
+	${If} $R0 == "1"
+        ; Service must not be installed
+	    StrCpy $logBuffer "Checking if service ${PRODUCT_SERVICE_NAME} is registered into Windows Service Manager..."
+	    Call Write_Log
+	    ; check if NT service was previously installed
+        services::IsServiceInstalled "${PRODUCT_SERVICE_NAME}"
+        Pop $R0
+        ${If} "$R0" == "Yes"
+            StrCpy $logBuffer "Yes$\r$\nUnregistering ${PRODUCT_SERVICE_NAME} from Windows Service Manager..."
+            Call Write_Log
+	        nsExec::ExecToLog "$INSTDIR\OcsService.exe -uninstall" $R0
+	        StrCpy $logBuffer "Exit code is $R0$\r$\n"
+        ${Else}
+            StrCpy $logBuffer "No$\r$\nUser requested to not use ${PRODUCT_SERVICE_NAME}, so nothing to do.$\r$\n"
+            Call Write_Log
+        ${EndIf}
+    ${Else}
+        ; Service is required
+	    StrCpy $logBuffer "Checking if service ${PRODUCT_SERVICE_NAME} is registered into Windows Service Manager..."
+	    Call Write_Log
+	    ; check if NT service was previously installed
+        services::IsServiceInstalled "${PRODUCT_SERVICE_NAME}"
+        Pop $R0
+        ${If} "$R0" == "Yes"
+            StrCpy $logBuffer "Yes$\r$\nUser requested to use ${PRODUCT_SERVICE_NAME}, so nothing to do."
+            Call Write_Log
+        ${Else}
+            StrCpy $logBuffer "No$\r$\nRegistering ${PRODUCT_SERVICE_NAME} into Windows Service Manager..."
+            Call Write_Log
+    	    nsExec::ExecToLog "$INSTDIR\OcsService.exe -install" $R0
+	        StrCpy $logBuffer "Exit code is $R0$\r$\n"
+        ${EndIf}
+    ${EndIf}
+	; Restore used register
+	Pop $R0
+FunctionEnd
+
+
+#####################################################################
 # This function install service if needed, and start it
 # Uses OcsService variable initialized in TestInstall function
 #####################################################################
 Function StartService
 	; Save used register
 	Push $R0
-	; Check if NT service is required
-	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 7" "State"
-	StrCmp $R0 "1" StartService_Skip_Service
-	; check if NT service was previously installed
-	StrCmp "$OcsService" "TRUE" StartService_Skip_Install
-	; NT service not installed, first install it
-	StrCpy $logBuffer "Registering ${PRODUCT_SERVICE_NAME} into Windows Service Manager...$\r$\n"
-	Call Write_Log
-	nsExec::ExecToLog "$INSTDIR\OcsService.exe -install" $R0
-StartService_Skip_Install:
-	; Start NT service
-	StrCpy $logBuffer "Starting ${PRODUCT_SERVICE_NAME}..."
-	Call Write_Log
-	services::SendServiceCommand "start" "${PRODUCT_SERVICE_NAME}" ; This command dies silently on Win9x
-	Pop $R0
-	StrCpy $logBuffer "$R0$\r$\n"
-	Call Write_Log
-	goto StartService_End
-StartService_Skip_Service:
-	StrCpy $logBuffer "Registering ${PRODUCT_SERVICE_NAME} into Windows Service Manager skipped...$\r$\n"
-	Call Write_Log
-StartService_End:
-	Pop $R0
+    ; check if NT service was previously installed
+    services::IsServiceInstalled "${PRODUCT_SERVICE_NAME}"
+    Pop $R0
+    ${If} "$R0" == "Yes"
+        ; Start NT service
+	    StrCpy $logBuffer "Starting ${PRODUCT_SERVICE_NAME}..."
+	    Call Write_Log
+	    services::SendServiceCommand "start" "${PRODUCT_SERVICE_NAME}" ; This command dies silently on Win9x
+	    Pop $R0
+	    StrCpy $logBuffer "$R0$\r$\n"
+	    Call Write_Log
+	${EndIf}
+	; Restore used register
+    Pop $R0
 FunctionEnd
+
 
 #####################################################################
 # This function try to find if logged in user has admin rights
@@ -845,6 +905,7 @@ IsUserAdmin_end:
 	Exch $R0
 FunctionEnd
 
+
 #####################################################################
 # This function checks if logged in user has admin rights and if
 # service was previously installed
@@ -878,14 +939,333 @@ TestInstall_Kill_Process:
 	Pop $R0
 FunctionEnd
 
+
 #####################################################################
-# This function checks if we need to upgrade from agent 40000 series
+# This function write service initialisation file
+#####################################################################
+Function WriteServiceIni
+	; Save used registers
+	Push $R0 ; to read param
+	Push $R1
+	Push $R2 ; Agent Command line
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; SERVER PROPERTIES
+	; Server address
+    ReadINIStr $R0 "$PLUGINSDIR\server.ini" "Field 7" "State"
+    StrCpy $R2 "/SERVER=$R0"
+	; Read server credentials
+	ReadINIStr $R0 "$PLUGINSDIR\server.ini" "Field 8" "State"
+	StrCpy $R1 "$R2 /USER=$R0"
+	StrCpy $R2 $R1
+	ReadINIStr $R0 "$PLUGINSDIR\server.ini" "Field 9" "State"
+	StrCpy $R1 "$R2 /PWD=$R0"
+	StrCpy $R2 $R1
+    ; Read Server Security
+	ReadINIStr $R0 "$PLUGINSDIR\server.ini" "Field 10" "State"
+	StrCpy $R1 "$R2 /SSL=$R0"
+	StrCpy $R2 $R1
+	ReadINIStr $R0 "$PLUGINSDIR\server.ini" "Field 11" "State"
+	StrCpy $R1 "$R2 /CA=$R0"
+	StrCpy $R2 $R1
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; PROXY PROPERTIES
+	; Proxy type
+	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 7" "State"
+	StrCmp "$R0" "HTTP" WriteServiceIni_HTTP_Proxy
+	StrCmp "$R0" "Socks 4" WriteServiceIni_Socks4_Proxy
+	StrCmp "$R0" "Socks 5" WriteServiceIni_Socks5_Proxy
+	; No proxy by default
+    StrCpy $R0 "0"
+    goto WriteServiceIni_End_Proxy
+WriteServiceIni_HTTP_Proxy:
+	; HTTP Proxy
+    StrCpy $R0 "1"
+    goto WriteServiceIni_End_Proxy
+WriteServiceIni_Socks4_Proxy:
+	; Socks 4 proxy
+    StrCpy $R0 "2"
+    goto WriteServiceIni_End_Proxy
+WriteServiceIni_Socks5_Proxy:
+	; Socks 5 proxy
+    StrCpy $R0 "3"
+    goto WriteServiceIni_End_Proxy
+WriteServiceIni_End_Proxy:
+	StrCpy $R1 "$R2 /PROXY_TYPE=$R0"
+	StrCpy $R2 $R1
+	; Proxy address and port
+	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 8" "State"
+	StrCpy $R1 "$R2 /PROXY=$R0"
+	StrCpy $R2 $R1
+	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 9" "State"
+	StrCpy $R1 "$R2 /PROXY_PORT=$R0"
+	StrCpy $R2 $R1
+	; Proxy credentials
+	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 10" "State"
+	StrCpy $R1 "$R2 /PROXY_USER=$R0"
+	StrCpy $R2 $R1
+	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 11" "State"
+	StrCpy $R1 "$R2 /PROXY_PWD=$R0"
+	StrCpy $R2 $R1
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; AGENT AND SETUP PROPERTIES
+	; Verbose log
+	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 4" "State"
+	StrCpy $R1 "$R2 /DEBUG=$R0"
+	StrCpy $R2 $R1
+	; No Tag
+	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 5" "State"
+	StrCmp $R0 "1" 0 WriteServiceIni_Skip_NoTag
+	StrCpy $R1 "$R2 /NOTAG"
+	StrCpy $R2 $R1
+WriteServiceIni_Skip_NoTag:
+	; TAG
+	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 6" "State"
+	StrCpy $R1 "$R2 /TAG=$R0"
+	StrCpy $R2 $R1
+	; No Service
+	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 7" "State"
+	StrCmp $R0 "1" 0 WriteServiceIni_Skip_NoService
+	StrCpy $R1 "$R2 /NO_SERVICE"
+	StrCpy $R2 $R1
+WriteServiceIni_Skip_NoService:
+	; No Systray
+	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 8" "State"
+	StrCmp $R0 "1" 0 WriteServiceIni_Skip_NoSystray
+	StrCpy $R1 "$R2 /NO_SYSTRAY"
+	StrCpy $R2 $R1
+WriteServiceIni_Skip_NoSystray:
+	Sleep 1000
+	; Write TAG if provided
+	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 6" "State"
+    StrCmp "$R0" "" WriteServiceIni_Skip_TAG
+    StrCpy $logBuffer "Writing TAG <$R0> into <$APPDATA\OCS Inventory NG\Agent\admininfo.conf> file...$\r$\n"
+    Call Write_Log
+    WriteINIStr "$APPDATA\OCS Inventory NG\Agent\admininfo.conf" "OCS Inventory Agent" "TAG" "$R0"
+WriteServiceIni_Skip_TAG:
+    ; Ask agent to create config file
+    StrCpy $logBuffer "Writing agent configuration file by launching ocsinventory.exe /SAVE_CONF..."
+    Call Write_Log
+    nsExec::ExecToLog '"$INSTDIR\ocsinventory.exe" /SAVE_CONF $R2'
+    pop $0
+    StrCpy $logBuffer "Result: $0$\r$\n"
+    Call Write_Log
+	Sleep 1000
+	; Restore used register
+	Pop $R2
+	Pop $R1
+	Pop $R0
+FunctionEnd
+
+
+#####################################################################
+# This function checks if no multiple setup launched, if setup
+# launched as silent and without spash screen
+#####################################################################
+Function .onInit
+	; Init debug log
+	strcpy $installSatus ";-)"
+	Delete ${SETUP_LOG_FILE}
+	StrCpy $logBuffer "********************************************************$\r$\n"
+	Call Write_Log
+	${GetTime} "" "L" $0 $1 $2 $3 $4 $5 $6
+	StrCpy $logBuffer "Starting ${PRODUCT_NAME} ${PRODUCT_VERSION} setup on $0/$1/$2 at $4:$5:$6$\r$\n"
+	Call Write_Log
+	StrCpy $logBuffer "Checking if setup not already running..."
+	Call Write_Log
+	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "OcsSetupNG") i .r1 ?e'
+	Pop $R0
+	StrCmp $R0 0 not_running
+	StrCpy $logBuffer "Yes$\r$\nABORT: Setup already running !"
+	Call Write_Log
+	Abort
+not_running:
+    ; Check if Windows 2000 or higher
+	StrCpy $logBuffer "OK.$\r$\nChecking Operating System..."
+	Call Write_Log
+    ${If} ${AtLeastWin2000}
+   	    StrCpy $logBuffer "OK, Windows 2000 or higher.$\r$\n"
+	    Call Write_Log
+    ${Else}
+   	    StrCpy $logBuffer "ABORT: Setup running on unsupported Windows 9X or NT4 !$\r$\n"
+	    Call Write_Log
+	    Abort
+    ${EndIf}
+    ; Initializing plugins dir and extracting custom option pages
+	InitPluginsDir
+	File /oname=$PLUGINSDIR\server.ini "server.ini"
+	File /oname=$PLUGINSDIR\proxy.ini "proxy.ini"
+	File /oname=$PLUGINSDIR\agent.ini "agent.ini"
+	File /oname=$PLUGINSDIR\local.ini "local.ini"
+	File /oname=$PLUGINSDIR\splash.bmp "banner-ocs.bmp"
+	File /oname=$PLUGINSDIR\SetACL.exe "SetACL.exe"
+	; Don't know
+	FileOpen $9 "ocsdat" r
+	FileRead $9 "$2"
+	FileClose $9
+	StrCmp $9 "" +2 0
+	StrCpy $CMDLINE '"$PLUGINSDIR\" $2'
+	StrCpy $logBuffer "Command line is: $CMDLINE$\r$\n"
+	Call Write_Log
+	StrCpy $logBuffer "Parsing command line arguments..."
+	Call Write_Log
+	Call ParseCmd
+	StrCpy $logBuffer "OK$\r$\n"
+	Call Write_Log
+	; Checking if Silent mode enabled
+	StrCpy $logBuffer "Checking for silent mode..."
+	Call Write_Log
+	IfSilent Enable_silent
+	; Disable_silent mode
+	StrCpy $logBuffer "Disabled.$\r$\n"
+	Call Write_Log
+	SetSilent normal
+	Goto Check_no_splash
+Enable_silent:
+	StrCpy $logBuffer "Enabled.$\r$\n"
+	Call Write_Log
+	SetSilent silent
+	Goto Check_no_splash
+Check_no_splash:
+	; Checking if /nosplash option
+	StrCpy $logBuffer "Checking for splash screen..."
+	Call Write_Log
+	StrCmp "$OcsNoSplash" "TRUE" Disable_splash
+	; Enable splash screen
+	StrCpy $logBuffer "Enabled.$\r$\n"
+	Call Write_Log
+	advsplash::show 1000 500 1000 -1 $PLUGINSDIR\splash
+	Goto Check_User
+Disable_splash:
+	; Splash disabled
+	StrCpy $logBuffer "Disabled.$\r$\n"
+	Call Write_Log
+Check_User:
+	; Detect is user has admin right
+	StrCpy $logBuffer "Checking if logged in user has Administrator privileges..."
+	Call Write_Log
+	Call IsUserAdmin
+	Pop "$R0"
+	StrCmp $R0 "true" Okadmin 0
+	IfSilent 0 +2
+	messagebox MB_ICONSTOP "Your are not logged on with Administrator privileges.$\r$\nYou cannot setup ${PRODUCT_NAME} as a Windows Service!"
+	StrCpy $logBuffer "NO$\r$\nABORT: unable to install Agent as a service without Administrator privileges !$\r$\n"
+	Call Write_Log
+	Abort
+Okadmin:
+	StrCpy $logBuffer "OK$\r$\n"
+	Call Write_Log
+FunctionEnd
+
+
+#####################################################################
+# This function ask user for agent and server options
+#####################################################################
+Function AskServerOptions
+    ${IfNot} ${SectionIsSelected} SEC06
+	    !insertmacro MUI_HEADER_TEXT "OCS Inventory NG Server properties" "Fill in OCS Inventory NG Server address and options..."
+	    InstallOptions::dialog "$PLUGINSDIR\server.ini"
+    ${EndIf}
+FunctionEnd
+
+Function ValidateServerOptions
+FunctionEnd
+
+Function AskProxyOptions
+    ${IfNot} ${SectionIsSelected} SEC06
+	    !insertmacro MUI_HEADER_TEXT "Proxy Server properties" "If needed, specify proxy server to use..."
+	    InstallOptions::dialog "$PLUGINSDIR\proxy.ini"
+    ${EndIf}
+FunctionEnd
+
+Function ValidateProxyOptions
+FunctionEnd
+
+Function AskAgentOptions
+    ${IfNot} ${SectionIsSelected} SEC06
+	    !insertmacro MUI_HEADER_TEXT "OCS Inventory NG Agent for Windows properties" "If needed, specify OCS Inventory NG Agent options..."
+	    InstallOptions::dialog "$PLUGINSDIR\agent.ini"
+    ${EndIf}
+FunctionEnd
+
+Function ValidateAgentOptions
+FunctionEnd
+
+Function AskLocalInventory
+    ${If} ${SectionIsSelected} SEC06
+        !insertmacro MUI_HEADER_TEXT "OCS Inventory NG Agent for Windows" "Choose folder to save inventory result..."
+	    InstallOptions::dialog "$PLUGINSDIR\local.ini"
+    ${EndIf}
+FunctionEnd
+
+Function ValidateLocalInventory
+	; Save used registers
+	Push $R0 ; to read param
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; AGENT AND SETUP PROPERTIES
+	; Verbose log
+	ReadINIStr $R0 "$PLUGINSDIR\Local.ini" "Field 4" "State"
+	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 4" "State" $R0
+	; TAG
+	ReadINIStr $R0 "$PLUGINSDIR\Local.ini" "Field 5" "State"
+	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 6" "State" $R0
+	; Dir to put result on
+	ReadINIStr $R0 "$PLUGINSDIR\Local.ini" "Field 6" "State"
+    StrCpy $OcsLocal "$R0"
+    ; Set setup folder to TEMP directory
+    SetShellVarContext Current
+    StrCpy $INSTDIR "$TEMP\OCS Inventory Agent"
+	; Restore used register
+	Pop $R0
+FunctionEnd
+
+
+#####################################################################
+# This section creates Agent needed working folders
+#####################################################################
+Section "!Working data folder" SEC01
+    SectionIn 1 2
+    ; Create data directory for agent = working directory
+    SetShellVarContext All
+ 	StrCpy $logBuffer "Creating directory <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
+	Call Write_Log
+    CreateDirectory "$APPDATA\OCS Inventory NG\Agent"
+    CreateDirectory "$APPDATA\OCS Inventory NG\Agent\Download"
+    ; Set users and power users permission to read/execute/change
+    StrCpy $logBuffer "SetACL allowing Users / Power users read/write permissions on <$APPDATA\OCS Inventory NG\Agent>..."
+    Call Write_Log
+    nsExec::ExecToLog 'SetACL -on "$APPDATA\OCS Inventory NG\Agent" -ot file -rec cont_obj -actn ace -ace "n:S-1-5-32-545;p:read_ex,change;s:y;m:set" -ace "n:S-1-5-32-547;p:read_ex,change;s:y;m:set" -actn clear -clr "dacl,sacl"'
+    pop $0
+    StrCpy $logBuffer "Result: $0$\r$\n"
+    Call Write_Log
+    ; Set specific permissions for Download directory
+    StrCpy $logBuffer "SetACL removing inherited permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
+    Call Write_Log
+    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -rec cont_obj -actn setprot -op "dacl:p_nc;sacl:p_nc"'
+    pop $0
+    StrCpy $logBuffer "Result: $0$\r$\n"
+    Call Write_Log
+    StrCpy $logBuffer "SetACL allowing System and Administrators full permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
+    Call Write_Log
+    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -rec cont_obj -actn ace -ace "n:S-1-5-18;p:full;m:set;s:y" -ace "n:S-1-5-32-544;p:full;m:set;s:y"'
+    pop $0
+    StrCpy $logBuffer "Result: $0$\r$\n"
+    Call Write_Log
+     StrCpy $logBuffer "SetACL allowing Users / Power Users read only permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
+    Call Write_Log
+    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -rec cont_obj -actn ace -ace "n:S-1-5-32-545;p:read_ex;m:set;s:y" -ace "n:S-1-5-32-547;p:read_ex;m:set;s:y"'
+    pop $0
+    StrCpy $logBuffer "Result: $0$\r$\n"
+    Call Write_Log
+SectionEnd
+
+#####################################################################
+# This section checks if we need to upgrade from agent 40000 series
 # If yes, we need to move configuration files from $INSTDIR to
 # $ALLUSERS APPDATA\OCS Inventory NG\Agent
 #####################################################################
-Function UpgradeFrom4000
-	; Save used register
-	Push $R0
+Section "Upgrade from 1.X Agent" SEC02
+    SectionIn 1
+    SetShellVarContext All
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Check if it is an upgrade from old agent 4000 series
     ClearErrors
@@ -1018,288 +1398,15 @@ TestInstall_Upgrade_Error:
 TestInstall_End_Upgrade:
 	; Restore used register
 	Pop $R0
-FunctionEnd
-
-#####################################################################
-# This function write service initialisation file
-#####################################################################
-Function WriteServiceIni
-	; Save used registers
-	Push $R0 ; to read param
-	Push $R1
-	Push $R2 ; Agent Command line
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; SERVER PROPERTIES
-	; Server address
-    ReadINIStr $R0 "$PLUGINSDIR\server.ini" "Field 7" "State"
-    StrCpy $R2 "/SERVER=$R0"
-	; Read server credentials
-	ReadINIStr $R0 "$PLUGINSDIR\server.ini" "Field 8" "State"
-	StrCpy $R1 "$R2 /USER=$R0"
-	StrCpy $R2 $R1
-	ReadINIStr $R0 "$PLUGINSDIR\server.ini" "Field 9" "State"
-	StrCpy $R1 "$R2 /PWD=$R0"
-	StrCpy $R2 $R1
-    ; Read Server Security
-	ReadINIStr $R0 "$PLUGINSDIR\server.ini" "Field 10" "State"
-	StrCpy $R1 "$R2 /SSL=$R0"
-	StrCpy $R2 $R1
-	ReadINIStr $R0 "$PLUGINSDIR\server.ini" "Field 11" "State"
-	StrCpy $R1 "$R2 /CA=$R0"
-	StrCpy $R2 $R1
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; PROXY PROPERTIES
-	; Proxy type
-	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 7" "State"
-	StrCmp "$R0" "HTTP" WriteServiceIni_HTTP_Proxy
-	StrCmp "$R0" "Socks 4" WriteServiceIni_Socks4_Proxy
-	StrCmp "$R0" "Socks 5" WriteServiceIni_Socks5_Proxy
-	; No proxy by default
-    StrCpy $R0 "0"
-    goto WriteServiceIni_End_Proxy
-WriteServiceIni_HTTP_Proxy:
-	; HTTP Proxy
-    StrCpy $R0 "1"
-    goto WriteServiceIni_End_Proxy
-WriteServiceIni_Socks4_Proxy:
-	; Socks 4 proxy
-    StrCpy $R0 "2"
-    goto WriteServiceIni_End_Proxy
-WriteServiceIni_Socks5_Proxy:
-	; Socks 5 proxy
-    StrCpy $R0 "3"
-    goto WriteServiceIni_End_Proxy
-WriteServiceIni_End_Proxy:
-	StrCpy $R1 "$R2 /PROXY_TYPE=$R0"
-	StrCpy $R2 $R1
-	; Proxy address and port
-	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 8" "State"
-	StrCpy $R1 "$R2 /PROXY=$R0"
-	StrCpy $R2 $R1
-	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 9" "State"
-	StrCpy $R1 "$R2 /PROXY_PORT=$R0"
-	StrCpy $R2 $R1
-	; Proxy credentials
-	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 10" "State"
-	StrCpy $R1 "$R2 /PROXY_USER=$R0"
-	StrCpy $R2 $R1
-	ReadINIStr $R0 "$PLUGINSDIR\proxy.ini" "Field 11" "State"
-	StrCpy $R1 "$R2 /PROXY_PWD=$R0"
-	StrCpy $R2 $R1
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	; AGENT AND SETUP PROPERTIES
-	; Verbose log
-	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 4" "State"
-	StrCpy $R1 "$R2 /DEBUG=$R0"
-	StrCpy $R2 $R1
-	; No Tag
-	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 5" "State"
-	StrCmp $R0 "1" 0 WriteServiceIni_Skip_NoTag
-	StrCpy $R1 "$R2 /NOTAG"
-	StrCpy $R2 $R1
-WriteServiceIni_Skip_NoTag:
-	; TAG
-	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 6" "State"
-	StrCpy $R1 "$R2 /TAG=$R0"
-	StrCpy $R2 $R1
-	; No Service
-	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 7" "State"
-	StrCmp $R0 "1" 0 WriteServiceIni_Skip_NoService
-	StrCpy $R1 "$R2 /NO_SERVICE"
-	StrCpy $R2 $R1
-WriteServiceIni_Skip_NoService:
-	; No Systray
-	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 8" "State"
-	StrCmp $R0 "1" 0 WriteServiceIni_Skip_NoSystray
-	StrCpy $R1 "$R2 /NO_SYSTRAY"
-	StrCpy $R2 $R1
-WriteServiceIni_Skip_NoSystray:
-	Sleep 1000
-	; Write TAG if provided
-	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 6" "State"
-    StrCmp "$R0" "" WriteServiceIni_Skip_TAG
-    StrCpy $logBuffer "Writing TAG <$R0> into <$APPDATA\OCS Inventory NG\Agent\admininfo.conf> file...$\r$\n"
-    Call Write_Log
-    WriteINIStr "$APPDATA\OCS Inventory NG\Agent\admininfo.conf" "OCS Inventory Agent" "TAG" "$R0"
-WriteServiceIni_Skip_TAG:
-    ; Ask agent to create config file
-    StrCpy $logBuffer "Writing agent configuration file by launching ocsinventory.exe /SAVE_CONF..."
-    Call Write_Log
-    nsExec::ExecToLog '"$INSTDIR\ocsinventory.exe" /SAVE_CONF $R2'
-    pop $0
-    StrCpy $logBuffer "Result: $0$\r$\n"
-    Call Write_Log
-	Sleep 1000
-	; Restore used register
-	Pop $R2
-	Pop $R1
-	Pop $R0
-FunctionEnd
-
-#####################################################################
-# This function checks if no multiple setup launched, if setup
-# launched as silent and without spash screen
-#####################################################################
-Function .onInit
-	; Init debug log
-	strcpy $installSatus ";-)"
-	Delete ${SETUP_LOG_FILE}
-	StrCpy $logBuffer "********************************************************$\r$\n"
-	Call Write_Log
-	${GetTime} "" "L" $0 $1 $2 $3 $4 $5 $6
-	StrCpy $logBuffer "Starting ${PRODUCT_NAME} ${PRODUCT_VERSION} setup on $0/$1/$2 at $4:$5:$6$\r$\n"
-	Call Write_Log
-	StrCpy $logBuffer "Checking if setup not already running..."
-	Call Write_Log
-	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "OcsSetupNG") i .r1 ?e'
-	Pop $R0
-	StrCmp $R0 0 not_running
-	StrCpy $logBuffer "Yes$\r$\nABORT: Setup already running !"
-	Call Write_Log
-	Abort
-not_running:
-    ; Check if Windows 2000 or higher
-	StrCpy $logBuffer "OK.$\r$\nChecking Operating System..."
-	Call Write_Log
-    ${If} ${AtLeastWin2000}
-   	    StrCpy $logBuffer "OK, Windows 2000 or higher.$\r$\n"
-	    Call Write_Log
-    ${Else}
-   	    StrCpy $logBuffer "ABORT: Setup running on unsupported Windows 9X or NT4 !$\r$\n"
-	    Call Write_Log
-	    Abort
-    ${EndIf}
-    ; Initializing plugins dir and extracting custom option pages
-	InitPluginsDir
-	File /oname=$PLUGINSDIR\server.ini "server.ini"
-	File /oname=$PLUGINSDIR\proxy.ini "proxy.ini"
-	File /oname=$PLUGINSDIR\agent.ini "agent.ini"
-	File /oname=$PLUGINSDIR\splash.bmp "banner-ocs.bmp"
-	File /oname=$PLUGINSDIR\SetACL.exe "SetACL.exe"
-	; Don't know
-	FileOpen $9 "ocsdat" r
-	FileRead $9 "$2"
-	FileClose $9
-	StrCmp $9 "" +2 0
-	StrCpy $CMDLINE '"$PLUGINSDIR\" $2'
-	StrCpy $logBuffer "Command line is: $CMDLINE$\r$\n"
-	Call Write_Log
-	StrCpy $logBuffer "Parsing command line arguments..."
-	Call Write_Log
-	Call ParseCmd
-	StrCpy $logBuffer "OK$\r$\n"
-	Call Write_Log
-	; Checking if Silent mode enabled
-	StrCpy $logBuffer "Checking for silent mode..."
-	Call Write_Log
-	IfSilent Enable_silent
-	; Disable_silent mode
-	StrCpy $logBuffer "Disabled.$\r$\n"
-	Call Write_Log
-	SetSilent normal
-	Goto Check_no_splash
-Enable_silent:
-	StrCpy $logBuffer "Enabled.$\r$\n"
-	Call Write_Log
-	SetSilent silent
-	Goto Check_no_splash
-Check_no_splash:
-	; Checking if /nosplash option
-	StrCpy $logBuffer "Checking for splash screen..."
-	Call Write_Log
-	StrCmp "$OcsNoSplash" "TRUE" Disable_splash
-	; Enable splash screen
-	StrCpy $logBuffer "Enabled.$\r$\n"
-	Call Write_Log
-	advsplash::show 1000 500 1000 -1 $PLUGINSDIR\splash
-	Goto Check_User
-Disable_splash:
-	; Splash disabled
-	StrCpy $logBuffer "Disabled.$\r$\n"
-	Call Write_Log
-Check_User:
-	; Detect is user has admin right
-	StrCpy $logBuffer "Checking if logged in user has Administrator privileges..."
-	Call Write_Log
-	Call IsUserAdmin
-	Pop "$R0"
-	StrCmp $R0 "true" Okadmin 0
-	IfSilent 0 +2
-	messagebox MB_ICONSTOP "Your are not logged on with Administrator privileges.$\r$\nYou cannot setup ${PRODUCT_NAME} as a Windows Service!"
-	StrCpy $logBuffer "NO$\r$\nABORT: unable to install Agent as a service without Administrator privileges !$\r$\n"
-	Call Write_Log
-	Abort
-Okadmin:
-	StrCpy $logBuffer "OK$\r$\n"
-	Call Write_Log
-FunctionEnd
-
-#####################################################################
-# This function ask user for agent and server options
-#####################################################################
-Function AskServerOptions
-	!insertmacro MUI_HEADER_TEXT "OCS Inventory NG Server properties" "Fill in OCS Inventory NG Server address and options..."
-	InstallOptions::dialog "$PLUGINSDIR\server.ini"
-FunctionEnd
-
-Function ValidateServerOptions
-FunctionEnd
-
-Function AskProxyOptions
-	!insertmacro MUI_HEADER_TEXT "Proxy Server properties" "If needed, specify proxy server to use..."
-	InstallOptions::dialog "$PLUGINSDIR\proxy.ini"
-FunctionEnd
-
-Function ValidateProxyOptions
-FunctionEnd
-
-Function AskAgentOptions
-	!insertmacro MUI_HEADER_TEXT "OCS Inventory NG Agent for Windows properties" "If needed, specify OCS Inventory NG Agent options..."
-	InstallOptions::dialog "$PLUGINSDIR\agent.ini"
-FunctionEnd
-
-Function ValidateAgentOptions
-FunctionEnd
+SectionEnd
 
 
 #####################################################################
-# This section copy files service, install and start service
+# This section copy filesand writes configuration files
 #####################################################################
-Section "!OCS Inventory Agent" SEC01
-    ; Create data directory for agent = working directory
+Section "OCS Inventory Agent" SEC03
+    SectionIn 1 2
     SetShellVarContext All
- 	StrCpy $logBuffer "Creating directory <$APPDATA\OCS Inventory NG\Agent>...$\r$\n"
-	Call Write_Log
-    CreateDirectory "$APPDATA\OCS Inventory NG\Agent"
-    CreateDirectory "$APPDATA\OCS Inventory NG\Agent\Download"
-    ; Set users and power users permission to read/execute/change
-    StrCpy $logBuffer "SetACL allowing Users / Power users read/write permissions on <$APPDATA\OCS Inventory NG\Agent>..."
-    Call Write_Log
-    nsExec::ExecToLog 'SetACL -on "$APPDATA\OCS Inventory NG\Agent" -ot file -rec cont_obj -actn ace -ace "n:S-1-5-32-545;p:read_ex,change;s:y;m:set" -ace "n:S-1-5-32-547;p:read_ex,change;s:y;m:set" -actn clear -clr "dacl,sacl"'
-    pop $0
-    StrCpy $logBuffer "Result: $0$\r$\n"
-    Call Write_Log
-    ; Set specific permissions for Download directory
-    StrCpy $logBuffer "SetACL removing inherited permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
-    Call Write_Log
-    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -rec cont_obj -actn setprot -op "dacl:p_nc;sacl:p_nc"'
-    pop $0
-    StrCpy $logBuffer "Result: $0$\r$\n"
-    Call Write_Log
-    StrCpy $logBuffer "SetACL allowing System and Administrators full permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
-    Call Write_Log
-    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -rec cont_obj -actn ace -ace "n:S-1-5-18;p:full;m:set;s:y" -ace "n:S-1-5-32-544;p:full;m:set;s:y"'
-    pop $0
-    StrCpy $logBuffer "Result: $0$\r$\n"
-    Call Write_Log
-     StrCpy $logBuffer "SetACL allowing Users / Power Users read only permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
-    Call Write_Log
-    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -rec cont_obj -actn ace -ace "n:S-1-5-32-545;p:read_ex;m:set;s:y" -ace "n:S-1-5-32-547;p:read_ex;m:set;s:y"'
-    pop $0
-    StrCpy $logBuffer "Result: $0$\r$\n"
-    Call Write_Log
-    ; Test old release install and remove it with saving conf
-    Call UpgradeFrom4000
 	; Test previous for install and stop service if needed
 	Call TestInstall
 	; Copy files
@@ -1460,39 +1567,62 @@ Section "!OCS Inventory Agent" SEC01
 	StrCpy $logBuffer "Result: $R0$\r$\n"
 	Call Write_Log
 WriteServiceIni_Skip_Now:
-	; Install service if needed
-	Call StartService
-	; Create startup menu item for systray applet
-	Call CreateMenu
 SectionEnd
 
 
 #####################################################################
-# This function start menu items
+# This section configure service and systray applet
 #####################################################################
-Function CreateMenu
+Section "Network inventory (server reachable)" SEC04
+    SectionIn 1
+    SetShellVarContext All
 	; Read /NO_SYSTRAY
 	ReadINIStr $R0 "$PLUGINSDIR\Agent.ini" "Field 8" "State"
-	StrCmp "$R0" "1" CreateMenu_NO_SYSTRAY
-	; Create startup menu item to launch systray applet
-	setshellvarcontext all
-	StrCpy $logBuffer 'Creating Menu ShortCut "$SMSTARTUP\OCS Inventory NG Systray.lnk" to start Systray applet...$\r$\n'
+	${If} "$R0" == "1"
+    	StrCpy $logBuffer '[/NO_SYSTRAY] used, so disabling Systray applet shortcut in All Users Startup menu...$\r$\n'
+	    Call Write_Log
+	    Delete /REBOOTOK "$SMSTARTUP\OCS Inventory NG Systray.lnk"
+    ${Else}
+	    ; Create startup menu item to launch systray applet
+	    StrCpy $logBuffer 'Creating Menu ShortCut "$SMSTARTUP\OCS Inventory NG Systray.lnk" to start Systray applet...$\r$\n'
+	    Call Write_Log
+	    CreateShortCut "$SMSTARTUP\OCS Inventory NG Systray.lnk" "$INSTDIR\OcsSystray.exe"
+	    Exec "$INSTDIR\OcsSystray.exe"
+	${EndIf}
+	; Install service if needed
+	Call InstallService
+	; Install service if needed
+	Call StartService
+SectionEnd
+
+
+#####################################################################
+# This section run agent in local mode, and then remove all files
+# from setup folder
+#####################################################################
+Section "Local inventory (no network connection)" SEC05
+    SectionIn 2
+    SetShellVarContext All
+    ; Run agent in local inventory mode
+	StrCpy $logBuffer '[/LOCAL] used, so launching "$INSTDIR\ocsinventory.exe"...'
 	Call Write_Log
-	CreateShortCut "$SMSTARTUP\OCS Inventory NG Systray.lnk" "$INSTDIR\OcsSystray.exe"
-	Exec "$INSTDIR\OcsSystray.exe"
-	goto CreateMenu_End
-CreateMenu_NO_SYSTRAY:
-	StrCpy $logBuffer '[/NO_SYSTRAY] used, so disabling Systray applet shortcut in All Users Startup menu...$\r$\n'
+	nsExec::ExecToLog "$INSTDIR\ocsinventory.exe /LOCAL=$OcsLocal" $R0
+	StrCpy $logBuffer "Result: $R0$\r$\n"
 	Call Write_Log
-	Delete /REBOOTOK "$SMSTARTUP\OCS Inventory NG Systray.lnk"
-CreateMenu_End:
-FunctionEnd
+	StrCpy $logBuffer "Now, removing setup files from <$INSTDIR>..."
+	Call Write_Log
+    RMDir /r "$INSTDIR"
+	StrCpy $logBuffer "OK$\r$\n"
+	Call Write_Log
+SectionEnd
 
 
 #####################################################################
 # This section writes uninstall into Windows
 #####################################################################
-Section -Post
+Section "Uninstaller" SEC06
+    ; Skip Uninstall creation if /LOCAL
+    SectionIn 1
 	WriteUninstaller "$INSTDIR\uninst.exe"
 	WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\OCSInventory.exe"
 	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
@@ -1502,7 +1632,7 @@ Section -Post
 	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
 	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 	; Write deployement status file if required
-	StrCmp "$OcsUpgrade" "TRUE" 0 Post_end
+	StrCmp "$OcsUpgrade" "TRUE" 0 Uninstall_end
 	; WRITE ../done
 	SetOutPath "$exedir"
 	FileOpen $1 "..\done" w
@@ -1510,11 +1640,25 @@ Section -Post
 	FileClose $1
 	; WRITE done into "$APPDATA\OCS Inventory NG\Agent\Download" directory, because in 2.0 or higher, package is unzipped
     ; into system TEMP directory and no more under "$APPDATA\OCS Inventory NG\Agent\Download\PackID\Temp"
+;    SetShellVarContext All
 ;	FileOpen $1 "$APPDATA\OCS Inventory NG\Agent\Download\done" w
 ;	FileWrite $1 "SUCCESS"
 ;	FileClose $1
-Post_end:
+Uninstall_end:
 SectionEnd
+
+
+#####################################################################
+# Sections description text
+#####################################################################
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Create folder to store working files (required to store computer identification, logs...)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Migrate configuration data from ${PRODUCT_NAME} 1.X (serie 4000) format"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Install ${PRODUCT_NAME} files"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Run Agent using Service or Logon/GPO script (OCS Inventory NG Server reachable through the network)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Run Agent in local inventory mode (write inventory to the specified folder, then remove installed files)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} "Create uninstaller and add ${PRODUCT_NAME} to the list of installed software"
+!insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
 #####################################################################
