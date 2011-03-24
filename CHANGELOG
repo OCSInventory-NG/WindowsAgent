@@ -1,3 +1,4 @@
+2.0 rc3 aka 2.0.0.15
   * Add OcsLogon, tool to install/upgrade Agent through logon or GPO script
   * Add local inventory mode to setup (to allow creating inventory of a computer not able to reach the server)
   * Add hypervisor detection and get system UUID
