@@ -83,7 +83,7 @@ cURL DLL is built with an external manifest file, which refers to RTM version
 (9.0.21022.8) of MS Visual C++ 2008 CRT and MFC dll assembly. Bulding script
 copied this manifest to release and debug directory. You have to manually
 update these manifest files to set SP1 version 9.0.30729.1 (or whatever version/SP
-you have) AND remove the publicKeyToken attribute for Microsoft.VC90.CRT assembly.
+you have) AND update the publicKeyToken attribute for Microsoft.VC90.CRT assembly.
 
 
 BUIDLING AGENT
