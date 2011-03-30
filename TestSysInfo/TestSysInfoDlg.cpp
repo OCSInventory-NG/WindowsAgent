@@ -400,6 +400,12 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_SystemEnclosure objects"));
+		m_List.AddString( _T( ""));
+	}
+
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Computer System infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -421,6 +427,12 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_ComputerSystem objects"));
+		m_List.AddString( _T( ""));
+	}
+
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Computer System Product infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -450,6 +462,12 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_ComputerSystemProduct objects"));
+		m_List.AddString( _T( ""));
+	}
+
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Base board infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -474,6 +492,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_BaseBoard objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -508,6 +531,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_BIOS objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -570,6 +598,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_PhysicalMemory objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "PhysicalMemoryArray infos"));
@@ -623,6 +656,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_PhysicalMemoryArray objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -682,6 +720,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_SystemSlot objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Battery infos"));
@@ -716,6 +759,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_Battery objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "PortableBattery infos"));
@@ -749,6 +797,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_PortableBattery objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -788,6 +841,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_Processor objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "MotherBoard Device infos"));
@@ -821,6 +879,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_MotherboardDevice objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -856,6 +919,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_OnBoardDevice objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Video Controler infos"));
@@ -889,6 +957,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_VideoController objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -926,6 +999,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_DesktopMonitor objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Serial Port infos"));
@@ -960,6 +1038,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_SerialPort objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Parallel Port infos"));
@@ -993,6 +1076,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_ParallelPort objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -1032,6 +1120,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_PortConnector objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( " Keyboard infos"));
@@ -1069,6 +1162,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_Keyboard objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -1116,6 +1214,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_PointingDevice objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Floppy Controler infos"));
@@ -1150,6 +1253,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_FloppyController objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "IDE Controler infos"));
@@ -1183,6 +1291,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_IDEController objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -1226,6 +1339,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_SCSIController objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "InfraRed Controler infos"));
@@ -1259,6 +1377,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_InfraredDevice objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -1294,6 +1417,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_USBController objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "IEEE 1394 Controler infos"));
@@ -1328,6 +1456,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_1394Controller objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "PCMCIA Controler infos"));
@@ -1361,6 +1494,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_PCMCIAController objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -1406,6 +1544,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_FloppyDrive objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -1489,6 +1632,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_DiskDrive objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "CD-ROM Drives infos"));
@@ -1537,6 +1685,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_CDROMDrive objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -1587,6 +1740,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_TapeDrive objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Sound Device infos"));
@@ -1616,6 +1774,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_SoundDevice objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -1683,6 +1846,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_NetworkAdapterSetting objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Telephony Modem infos"));
@@ -1720,6 +1888,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_POTSModem objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -1763,6 +1936,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_LogicalDisk objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Printer infos"));
@@ -1796,6 +1974,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_Printer objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -1871,6 +2054,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_OperatingSystem objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Domain infos"));
@@ -1916,6 +2104,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_NTDomain objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -1963,6 +2156,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_Service objects"));
+		m_List.AddString( _T( ""));
+	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
 	m_List.AddString( _T( "Scheduled Job infos"));
@@ -2004,6 +2202,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_ScheduledJob objects"));
+		m_List.AddString( _T( ""));
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -2051,6 +2254,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		}
 		myWmiDll.CloseEnumClassObject();
 	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_QuickFixEngineering objects"));
+		m_List.AddString( _T( ""));
+	}
 
 
 	m_List.AddString( _T( "------------------------------------------------------"));
@@ -2097,6 +2305,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
+	}
+	else
+	{
+		m_List.AddString( _T( "Error enumerating Win32_Product objects"));
+		m_List.AddString( _T( ""));
 	}
 
 

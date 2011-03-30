@@ -19,6 +19,7 @@
 #include "DebugLog.h"
 #include "SysInfo.h"
 #include "wbemidl.h"
+#include <comdef.h>
 
 #define MAKEDWORD(a,b,c,d)	((d<<24)+(c<<16)+(b<<8)+(a))
 
@@ -184,7 +185,7 @@ BOOL CDMI::Connect()
     // current user and obtain pointer pSvc
     // to make IWbemServices calls.
     h_result = p_locator->ConnectServer(
-        _T("root\\WMI"),		 // WMI namespace
+        _bstr_t( "root\\WMI"),		 // WMI namespace
         NULL,                    // User name
         NULL,                    // User password
         NULL,                    // Locale
@@ -223,7 +224,7 @@ BOOL CDMI::Connect()
     }
 	AddLog( _T( "OK\nDMI: Trying to get raw SMBios data...")); 
 	// Enumerates MSSMBios_RawSMBiosTables objects
-    h_result = p_service->CreateInstanceEnum( _T("MSSMBios_RawSMBiosTables"), 0, NULL, &p_enumerator);
+    h_result = p_service->CreateInstanceEnum( _bstr_t("MSSMBios_RawSMBiosTables"), 0, NULL, &p_enumerator);
     if (h_result<0)
     {
   		AddLog( _T( "Failed in call to CreateInstanceEnum( MSSMBios_RawSMBiosTables) !\n"));
@@ -250,16 +251,16 @@ BOOL CDMI::Connect()
 			CIMTYPE type;
 
 			// Try to get SMBios version
-			h_result = p_instance->Get( _T("SmbiosMajorVersion"), 0, &variant_bios_data,&type,NULL);
+			h_result = p_instance->Get( _bstr_t("SmbiosMajorVersion"), 0, &variant_bios_data, &type, NULL);
 			if (h_result <0)
 			{
 				// No SMBios version, skip
-				VariantClear(&variant_bios_data);
+				VariantClear( &variant_bios_data);
 				continue;
 			}
 			m_nSMBiosVersionMajor = V_I2( &variant_bios_data);
-			VariantInit(&variant_bios_data);
-			h_result = p_instance->Get(_T("SmbiosMinorVersion"),0,&variant_bios_data,&type,NULL);
+			VariantInit( &variant_bios_data);
+			h_result = p_instance->Get( _bstr_t("SmbiosMinorVersion"), 0, &variant_bios_data, &type, NULL);
 			if(h_result<0)
 			{
 				// No SMBios version, skip
@@ -268,8 +269,8 @@ BOOL CDMI::Connect()
 			}
 			m_nSMBiosVersionMinor = V_I2( &variant_bios_data);
 			// Try to get DMI tables
-			VariantInit(&variant_bios_data);
-			h_result = p_instance->Get(_T("SMBiosData"),0,&variant_bios_data,&type,NULL);
+			VariantInit( &variant_bios_data);
+			h_result = p_instance->Get( _bstr_t("SMBiosData"), 0, &variant_bios_data, &type, NULL);
 			if(h_result>=0)
 			{
 				if ( ( VT_UI1 | VT_ARRAY  ) != variant_bios_data.vt )
@@ -287,7 +288,7 @@ BOOL CDMI::Connect()
 						free( m_pTables);
 					if ((m_pTables = (UCHAR*) malloc( m_nStructureLength+2)) == NULL) 
 					{
-						AddLog( _T("Unable to allocate memory for raw SMBIOS data !\n"));
+						AddLog( _T( "Unable to allocate memory for raw SMBIOS data !\n"));
 						p_service->Release();
 						p_locator->Release();     
 						CoUninitialize();
@@ -298,7 +299,7 @@ BOOL CDMI::Connect()
 					memcpy( m_pTables, p_data, m_nStructureLength);
 				}
 			}
-			VariantClear(&variant_bios_data);
+			VariantClear( &variant_bios_data);
 			break;
 		}
     } while (h_result == WBEM_S_NO_ERROR);

@@ -13,6 +13,8 @@
 
 #include "stdafx.h"
 #include "OcsWmi.h"
+#include <comdef.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -99,8 +101,6 @@ BOOL COcsWmi::ConnectWMI( LPCTSTR lpstrNameSpace)
 
 		// Step 3: ---------------------------------------------------
 		// Obtain the initial locator to WMI -------------------------
-		CComBSTR pNamespace = CComBSTR( lpstrNameSpace);
-
 		m_hResult = CoCreateInstance( CLSID_WbemLocator, 
 									NULL, 
 									CLSCTX_INPROC_SERVER,
@@ -118,7 +118,7 @@ BOOL COcsWmi::ConnectWMI( LPCTSTR lpstrNameSpace)
 
 		// Step 4: -----------------------------------------------------
 		// Connect to WMI given namespace through the IWbemLocator::ConnectServer method
-		m_hResult = pIWbemLocator->ConnectServer( pNamespace,
+		m_hResult = pIWbemLocator->ConnectServer( _bstr_t( lpstrNameSpace),
 										 NULL,  // User name. NULL = current user
 										 NULL,	// User password. NULL = current
 										 NULL,	// Locale. NULL indicates current
@@ -205,20 +205,25 @@ BOOL COcsWmi::BeginEnumClassObject( LPCTSTR lpstrObject)
 		// Get the object class
 		CString csQuery;
 		csQuery.Format( _T( "SELECT * FROM %s"), lpstrObject);
-		CComBSTR	bstrQuery( csQuery);
 		
 		if (m_pEnumClassObject)
 			m_pEnumClassObject->Release();
 		m_pEnumClassObject = NULL;
 
 		// Get the list of object instances.
-		m_hResult = m_pIWbemServices->ExecQuery( L"WQL",			// Query language
-											BSTR( bstrQuery),		// Query
+		m_hResult = m_pIWbemServices->ExecQuery( _bstr_t( "WQL"), 	// Query language
+											_bstr_t( csQuery),		// Query
 											WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
 											NULL,
 											&m_pEnumClassObject);	// pointer to enumerator
 		if (FAILED( m_hResult))
+		{
+#ifdef _DEBUG
+			csQuery.Format( _T( "WMI Error code 0x%x"), m_hResult);
+			AfxMessageBox( csQuery);
+#endif
 			return FALSE;
+		}
 		return TRUE;
 	}
 	catch (CException *pEx)
@@ -289,13 +294,12 @@ LPCTSTR COcsWmi::GetClassObjectStringValue(LPCTSTR lpstrProperty)
 
 	try
 	{
-		CComBSTR propName = CComBSTR( lpstrProperty);
 		VARIANT pVal;
 		VariantInit(&pVal);
 		CIMTYPE pType;
 
 		VariantClear(&pVal);
-		m_hResult = m_pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
 		if (SUCCEEDED( m_hResult))
 		{
 			if(pType == 101)
@@ -327,13 +331,12 @@ DWORD COcsWmi::GetClassObjectDwordValue(LPCTSTR lpstrProperty)
 
 	try
 	{
-		CComBSTR propName = CComBSTR( lpstrProperty);
 		VARIANT pVal;
 		VariantInit(&pVal);
 		CIMTYPE pType;
 
 		VariantClear(&pVal);
-		m_hResult = m_pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
 		if (SUCCEEDED( m_hResult))
 			return dwCimValue( pVal, pType);
 		return 0;
@@ -354,13 +357,12 @@ __int64 COcsWmi::GetClassObjectI64Value(LPCTSTR lpstrProperty)
 
 	try
 	{
-		CComBSTR propName = CComBSTR( lpstrProperty);
 		VARIANT pVal;
 		VariantInit(&pVal);
 		CIMTYPE pType;
 
 		VariantClear(&pVal);
-		m_hResult = m_pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
 		if (SUCCEEDED( m_hResult))
 			return i64CimValue( pVal, pType);
 		return 0;
@@ -381,13 +383,12 @@ unsigned __int64 COcsWmi::GetClassObjectU64Value(LPCTSTR lpstrProperty)
 
 	try
 	{
-		CComBSTR propName = CComBSTR( lpstrProperty);
 		VARIANT pVal;
 		VariantInit(&pVal);
 		CIMTYPE pType;
 
 		VariantClear(&pVal);
-		m_hResult = m_pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
 		if (SUCCEEDED( m_hResult))
 			return u64CimValue( pVal, pType);
 		return 0;
@@ -409,8 +410,6 @@ LPCTSTR COcsWmi::GetRefElementClassObjectStringValue(LPCTSTR lpstrRefElement, LP
 
 	try
 	{
-		CComBSTR elementName = CComBSTR( lpstrRefElement);
-		CComBSTR propName = CComBSTR( lpstrProperty);
 		CString	csObject;
 		VARIANT pVal;
 		VariantInit(&pVal);
@@ -418,13 +417,13 @@ LPCTSTR COcsWmi::GetRefElementClassObjectStringValue(LPCTSTR lpstrRefElement, LP
 		IWbemClassObject *pClassObject;
 
 		VariantClear(&pVal);
-		m_hResult = m_pClassObject->Get( BSTR( elementName), 0L, &pVal, &pType, NULL);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrRefElement), 0L, &pVal, &pType, NULL);
 		if (FAILED( m_hResult))
 			return NULL;
 		csObject = strCimValue( pVal, pType);
 		if (csObject.IsEmpty())
 			return NULL;
-		m_hResult = m_pIWbemServices->GetObject( CComBSTR( csObject),
+		m_hResult = m_pIWbemServices->GetObject( _bstr_t( csObject),
 												WBEM_FLAG_RETURN_WBEM_COMPLETE,
 												NULL,
 												&pClassObject,
@@ -435,7 +434,7 @@ LPCTSTR COcsWmi::GetRefElementClassObjectStringValue(LPCTSTR lpstrRefElement, LP
 			return NULL;
 		}
 		VariantClear(&pVal);
-		m_hResult = pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
+		m_hResult = pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
 		if (FAILED( m_hResult))
 		{
 			pClassObject->Release();
@@ -465,8 +464,6 @@ DWORD COcsWmi::GetRefElementClassObjectDwordValue(LPCTSTR lpstrRefElement, LPCTS
 
 	try
 	{
-		CComBSTR elementName = CComBSTR( lpstrRefElement);
-		CComBSTR propName = CComBSTR( lpstrProperty);
 		CString	csObject;
 		VARIANT pVal;
 		VariantInit(&pVal);
@@ -475,13 +472,13 @@ DWORD COcsWmi::GetRefElementClassObjectDwordValue(LPCTSTR lpstrRefElement, LPCTS
 		static DWORD dwResult;
 
 		VariantClear(&pVal);
-		m_hResult = m_pClassObject->Get( BSTR( elementName), 0L, &pVal, &pType, NULL);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrRefElement), 0L, &pVal, &pType, NULL);
 		if (FAILED( m_hResult))
 			return 0;
 		csObject = strCimValue( pVal, pType);
 		if (csObject.IsEmpty())
 			return 0;
-		m_hResult = m_pIWbemServices->GetObject( CComBSTR( csObject),
+		m_hResult = m_pIWbemServices->GetObject( _bstr_t( csObject),
 												WBEM_FLAG_RETURN_WBEM_COMPLETE,
 												NULL,
 												&pClassObject,
@@ -492,7 +489,7 @@ DWORD COcsWmi::GetRefElementClassObjectDwordValue(LPCTSTR lpstrRefElement, LPCTS
 			return 0;
 		}
 		VariantClear(&pVal);
-		m_hResult = pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
+		m_hResult = pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
 		if (FAILED( m_hResult))
 			dwResult = 0;
 		else
@@ -517,8 +514,6 @@ __int64 COcsWmi::GetRefElementClassObjectI64Value(LPCTSTR lpstrRefElement, LPCTS
 
 	try
 	{
-		CComBSTR elementName = CComBSTR( lpstrRefElement);
-		CComBSTR propName = CComBSTR( lpstrProperty);
 		CString	csObject;
 		VARIANT pVal;
 		VariantInit(&pVal);
@@ -527,13 +522,13 @@ __int64 COcsWmi::GetRefElementClassObjectI64Value(LPCTSTR lpstrRefElement, LPCTS
 		static __int64 i64Result;
 
 		VariantClear(&pVal);
-		m_hResult = m_pClassObject->Get( BSTR( elementName), 0L, &pVal, &pType, NULL);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrRefElement), 0L, &pVal, &pType, NULL);
 		if (FAILED( m_hResult))
 			return 0;
 		csObject = strCimValue( pVal, pType);
 		if (csObject.IsEmpty())
 			return 0;
-		m_hResult = m_pIWbemServices->GetObject( CComBSTR( csObject),
+		m_hResult = m_pIWbemServices->GetObject( _bstr_t( csObject),
 												WBEM_FLAG_RETURN_WBEM_COMPLETE,
 												NULL,
 												&pClassObject,
@@ -544,7 +539,7 @@ __int64 COcsWmi::GetRefElementClassObjectI64Value(LPCTSTR lpstrRefElement, LPCTS
 			return 0;
 		}
 		VariantClear(&pVal);
-		m_hResult = pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
+		m_hResult = pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
 		if (FAILED( m_hResult))
 			i64Result = 0;
 		else
@@ -568,8 +563,6 @@ unsigned __int64 COcsWmi::GetRefElementClassObjectU64Value(LPCTSTR lpstrRefEleme
 	ASSERT( lpstrProperty);
 	try
 	{
-		CComBSTR elementName = CComBSTR( lpstrRefElement);
-		CComBSTR propName = CComBSTR( lpstrProperty);
 		CString	csObject;
 		VARIANT pVal;
 		VariantInit(&pVal);
@@ -579,13 +572,13 @@ unsigned __int64 COcsWmi::GetRefElementClassObjectU64Value(LPCTSTR lpstrRefEleme
 
 
 		VariantClear(&pVal);
-		m_hResult = m_pClassObject->Get( BSTR( elementName), 0L, &pVal, &pType, NULL);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrRefElement), 0L, &pVal, &pType, NULL);
 		if (FAILED( m_hResult))
 			return 0;
 		csObject = strCimValue( pVal, pType);
 		if (csObject.IsEmpty())
 			return 0;
-		m_hResult = m_pIWbemServices->GetObject( CComBSTR( csObject),
+		m_hResult = m_pIWbemServices->GetObject( _bstr_t( csObject),
 												WBEM_FLAG_RETURN_WBEM_COMPLETE,
 												NULL,
 												&pClassObject,
@@ -596,7 +589,7 @@ unsigned __int64 COcsWmi::GetRefElementClassObjectU64Value(LPCTSTR lpstrRefEleme
 			return 0;
 		}
 		VariantClear(&pVal);
-		m_hResult = pClassObject->Get( BSTR( propName), 0L, &pVal, &pType, NULL);
+		m_hResult = pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
 		if (FAILED( m_hResult))
 			u64Result = 0;
 		else
