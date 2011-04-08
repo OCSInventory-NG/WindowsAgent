@@ -55,15 +55,15 @@ private: // Methods
 	// Create or open log file
 	BOOL isOpen();
 	// "Normal" log
-	void log_notice( LPCTSTR);
+	void log_notice( LPCTSTR lpstrFormat, va_list args);
 	// Warning log, but can continue
-	void log_warning( LPCTSTR);
+	void log_warning( LPCTSTR lpstrFormat, va_list args);
 	// Blocking error log
-	void log_error( LPCTSTR);
+	void log_error( LPCTSTR lpstrFormat, va_list args);
 	// Debug log
-	void log_debug( LPCTSTR);
+	void log_debug( LPCTSTR lpstrFormat, va_list args);
 	// Trace log for full mode debug
-	void log_trace( LPCTSTR);
+	void log_trace( LPCTSTR lpstrFormat, va_list args);
 
 private: // Atributes
 	// Log filename
