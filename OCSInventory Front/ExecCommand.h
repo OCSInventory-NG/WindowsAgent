@@ -83,7 +83,7 @@ public:
    * Get the output of the command (mixed stdout and stderr)
    * In case of error, contains error description
    */
-  LPCTSTR getOutput();
+  LPCSTR getOutput();
 
   /**
    * Get the return value of the process. If the process is still
@@ -140,6 +140,5 @@ protected:
 
   int m_nExitValue;
 
-  CString m_csOutput;
-  CString m_csConsoleSpawn;
+  CStringA m_csOutput;
 };

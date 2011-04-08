@@ -760,7 +760,7 @@ UINT CPackage::execute()
 				csBuffer = CODE_SUCCESS;
 			break;
 		}
-		setDone( csBuffer, cmProcess.getOutput());
+		setDone( csBuffer, GetUnicodeFromAnsi( cmProcess.getOutput()));
 		return TRUE;
 	}
 	if (m_csAction == OCS_DOWNLOAD_ACTION_STORE)

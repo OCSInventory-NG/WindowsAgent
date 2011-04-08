@@ -136,7 +136,7 @@ void CExecCommand::useComspec( BOOL bUse)
 	m_bComspec = bUse;
 }
 
-LPCTSTR CExecCommand::getOutput()
+LPCSTR CExecCommand::getOutput()
 {
 	return m_csOutput;
 }
@@ -207,7 +207,7 @@ BOOL CExecCommand::realPopenCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPat
 			/*
 			* Oh gag, we're on Win9x or using COMMAND.COM. Not supported
 			*/
-			m_csOutput.AppendFormat( _T( "Get COMSPEC Error: %s"), LookupError( GetLastError()));
+			m_csOutput.AppendFormat( "Get COMSPEC Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			return FALSE;
 		}
 		csCommand.Format( _T( "\"%s\" /c %s"), csComspec, lpstrCommand);
@@ -228,7 +228,7 @@ BOOL CExecCommand::realPopenCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPat
                     0, //CREATE_NEW_CONSOLE,
                     NULL, lpstrPath, &siStartInfo, &piProcInfo)) 
     {
-		m_csOutput.AppendFormat( _T( "CreateProcess Error: %s"), LookupError( GetLastError()));
+		m_csOutput.AppendFormat( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 		return FALSE;
 	}
 	// Close the handles now so anyone waiting is woken.
@@ -270,7 +270,7 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		// Capture stdin
 		if (!CreatePipe(&m_hChildStdinRd, &m_hChildStdinWr, &saAttr, 0))
 		{
-			m_csOutput.AppendFormat( _T( "CreatePipe Error: %s"), LookupError( GetLastError()));
+			m_csOutput.AppendFormat( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			return FALSE;
 		}
 		/* Create new output read handle and the input write handle. Set
@@ -280,7 +280,7 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		if (!DuplicateHandle( GetCurrentProcess(), m_hChildStdinWr, GetCurrentProcess(), &m_hChildStdinWrDup, 0,
 			 FALSE, DUPLICATE_SAME_ACCESS))
 		{
-			m_csOutput.AppendFormat( _T( "DuplicateHandle Error"));
+			m_csOutput.AppendFormat( "DuplicateHandle Error");
 			return FALSE;
 		}
 
@@ -292,13 +292,13 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		// Capture stdout
 		if (!CreatePipe(&m_hChildStdoutRd, &m_hChildStdoutWr, &saAttr, 0))
 		{
-			m_csOutput.AppendFormat( _T( "CreatePipe Error: %s"), LookupError( GetLastError()));
+			m_csOutput.AppendFormat( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			return FALSE;
 		}
 		if (!DuplicateHandle( GetCurrentProcess(), m_hChildStdoutRd, GetCurrentProcess(), &m_hChildStdoutRdDup, 0,
 			 FALSE, DUPLICATE_SAME_ACCESS))
 		{
-			m_csOutput.AppendFormat( _T( "DuplicateHandle Error"));
+			m_csOutput.AppendFormat( "DuplicateHandle Error");
 			return FALSE;
 		}
 
@@ -309,13 +309,13 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		// Capture stderr
 		if (!CreatePipe( &m_hChildStderrRd, &m_hChildStderrWr, &saAttr, 0))
 		{
-			m_csOutput.AppendFormat( _T( "CreatePipe Error: %s"), LookupError( GetLastError()));
+			m_csOutput.AppendFormat( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			return FALSE;
 		}
 		if (!DuplicateHandle( GetCurrentProcess(), m_hChildStderrRd, GetCurrentProcess(), &m_hChildStderrRdDup, 0,
 			  FALSE, DUPLICATE_SAME_ACCESS))
 		{
-			m_csOutput.AppendFormat( _T( "DuplicateHandle Error"));
+			m_csOutput.AppendFormat( "DuplicateHandle Error");
 			return FALSE;
 		}
 		// Close the inheritable version of ChildStdErr that we're using.
@@ -409,7 +409,7 @@ int CExecCommand::execNoWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 				/*
 				* Oh gag, we're on Win9x or using COMMAND.COM. Not supported
 				*/
-				m_csOutput.AppendFormat( _T( "Get COMSPEC Error: %s"), LookupError( GetLastError()));
+				m_csOutput.AppendFormat( "Get COMSPEC Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 				return FALSE;
 			}
 			csCommand.Format( _T( "\"%s\" /c %s"), csComspec, lpstrCommand);
@@ -427,7 +427,7 @@ int CExecCommand::execNoWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 						0, //CREATE_NEW_CONSOLE,
 						NULL, lpstrPath, &siStartInfo, &piProcInfo)) 
 		{
-			m_csOutput.AppendFormat( _T( "CreateProcess Error: %s"), LookupError( GetLastError()));
+			m_csOutput.AppendFormat( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			return EXEC_ERROR_START_COMMAND;
 		}
 		// Close the handles now so anyone waiting is woken.
@@ -450,7 +450,7 @@ BOOL  CExecCommand::waitCapture()
 	char	bBuffer[1024];
 	int		nLength;
 
-	CStringA csOutput = "";
+	m_csOutput = "";
 	BOOL bDone = false;
 
 	try
@@ -471,14 +471,14 @@ BOOL  CExecCommand::waitCapture()
 			{
 				nLength = _read( m_fdStdErr, bBuffer, 1023);
 				bBuffer[nLength] = 0;
-				csOutput.AppendFormat( "%s", bBuffer);
+				m_csOutput.AppendFormat( "%s", bBuffer);
 				bHaveSome = TRUE;
 			}
 			if (fsout.st_size > 0)
 			{
 				nLength = _read( m_fdStdOut, bBuffer, 1023);
 				bBuffer[nLength] = 0;
-				csOutput.AppendFormat( "%s", bBuffer);
+				m_csOutput.AppendFormat( "%s", bBuffer);
 				bHaveSome = TRUE;
 			}
 			if (!bHaveSome)
@@ -495,11 +495,10 @@ BOOL  CExecCommand::waitCapture()
 			GetExitCodeProcess( m_hProcessHandle, &dwExitCode)) 
 		{
 			nResult = dwExitCode;
-			m_csOutput.Format( GetUnicodeFromAnsi( csOutput));
 		} 
 		else 
 		{
-			m_csOutput.Format( _T( "GetExitCode Error: %s"), LookupError( GetLastError()));
+			m_csOutput.Format( "GetExitCode Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			nResult = -1;
 		}
 
@@ -542,7 +541,7 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 				/*
 				* Oh gag, we're on Win9x or using COMMAND.COM. Not supported
 				*/
-				m_csOutput.AppendFormat( _T( "Get COMSPEC Error: %s"), LookupError( GetLastError()));
+				m_csOutput.AppendFormat( "Get COMSPEC Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 				return FALSE;
 			}
 			csCommand.Format( _T( "\"%s\" /c %s"), csComspec, lpstrCommand);
@@ -560,7 +559,7 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 						0, //CREATE_NEW_CONSOLE,
 						NULL, lpstrPath, &siStartInfo, &piProcInfo)) 
 		{
-			m_csOutput.AppendFormat( _T( "CreateProcess Error: %s"), LookupError( GetLastError()));
+			m_csOutput.AppendFormat( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			return EXEC_ERROR_START_COMMAND;
 		}
 		// Close the handles now so anyone waiting is woken.
@@ -579,7 +578,7 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 			// Parse memory processes for new childs process or terminated processes
 			if (!parseRunningProcesses( &myProcessList))
 			{
-				m_csOutput.AppendFormat( _T( "Parse running processes Error: %s"), LookupError( GetLastError()));
+				m_csOutput.AppendFormat( "Parse running processes Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 				SetPriorityClass( GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
 				return EXEC_ERROR_WAIT_COMMAND;
 			}
@@ -595,7 +594,7 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		else
 		{
 			m_nExitValue = -1;
-			m_csOutput.AppendFormat( _T( "GetExitCode Error: %s"), LookupError( GetLastError()));
+			m_csOutput.AppendFormat( "GetExitCode Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			return EXEC_ERROR_WAIT_COMMAND;
 		}
 		return EXEC_SUCCESSFULL;

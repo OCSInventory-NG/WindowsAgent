@@ -85,7 +85,6 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 				break;
 			}
 			// Now get output and ensure XML well formed
-			m_pLogger->log( LOG_PRIORITY_TRACE, cmProcess.getOutput());
 			if (!myXml.SetDoc( cmProcess.getOutput()))
 			{
 				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output is not an XML document"), cFinder.GetFilePath());
