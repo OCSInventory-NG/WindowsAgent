@@ -18,26 +18,26 @@
 CLog* m_pLogger = getOcsLogger();
 
 OCSINVENTORY_API_EXPORTED int OCS_CALL_START_EXPORTED(){
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "Start hook called from %s plugin"), __FILE__);
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => Start hook executed"));
 	return PLUGIN_OK;
 }
 
 OCSINVENTORY_API_EXPORTED int OCS_CALL_PROLOGWRITE_EXPORTED(CPrologRequest* pPrologReq){
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "PrologRead hook called from %s plugin"), __FILE__);
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => PrologRead hook executed"));
 	return PLUGIN_OK;
 }
 
 OCSINVENTORY_API_EXPORTED int OCS_CALL_PROLOGRESP_EXPORTED(CPrologResponse* pPrologResp){
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "PrologResp hook called from %s plugin"), __FILE__);
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => PrologResp hook executed"));
 	return PLUGIN_OK;
 }
 
 OCSINVENTORY_API_EXPORTED int OCS_CALL_INVENTORY_EXPORTED(CInventoryRequest* pInventory){
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "Inventory hook called from %s plugin"), __FILE__);
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => Inventory hook executed"));
 	return PLUGIN_OK;
 }
 
 OCSINVENTORY_API_EXPORTED int OCS_CALL_END_EXPORTED(){
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "End hook called from %s plugin"), __FILE__);
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => End hook executed"));
 	return PLUGIN_OK;
 }
