@@ -1,3 +1,13 @@
+//====================================================================================
+// Open Computer and Software Inventory Next Generation
+// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Web: http://www.ocsinventory-ng.org
+
+// This code is open source and may be copied and modified as long as the source
+// code is always made freely available.
+// Please refer to the General Public Licence V2 http://www.gnu.org/ or Licence.txt
+//====================================================================================
+
 // Markup.cpp: implementation of the CMarkup class.
 //
 
@@ -115,6 +125,50 @@ TiXmlElement *CMarkup::AddChildElem( LPCTSTR szName, LONG lValue)
 
 	csValue.Format( _T( "%ld"), lValue);
 	return AddChildElem( szName, csValue);
+}
+
+BOOL CMarkup::SetData( LPCTSTR szValue)
+{
+	ASSERT( m_pDoc);
+
+	USES_CONVERSION;
+	try
+	{
+		// First, remove all text child
+		TiXmlNode *pChild =  NULL;
+		while( pChild = m_pCurrentNode->IterateChildren( pChild))
+		{
+			if (pChild->Type() == TiXmlNode::TINYXML_TEXT)
+			{
+				// This a test child, remove it...
+				m_pCurrentNode->RemoveChild( pChild);
+				// ...and restart from the begining of childs
+				pChild = NULL;
+			}
+		}
+		if ((szValue != NULL) && (_tcslen( szValue) != 0))
+		{
+			// There is text to set between <Element></Element>
+			TiXmlText *pXmlText = new TiXmlText( CT2CA( szValue, CP_UTF8));
+			if (pXmlText == NULL)
+				return FALSE;
+			m_pCurrentNode->LinkEndChild( pXmlText);
+		}
+		return TRUE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		return FALSE;
+	}
+}
+
+BOOL CMarkup::SetData( LONG lValue)
+{
+	CString csValue;
+
+	csValue.Format( _T( "%ld"), lValue);
+	return SetData( csValue);
 }
 
 BOOL CMarkup::SetAttrib( LPCTSTR szName, LPCTSTR szValue)
@@ -340,7 +394,7 @@ LPCTSTR CMarkup::GetData( TiXmlElement *pXmlNode)
 		const char *szValue = pNode->GetText();
 		if (szValue)
 		{
-			csResult.Format( _T( "%s"), CA2CT( szValue));
+			csResult.Format( _T( "%s"), CA2CT( szValue, CP_UTF8));
 			return csResult;
 		}
 		return NULL;
@@ -365,7 +419,7 @@ LPCTSTR CMarkup::GetAttrib( LPCTSTR szAttrib)
 		const char *szValue = m_pCurrentNode->Attribute( CT2CA( szAttrib, CP_UTF8));
 		if (szValue)
 		{
-			csResult.Format( _T( "%s"), CA2CT( szValue));
+			csResult.Format( _T( "%s"), CA2CT( szValue, CP_UTF8));
 			return csResult;
 		}
 		return NULL;
@@ -430,7 +484,15 @@ BOOL CMarkup::SetDoc( LPCSTR szDoc)
 BOOL CMarkup::SetDoc( LPCWSTR szDoc)
 {
     USES_CONVERSION;
-	return SetDoc( CT2CA( szDoc));
+
+	// Try to determine if UTF-8 encoding used
+	CStringW csDoc = szDoc;
+	csDoc.MakeLower();
+	if (csDoc.Find( L"encoding=\"utf-8\"") > 0)
+		// XML Uses UTF-8 encoding
+		return SetDoc( CT2CA( szDoc));
+	// XML is not UTF-8 encoded => encoded it to UTF-8
+	return SetDoc( CT2CA( szDoc, CP_UTF8));
 }
 
 // Set XML document from TinyXML object
@@ -463,8 +525,8 @@ BOOL CMarkup::AddXml( CMarkup *pSource)
 		for (pChild = pElem->FirstChildElement(); pChild; pChild = pChild->NextSiblingElement())
 		{
 			// Add child elem to destination document
-			csProperty.Format( _T( "%s"), CA2CT( pChild->Value()));
-			csValue.Format( _T( "%s"), CA2CT( pChild->GetText()));
+			csProperty.Format( _T( "%s"), CA2CT( pChild->Value(), CP_UTF8));
+			csValue.Format( _T( "%s"), CA2CT( pChild->GetText(), CP_UTF8));
 			if (!AddChildElem( csProperty, csValue))
 				return FALSE;
 		}
@@ -483,6 +545,12 @@ BOOL CMarkup::LoadFile( LPCTSTR lpstrFile)
 		ResetPos();
 		return TRUE;
 	}
+	// Error, set XML document empty
+	delete m_pDoc;
+	m_pDoc = new TiXmlDocument();
+	TiXmlDeclaration *pDecl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+	m_pDoc->LinkEndChild( pDecl );
+	m_pCurrentNode = NULL;
 	return FALSE;
 }
 

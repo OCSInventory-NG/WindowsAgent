@@ -1,3 +1,13 @@
+//====================================================================================
+// Open Computer and Software Inventory Next Generation
+// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Web: http://www.ocsinventory-ng.org
+
+// This code is open source and may be copied and modified as long as the source
+// code is always made freely available.
+// Please refer to the General Public Licence V2 http://www.gnu.org/ or Licence.txt
+//====================================================================================
+
 // Markup.h: interface for the CMarkup class.
 //
 
@@ -44,6 +54,9 @@ public:
 	// Add an XML node as child of current working XML node, leave current working node as is
 	TiXmlElement *AddChildElem( LPCTSTR szName, LPCTSTR szValue=NULL);
 	TiXmlElement *AddChildElem( LPCTSTR szName, LONG lValue);
+	// Set/Add value to the current working node
+	BOOL SetData( LPCTSTR lpstrValue);
+	BOOL SetData( LONG lValue);
 	// Set/Add an attribute value to current working XML node
 	BOOL SetAttrib( LPCTSTR szName, LPCTSTR szValue);
 	BOOL SetAttrib( LPCTSTR szName, LONG lValue);

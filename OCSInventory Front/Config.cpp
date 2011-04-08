@@ -14,6 +14,8 @@
 
 #include "stdafx.h"
 #include "Config.h"
+#include "Markup.h"
+#include "OcsUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -302,16 +304,62 @@ void CConfig::setCommunicationProvider( LPCTSTR lpstrDll)
 
 BOOL CConfig::writeAccountInfos( LPCTSTR lpstrName, LPCTSTR lpstrValue)
 {
-	HANDLE	hFile;
-	CString	csAccountFile;
+	CString	csAccountFile,
+			csName;
+	CMarkup myXml;
+	BOOL	bFound = FALSE;
+	TiXmlElement *pXmlAccount,
+				*pXmlElement;
 
-	// Write 
+	ASSERT( lpstrName);
+	ASSERT( lpstrValue);
+
 	csAccountFile.Format( _T( "%s\\%s"), getDataFolder(), OCS_ACCOUNTINFO_FILENAME);
-	// Create the file with system and hidden attributes (if it does not exists)
-	if ((hFile = CreateFile( csAccountFile, GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_SYSTEM|FILE_ATTRIBUTE_HIDDEN, NULL)) == INVALID_HANDLE_VALUE)
-		return FALSE;
-	CloseHandle( hFile);
-	if (WritePrivateProfileString( OCS_AGENT_SECTION, lpstrName, lpstrValue, csAccountFile) == 0)
-		return FALSE;
-	return TRUE;
+	// Load file into XML object and try to find if account info not already set
+	if (myXml.LoadFile( csAccountFile))
+	{
+		// Search ACCOUNTINFO node under root node
+		pXmlAccount = myXml.FindFirstElem( _T( "ACCOUNTINFO"));
+		while (pXmlAccount)
+		{
+			// Search if this this the good KEYNAME
+			if ((pXmlElement = myXml.FindFirstElem( _T( "KEYNAME"), pXmlAccount)) == NULL)
+				continue;
+			csName = myXml.GetData( pXmlElement);
+			if (csName.CompareNoCase( lpstrName) == 0)
+			{
+				// Found the same KEYNAME, so set the value of KEYVALUE node in this ACCOUNTINFO
+				bFound = TRUE;
+				if (pXmlElement = myXml.FindFirstElem( _T( "KEYVALUE"), pXmlAccount))
+					// KEYVALUE node exists, update the value
+					myXml.SetData( lpstrValue);
+				else
+				{
+					// KEYVALUE node does not exists => add it 
+					myXml.ResetPos( pXmlAccount);
+					myXml.AddChildElem( _T( "KEYVALUE"), lpstrValue);
+				}
+			}
+			// Search next ACCOUNTINFO node
+			pXmlAccount = myXml.FindNextElem( _T( "ACCOUNTINFO"), pXmlAccount);
+		}
+	}
+	if (!bFound)
+	{
+		// Error loading file or no ACCOUNTINFO for this KEYNAME => we have to add it
+		myXml.ResetPos();
+		myXml.AddElem( _T( "ACCOUNTINFO"));
+		myXml.AddChildElem( _T( "KEYNAME"), lpstrName);
+		myXml.AddChildElem( _T( "KEYVALUE"), lpstrValue);
+		myXml.OutOfElem();				
+	}
+	// Save XML to file (need to remove system and hidden attributes if file exists)
+	if (fileExists( csAccountFile))
+		SetFileAttributes( csAccountFile, FILE_ATTRIBUTE_NORMAL);
+	if (myXml.SaveFile( csAccountFile))
+		// Saved, reset system and hidden attributes
+		return SetFileAttributes( csAccountFile, FILE_ATTRIBUTE_HIDDEN|FILE_ATTRIBUTE_SYSTEM);
+	// Error saving file
+	return FALSE;
+
 }

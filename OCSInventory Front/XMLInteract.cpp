@@ -416,67 +416,24 @@ BOOL CXMLInteract::UpdatePrinters( CPrinterList &myPrinterList)
 
 BOOL CXMLInteract::UpdateAccountInfo( LPCTSTR lpstrAccountFile)
 {
-	CFileStatus myFileStatus;
-	TCHAR		*szKeys = NULL,
-				szSeps[] = _T( "-"), 
-				*szToken1 = NULL,
-				*szToken2 = NULL;
-	LONG		lSizeRead;
+	CMarkup		myXmlAccount;
 
 	try
 	{
 		// Get size of Admininfo.conf file
-		if (fileExists( lpstrAccountFile) && CFile::GetStatus( lpstrAccountFile, myFileStatus))
-		{
-			// Admin file exists
-			// Allocate 2 buffers
-			if ((szKeys = new TCHAR[ myFileStatus.m_size+1]) == NULL)
-				return FALSE;
-			if ((szToken2 = new TCHAR[myFileStatus.m_size+1]) ==NULL)
-			{
-				delete szKeys;
-				return FALSE;
-			}
-			// Get all key names from section in a multistring buffer, each string separated by \0
-			lSizeRead = GetPrivateProfileString( OCS_AGENT_SECTION, NULL, _T(""), szKeys, myFileStatus.m_size, lpstrAccountFile);
-			// Replace \0 by - in key buffer
-			for (LONG i=0; i<myFileStatus.m_size; i++)
-			{
-				if (szKeys[i] == 0)
-				{
-					szKeys[i]='-';
-				}
-				else if (i>=lSizeRead)
-				{
-					szKeys[i]=0;
-				}
-			}
-			// Parse key buffer to extract each key name
-			szToken1 = _tcstok( szKeys, szSeps );
-			while (szToken1 != NULL )
-			{
-				// Get value for this key
-				GetPrivateProfileString( OCS_AGENT_SECTION, szToken1, _T(""), szToken2, myFileStatus.m_size, lpstrAccountFile);
-				// Write it in XML
-				m_pXml->AddElem( _T( "ACCOUNTINFO"));
-					m_pXml->AddChildElem( _T( "KEYNAME"), szToken1);
-					m_pXml->AddChildElem( _T( "KEYVALUE"), szToken2);
-				m_pXml->OutOfElem();				
-				// Get next key name
-				szToken1 = _tcstok( NULL, szSeps );
-			}
-			// free buffers
-			delete szToken2;
-			delete szKeys;
-		}
-		// Even if admin file does not exist, return TRUE
+		if (!fileExists( lpstrAccountFile))
+			// Even if admin file does not exist, return TRUE
+			return TRUE;
+		if (!myXmlAccount.LoadFile( lpstrAccountFile))
+			return FALSE;
+		m_pXml->AddXml( &myXmlAccount);
 		return TRUE;
 	}
 	catch( CException *pEx)
 	{
 		// Exception=> free exception, but continue
 		pEx->Delete();
-		return TRUE;
+		return FALSE;
 	}
 }
 
