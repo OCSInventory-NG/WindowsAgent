@@ -373,32 +373,29 @@ ParseCmd_End_Proxy:
 	Push "1"         ; Yes by default
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_GPO
-	StrCpy $nGpo "1"
-    goto ParseCmd_GPO_End
-ParseCmd_GPO:
-	StrCpy $nGpo "0"
-ParseCmd_GPO_End:
+	${If} "$R0" == "1"
+	    StrCpy $nGpo "0"
+	${Else}
+	    StrCpy $nGpo "1"
+    ${EndIf}
     Push "/SHOWLOG" ; push the search string onto the stack
 	Push "1"         ; Yes by default
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_SHOWLOG
-	StrCpy $nShowlog "1"
-	goto ParseCmd_SHOWLOG_End
-ParseCmd_SHOWLOG:
-	StrCpy $nPackager "0"
-ParseCmd_SHOWLOG_End:
+	${If} "$R0" == "1"
+    	StrCpy $nShowlog "0"
+	${Else}
+	    StrCpy $nShowlog "1"
+	${EndIf}
     Push "/PACKAGER" ; push the search string onto the stack
 	Push "1"         ; Yes by default
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_PACKAGER
-	StrCpy $nPackager "1"
- goto ParseCmd_PACKAGER_End
-ParseCmd_PACKAGER:
-	StrCpy $nPackager "0"
-ParseCmd_PACKAGER_End:
+	${If} "$R0" == "1"
+	    StrCpy $nPackager "0"
+    ${Else}
+	    StrCpy $nPackager "1"
+    ${EndIf}
 	; /DEPLOY="value"
 	Push "/DEPLOY=" ; push the search string onto the stack
 	Push ""         ; No version by default
@@ -422,23 +419,21 @@ ParseCmd_PACKAGER_End:
 	Push "1"         ; Yes by default
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_FORCE
-	StrCpy $nForce "1"
-	goto ParseCmd_FORCE_End
-ParseCmd_FORCE:
-	StrCpy $nForce "0"
-ParseCmd_FORCE_End:
+	${If} "$R0" == "1"
+    	StrCpy $nForce "0"
+	${Else}
+        StrCpy $nForce "1"
+	${EndIf}
 	; Uninstall
-	Push "/UINSTALL" ; push the search string onto the stack
+	Push "/UNINSTALL" ; push the search string onto the stack
 	Push "1"         ; Yes by default
 	Call GetParameterValue
 	Pop $R0
-	StrCmp "$R0" "1" ParseCmd_UNINSTALL
-	StrCpy $nUninstall "0"
-	goto ParseCmd_UNINSTALL_End
-ParseCmd_UNINSTALL:
-	StrCpy $nUninstall "1"
-ParseCmd_UNINSTALL_End:
+	${If} "$R0" == "1"
+    	StrCpy $nUninstall "0"
+	${Else}
+        StrCpy $nUninstall "1"
+	${EndIf}
 	; Restore used registers
 	Pop $R1
 	Pop $R0
