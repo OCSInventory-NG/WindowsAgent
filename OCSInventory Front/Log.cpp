@@ -184,13 +184,17 @@ void CLog::log_trace( LPCTSTR lpstrMessage)
 
 		if ((getAgentConfig()->isDebugRequired() < OCS_DEBUG_MODE_TRACE) || !isOpen())
 			return;
-		csLog.Format( _T( "================= TRACE START ===============\n%s\n================= TRACE STOP ===============\n"), lpstrMessage);
+		m_hLogFile.WriteString( _T( "================= TRACE START ===============\n"));
+		csLog.Format( _T( "%s\n"), lpstrMessage);
 		m_hLogFile.WriteString( csLog);
+		m_hLogFile.WriteString( _T( "================= TRACE STOP ===============\n"));
 		m_hLogFile.Flush();
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
+		m_hLogFile.WriteString( _T( "\n======= FAILED TO WRITE TRACE - STOP =======\n"));
+		m_hLogFile.Flush();
 	}
 }
 
