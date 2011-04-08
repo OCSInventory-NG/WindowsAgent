@@ -245,7 +245,12 @@ BOOL CPackage::existDone()
 {
 	CString csTaskDone;
 
+	// First, try default package done file
 	csTaskDone.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_DONE);
+	if (fileExists( csTaskDone))
+		return TRUE;
+	// Try to see if OCS Agent installer done file exists
+	csTaskDone.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
 	return fileExists( csTaskDone);;
 }
 
@@ -284,7 +289,11 @@ BOOL CPackage::getDone( CString &csCode)
 	csCode = ERR_DONE_FAILED;
 	try
 	{
+		// First, try default package done file
 		csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_DONE);
+		if (!fileExists( csFile))
+			// Then, Try OCS Agent installer done 
+			csFile.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
 		if (!myFile.Open( csFile, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
 			return FALSE;
 		// Read only first line to get OCS result code
@@ -309,7 +318,11 @@ BOOL CPackage::getDone( CString &csCode, CString &csOutput)
 	csCode = ERR_DONE_FAILED;
 	try
 	{
+		// First, try default package done file
 		csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_DONE);
+		if (!fileExists( csFile))
+			// Then, Try OCS Agent installer done 
+			csFile.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
 		if (!myFile.Open( csFile, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
 			return FALSE;
 		// Read first line to get result code

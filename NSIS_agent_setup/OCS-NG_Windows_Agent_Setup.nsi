@@ -12,7 +12,7 @@ setcompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "OCS Inventory NG Agent"
-!define PRODUCT_VERSION "2.0.0.15"
+!define PRODUCT_VERSION "2.0.0.16"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
@@ -1703,12 +1703,12 @@ Section "Uninstaller" SEC06
 	FileOpen $1 "..\done" w
 	FileWrite $1 "SUCCESS"
 	FileClose $1
-	; WRITE done into "$APPDATA\OCS Inventory NG\Agent\Download" directory, because in 2.0 or higher, package is unzipped
-    ; into system TEMP directory and no more under "$APPDATA\OCS Inventory NG\Agent\Download\PackID\Temp"
-;    SetShellVarContext All
-;	FileOpen $1 "$APPDATA\OCS Inventory NG\Agent\Download\done" w
-;	FileWrite $1 "SUCCESS"
-;	FileClose $1
+	; WRITE OCSNG-Windows-Agent-Setup_done into "$APPDATA\OCS Inventory NG\Agent\Download" directory, because in 2.0 or higher,
+    ; package is unzipped into system TEMP directory and no more under "$APPDATA\OCS Inventory NG\Agent\Download\PackID\Temp"
+    SetShellVarContext All
+	FileOpen $1 "$APPDATA\OCS Inventory NG\Agent\Download\OCSNG-Windows-Agent-Setup_done" w
+	FileWrite $1 "SUCCESS"
+	FileClose $1
 Uninstall_end:
 SectionEnd
 

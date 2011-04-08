@@ -35,6 +35,8 @@
 #define OCS_DOWNLOAD_TASK		_T( "task")
 // This file contains package execution result
 #define OCS_DOWNLOAD_DONE		_T( "done")
+// This file contains package execution result
+#define OCS_AGENT_SETUP_DONE	_T( "OCSNG-Windows-Agent-Setup_done")
 // Fragment files assembled create build.zip
 #define OCS_DOWNLOAD_BUILD		_T( "build.zip")
 // HKLM registry key to store package ID and digest
