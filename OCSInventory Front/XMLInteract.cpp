@@ -422,11 +422,84 @@ BOOL CXMLInteract::UpdateAccountInfo( LPCTSTR lpstrAccountFile)
 	{
 		// Get size of Admininfo.conf file
 		if (!fileExists( lpstrAccountFile))
-			// Even if admin file does not exist, return TRUE
+			// If admin file does not exist, return TRUE because assuming first run or no admin infos
 			return TRUE;
 		if (!myXmlAccount.LoadFile( lpstrAccountFile))
-			return FALSE;
-		m_pXml->AddXml( &myXmlAccount);
+		{
+			// Old format admin infos file ???
+			if (UpdateAccountInfoOldFormat( &myXmlAccount, lpstrAccountFile))
+			{
+				// Yes, so save in new format
+				SetFileAttributes( lpstrAccountFile, FILE_ATTRIBUTE_NORMAL);
+				myXmlAccount.SaveFile( lpstrAccountFile);
+				SetFileAttributes( lpstrAccountFile, FILE_ATTRIBUTE_HIDDEN|FILE_ATTRIBUTE_SYSTEM);
+			}
+		}
+		return m_pXml->AddXml( &myXmlAccount);;
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
+	}
+}
+
+BOOL CXMLInteract::UpdateAccountInfoOldFormat( CMarkup *pXml, LPCTSTR lpstrAccountFile)
+{
+	CFileStatus myFileStatus;
+	TCHAR       *szKeys = NULL,
+				szSeps[] = _T( "-"), 
+				*szToken1 = NULL,
+				*szToken2 = NULL;
+	LONG        lSizeRead;
+
+	try
+	{
+		// Get size of Admininfo.conf file
+		if (CFile::GetStatus( lpstrAccountFile, myFileStatus))
+		{
+			// Allocate 2 buffers
+			if ((szKeys = new TCHAR[ myFileStatus.m_size+1]) == NULL)
+				return FALSE;
+			if ((szToken2 = new TCHAR[myFileStatus.m_size+1]) == NULL)
+			{
+				delete szKeys;
+				return FALSE;
+			}
+			// Get all key names from section in a multistring buffer, each string separated by \0
+			lSizeRead = GetPrivateProfileString( OCS_AGENT_SECTION, NULL, _T(""), szKeys, myFileStatus.m_size, lpstrAccountFile);
+			// Replace \0 by - in key buffer
+			for (LONG i=0; i<myFileStatus.m_size; i++)
+			{
+				if (szKeys[i] == 0)
+				{
+					szKeys[i]='-';
+				}
+				else if (i>=lSizeRead)
+				{
+					szKeys[i]=0;
+				}
+			}
+			// Parse key buffer to extract each key name
+			szToken1 = _tcstok( szKeys, szSeps );
+			while (szToken1 != NULL )
+			{
+				// Get value for this key
+				GetPrivateProfileString( OCS_AGENT_SECTION, szToken1, _T(""), szToken2, myFileStatus.m_size, lpstrAccountFile);
+				// Write it in XML
+				pXml->AddElem( _T( "ACCOUNTINFO"));
+					pXml->AddChildElem( _T( "KEYNAME"), szToken1);
+					pXml->AddChildElem( _T( "KEYVALUE"), szToken2);
+				pXml->OutOfElem();                            
+				// Get next key name
+				szToken1 = _tcstok( NULL, szSeps );
+			}
+			// free buffers
+			delete szToken2;
+			delete szKeys;
+		}
+		// Even if admin file does not exist, return TRUE
 		return TRUE;
 	}
 	catch( CException *pEx)

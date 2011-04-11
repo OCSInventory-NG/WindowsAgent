@@ -97,7 +97,8 @@ public: // Methods
 	BOOL UpdateAccountInfo( LPCTSTR lpstrAccountFile);
 
 protected: // Methods
-
+	// Read Administrative informations from old INI format and add them to XML
+	BOOL UpdateAccountInfoOldFormat( CMarkup *pXml, LPCTSTR lpstrAccountFile);
 protected: // Attributes
 	CMarkup *m_pXml;				// Pointer to xml of the inventory
 	DWORD m_dwBiosMode;				// Biosinfo mode
