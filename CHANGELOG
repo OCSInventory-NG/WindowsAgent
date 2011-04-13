@@ -1,4 +1,4 @@
-2.0.0.16
+2.0 rc4 aka 2.0.0.16
   * Fix bug when using agent 4061 to download and setup agent 2.0        
   * Fix bug #742372 when writing XML produced by plugins to log. So, changes ExecCommand output grab to Ansi instead of Unicode, and disable printing XML
   * Store accountinfo in XML, to fix UTF-8 encoding when sending to server accountinfo
