@@ -455,8 +455,8 @@ BOOL COCSInventoryApp::InitInstance()
 
 				cCapIpdiscover.scanLocalNetwork();
 			}
-			// Download
-			if(pPrologResp->isDownloadRequired())
+			// Download if not in notify mode
+			if (pPrologResp->isDownloadRequired() && !m_pConfig->isNotifyRequired())
 			{
 				m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT =>  Communication Server ask for Package Download"));
 				cCapDownload.retrievePackages();
