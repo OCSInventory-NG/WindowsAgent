@@ -81,6 +81,11 @@ public:
 	LPCTSTR GetAttrib( LPCTSTR szName);
 
 protected:
+	// Free all allocated nodes under an XML node, and including this XML node
+	// BECAUSE THIS IS NOT HANDLED BY TinyXML lib
+	void freeXmlNode( TiXmlNode *pNode);
+
+protected:
 	TiXmlDocument *m_pDoc;			// XML document
 	TiXmlElement  *m_pCurrentNode;	// XML node we are currently working with
 };

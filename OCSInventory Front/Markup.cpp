@@ -32,6 +32,28 @@ CMarkup::CMarkup()
 
 CMarkup::~CMarkup()
 {
+	// Free all allocated node in the document
+	freeXmlNode( m_pDoc);
+}
+
+void CMarkup::freeXmlNode( TiXmlNode *pNode)
+{
+	TiXmlNode *pChild,
+		      *pParent;
+
+	if (pNode == NULL)
+		return;
+	// Recursively delete sub nodes until there is no more child
+	while (pChild = pNode->FirstChild())
+		freeXmlNode( pChild);
+	// No more child, delete current node
+	if (pParent = pNode->Parent())
+		// This node has a parent node
+		pParent->RemoveChild( pNode);
+	else
+		// There is no more parent, delete the node itself
+		delete pNode;
+	pNode = NULL;
 }
 
 TiXmlElement *CMarkup::AddElem( LPCTSTR szName, LPCTSTR szValue)
@@ -274,7 +296,8 @@ BOOL CMarkup::RemoveChildElem( LPCTSTR szName, TiXmlElement *pXmlNode)
 		while (pXmlElement = pSearchNode->FirstChildElement( CT2CA( szName, CP_UTF8)))
 		{
 			// One sibling child node found
-			pSearchNode->RemoveChild( pXmlElement);
+			freeXmlNode( pXmlElement);
+			// pSearchNode->RemoveChild( pXmlElement);
 		}
 		// No more child node
 		return TRUE;
@@ -467,7 +490,7 @@ BOOL CMarkup::SetDoc( LPCSTR szDoc)
 		{
 			pDoc->Parse( szDoc);
 			if (m_pDoc)
-				delete m_pDoc;
+				freeXmlNode( m_pDoc);
 			m_pDoc = pDoc;
 			m_pCurrentNode = NULL;
 			return TRUE;
@@ -501,7 +524,7 @@ BOOL CMarkup::SetTinyXmlDocument( TiXmlDocument *pDoc)
 	if (pDoc == NULL)
 		return FALSE;
 	if (m_pDoc)
-		delete m_pDoc;
+		freeXmlNode( m_pDoc);
 	m_pDoc = pDoc;
 	m_pCurrentNode = NULL;
 	return TRUE;
@@ -546,7 +569,7 @@ BOOL CMarkup::LoadFile( LPCTSTR lpstrFile)
 		return TRUE;
 	}
 	// Error, set XML document empty
-	delete m_pDoc;
+	freeXmlNode( m_pDoc);
 	m_pDoc = new TiXmlDocument();
 	TiXmlDeclaration *pDecl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
 	m_pDoc->LinkEndChild( pDecl );
