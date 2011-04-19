@@ -1379,6 +1379,7 @@ Section "Upgrade from 1.X Agent" SEC02
     Delete /REBOOTOK "$INSTDIR\OcsService.dll"
     Delete /REBOOTOK "$INSTDIR\PsApi.dll"
     Delete /REBOOTOK "$INSTDIR\Zlib.dll"
+    Delete /REBOOTOK "$INSTDIR\Ocs_Contact.exe"
 	Delete /REBOOTOK "$STARTMENU\Ocs_Contact.lnk"
     IfErrors 0 +3
 	StrCpy $logBuffer "One or more file remove failed (perhaps missing file), but non blocking !"
