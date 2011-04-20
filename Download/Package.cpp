@@ -92,7 +92,7 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 		}
 		else
 		{
-			// Put into tmp folder to unzip package into path
+			// Put into path tmp folder to unzip package
 			if (GetTempPath( _MAX_PATH, m_csPath.GetBufferSetLength( _MAX_PATH+1)) == 0)
 				return FALSE;
 			m_csPath.ReleaseBuffer();
@@ -128,7 +128,8 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 		m_csGardeFou = myXml.GetAttrib( _T( "GARDEFOU"));
 		
 		/* User notification */
-		m_bNotifyUser = (_ttoi( myXml.GetAttrib( _T( "NOTIFY_USER"))) != 0);
+		csBuffer = myXml.GetAttrib( _T( "NOTIFY_USER"));
+		m_bNotifyUser = (_ttoi( csBuffer) != 0);
 		if (m_bNotifyUser)
 		{
 			m_uNotifyCountdown = _ttoi( myXml.GetAttrib( _T( "NOTIFY_COUNTDOWN")));
@@ -136,7 +137,8 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 			m_bNotifyCanAbort = ( _ttoi( myXml.GetAttrib( _T( "NOTIFY_CAN_ABORT"))) != 0);
 			m_bNotifyCanDelay = ( _ttoi( myXml.GetAttrib( _T( "NOTIFY_CAN_DELAY"))) != 0);
 		}
-		m_bNeedDoneAction = (_ttoi( myXml.GetAttrib( _T( "NEED_DONE_ACTION"))) != 0);
+		csBuffer = myXml.GetAttrib( _T( "NEED_DONE_ACTION"));
+		m_bNeedDoneAction = (_ttoi( csBuffer) != 0);
 		if (m_bNeedDoneAction)
 		{
 			m_csNeedDoneActionText = myXml.GetAttrib( _T( "NEED_DONE_ACTION_TEXT"));

@@ -379,7 +379,7 @@ UINT CDownloadApp::findPackages()
 		// Check if Package is not blacklisted
 		if (m_BlackList.IsListed( cFinder.GetFileName()))
 		{
-			m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Package <%s> is blacklisted, skipping"));
+			m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Package <%s> is blacklisted, skipping"), cFinder.GetFilePath());
 			continue;
 		}
 		m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Verifying package <%s>"), cFinder.GetFilePath());
