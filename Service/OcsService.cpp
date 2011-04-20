@@ -150,12 +150,22 @@ BOOL COcsService::writeConfig( BOOL bFull)
 	if (bFull)
 	{
 		csValue.Format( _T( "%d"), m_iPrologFreq);
-		bResult = bResult && WritePrivateProfileString( OCS_SERVICE_SECTION, OCS_SERVICE_PROLOG_FREQ, csValue, csConfigFile);
+		if (!WritePrivateProfileString( OCS_SERVICE_SECTION, OCS_SERVICE_PROLOG_FREQ, csValue, csConfigFile))
+		{
+			csValue.Format( _T( "Failed to write new PROLOG Frequency: %s"), LookupError( GetLastError())); 
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csValue);
+			bResult = FALSE;
+		}
 		csValue.Format( _T( "%d"), m_iOldPrologFreq);
-		bResult = bResult && WritePrivateProfileString( OCS_SERVICE_SECTION, OCS_SERVICE_OLD_PROLOG_FREQ, csValue, csConfigFile);
+		WritePrivateProfileString( OCS_SERVICE_SECTION, OCS_SERVICE_OLD_PROLOG_FREQ, csValue, csConfigFile);
 	}
 	csValue.Format( _T( "%d"), m_iTToWait);
-	bResult = bResult && WritePrivateProfileString( OCS_SERVICE_SECTION, OCS_SERVICE_TTO_WAIT, csValue, csConfigFile);
+	if (!WritePrivateProfileString( OCS_SERVICE_SECTION, OCS_SERVICE_TTO_WAIT, csValue, csConfigFile))
+	{
+		csValue.Format( _T( "Failed to write new TTO Wait: %s"), LookupError( GetLastError())); 
+		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csValue);
+		bResult = FALSE;
+	}
 	protectConfigFiles();
 	return bResult;
 }
