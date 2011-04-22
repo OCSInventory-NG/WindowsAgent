@@ -375,6 +375,7 @@ BOOL COcsService::checkInventoryState()
 		if (!myState.ReadFromFile( csBuffer))
 		{
 			// File open or parsing error
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Failed to load/parse last inventory state"));
 			return FALSE;
 		}
 		// Get network adapter infos

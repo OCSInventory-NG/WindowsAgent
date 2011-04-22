@@ -101,7 +101,7 @@ BOOL CInventoryRequest::initInventory()
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Reading last inventory state"));
 	csStateFile.Format( _T("%s\\%s"), getDataFolder(), OCS_LAST_STATE_FILE);
 	if (!m_pState->ReadFromFile( csStateFile))
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Error while reading state file <%s>"), csStateFile);
+		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to load/parse state file <%s>"), csStateFile);
 	return TRUE;
 }
 
@@ -200,7 +200,13 @@ BOOL CInventoryRequest::writeLastInventoryState()
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Writing new inventory state"));
 	CString csFileName;
 	csFileName.Format( _T( "%s\\%s"), getDataFolder(), OCS_LAST_STATE_FILE);
-	return m_pState->WriteToFile( csFileName);
+	if (!m_pState->WriteToFile( csFileName))
+	{
+		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to write new inventory state to file <%s>"), csFileName);
+		return FALSE;
+	}
+	return TRUE;
+
 }
 
 void CInventoryRequest::setTag(CString csTag)
