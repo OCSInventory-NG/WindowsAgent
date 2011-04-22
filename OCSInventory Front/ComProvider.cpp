@@ -45,7 +45,7 @@ BOOL CComProvider::load(LPCTSTR lpstrProvider)
 		unload();
 
 		pLogger->log( LOG_PRIORITY_DEBUG,  _T( "COM PROVIDER => Loading Communication Provider <%s>"), lpstrProvider);
-		if ((m_hComProvider = AfxLoadLibrary( lpstrProvider)) == NULL)
+		if ((m_hComProvider = LoadLibrary( lpstrProvider)) == NULL)
 		{
 			pLogger->log( LOG_PRIORITY_WARNING,  _T( "COM PROVIDER => Unable to load library <%s>, %s"), lpstrProvider, LookupError( GetLastError()));
 			return FALSE;
