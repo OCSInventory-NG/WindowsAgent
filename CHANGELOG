@@ -1,3 +1,9 @@
+2.0.0.17
+  * Fix crash when STORE package have a empty path to store
+  * Fix memory leak bug #765893 in service
+  * Delete Ocs_Contact.exe when upgrading from agent 1.x
+  * Do not start download when agent is launched in NOTIFY mode
+  * Do use link speed in network adapter hash computation, because with wireless, speed may changes, but not the other infos.
 2.0 rc4 aka 2.0.0.16
   * Fix bug when using agent 4061 to download and setup agent 2.0        
   * Fix bug #742372 when writing XML produced by plugins to log. So, changes ExecCommand output grab to Ansi instead of Unicode, and disable printing XML
