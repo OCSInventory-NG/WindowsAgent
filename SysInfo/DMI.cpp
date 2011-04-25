@@ -154,28 +154,31 @@ BOOL CDMI::CheckSum(const BYTE *buf, int length)
 
 BOOL CDMI::Connect()
 {
-	BOOL bRet = FALSE;
-	HRESULT h_result;
-	IWbemLocator* p_locator = 0;
-    IWbemServices* p_service = 0;
-    IEnumWbemClassObject* p_enumerator = NULL;
+	HRESULT hResult;
+	IWbemLocator* pWbemLocator = NULL;
+    IWbemServices* pWbemService = NULL;
+    IEnumWbemClassObject* pWbemEnumerator = NULL;
+    IWbemClassObject* pWbemObjectIntance = NULL;
+    ULONG dwCount = 0;
+	VARIANT variantBiosData;
+	CIMTYPE cimType;
 
 	// Initialize COM.
 	AddLog( _T( "DMI: Trying to initialize COM...")); 
-    if ((h_result =  CoInitializeEx(0, COINIT_MULTITHREADED)) < 0) 
+    if ((hResult =  CoInitializeEx(0, COINIT_MULTITHREADED)) < 0) 
 	{
 		AddLog( _T( "Failed in call to CoInitializeEx !\n"));
         return FALSE;
 	}
     // Obtain the initial locator to Windows Management
     // on a particular host computer.
-    h_result = CoCreateInstance(
+    hResult = CoCreateInstance(
         CLSID_WbemLocator,             
         0, 
         CLSCTX_INPROC_SERVER, 
-        IID_IWbemLocator, (LPVOID *) &p_locator);
+        IID_IWbemLocator, (LPVOID *) &pWbemLocator);
  
-    if (h_result<0)
+    if (hResult<0)
     {
   		AddLog( _T( "Failed in call to CoCreateInstance !\n"));
 		CoUninitialize();
@@ -184,28 +187,28 @@ BOOL CDMI::Connect()
     // Connect to the root\cimv2 namespace with the
     // current user and obtain pointer pSvc
     // to make IWbemServices calls.
-    h_result = p_locator->ConnectServer(
-        _bstr_t( "root\\WMI"),		 // WMI namespace
+    hResult = pWbemLocator->ConnectServer(
+        _bstr_t( "root\\WMI"),	 // WMI namespace
         NULL,                    // User name
         NULL,                    // User password
         NULL,                    // Locale
         NULL,                    // Security flags                 
         NULL,                    // Authority       
         NULL,                    // Context object
-        &p_service               // IWbemServices proxy
+        &pWbemService            // IWbemServices proxy
     );                              
     
-    if (h_result<0)
+    if (hResult<0)
     {
   		AddLog( _T( "Failed in call to ConnectServer !\n"));
-        p_locator->Release();     
+        pWbemLocator->Release();     
         CoUninitialize();
         return FALSE;
     }
     // Set the IWbemServices proxy so that impersonation
     // of the user (client) occurs.
-    h_result = CoSetProxyBlanket(
-       p_service,                      // the proxy to set
+    hResult = CoSetProxyBlanket(
+       pWbemService,                 // the proxy to set
        RPC_C_AUTHN_WINNT,            // authentication service
        RPC_C_AUTHZ_NONE,             // authorization service
        NULL,                         // Server principal name
@@ -214,98 +217,100 @@ BOOL CDMI::Connect()
        NULL,                         // client identity 
        EOAC_NONE                     // proxy capabilities     
     );
-    if (h_result<0)
+    if (hResult<0)
     {
   		AddLog( _T( "Failed in call to CoSetProxyBlanket !\n"));
-        p_service->Release();
-        p_locator->Release();     
+        pWbemService->Release();
+        pWbemLocator->Release();     
         CoUninitialize();
         return FALSE;
     }
 	AddLog( _T( "OK\nDMI: Trying to get raw SMBios data...")); 
 	// Enumerates MSSMBios_RawSMBiosTables objects
-    h_result = p_service->CreateInstanceEnum( _bstr_t("MSSMBios_RawSMBiosTables"), 0, NULL, &p_enumerator);
-    if (h_result<0)
+    hResult = pWbemService->CreateInstanceEnum( _bstr_t("MSSMBios_RawSMBiosTables"), 0, NULL, &pWbemEnumerator);
+    if (hResult<0)
     {
   		AddLog( _T( "Failed in call to CreateInstanceEnum( MSSMBios_RawSMBiosTables) !\n"));
-        p_service->Release();
-        p_locator->Release();     
+        pWbemService->Release();
+        pWbemLocator->Release();     
         CoUninitialize();
         return FALSE;
     }
-    do
+    while (pWbemEnumerator)
     {
-        IWbemClassObject* p_instance = NULL;
-        ULONG dw_count = NULL;
+        pWbemObjectIntance = NULL;
+        dwCount = 0;
 
-        h_result = p_enumerator->Next(
-            WBEM_INFINITE,
-            1,
-            &p_instance,
-            &dw_count);      
-		if (h_result>=0)
+        hResult = pWbemEnumerator->Next(
+            30000,					// Query timeout 30 seconds
+            1,						// Number of objects to retreive
+            &pWbemObjectIntance,	// Object retreived
+            &dwCount);				// Real number of objects retreived
+		if ((hResult != WBEM_S_NO_ERROR) || (dwCount ==0))
 		{
-			// This an object, ensure SMBios data are ok
-			VARIANT variant_bios_data;
-			VariantInit( &variant_bios_data);
-			CIMTYPE type;
-
-			// Try to get SMBios version
-			h_result = p_instance->Get( _bstr_t("SmbiosMajorVersion"), 0, &variant_bios_data, &type, NULL);
-			if (h_result <0)
-			{
-				// No SMBios version, skip
-				VariantClear( &variant_bios_data);
-				continue;
-			}
-			m_nSMBiosVersionMajor = V_I2( &variant_bios_data);
-			VariantInit( &variant_bios_data);
-			h_result = p_instance->Get( _bstr_t("SmbiosMinorVersion"), 0, &variant_bios_data, &type, NULL);
-			if(h_result<0)
-			{
-				// No SMBios version, skip
-				VariantClear( &variant_bios_data);
-				continue;
-			}
-			m_nSMBiosVersionMinor = V_I2( &variant_bios_data);
-			// Try to get DMI tables
-			VariantInit( &variant_bios_data);
-			h_result = p_instance->Get( _bstr_t("SMBiosData"), 0, &variant_bios_data, &type, NULL);
-			if(h_result>=0)
-			{
-				if ( ( VT_UI1 | VT_ARRAY  ) != variant_bios_data.vt )
-				{
-					// No SMBios data inside
-				}
-				else
-				{
-					SAFEARRAY* p_array = NULL;
-					p_array = V_ARRAY(&variant_bios_data);
-					unsigned char* p_data = (unsigned char *)p_array->pvData;
-
-					m_nStructureLength = p_array->rgsabound[0].cElements;
-					if (m_pTables == NULL)
-						free( m_pTables);
-					if ((m_pTables = (UCHAR*) malloc( m_nStructureLength+2)) == NULL) 
-					{
-						AddLog( _T( "Unable to allocate memory for raw SMBIOS data !\n"));
-						p_service->Release();
-						p_locator->Release();     
-						CoUninitialize();
-						return FALSE;
-					}
-					memset( m_pTables, 0, m_nStructureLength+2);
-					// OK, we've found them
-					memcpy( m_pTables, p_data, m_nStructureLength);
-				}
-			}
-			VariantClear( &variant_bios_data);
+			// Error, or no more object to enumerate
 			break;
 		}
-    } while (h_result == WBEM_S_NO_ERROR);
-	
-    p_service->Release();
-    p_locator->Release();     
+		// This an object, ensure SMBios data are ok
+		VariantInit( &variantBiosData);
+
+		// Try to get SMBios version
+		hResult = pWbemObjectIntance->Get( _bstr_t("SmbiosMajorVersion"), 0, &variantBiosData, &cimType, NULL);
+		if (hResult < 0)
+		{
+			// No SMBios version, skip this object
+			VariantClear( &variantBiosData);
+			pWbemObjectIntance->Release();
+			continue;
+		}
+		m_nSMBiosVersionMajor = V_I2( &variantBiosData);
+		VariantInit( &variantBiosData);
+		hResult = pWbemObjectIntance->Get( _bstr_t("SmbiosMinorVersion"), 0, &variantBiosData, &cimType, NULL);
+		if (hResult < 0)
+		{
+			// No SMBios version, skip this object
+			VariantClear( &variantBiosData);
+			pWbemObjectIntance->Release();
+			continue;
+		}
+		m_nSMBiosVersionMinor = V_I2( &variantBiosData);
+		// Try to get DMI tables
+		VariantInit( &variantBiosData);
+		hResult = pWbemObjectIntance->Get( _bstr_t("SMBiosData"), 0, &variantBiosData, &cimType, NULL);
+		if ((hResult >= 0) && ((VT_UI1 | VT_ARRAY) == variantBiosData.vt))
+		{
+			// SMBios data inside
+			SAFEARRAY* p_array = NULL;
+			p_array = V_ARRAY(&variantBiosData);
+			unsigned char* p_data = (unsigned char *)p_array->pvData;
+
+			m_nStructureLength = p_array->rgsabound[0].cElements;
+			if (m_pTables == NULL)
+				free( m_pTables);
+			if ((m_pTables = (UCHAR*) malloc( m_nStructureLength+2)) == NULL) 
+			{
+				AddLog( _T( "Unable to allocate memory for raw SMBIOS data !\n"));
+				pWbemObjectIntance->Release();
+				pWbemEnumerator->Release();
+				pWbemService->Release();
+				pWbemLocator->Release();     
+				CoUninitialize();
+				return FALSE;
+			}
+			memset( m_pTables, 0, m_nStructureLength+2);
+			// OK, we've found them
+			memcpy( m_pTables, p_data, m_nStructureLength);
+			break;
+		}
+		// Not already found, enumerate next object
+		VariantClear( &variantBiosData);
+		pWbemObjectIntance->Release();
+    }
+	// Release used WMI objects
+	pWbemObjectIntance->Release();
+	pWbemEnumerator->Release();
+    pWbemService->Release();
+    pWbemLocator->Release();     
     CoUninitialize();
 	if (m_pTables == NULL)
 	{
