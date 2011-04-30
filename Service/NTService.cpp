@@ -189,6 +189,7 @@ BOOL CNTService::Install( LPCTSTR lpstrDescription, LPCTSTR lpstrDependancies)
         ::CloseServiceHandle(hSCM);
         return FALSE;
     }
+	RegCloseKey( hKey);
     // Create registry entries to support logging messages
     // Add the source name as a subkey under the Application key in the EventLog service portion of the registry.
     csKey.Format( _T( "%s\\%s"), HKEY_NT_LOG_EVENT, m_csServiceName);
