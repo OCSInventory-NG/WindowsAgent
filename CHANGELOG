@@ -1,4 +1,6 @@
 2.0.0.18
+  * In NOTIFY mode, update only network inventory state, to avoid service launching agent every minute !
+  * In NOTIFY mode, do not launch Registry, Download or Ipdiscover capacity, neither VBS or executable plugins (only DLL plugins)
   * Fix some other memory leaks
 2.0.0.17
   * Fix crash when STORE package have a empty path to store
