@@ -410,14 +410,16 @@ BOOL COCSInventoryApp::InitInstance()
 
 			/*****
 			 *
-			 *	Initialize Inventory in capacities
+			 *	Initialize Inventory in capacities (not in notify mode)
 			 *
 			 ****/
-			cCapRegistry.setInventory( pInventory);
-			cCapIpdiscover.setInventory( pInventory);
-			cCapDownload.setInventory( pInventory);
-			cCapExec.setInventory( pInventory);
-
+			if (!m_pConfig->isNotifyRequired())
+			{
+				cCapRegistry.setInventory( pInventory);
+				cCapIpdiscover.setInventory( pInventory);
+				cCapDownload.setInventory( pInventory);
+				cCapExec.setInventory( pInventory);
+			}
 			/*****
 			 *
 			 *	Inventory hooks from Plugins
@@ -427,17 +429,17 @@ BOOL COCSInventoryApp::InitInstance()
 
 			/*****
 			 *
-			 *	Using capacities on inventory
+			 *	Using capacities on inventory (not in notify mode)
 			 *
 			 ****/
-			// Feed inventory with required registry keys
-			if(pPrologResp->isRegistryRequired())
+			// Feed inventory with required registry keys (not in notify mode)
+			if (!m_pConfig->isNotifyRequired() && pPrologResp->isRegistryRequired())
 			{
 				m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT =>  Communication Server ask for Registry Query"));
 				cCapRegistry.retrieveKeys();
 			}
-			// Ipdiscover
-			if(pPrologResp->isIpdiscoverRequired() || m_pConfig->isIpDiscoverRequired())
+			// Ipdiscover (not in notify mode)
+			if (!m_pConfig->isNotifyRequired() && (pPrologResp->isIpdiscoverRequired() || m_pConfig->isIpDiscoverRequired()))
 			{
 				if (m_pConfig->isIpDiscoverRequired())
 				{
@@ -455,15 +457,16 @@ BOOL COCSInventoryApp::InitInstance()
 
 				cCapIpdiscover.scanLocalNetwork();
 			}
-			// Download if not in notify mode
-			if (pPrologResp->isDownloadRequired() && !m_pConfig->isNotifyRequired())
+			// Download (not in notify mode)
+			if (!m_pConfig->isNotifyRequired() && pPrologResp->isDownloadRequired())
 			{
 				m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT =>  Communication Server ask for Package Download"));
 				cCapDownload.retrievePackages();
 				cCapDownload.launch();
 			}
-			// Script or binary plugins
-			cCapExec.executePlugins();
+			// Script or binary plugins (not in notify mode)
+			if (!m_pConfig->isNotifyRequired())
+				cCapExec.executePlugins();
 			
 			/*****
 			 *
@@ -487,14 +490,16 @@ BOOL COCSInventoryApp::InitInstance()
 			
 			/*****
 			 *
-			 *	Initialize Inventory response in capacities
+			 *	Initialize Inventory response in capacities (not in notify mode)
 			 *
 			 ****/
-			cCapRegistry.setInventoryResp( pInventoryResponse);
-			cCapIpdiscover.setInventoryResp( pInventoryResponse);
-			cCapDownload.setInventoryResp( pInventoryResponse);
-			cCapExec.setInventoryResp( pInventoryResponse);
-
+			if (!m_pConfig->isNotifyRequired())
+			{
+				cCapRegistry.setInventoryResp( pInventoryResponse);
+				cCapIpdiscover.setInventoryResp( pInventoryResponse);
+				cCapDownload.setInventoryResp( pInventoryResponse);
+				cCapExec.setInventoryResp( pInventoryResponse);
+			}
 			/*****
 			 *
 			 *	End hooks from Plugins
