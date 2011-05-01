@@ -113,20 +113,23 @@ BOOL CInventoryRequest::final()
 	getXmlPointerContent();
 	if (m_bNotify)
 	{
-		// Notify network informations changes
+		// Notify mode => Save inventory state only for Network adapters
+		m_pState->SetNetworks( m_NetworkList.GetHash());
+		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "INVENTORY => Network adapters inventory state changed"));
+		// Create XML only to notify network inventory changes
 		bSuccess = m_pTheDB->NotifyNetworks( m_NetworkList);
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Notify %u Network Adapter(s)"), m_NetworkList.GetCount());
 	}
 	else
 	{
-		// Standard inventory => Check state to see if changed
+		// Standard inventory => Send full inventory information
+		// Check state to see if there is something changed
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Checking last inventory state"));
 		if (isStateChanged())
 			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "INVENTORY => Inventory changed since last run"));
 		else
 			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "INVENTORY => No change since last inventory"));
 
-		// Update the XML
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Generating XML document with Device properties"));
 		// Update Memory slots
 		bSuccess = m_pTheDB->UpdateMemorySlots( m_MemoryList);
