@@ -205,39 +205,117 @@ BOOL COcsService::OnInit()
 CFile *COcsService::protectFile(LPCTSTR lpstrFolder, LPCTSTR lpstrFile)
 {
 	CString csFile;
-	CFile	*pFile;
+	CFile	*pFile = NULL;
 
-	csFile.Format( _T( "%s\\%s"), lpstrFolder, lpstrFile);
-	pFile = new CFile();
-	pFile->Open( csFile, CFile::modeRead|CFile::shareDenyWrite);
-	return pFile;
+	try
+	{
+		csFile.Format( _T( "%s\\%s"), lpstrFolder, lpstrFile);
+		pFile = new CFile();
+		if (fileExists( csFile))
+		{
+			if (pFile->Open( csFile, CFile::modeRead|CFile::shareDenyWrite))
+				// Successfully opened denying write
+				return pFile;
+			// Unable to open file for denying write
+			delete pFile;
+			return NULL;
+		}
+		// file does not exists => assume protected
+		pFile->m_hFile = CFile::hFileNull;
+		return pFile;
+	}
+	catch (CException *pEx)
+	{
+		if (pFile)
+			delete pFile;
+		pEx->Delete();
+		return NULL;
+	}
 }
 
 BOOL COcsService::unProtectFile( CFile *pFile)
 {
-	if (pFile->m_hFile != CFile::hFileNull)
-		pFile->Close();
-	delete( pFile);		
-	return TRUE;
+	try
+	{
+		if (pFile != NULL)
+		{
+			if (pFile->m_hFile != CFile::hFileNull)
+				pFile->Close();
+			delete( pFile);
+		}
+		return TRUE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		return FALSE;
+	}
 }
 
 BOOL COcsService::protectCommonFiles()
 {
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "Zlib1.dll")));
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "libeay32.dll")));
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "ssleay32.dll")));
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "libcurl.dll")));
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "ZipArchive.dll")));
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "ComHTTP.dll")));
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "OcsWmi.dll")));
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "Sysinfo.dll")));
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "OCSInventory Front.dll")));
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "Download.exe")));
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "Ocsinventory.exe")));
-	m_tCommonHandles.Add( protectFile( getInstallFolder(), _T( "OcsSystray.exe")));
-	m_tCommonHandles.Add( protectFile( getDataFolder(), _T( "last_state")));
-	m_tCommonHandles.Add( protectFile( getDataFolder(), _T( "ocsinventory.dat")));
-	m_tCommonHandles.Add( protectFile( getDataFolder(), _T( "admininfo.conf")));
+	CFile *pFile;
+
+	if ((pFile = protectFile( getInstallFolder(), _T( "zlib1.dll"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <zlib1.dll>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "libeay32.dll"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <libeay32.dll>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "ssleay32.dll"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <ssleay32.dll>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "libcurl.dll"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <libcurl.dll>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "ZipArchive.dll"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <ZipArchive.dll>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "ComHTTP.dll"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <ComHTTP.dll>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "OcsWmi.dll"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <OcsWmi.dll>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "Sysinfo.dll"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <Sysinfo.dll>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "OCSInventory Front.dll"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <OCSInventory Front.dll>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "Download.exe"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <Download.exe>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "Ocsinventory.exe"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <Ocsinventory.exe>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "OcsSystray.exe"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <OcsSystray.exe>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getDataFolder(), _T( "last_state"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <last_state>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getDataFolder(), _T( "ocsinventory.dat"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <ocsinventory.dat>"));
+	else
+		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getDataFolder(), _T( "admininfo.conf"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <admininfo.conf>"));
+	else
+		m_tCommonHandles.Add( pFile);
 	return TRUE;
 }
 
@@ -245,10 +323,16 @@ BOOL COcsService::unProtectCommonFiles()
 {
 	CFile *pFile;
 
-	for (int cptHandle=0; cptHandle < m_tCommonHandles.GetSize(); cptHandle++)
+	for (INT_PTR cptHandle=0; cptHandle < m_tCommonHandles.GetSize(); cptHandle++)
 	{
 		pFile = ((CFile*)m_tCommonHandles.GetAt(cptHandle));
-		unProtectFile( pFile);		
+		if (!unProtectFile( pFile))
+		{
+			CString csMessage;
+
+			csMessage.Format( _T( "Unable to release write protection on file <%s>"), pFile->GetFilePath());
+			LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
+		}
 	}
 	m_tCommonHandles.RemoveAll();
 	return TRUE;
@@ -256,7 +340,12 @@ BOOL COcsService::unProtectCommonFiles()
 
 BOOL COcsService::protectConfigFiles()
 {
-	m_tConfigHandles.Add( protectFile( getInstallFolder(), OCS_CONFIG_FILENAME));
+	CFile *pFile;
+
+	if ((pFile = protectFile( getDataFolder(), OCS_CONFIG_FILENAME)) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <ocsinventory.ini>"));
+	else
+		m_tConfigHandles.Add( pFile);
 	return TRUE;
 }
 
@@ -267,7 +356,13 @@ BOOL COcsService::unProtectConfigFiles()
 	for (int cptHandle=0; cptHandle < m_tConfigHandles.GetSize(); cptHandle++)
 	{
 		pFile = ((CFile*)m_tConfigHandles.GetAt(cptHandle));
-		unProtectFile( pFile);		
+		if (!unProtectFile( pFile))
+		{
+			CString csMessage;
+
+			csMessage.Format( _T( "Unable to release write protection on file <%s>"), pFile->GetFilePath());
+			LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
+		}
 	}
 	m_tConfigHandles.RemoveAll();
 	return TRUE;
@@ -275,7 +370,7 @@ BOOL COcsService::unProtectConfigFiles()
 
 void COcsService::OnStop()
 {
-	// Unportect all files
+	// Unprotect all files
 	unProtectCommonFiles();
 	unProtectConfigFiles();
 }
@@ -283,11 +378,11 @@ void COcsService::OnStop()
 void COcsService::Run()
 {
 	BOOL bNotifyInventory = FALSE;
+	CString csStatus;
 
 	// Latency for launching agent when agent launch fails
 	int nLatencyAgentLaunch = m_iWriteIniLatency ? m_iWriteIniLatency : WRITE_TTOWAIT_EACH;
 
-	CString csStatus;
 	csStatus.Format( _T( "Service start parameters FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i"), m_iPrologFreq, m_iOldPrologFreq, m_iTToWait);
 	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csStatus);
 
@@ -326,10 +421,14 @@ void COcsService::Run()
 			UINT vOld = m_iOldPrologFreq;
 			if (!runAgent( bNotifyInventory))
 			{
-				// Agent launch failed
-				if (nLatencyAgentLaunch < (m_iPrologFreq*PROLOG_FREQ_UNIT))
+				// Agent launch failed => do not wait for next prolog freq
+				// Try to launch it next WRITE_TTOWAIT_EACH, but if antother error occurs
+				// increase laucnh latency, and so on at each each error.
+				nLatencyAgentLaunch = nLatencyAgentLaunch * 2;
+				if (nLatencyAgentLaunch > (m_iPrologFreq*PROLOG_FREQ_UNIT))
 					// At least, launch agent once a PROLOG_FREQ
-					nLatencyAgentLaunch = nLatencyAgentLaunch * 2;
+					nLatencyAgentLaunch = m_iPrologFreq*PROLOG_FREQ_UNIT;
+				// Compute TTO_WAIT inside the latency, not PROLOG_FREQ, because of error
 				m_iTToWait = generateRandNumber( nLatencyAgentLaunch);
 			}
 			else
@@ -339,7 +438,7 @@ void COcsService::Run()
 				nLatencyAgentLaunch = m_iWriteIniLatency ? m_iWriteIniLatency : WRITE_TTOWAIT_EACH;
 				// Read new parameters
 				loadConfig();
-				// Compute new TTO_WAIT
+				// Compute new TTO_WAIT inside PROLOG_FREQ
 				if( m_iPrologFreq != m_iOldPrologFreq )
 					m_iTToWait = generateRandNumber(m_iPrologFreq*PROLOG_FREQ_UNIT);			
 				else
@@ -421,7 +520,7 @@ BOOL COcsService::runAgent( BOOL bNotify)
 		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 		break;
 	case EXEC_ERROR_WAIT_COMMAND:
-		csMessage.Format( _T( "Cant't get OCS Inventory NG Agent exit code"));
+		csMessage.Format( _T( "Can't get OCS Inventory NG Agent exit code"));
 		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 		break;
 	default:
@@ -431,16 +530,36 @@ BOOL COcsService::runAgent( BOOL bNotify)
 		{
 		case -1:
 			// Exit code not available
-			csMessage.Format( _T( "Cant't get OCS Inventory NG Agent exit code (%s)"), cmProcess.getOutput());
+			csMessage.Format( _T( "Can't get OCS Inventory NG Agent exit code (%s)"), cmProcess.getOutput());
 			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 			break;
 		case 0:
 			// Success
 			bReturn = TRUE;
 			break;
+		case 1:
+			// Exit code is 1 => Generic agent Error
+			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d => Generic Agent error)"), nExitCode);
+			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
+			break;
+		case 2:
+			// Exit code is 2 => Agent already running
+			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d => Agent is already running)"), nExitCode);
+			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
+			break;
+		case 3:
+			// Exit code is 3 => Failed to load/initialize Communication Provider
+			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d => Failed to load/initialize Communication Provider)"), nExitCode);
+			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
+			break;
+		case 4:
+			// Exit code is 4 => Network error
+			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d => Failed to talk with Communication Server)"), nExitCode);
+			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
+			break;
 		default:
 			// Exit code is not a success
-			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d)"), nExitCode);
+			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d => Unknown code !)"), nExitCode);
 			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 			break;
 		}
@@ -464,7 +583,7 @@ BOOL COcsService::OnUserControl( DWORD dwOpcode)
         return TRUE;
     case OCS_SERVICE_CONTROL_SHOW_INVENTORY:
         // Show inventory using XSLT
-		LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, _T( "User manually ask local inventory informations"));
+		LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, _T( "User manually ask displaying local inventory informations"));
 		showInventory();
         return TRUE;
     default:
