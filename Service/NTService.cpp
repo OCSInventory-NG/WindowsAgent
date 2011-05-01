@@ -416,7 +416,6 @@ void CNTService::Handler(DWORD dwOpcode)
         m_pThis->SetStatus(SERVICE_STOP_PENDING);
         m_pThis->OnStop();
         m_pThis->m_bIsRunning = FALSE;
-        m_pThis->LogEvent(EVENTLOG_INFORMATION_TYPE, EVMSG_STOPPED, m_pThis->m_csServiceName);
         break;
     case SERVICE_CONTROL_PAUSE: // 2
         m_pThis->OnPause();
