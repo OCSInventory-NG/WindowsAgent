@@ -551,8 +551,6 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 					csCaption,
 					csDescription;
 
-	USES_CONVERSION;
-
     // Retrieve the device information set for the interface class.
 	// First, try DISPLAY devices
 	AddLog( _T( "SetupAPI: Enumerating DISPLAY devices...\n"));
@@ -569,7 +567,7 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 			myMonitor.Clear();
 			if (GetDisplayEDID( hDeviceInfoSet, &spDeviceInfo, myRecord))
 			{
-				myMonitor.SetManufacturer( CA2CT( GetManufacturerName( myRecord.Manufacturer_ID)));
+				myMonitor.SetManufacturer( CA2T( GetManufacturerName( myRecord.Manufacturer_ID)));
 				switch (GetDetailledTimingDescriptionType( myRecord.Detailed_Timing_Description1))
 				{
 				case Serial_Number:
@@ -610,17 +608,17 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 					csCaption = GetEdidText( myRecord.Detailed_Timing_Description4);
 					break;
 				}
-				myMonitor.SetType( CA2CT( DecodeDPMSFlag( myRecord.DPMS_Flags)));
+				myMonitor.SetType( CA2T( DecodeDPMSFlag( myRecord.DPMS_Flags)));
 				AddLog( _T( "\tEDID : Monitor %s.%04X.%8X (%s)\n"), 
 					myRecord.Manufacturer_ID, (DWORD)myRecord.EDID_ID_Code, (DWORD)myRecord.Serial_Number,
 					csSerial);
 				// Acer monitors have bogus serial
 				if (AcerHack( csSerial, &myRecord))
 					AddLog( _T( "\tEDID Acer Fix: Change Serial Number to %s\n"), csSerial);
-				myMonitor.SetCaption( CA2CT( csCaption));
-				myMonitor.SetDescription( CA2CT( csDescription));
-				if (myMonitor.IsValidSerial( CA2CT( csSerial)))
-					myMonitor.SetSerial( CA2CT( csSerial));
+				myMonitor.SetCaption( CA2T( csCaption));
+				myMonitor.SetDescription( CA2T( csDescription));
+				if (myMonitor.IsValidSerial( CA2T( csSerial)))
+					myMonitor.SetSerial( CA2T( csSerial));
 				pMyList->AddTail( myMonitor);
 			}
 			dwIndex++;
@@ -654,7 +652,7 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 			myMonitor.Clear();
 			if (GetDisplayEDID( hDeviceInfoSet, &spDeviceInfo, myRecord))
 			{
-				myMonitor.SetManufacturer( CA2CT( GetManufacturerName( myRecord.Manufacturer_ID)));
+				myMonitor.SetManufacturer( CA2T( GetManufacturerName( myRecord.Manufacturer_ID)));
 				switch (GetDetailledTimingDescriptionType( myRecord.Detailed_Timing_Description1))
 				{
 				case Serial_Number:
@@ -695,16 +693,16 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 					csCaption = GetEdidText( myRecord.Detailed_Timing_Description4);
 					break;
 				}
-				myMonitor.SetType( CA2CT( DecodeDPMSFlag( myRecord.DPMS_Flags)));
+				myMonitor.SetType( CA2T( DecodeDPMSFlag( myRecord.DPMS_Flags)));
 				AddLog( _T( "\tEDID : Monitor %s.%04X.%8X (%s)\n"), 
 					myRecord.Manufacturer_ID, (DWORD)myRecord.EDID_ID_Code, (DWORD)myRecord.Serial_Number,
 					csSerial);
 				// Acer monitors have bogus serial
 				if (AcerHack( csSerial, &myRecord))
 					AddLog( _T( "\tEDID Acer Fix: Change Serial Number to %s\n"), csSerial);
-				myMonitor.SetCaption( CA2CT( csCaption));
-				myMonitor.SetDescription( CA2CT( csDescription));
-				myMonitor.SetSerial( CA2CT( csSerial));
+				myMonitor.SetCaption( CA2T( csCaption));
+				myMonitor.SetDescription( CA2T( csDescription));
+				myMonitor.SetSerial( CA2T( csSerial));
 				pMyList->AddTail( myMonitor);
 			}
 			dwIndex++;

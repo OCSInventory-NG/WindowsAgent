@@ -43,12 +43,10 @@ BOOL COcsCrypto::HashInit()
 
 BOOL COcsCrypto::HashUpdate(LPCTSTR lpstrData)
 {
-	USES_CONVERSION;
-
 	if ((m_pHash == NULL) || (lpstrData == NULL))
 		return FALSE;
 	
-	SHA1_Update( (SHA_CTX *)m_pHash, CT2CA( lpstrData), _tcslen( lpstrData));
+	SHA1_Update( (SHA_CTX *)m_pHash, CT2A( lpstrData), _tcslen( lpstrData));
 	return TRUE;
 }
 

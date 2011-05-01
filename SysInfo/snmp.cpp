@@ -30,12 +30,11 @@ static char THIS_FILE[]=__FILE__;
 
 LPCSTR GetAnsiFromTString(LPCTSTR a_wstrString)
 {
-   USES_CONVERSION;
    static char	szBuffer[1024*1024+1]; // 1MB buffer to handle string 
    
    if (_tcslen( a_wstrString) > 1024*1024)
 	   AfxThrowMemoryException();
-   strcpy_s( szBuffer, 1024*1024, T2A(a_wstrString));
+   strcpy_s( szBuffer, 1024*1024, CT2A(a_wstrString));
    return szBuffer;
 }
 

@@ -18,10 +18,8 @@
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
 
-
 CStringA OCSINVENTORYFRONT_API GetAnsiFromUnicode(LPCTSTR a_wstrString)
 {
-	USES_CONVERSION;
 /*	static char	szBuffer[1024*1024+1]; // 1MB buffer to handle string 
 
 	if (_tcslen( a_wstrString) > 1024*1024)
@@ -30,14 +28,14 @@ CStringA OCSINVENTORYFRONT_API GetAnsiFromUnicode(LPCTSTR a_wstrString)
 	return szBuffer;
 */
 	static CStringA csAnsi;
+	CT2W			pszA( a_wstrString);
 
-	csAnsi = CT2CA(a_wstrString);
+	csAnsi = pszA;
 	return csAnsi;
 }
 
 CStringW OCSINVENTORYFRONT_API GetUnicodeFromAnsi(LPCSTR a_strString)
 {
-	USES_CONVERSION;
 /*	static TCHAR szBuffer[1024*1024]; // 1MB buffer to handle string 
 
 	if (strlen( a_strString) > 1024*1024)
@@ -46,8 +44,9 @@ CStringW OCSINVENTORYFRONT_API GetUnicodeFromAnsi(LPCSTR a_strString)
 	return szBuffer;
 */
 	static CStringW csWide;
+	CA2W			pszW( a_strString);
 
-	csWide = A2CW(a_strString);
+	csWide = pszW;
 	return csWide;
 
 }
@@ -56,10 +55,10 @@ CStringA OCSINVENTORYFRONT_API GetUTF8FromUnicode( LPCTSTR a_wstrString)
 {
 	// http://weblogs.asp.net/kennykerr/archive/2008/07/24/visual-c-in-short-converting-between-unicode-and-utf-8.aspx
 
-	USES_CONVERSION;
 	static CStringA utf8;
-	
-	utf8 = CT2CA( a_wstrString, CP_UTF8);
+	CT2W			pszA( a_wstrString, CP_UTF8);
+
+	utf8 = pszA;
 	return utf8;
 }
 
@@ -67,10 +66,10 @@ CStringW OCSINVENTORYFRONT_API GetUnicodeFromUTF8( LPCSTR a_strString)
 {
 	// http://weblogs.asp.net/kennykerr/archive/2008/07/24/visual-c-in-short-converting-between-unicode-and-utf-8.aspx
 
-	USES_CONVERSION;
 	static CStringW unicode;
-	
-	unicode = CA2T( a_strString, CP_UTF8);
+	CA2W			pszW( a_strString, CP_UTF8);
+
+	unicode = pszW;
 	return unicode;
 }
 

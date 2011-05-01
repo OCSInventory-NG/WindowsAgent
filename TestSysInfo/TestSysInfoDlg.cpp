@@ -3094,8 +3094,8 @@ void CTestSysInfoDlg::OnBnClickedLoadXml()
 {
 	// TODO: Add your control notification handler code here
 	CStdioFile myFile;
-	CString csFile, csLine;
-    USES_CONVERSION;
+	CString csFile;
+
 	CFileDialog cDlg( TRUE, NULL, NULL,
 		              OFN_EXPLORER|OFN_FILEMUSTEXIST,
 					  _T( "XML files|*.xml|All files|*.*||"));
@@ -3105,12 +3105,11 @@ void CTestSysInfoDlg::OnBnClickedLoadXml()
 	TiXmlDocument *pXmlDoc = new TiXmlDocument();
 	TiXmlElement *pXmlRequest, *pXmlLine;
 
-
-	myFile.Open( cDlg.GetPathName(), CFile::modeRead|CFile::typeText|CFile::shareDenyNone);
-	while (myFile.ReadString( csLine))
-		csFile += csLine;
-	myFile.Close();
-	pXmlDoc->Parse( T2A( csFile));
+	if (!pXmlDoc->LoadFile( CT2A( cDlg.GetPathName())))
+	{
+		AfxMessageBox( _T( "Unable to load/parse selected file !"), MB_ICONSTOP);
+		return;
+	}
 	m_List.ResetContent();
 	pXmlRequest = pXmlDoc->FirstChildElement( "Request");
 	if (pXmlRequest)
@@ -3119,8 +3118,7 @@ void CTestSysInfoDlg::OnBnClickedLoadXml()
 		while( pXmlLine)
 		{
 			const char *pszText = pXmlLine->GetText();
-			csLine = pszText;
-			m_List.AddString( csLine);
+			m_List.AddString( CA2T( pszText, CP_UTF8));
 			pXmlLine = pXmlLine->NextSiblingElement( "Line");
 		}
 	}
@@ -3136,14 +3134,13 @@ void CTestSysInfoDlg::OnBnClickedSaveXml()
 	// TODO: Add your control notification handler code here
 	CString csLine;
 	CStdioFile myFile;
-    USES_CONVERSION;
 
 	CFileDialog cDlg( FALSE, _T( "xml"), _T( "TestSysinfo.xml"),
 		              OFN_EXPLORER|OFN_CREATEPROMPT|OFN_OVERWRITEPROMPT,
 					  _T( "XML files|*.xml|All files|*.*||"));
 
 	TiXmlDocument *pXmlDoc = new TiXmlDocument();
-	TiXmlDeclaration *pXmlDecl = new TiXmlDeclaration( "1.0", "ISO-8859-1", "" );
+	TiXmlDeclaration *pXmlDecl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
 	pXmlDoc->LinkEndChild( pXmlDecl);
 	TiXmlElement *pXmlRequest = new TiXmlElement( "Request");
 	pXmlDoc->LinkEndChild( pXmlRequest);
@@ -3152,18 +3149,12 @@ void CTestSysInfoDlg::OnBnClickedSaveXml()
 	{
 		TiXmlElement *pXmlLine = new TiXmlElement( "Line");
 		m_List.GetText( i, csLine);
-		TiXmlText *pXmlText = new TiXmlText( T2A( csLine));
+		TiXmlText *pXmlText = new TiXmlText( CT2A( csLine, CP_UTF8));
 		pXmlLine->LinkEndChild( pXmlText);
 		pXmlRequest->LinkEndChild( pXmlLine);
 	}
 	if (cDlg.DoModal() != IDOK)
 		return;
-
-	TiXmlPrinter myPrinter;
-	myPrinter.SetIndent( "    " );
-	pXmlDoc->Accept( &myPrinter );
-	csLine = myPrinter.CStr();
-	myFile.Open( cDlg.GetPathName(), CFile::modeCreate|CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite);
-	myFile.WriteString( csLine);
-	myFile.Close();
+	if (!pXmlDoc->SaveFile( CT2A( cDlg.GetPathName())))
+		AfxMessageBox( _T( "Failed to save XML file !"), MB_ICONSTOP);
 }

@@ -60,11 +60,11 @@ TiXmlElement *CMarkup::AddElem( LPCTSTR szName, LPCTSTR szValue)
 {
 	ASSERT( m_pDoc);
 	ASSERT( szName);
-	USES_CONVERSION;
+
 	try
 	{
 		// Create XML element
-		TiXmlElement *pXmlElement = new TiXmlElement( CT2CA( szName, CP_UTF8));
+		TiXmlElement *pXmlElement = new TiXmlElement( CT2A( szName, CP_UTF8));
 		if (pXmlElement == NULL)
 			return NULL;
 		// Link it as a child of current working element
@@ -76,7 +76,7 @@ TiXmlElement *CMarkup::AddElem( LPCTSTR szName, LPCTSTR szValue)
 		if ((szValue != NULL) && (_tcslen( szValue) != 0))
 		{
 			// There is text to set between <Element></Element>
-			TiXmlText *pXmlText = new TiXmlText( CT2CA( szValue, CP_UTF8));
+			TiXmlText *pXmlText = new TiXmlText( CT2A( szValue, CP_UTF8));
 			if (pXmlText == NULL)
 			{
 				delete pXmlElement;
@@ -107,11 +107,11 @@ TiXmlElement *CMarkup::AddChildElem( LPCTSTR szName, LPCTSTR szValue)
 {
 	ASSERT( m_pDoc);
 	ASSERT( szName);
-	USES_CONVERSION;
+
 	try
 	{
 		// Create XML element
-		TiXmlElement *pXmlElement = new TiXmlElement( CT2CA( szName, CP_UTF8));
+		TiXmlElement *pXmlElement = new TiXmlElement( CT2A( szName, CP_UTF8));
 		if (pXmlElement == NULL)
 			return NULL;
 		// Link it as a child of current working element
@@ -123,7 +123,7 @@ TiXmlElement *CMarkup::AddChildElem( LPCTSTR szName, LPCTSTR szValue)
 		if ((szValue != NULL) && (_tcslen( szValue) != 0))
 		{
 			// There is text to set between <Element></Element>
-			TiXmlText *pXmlText = new TiXmlText( CT2CA( szValue, CP_UTF8));
+			TiXmlText *pXmlText = new TiXmlText( CT2A( szValue, CP_UTF8));
 			if (pXmlText == NULL)
 			{
 				delete pXmlElement;
@@ -153,7 +153,6 @@ BOOL CMarkup::SetData( LPCTSTR szValue)
 {
 	ASSERT( m_pDoc);
 
-	USES_CONVERSION;
 	try
 	{
 		// First, remove all text child
@@ -171,7 +170,7 @@ BOOL CMarkup::SetData( LPCTSTR szValue)
 		if ((szValue != NULL) && (_tcslen( szValue) != 0))
 		{
 			// There is text to set between <Element></Element>
-			TiXmlText *pXmlText = new TiXmlText( CT2CA( szValue, CP_UTF8));
+			TiXmlText *pXmlText = new TiXmlText( CT2A( szValue, CP_UTF8));
 			if (pXmlText == NULL)
 				return FALSE;
 			m_pCurrentNode->LinkEndChild( pXmlText);
@@ -200,10 +199,9 @@ BOOL CMarkup::SetAttrib( LPCTSTR szName, LPCTSTR szValue)
 	if (m_pCurrentNode == NULL)
 		return FALSE;
 
-	USES_CONVERSION;
 	try
 	{
-		m_pCurrentNode->SetAttribute( CT2CA( szName, CP_UTF8), CT2CA(  szValue, CP_UTF8));
+		m_pCurrentNode->SetAttribute( CT2A( szName, CP_UTF8), CT2A(  szValue, CP_UTF8));
 		return TRUE;
 	}
 	catch (CException *pEx)
@@ -278,8 +276,6 @@ TiXmlElement *CMarkup::OutOfElem()
 
 BOOL CMarkup::RemoveChildElem( LPCTSTR szName, TiXmlElement *pXmlNode)
 {
-	USES_CONVERSION;
-
 	if ((m_pCurrentNode == NULL) && (pXmlNode == NULL))
 		return FALSE;
 
@@ -293,7 +289,7 @@ BOOL CMarkup::RemoveChildElem( LPCTSTR szName, TiXmlElement *pXmlNode)
 		else
 			pSearchNode = m_pCurrentNode;
 		// Find first child element
-		while (pXmlElement = pSearchNode->FirstChildElement( CT2CA( szName, CP_UTF8)))
+		while (pXmlElement = pSearchNode->FirstChildElement( CT2A( szName, CP_UTF8)))
 		{
 			// One sibling child node found
 			freeXmlNode( pXmlElement);
@@ -314,7 +310,7 @@ TiXmlElement *CMarkup::FindFirstElem( LPCTSTR szName, TiXmlElement *pXmlNode)
 {
 	ASSERT( m_pDoc);
  	ASSERT( szName);
-	USES_CONVERSION;
+
 	try
 	{
 		// Initialize value of search node (doc or current node or provided node)
@@ -330,7 +326,7 @@ TiXmlElement *CMarkup::FindFirstElem( LPCTSTR szName, TiXmlElement *pXmlNode)
 				pSearchNode = m_pCurrentNode;
 		}
 		// Find first child element
-		pXmlElement = pSearchNode->FirstChildElement( CT2CA( szName, CP_UTF8));
+		pXmlElement = pSearchNode->FirstChildElement( CT2A( szName, CP_UTF8));
 		if (pXmlElement)
 		{
 			// One sibling child node found
@@ -351,7 +347,7 @@ TiXmlElement *CMarkup::FindNextElem( LPCTSTR szName, TiXmlElement *pXmlNode)
 {
 	ASSERT( m_pDoc);
  	ASSERT( szName);
-	USES_CONVERSION;
+
 	try
 	{
 		// Initialize value of search node (doc or current node or provided node)
@@ -367,7 +363,7 @@ TiXmlElement *CMarkup::FindNextElem( LPCTSTR szName, TiXmlElement *pXmlNode)
 				pSearchNode = m_pCurrentNode;
 		}
 		// We are continuing a previous search at same XML tree level
-		pXmlElement = pSearchNode->NextSiblingElement( CT2CA( szName, CP_UTF8));
+		pXmlElement = pSearchNode->NextSiblingElement( CT2A( szName, CP_UTF8));
 		if (pXmlElement)
 		{
 			// Next sibling found
@@ -404,7 +400,6 @@ LPCTSTR CMarkup::GetData( TiXmlElement *pXmlNode)
  
 	if ((pXmlNode == NULL) && (m_pCurrentNode == NULL))
 		return NULL;
-    USES_CONVERSION;
 
 	try
 	{
@@ -417,7 +412,7 @@ LPCTSTR CMarkup::GetData( TiXmlElement *pXmlNode)
 		const char *szValue = pNode->GetText();
 		if (szValue)
 		{
-			csResult.Format( _T( "%s"), CA2CT( szValue, CP_UTF8));
+			csResult.Format( _T( "%s"), CA2T( szValue, CP_UTF8));
 			return csResult;
 		}
 		return NULL;
@@ -435,14 +430,13 @@ LPCTSTR CMarkup::GetAttrib( LPCTSTR szAttrib)
 
 	if (m_pCurrentNode == NULL)
 		return NULL;
-    USES_CONVERSION;
 
 	try
 	{
-		const char *szValue = m_pCurrentNode->Attribute( CT2CA( szAttrib, CP_UTF8));
+		const char *szValue = m_pCurrentNode->Attribute( CT2A( szAttrib, CP_UTF8));
 		if (szValue)
 		{
-			csResult.Format( _T( "%s"), CA2CT( szValue, CP_UTF8));
+			csResult.Format( _T( "%s"), CA2T( szValue, CP_UTF8));
 			return csResult;
 		}
 		return NULL;
@@ -506,16 +500,14 @@ BOOL CMarkup::SetDoc( LPCSTR szDoc)
 
 BOOL CMarkup::SetDoc( LPCWSTR szDoc)
 {
-    USES_CONVERSION;
-
 	// Try to determine if UTF-8 encoding used
 	CStringW csDoc = szDoc;
 	csDoc.MakeLower();
 	if (csDoc.Find( L"encoding=\"utf-8\"") > 0)
 		// XML Uses UTF-8 encoding
-		return SetDoc( CT2CA( szDoc));
+		return SetDoc( CT2A( szDoc));
 	// XML is not UTF-8 encoded => encoded it to UTF-8
-	return SetDoc( CT2CA( szDoc, CP_UTF8));
+	return SetDoc( CT2A( szDoc, CP_UTF8));
 }
 
 // Set XML document from TinyXML object
@@ -561,9 +553,7 @@ BOOL CMarkup::AddXml( CMarkup *pSource)
 // Load XML document from file
 BOOL CMarkup::LoadFile( LPCTSTR lpstrFile)
 {
-    USES_CONVERSION;
-
-	if (m_pDoc->LoadFile( CT2CA( lpstrFile)))
+	if (m_pDoc->LoadFile( CT2A( lpstrFile)))
 	{
 		ResetPos();
 		return TRUE;
@@ -580,9 +570,7 @@ BOOL CMarkup::LoadFile( LPCTSTR lpstrFile)
 // Save XML document to file
 BOOL CMarkup::SaveFile( LPCTSTR lpstrFile)
 {
-    USES_CONVERSION;
-
-	if (m_pDoc->SaveFile( CT2CA( lpstrFile)))
+	if (m_pDoc->SaveFile( CT2A( lpstrFile)))
 		return TRUE;
 	return FALSE;
 }
