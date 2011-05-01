@@ -1,3 +1,5 @@
+2.0.0.18
+  * Fix some other memory leaks
 2.0.0.17
   * Fix crash when STORE package have a empty path to store
   * Fix memory leak bug #765893 in service
