@@ -407,10 +407,9 @@ void COcsService::Run()
 			// Check inventory state for changes, and launch agent if needed
 			if (m_iTToWait > m_iWriteIniLatency)
 			{
-				if (!bNotifyInventory && checkInventoryState())
+				if (!bNotifyInventory && isInventoryStateChanged())
 				{
 					// Inventory state changed, force inventory immediatly
-					LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Inventory state change detected, OCS Inventory NG Agent launched in NOTIFY mode"));
 					m_iTToWait = 0;
 					bNotifyInventory = TRUE;
 				}
@@ -447,7 +446,7 @@ void COcsService::Run()
 				m_iOldPrologFreq = m_iPrologFreq;
 				writeConfig();
 
-				csStatus.Format( _T( "OCS Inventory NG Agent launched successfully. New service parameters: FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i"), m_iPrologFreq, vOld, m_iTToWait);
+				csStatus.Format( _T( "OCS Inventory NG Agent executed successfully.\n\nNew service parameters: FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i"), m_iPrologFreq, vOld, m_iTToWait);
 				LogEvent(EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csStatus);
 			}
 		}
@@ -459,10 +458,8 @@ void COcsService::Run()
 }
 
 
-BOOL COcsService::checkInventoryState()
+BOOL COcsService::isInventoryStateChanged()
 {
-	CStdioFile cFile;
-
 	try
 	{
 		CNetworkAdapterList myList;
@@ -473,7 +470,7 @@ BOOL COcsService::checkInventoryState()
 		csBuffer.Format( _T( "%s\\%s"), getDataFolder(), OCS_LAST_STATE_FILE);
 		if (!myState.ReadFromFile( csBuffer))
 		{
-			// File open or parsing error
+			// File open or parsing error => assume no changes
 			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Failed to load/parse last inventory state"));
 			return FALSE;
 		}
@@ -482,14 +479,19 @@ BOOL COcsService::checkInventoryState()
 		// Checking if networks changes
 		csBuffer = myList.GetHash();
 		if (csBuffer.CompareNoCase( myState.GetNetworks()) != 0)
-			// Changed, ask forced inventory
+		{
+			// Changed => ask to force inventory in NOTIFY mode
+			CString csMessage;
+
+			csMessage.Format( _T( "Inventory state change detected on:\n- network adapters\n\nOCS Inventory NG Agent will be launched in NOTIFY mode"));
+			LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
 			return TRUE;
+		}
 	}
 	catch( CException *pEx)
 	{
 		// Exception=> free exception, but continue
 		pEx->Delete();
-		cFile.Abort();
 	}
 	return FALSE;
 }
@@ -513,6 +515,7 @@ BOOL COcsService::runAgent( BOOL bNotify)
 		csCmd.Format( _T( "\"%s\\%s\""), getInstallFolder(), RUN_OCS);
 	// Unprotect files to allow agent change them if needed
 	unProtectCommonFiles();
+	unProtectConfigFiles();
 	switch (cmProcess.execWait( csCmd, getDataFolder()))
 	{
 		case EXEC_ERROR_START_COMMAND:
@@ -567,6 +570,7 @@ BOOL COcsService::runAgent( BOOL bNotify)
 	}
 	// Reprotect files
 	protectCommonFiles();
+	protectConfigFiles();
 	return bReturn;
 }
 

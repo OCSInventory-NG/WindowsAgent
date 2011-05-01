@@ -69,7 +69,7 @@ protected:
 	// Store service configuration to file (if not full, just write TTO_WAIT)
 	BOOL writeConfig( BOOL bFull = TRUE);
 	// Check if something changed in inventory
-	BOOL checkInventoryState();
+	BOOL isInventoryStateChanged();
 	// Launch OCS Inventory Agent, using notify mode or not
 	BOOL runAgent( BOOL bNotify = FALSE);
 	// Show inventory informations
