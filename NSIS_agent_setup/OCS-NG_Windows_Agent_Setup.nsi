@@ -1426,6 +1426,8 @@ Section "OCS Inventory Agent" SEC03
     WriteINIStr "$APPDATA\OCS Inventory NG\Agent\ocsinventory.ini" "OCS Inventory Agent" "ComProvider" "ComHTTP.dll"
     ; Openssl and libcurl needs special version for Windows 2000
     ${If} ${IsWin2000}
+        StrCpy $logBuffer "Windows 2000 detected, installing specific cURL library and MS CRT/MFC 9.00.81022.8...$\r$\n"
+        Call Write_Log
         File "curl-7.21.3-ssl-sspi-zlib-static-bin-w32\libcurl.dll"
         Iferrors 0 +5
         StrCpy $logBuffer "$logBuffer ERROR copying libcurl.dll $\r$\n"
@@ -1444,7 +1446,66 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
     	strcpy $installSatus ":("
         clearerrors
+	    ; MSVC 9 CRT redist 9.00.21022.8 for Windows 2000 compatiblity only (DO NOT WORK ON XP AND HIGHER)
+     	SetOutPath "$INSTDIR"
+      	File "vc2008_redist_9.00.21022.8_for_Windows_2000\Microsoft.VC90.CRT.manifest"
+       	Iferrors 0 +5
+        StrCpy $logBuffer "$logBuffer ERROR copying Microsoft.VC90.CRT.manifest $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "vc2008_redist_9.00.21022.8_for_Windows_2000\msvcm90.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying msvcm90.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "vc2008_redist_9.00.21022.8_for_Windows_2000\msvcp90.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying msvcp90.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "vc2008_redist_9.00.21022.8_for_Windows_2000\msvcr90.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying msvcr90.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    ; MSVC 9 MFC redist 9.00.21022.8 for Windows 2000 compatiblity only (DO NOT WORK ON XP AND HIGHER)
+	    File "vc2008_redist_9.00.21022.8_for_Windows_2000\Microsoft.VC90.MFC.manifest"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying \Microsoft.VC90.MFC.manifest $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "vc2008_redist_9.00.21022.8_for_Windows_2000\mfc90.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfc90.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "vc2008_redist_9.00.21022.8_for_Windows_2000\mfc90u.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfc90u.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "vc2008_redist_9.00.21022.8_for_Windows_2000\mfcm90.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm90.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "vc2008_redist_9.00.21022.8_for_Windows_2000\mfcm90u.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm90u.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
     ${Else}
+        StrCpy $logBuffer "Windows XP or higher detected, installing default cURL library and MS CRT/MFC 9.0...$\r$\n"
+        Call Write_Log
         File "..\Release\libcurl.dll"
         Iferrors 0 +5
         StrCpy $logBuffer "$logBuffer ERROR copying libcurl.dll $\r$\n"
@@ -1469,6 +1530,63 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
     	strcpy $installSatus ":("
         clearerrors
+	    ; MSVC 9 CRT redist current for XP and higher
+     	SetOutPath "$INSTDIR"
+      	File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest"
+       	Iferrors 0 +5
+        StrCpy $logBuffer "$logBuffer ERROR copying Microsoft.VC90.CRT.manifest $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcm90.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying msvcm90.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcp90.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying msvcp90.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcr90.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying msvcr90.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    ; MSVC 9 MFC redist current for XP and higher
+	    File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying \Microsoft.VC90.MFC.manifest $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\mfc90.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfc90.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\mfc90u.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfc90u.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\mfcm90.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm90.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+	    File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\mfcm90u.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm90u.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
     ${EndIf}
     ; Zlib and ZipArchive library
 	File "..\Release\ZipArchive.dll"
@@ -1554,63 +1672,6 @@ Section "OCS Inventory Agent" SEC03
 	File "..\Release\Plugins\DO_NOT_REMOVE.txt"
 	Iferrors 0 +5
 	StrCpy $logBuffer "$logBuffer ERROR copying Plugins\DO_NOT_REMOVE.txt $\r$\n"
-    Call Write_Log
-  	strcpy $installSatus ":("
-	clearerrors
-	; MSVC 9 CRT redist
-	SetOutPath "$INSTDIR"
-	File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest"
-	Iferrors 0 +5
-	StrCpy $logBuffer "$logBuffer ERROR copying Microsoft.VC90.CRT.manifest $\r$\n"
-    Call Write_Log
-  	strcpy $installSatus ":("
-	clearerrors
-	File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcm90.dll"
-	Iferrors 0 +5
-	StrCpy $logBuffer "$logBuffer ERROR copying msvcm90.dll $\r$\n"
-    Call Write_Log
-  	strcpy $installSatus ":("
-	clearerrors
-	File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcp90.dll"
-	Iferrors 0 +5
-	StrCpy $logBuffer "$logBuffer ERROR copying msvcp90.dll $\r$\n"
-    Call Write_Log
-  	strcpy $installSatus ":("
-	clearerrors
-	File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcr90.dll"
-	Iferrors 0 +5
-	StrCpy $logBuffer "$logBuffer ERROR copying msvcr90.dll $\r$\n"
-    Call Write_Log
-  	strcpy $installSatus ":("
-	clearerrors
-	; MSVC 9 MFC redist
-	File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest"
-	Iferrors 0 +5
-	StrCpy $logBuffer "$logBuffer ERROR copying \Microsoft.VC90.MFC.manifest $\r$\n"
-    Call Write_Log
-  	strcpy $installSatus ":("
-	clearerrors
-	File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\mfc90.dll"
-	Iferrors 0 +5
-	StrCpy $logBuffer "$logBuffer ERROR copying mfc90.dll $\r$\n"
-    Call Write_Log
-  	strcpy $installSatus ":("
-	clearerrors
-	File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\mfc90u.dll"
-	Iferrors 0 +5
-	StrCpy $logBuffer "$logBuffer ERROR copying mfc90u.dll $\r$\n"
-    Call Write_Log
-  	strcpy $installSatus ":("
-	clearerrors
-	File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\mfcm90.dll"
-	Iferrors 0 +5
-	StrCpy $logBuffer "$logBuffer ERROR copying mfcm90.dll $\r$\n"
-    Call Write_Log
-  	strcpy $installSatus ":("
-	clearerrors
-	File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\mfcm90u.dll"
-	Iferrors 0 +5
-	StrCpy $logBuffer "$logBuffer ERROR copying mfcm90u.dll $\r$\n"
     Call Write_Log
   	strcpy $installSatus ":("
 	clearerrors

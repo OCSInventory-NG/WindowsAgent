@@ -33,6 +33,13 @@ from Günter Knauf, built using MingW32 compiler, and available at location
 http://www.gknw.net/mirror/curl/win32/curl-7.21.3-ssl-sspi-zlib-static-bin-w32.zip
 Just download this package and unzip it into nsis_agent_setup folder.
 
+MS11-025 critical fix introduces incompatibilty problem of MS CRT/MFC 9.0 with
+Windows 2000 (http://blogs.msdn.com/b/vcblog/archive/2011/04/26/10158277.aspx).
+So for Windows 2000 only, w've choosen to install original MS CRT/MFC 
+9.00.21022.8 provided with Visual C++ 2008 without Service Pack or hot fixes.
+You must put these files into "vc2008_redist_9.00.21022.8_for_Windows_2000"
+sub directory before building NSIS installer.
+
 
 INSTALLER COMMAND LINE OPTIONS
 ==============================
