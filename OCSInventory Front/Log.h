@@ -22,11 +22,17 @@
 #include "Singleton.h"
 #include <string.h>
 
-#define LOG_PRIORITY_ERROR			1
-#define LOG_PRIORITY_NOTICE			2
-#define LOG_PRIORITY_DEBUG			3
-#define LOG_PRIORITY_WARNING		4
-#define LOG_PRIORITY_TRACE			5
+/* OCS Inventory NG log modes
+   /DEBUG=0 => default mode 
+   /DEBUG=1 => DEBUG mode, for more detailled logs
+   /DEBUG=2 => TRACE mode, for full logs, including XML and SysInfo logs
+*/
+
+#define LOG_PRIORITY_ERROR			1	// This is a blocking error always shown
+#define LOG_PRIORITY_NOTICE			2	// This a status message always shown
+#define LOG_PRIORITY_DEBUG			3	// This is a status message shown only in DEBUG mode
+#define LOG_PRIORITY_WARNING		4	// This is a warning message (non blocking) show only in DEBUG mode
+#define LOG_PRIORITY_TRACE			5	// This is a trace message, used only in TRACE mode
 
 class OCSINVENTORYFRONT_API CLog : public CSingleton<CLog>
 {
