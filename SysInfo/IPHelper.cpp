@@ -258,7 +258,9 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		// Get the MIB type
 		cAdapter.SetTypeMIB( GetIfType( pIfEntry->dwType));
 		// Get the description
-		csAddress.Format( _T( "%S"), pIfEntry->bDescr);
+		csAddress.Empty();
+		for (UINT uChar=0; uChar < pIfEntry->dwDescrLen; uChar++)
+			csAddress.AppendFormat( _T( "%c"), pIfEntry->bDescr[uChar]);
 		cAdapter.SetDescription( csAddress);
 		// Get MAC Address 
 		csMAC.Format( _T("%02X:%02X:%02X:%02X:%02X:%02X"),
