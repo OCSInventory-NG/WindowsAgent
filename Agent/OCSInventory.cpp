@@ -342,7 +342,7 @@ BOOL COCSInventoryApp::InitInstance()
 		 *	Sending prolog
 		 *
 		 ****/
-		// send the prolog
+		// Send the prolog
 		pPrologResp = new CPrologResponse( pConnexion->sendRequest( pProlog ));
 		pPrologResp->setErrorStatus( pConnexion->getErrorStatus());
 		pPrologResp->setErrorString( pConnexion->getErrorString());
@@ -357,6 +357,11 @@ BOOL COCSInventoryApp::InitInstance()
 			m_nExitCode = OCS_APP_NETWORK_ERROR;
 			goto CLEAN_AND_EXIT;
 		}
+		// Show support log message if needed
+		if (pPrologResp->getSupportLog( csMessage))
+			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "SUPPORT => %s"), csMessage);
+		else
+			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "SUPPORT => No support detected, Registration key : N/A"));
 
 		/*****
 		 *

@@ -51,6 +51,9 @@ public:
 	CString	getIpdiscoverLatency();
 	CString	getIpdiscoverLan();
 
+	/* Support Log */
+	BOOL getSupportLog( CString &csSupportMessage);
+
 private: // Methods
 
 	/* Generic functions */
