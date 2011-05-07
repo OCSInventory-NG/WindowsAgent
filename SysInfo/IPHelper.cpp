@@ -61,6 +61,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 						csGateway,
 						csDhcpServer,
 						csBuffer;
+	BYTE				pDescription[MAXLEN_IFDESCR+10];
 
 	AddLog( _T( "IpHlpAPI GetNetworkAdapters...\n"));
 	// Reset network adapter list content
@@ -258,9 +259,10 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		// Get the MIB type
 		cAdapter.SetTypeMIB( GetIfType( pIfEntry->dwType));
 		// Get the description
-		csAddress.Empty();
-		for (UINT uChar=0; uChar < pIfEntry->dwDescrLen; uChar++)
-			csAddress.AppendFormat( _T( "%c"), pIfEntry->bDescr[uChar]);
+		memset( pDescription, 0, MAXLEN_IFDESCR+10);
+		for (UINT uChar=0; (uChar < pIfEntry->dwDescrLen) && (uChar<MAXLEN_IFDESCR); uChar++)
+			pDescription[uChar] = pIfEntry->bDescr[uChar];
+		csAddress.Format( _T( "%S"), pDescription);
 		cAdapter.SetDescription( csAddress);
 		// Get MAC Address 
 		csMAC.Format( _T("%02X:%02X:%02X:%02X:%02X:%02X"),
