@@ -823,6 +823,9 @@ BOOL CDMI::GetUUID( CString &csUUID)
 		// next 
 		pPointer = GetNextTable( DMI_SYSTEM_INFORMATION);
 	}
-	AddLog( _T( "OK (%u object(s)\n"), uCount);
+	if (uCount > 0)
+		AddLog( _T( "OK (%u object(s)), SMBios version %d.%d, UUID %s\n"), uCount, m_nSMBiosVersionMajor, m_nSMBiosVersionMinor, csUUID);
+	else
+		AddLog( _T( "OK (%u object(s))"), uCount);
 	return (uCount > 0);
 }
