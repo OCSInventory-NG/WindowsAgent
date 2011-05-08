@@ -123,6 +123,7 @@ VOID SNMP_FUNC_TYPE SnmpUtilVarBindFree(IN OUT RFC1157VarBind *VarBind)
 
 LPCTSTR GetIfType( UINT uType)
 {
+	// See http://www.iana.org/assignments/ianaiftype-mib
 	switch (uType)
 	{
 	case 1: return _T( "Other");

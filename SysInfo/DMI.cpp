@@ -184,7 +184,7 @@ BOOL CDMI::Connect()
 		CoUninitialize();
         return FALSE;
     }
-    // Connect to the root\cimv2 namespace with the
+    // Connect to the root\WMI namespace with the
     // current user and obtain pointer pSvc
     // to make IWbemServices calls.
     hResult = pWbemLocator->ConnectServer(
