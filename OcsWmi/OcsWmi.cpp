@@ -72,14 +72,34 @@ BOOL COcsWmi::ConnectWMI( LPCTSTR lpstrNameSpace)
 
 	try
 	{
-		m_pIWbemServices = NULL;
-		m_pEnumClassObject = NULL;
-
 		// Step 1: --------------------------------------------------
 		// Initialize COM. ------------------------------------------
-		m_hResult =  CoInitializeEx( 0, COINIT_MULTITHREADED); // Initialize COM.
-		if (FAILED( m_hResult))
-			return FALSE;
+		if (m_pIWbemServices)
+		{
+			// Already connected, release used objects, but do not unitialize COM
+			if (m_pClassObject)
+				m_pClassObject->Release();
+			m_pClassObject = NULL;
+
+			if (m_pEnumClassObject)
+				m_pEnumClassObject->Release();
+			m_pEnumClassObject = NULL;
+
+			if (m_pIWbemServices)
+				m_pIWbemServices->Release();
+			m_pIWbemServices = NULL;
+		}
+		else
+		{
+			// Not connected, so intialize COM
+			m_pIWbemServices = NULL;
+			m_pEnumClassObject = NULL;
+			m_pClassObject = NULL;
+
+			m_hResult =  CoInitializeEx( 0, COINIT_MULTITHREADED); // Initialize COM.
+			if (FAILED( m_hResult))
+				return FALSE;
+		}
 
 		// Step 2: --------------------------------------------------
 		// Set general COM security levels --------------------------
@@ -111,10 +131,6 @@ BOOL COcsWmi::ConnectWMI( LPCTSTR lpstrNameSpace)
 			CoUninitialize();
 			return FALSE;
 		}
-
-		// If already connected, release m_pIWbemServices.
-		if (m_pIWbemServices)
-			m_pIWbemServices->Release();
 
 		// Step 4: -----------------------------------------------------
 		// Connect to WMI given namespace through the IWbemLocator::ConnectServer method
