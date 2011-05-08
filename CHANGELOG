@@ -1,3 +1,6 @@
+2.0 Final aka 2.0.0.20
+  * Fix memory leak into OCsWmi.dll
+  * Fix bogus network adapter description in some Cyrillic OS (perhaps other charset affected)
 2.0.0.18
   * Uses MS CRT/MFC 9.00.21022.8 on Windows 2000 to fix compatibilty problem of MS11-025 (http://blogs.msdn.com/b/vcblog/archive/2011/04/26/10158277.aspx)
   * In NOTIFY mode, update only network inventory state, to avoid service launching agent every minute !
