@@ -241,7 +241,7 @@ BOOL COcsService::unProtectFile( CFile *pFile)
 		{
 			if (pFile->m_hFile != CFile::hFileNull)
 				pFile->Close();
-			delete( pFile);
+			delete pFile;
 		}
 		return TRUE;
 	}
@@ -617,6 +617,7 @@ BOOL COcsService::showInventory()
 		if (!pRequest->final())
 		{
 			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to generate XML of inventory informations"));
+			delete pRequest;
 			return FALSE;
 		}
 		// Get inventory XML
