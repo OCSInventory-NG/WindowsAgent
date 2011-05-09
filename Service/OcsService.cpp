@@ -432,20 +432,21 @@ void COcsService::Run()
 			}
 			else
 			{
-				bNotifyInventory = FALSE;
 				// Agent launch successful, restore initial latency
 				nLatencyAgentLaunch = m_iWriteIniLatency ? m_iWriteIniLatency : WRITE_TTOWAIT_EACH;
 				// Read new parameters
 				loadConfig();
-				// Compute new TTO_WAIT inside PROLOG_FREQ
-				if( m_iPrologFreq != m_iOldPrologFreq )
-					m_iTToWait = generateRandNumber(m_iPrologFreq*PROLOG_FREQ_UNIT);			
-				else
-					m_iTToWait = m_iPrologFreq*PROLOG_FREQ_UNIT;
-				
+				if (!bNotifyInventory)
+				{
+					// Compute new TTO_WAIT inside PROLOG_FREQ only if not in NOTIFY mode
+					if( m_iPrologFreq != m_iOldPrologFreq )
+						m_iTToWait = generateRandNumber(m_iPrologFreq*PROLOG_FREQ_UNIT);			
+					else
+						m_iTToWait = m_iPrologFreq*PROLOG_FREQ_UNIT;
+				}
+				bNotifyInventory = FALSE;
 				m_iOldPrologFreq = m_iPrologFreq;
 				writeConfig();
-
 				csStatus.Format( _T( "OCS Inventory NG Agent executed successfully.\n\nNew service parameters: FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i"), m_iPrologFreq, vOld, m_iTToWait);
 				LogEvent(EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csStatus);
 			}
