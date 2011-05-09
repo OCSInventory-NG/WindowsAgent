@@ -101,22 +101,30 @@ protected:
   /**
    * Start the process in the directory path. Make sure that the
    * executable is either in the path or specify the full path.
-   * Capture stdin, stdout and stderr, and prepare for waiting
-   * end of process to get exit code
+   * Use already opened handles to redirecting stdin/stdout/stderr
+   * if capture used
+   * Return 0 if error or PID of created process
+   */
+  DWORD realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, BOOL bCapture = FALSE);
+  /**
+   * Prepare handle to capture stdin, stdout and stderr, start the process and
+   * and prepare for waiting end of process to get exit code
    */
   BOOL startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath);
-  BOOL realPopenCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath);
   /**
    * Wait for the process to finish and get exit code and output
    */
   BOOL waitCapture();
+  /**
+   * Close all used handles of needed
+   */
   BOOL closeHandles();
 
   /**
    * Search in memory all processes listed in pProcesses array
    * or any new child process of an already listed process
    * Also remove for array non existing process
-   **/
+   */
   BOOL parseRunningProcesses( CObArray *pProcessList);
   BOOL isProcessListed( CObArray *pProcessList, DWORD dwProcessID);
 

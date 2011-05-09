@@ -176,12 +176,26 @@ BOOL CExecCommand::closeHandles()
 		bRet = FALSE;
 	}
 	m_hChildStdinRd = NULL;
-	// Now close these two
+	if (m_hChildStdinWr && !CloseHandle( m_hChildStdinWr))
+	{
+		bRet = FALSE;
+	}
+	m_hChildStdinWr = NULL;
+	if (m_hChildStdoutRd && !CloseHandle( m_hChildStdoutRd))
+	{
+		bRet = FALSE;
+	}
+	m_hChildStdoutRd = NULL;
 	if (m_hChildStdoutWr && !CloseHandle( m_hChildStdoutWr))
 	{
 		bRet = FALSE;
 	}
 	m_hChildStdoutWr = NULL;
+	if (m_hChildStderrRd && !CloseHandle( m_hChildStderrRd))
+	{
+		bRet = FALSE;
+	}
+	m_hChildStderrRd = NULL;
 	if (m_hChildStderrWr && !CloseHandle( m_hChildStderrWr))
 	{
 		bRet = FALSE;
@@ -190,12 +204,13 @@ BOOL CExecCommand::closeHandles()
 	return bRet;
 }
 
-BOOL CExecCommand::realPopenCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
+DWORD CExecCommand::realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, BOOL bCapture)
 {
 	PROCESS_INFORMATION piProcInfo;
 	STARTUPINFO		siStartInfo;
 	CString			csComspec,
 					csCommand;
+	static DWORD	dwProcessID = 0;
 
 	ASSERT( lpstrCommand);
 
@@ -208,7 +223,7 @@ BOOL CExecCommand::realPopenCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPat
 			* Oh gag, we're on Win9x or using COMMAND.COM. Not supported
 			*/
 			m_csOutput.AppendFormat( "Get COMSPEC Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
-			return FALSE;
+			return 0;
 		}
 		csCommand.Format( _T( "\"%s\" /c %s"), csComspec, lpstrCommand);
 	}
@@ -218,10 +233,17 @@ BOOL CExecCommand::realPopenCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPat
 
 	ZeroMemory(&siStartInfo, sizeof(STARTUPINFO));
 	siStartInfo.cb = sizeof(STARTUPINFO);
-	siStartInfo.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
-	siStartInfo.hStdInput = m_hChildStdinRd;
-	siStartInfo.hStdOutput = m_hChildStdoutWr;
-	siStartInfo.hStdError = m_hChildStdoutWr;
+	if (bCapture)
+	{
+		// Capture stdin/stdout/stderr
+		siStartInfo.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+		siStartInfo.hStdInput = m_hChildStdinRd;
+		siStartInfo.hStdOutput = m_hChildStdoutWr;
+		siStartInfo.hStdError = m_hChildStdoutWr;
+	}
+	else
+		// No capture
+		siStartInfo.dwFlags = STARTF_USESHOWWINDOW;
 	siStartInfo.wShowWindow = SW_HIDE;
 
 	if (!CreateProcess( NULL, csCommand.GetBuffer(), NULL, NULL, TRUE,
@@ -229,13 +251,14 @@ BOOL CExecCommand::realPopenCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPat
                     NULL, lpstrPath, &siStartInfo, &piProcInfo)) 
     {
 		m_csOutput.AppendFormat( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
-		return FALSE;
+		return 0;
 	}
 	// Close the handles now so anyone waiting is woken.
 	CloseHandle(piProcInfo.hThread);
 	// Return process handle
 	m_hProcessHandle = piProcInfo.hProcess;
-	return TRUE;
+	dwProcessID = piProcInfo.dwProcessId;
+	return dwProcessID;
 }
 
 BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
@@ -247,16 +270,6 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	{
 		ASSERT( lpstrCommand);
 		initialize();
-
-		m_hChildStdinRd = 0;
-		m_hChildStdinWr = 0;
-		m_hChildStdoutRd = 0;
-		m_hChildStdoutWr = 0;
-		m_hChildStderrRd = 0;
-		m_hChildStderrWr = 0;
-		m_hChildStdinWrDup = 0;
-		m_hChildStdoutRdDup = 0;
-		m_hChildStderrRdDup = 0;
 
 		saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
 		saAttr.bInheritHandle = TRUE;
@@ -284,9 +297,9 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 			return FALSE;
 		}
 
-
 		// Close the inheritable version of ChildStdin that we're using.
 		CloseHandle( m_hChildStdinWr);
+		m_hChildStdinWr = NULL;
 
 		////////////////////////////////////////////////////////////////
 		// Capture stdout
@@ -304,6 +317,7 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 
 		// Close the inheritable version of ChildStdout that we're using.
 		CloseHandle( m_hChildStdoutRd);
+		m_hChildStdoutRd = NULL;
 
 		////////////////////////////////////////////////////////////////
 		// Capture stderr
@@ -320,12 +334,13 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		}
 		// Close the inheritable version of ChildStdErr that we're using.
 		CloseHandle( m_hChildStderrRd);
+		m_hChildStderrRd = NULL;
 
 		fd1 = _open_osfhandle(TO_INTPTR(m_hChildStdinWrDup), _O_RDONLY|_O_TEXT);
 		fd2 = _open_osfhandle(TO_INTPTR(m_hChildStdoutRdDup), _O_RDONLY|_O_TEXT);
 		fd3 = _open_osfhandle(TO_INTPTR(m_hChildStderrRdDup), _O_RDONLY|_O_TEXT);
 
-		if (!realPopenCreateProcess( lpstrCommand, lpstrPath))
+		if (realCreateProcess( lpstrCommand, lpstrPath, TRUE) == 0)
 		{
 			if(fd1 >= 0)
 			{
@@ -391,49 +406,16 @@ int CExecCommand::execWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 
 int CExecCommand::execNoWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 {
-	PROCESS_INFORMATION piProcInfo;
-	STARTUPINFO		siStartInfo;
-	CString			csComspec,
-					csCommand;
-
 	try
 	{
 		ASSERT( lpstrCommand);
 		initialize();
-
-		if (m_bComspec)
+		
+		// Start process
+		if (realCreateProcess( lpstrCommand, lpstrPath) == 0) 
 		{
-			// Find COMSPEC environnement variable to start process
-			if (!csComspec.GetEnvironmentVariable( _T( "COMSPEC")))
-			{
-				/*
-				* Oh gag, we're on Win9x or using COMMAND.COM. Not supported
-				*/
-				m_csOutput.AppendFormat( "Get COMSPEC Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
-				return FALSE;
-			}
-			csCommand.Format( _T( "\"%s\" /c %s"), csComspec, lpstrCommand);
-		}
-		else
-			// Do not use COMSPEC to start process => full path for command must be provided
-			csCommand = lpstrCommand;
-
-		ZeroMemory(&siStartInfo, sizeof(STARTUPINFO));
-		siStartInfo.cb = sizeof(STARTUPINFO);
-		siStartInfo.dwFlags = STARTF_USESHOWWINDOW;
-		siStartInfo.wShowWindow = SW_HIDE;
-
-		if (!CreateProcess( NULL, csCommand.GetBuffer(), NULL, NULL, TRUE,
-						0, //CREATE_NEW_CONSOLE,
-						NULL, lpstrPath, &siStartInfo, &piProcInfo)) 
-		{
-			m_csOutput.AppendFormat( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			return EXEC_ERROR_START_COMMAND;
 		}
-		// Close the handles now so anyone waiting is woken.
-		CloseHandle(piProcInfo.hThread);
-		// Return process handle
-		m_hProcessHandle = piProcInfo.hProcess;
 		return EXEC_SUCCESSFULL;
 	}
 	catch (CException *pEx)
@@ -504,6 +486,7 @@ BOOL  CExecCommand::waitCapture()
 
 		// Free up the native handle at this point
 		CloseHandle( m_hProcessHandle);
+		m_hProcessHandle = NULL;
 		m_nExitValue = nResult;
 		if (nResult < 0 || !closeHandles())
 		{
@@ -522,55 +505,24 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 {
 	CObArray		myProcessList;
 	CProcessProps	*pProcess;
-	PROCESS_INFORMATION piProcInfo;
-	STARTUPINFO		siStartInfo;
-	CString			csComspec,
-					csCommand;
-	DWORD			dwExitCode;
+	DWORD			dwExitCode,
+					dwProcessID;
 
 	try
 	{
 		ASSERT( lpstrCommand);
 		initialize();
 
-		if (m_bComspec)
+		// Start process
+		if ((dwProcessID = realCreateProcess( lpstrCommand, lpstrPath)) == 0) 
 		{
-			// Find COMSPEC environnement variable to start process
-			if (!csComspec.GetEnvironmentVariable( _T( "COMSPEC")))
-			{
-				/*
-				* Oh gag, we're on Win9x or using COMMAND.COM. Not supported
-				*/
-				m_csOutput.AppendFormat( "Get COMSPEC Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
-				return FALSE;
-			}
-			csCommand.Format( _T( "\"%s\" /c %s"), csComspec, lpstrCommand);
-		}
-		else
-			// Do not use COMSPEC to start process => full path for command must be provided
-			csCommand = lpstrCommand;
-
-		ZeroMemory(&siStartInfo, sizeof(STARTUPINFO));
-		siStartInfo.cb = sizeof(STARTUPINFO);
-		siStartInfo.dwFlags = STARTF_USESHOWWINDOW;
-		siStartInfo.wShowWindow = SW_HIDE;
-
-		if (!CreateProcess( NULL, csCommand.GetBuffer(), NULL, NULL, TRUE,
-						0, //CREATE_NEW_CONSOLE,
-						NULL, lpstrPath, &siStartInfo, &piProcInfo)) 
-		{
-			m_csOutput.AppendFormat( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			return EXEC_ERROR_START_COMMAND;
 		}
-		// Close the handles now so anyone waiting is woken.
-		CloseHandle(piProcInfo.hThread);
-		// Save process handle to get exit code
-		m_hProcessHandle = piProcInfo.hProcess;
 		// We need high priority on OS to follow thread/process created by main command
 		SetPriorityClass( GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 		// Store first process
 		pProcess = new CProcessProps();
-		pProcess->set( piProcInfo.dwProcessId, GetCurrentProcessId(), csCommand);
+		pProcess->set( dwProcessID, GetCurrentProcessId(), lpstrCommand);
 		myProcessList.Add( pProcess);
 		// While there is running processes
 		while (myProcessList.GetCount() > 0)
@@ -641,7 +593,6 @@ BOOL CExecCommand::parseRunningProcesses( CObArray *pProcessList)
 					pProcessList->Add( pProc);
 				}
 			}
-
 		}
 		CloseHandle( hSnapshot);
 		hSnapshot = NULL;
