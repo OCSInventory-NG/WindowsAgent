@@ -192,6 +192,13 @@ BOOL CPackage::clean()
 	// Only delete unzip directory if is not a store action 
 	if ((m_csAction != OCS_DOWNLOAD_ACTION_STORE) && !m_csPath.IsEmpty() && fileExists( m_csPath))
 		directoryDelete( m_csPath);
+	// Try to see if OCS Agent installer done file exists
+	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
+	if (fileExists( csPath))
+	{
+		getOcsLogger()->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Deleting OCS Inventory Agent Setup result file <%s>"), csPath);
+		DeleteFile( csPath);
+	}
 	// Delete download package directory and registry key
 	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), m_csID);
 	return (regDeletePackageDigest() && directoryDelete( csPath));
@@ -203,6 +210,14 @@ BOOL CPackage::clean( LPCTSTR lpstrID)
 
 	ASSERT( lpstrID);
 
+	// Try to see if OCS Agent installer done file exists
+	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
+	if (fileExists( csPath))
+	{
+		getOcsLogger()->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Deleting OCS Inventory Agent Setup result file <%s>"), csPath);
+		DeleteFile( csPath);
+	}
+	// Now, really delete package directory
 	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), lpstrID);
 	return directoryDelete( csPath);
 }
