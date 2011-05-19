@@ -44,7 +44,7 @@ Uncompress sources of these libraries into directory "External_Deps" to create
 the followong directory structures.
 - External_Deps\Zlib-1.2.5
 - External_Deps\openssl-1.0.0c
-- External_Deps\curl-7.21.2
+- External_Deps\curl-7.21.3
 - External_Deps\tinyxml
 - External_Deps\ZipArchive
 
@@ -56,6 +56,13 @@ properties / C/C++ / Preprocessor" section to automatically bind DLL to Visual
 C++ 2008 SP1 CRT and MFC versions (for more explanation, see Jochen Kalmbach's Blog
 http://blog.kalmbach-software.de/2009/05/27/deployment-of-vc2008-apps-without-installing-anything/)
 Save and build to create unicode DLL for ZipArchive Library.
+
+Also, edit curl Makefile for Visual C++ 2008, aka lib/makefile.vc9, and add 
+"/D_BIND_TO_CURRENT_VCLIBS_VERSION" at the end of CFLAGS line 95. As is, libcurl
+DLL will be binded to lastest Visual C++ 2008 SP1 CRT versions.
+
+For Zlib, OpenSSL and TinyXML, compiling using _BIND_TO_CURRENT_VCLIBS_VERSION 
+preprocessor define is done through the call of build file "OCS_Make_Required_Libs.bat".
 
 
 Edit script "OCS_Make_Required_Libs.bat" to meet your need, especially
@@ -78,12 +85,6 @@ Edit script "OCS_Make_Required_Libs.bat" to meet your need, especially
   set ZIP_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\ZipArchive
 
 Then, launch script "OCS_Make_Required_Libs.bat" to create all libs and prepare for building OCS agent.
-
-cURL DLL is built with an external manifest file, which refers to RTM version
-(9.0.21022.8) of MS Visual C++ 2008 CRT and MFC dll assembly. Bulding script
-copied this manifest to release and debug directory. You have to manually
-update these manifest files to set SP1 version 9.0.30729.1 (or whatever version/SP
-you have) AND update the publicKeyToken attribute for Microsoft.VC90.CRT assembly.
 
 
 BUIDLING AGENT

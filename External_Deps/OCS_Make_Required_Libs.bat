@@ -111,20 +111,18 @@ Rem Build cURL dll using OpenSSL Dlls and Zlib dll
 cd lib
 nmake /f Makefile.vc9 cfg=release-dll-ssl-dll-zlib-dll
 if ERRORLEVEL 1 goto ERROR
-cd ..\src
-nmake /f Makefile.vc9 cfg=release-dll-ssl-dll-zlib-dll
+Rem Insert manifest into DLL
+cd release-dll-ssl-dll-zlib-dll
+mt -manifest libcurl.dll.manifest -outputresource:libcurl.dll;2
 if ERRORLEVEL 1 goto ERROR
-cd..
 
 Rem copy libs to use them in OCS
-copy "lib\release-dll-ssl-dll-zlib-dll\libcurl_imp.lib" ..
-copy "lib\release-dll-ssl-dll-zlib-dll\libcurl.dll" ..\..\Release
-copy "lib\release-dll-ssl-dll-zlib-dll\libcurl.dll.manifest" ..\..\Release
-copy "lib\release-dll-ssl-dll-zlib-dll\libcurl.dll" ..\..\Debug
-copy "lib\release-dll-ssl-dll-zlib-dll\libcurl.dll.manifest" ..\..\Debug
+copy "libcurl_imp.lib" ..\..\..
+copy "libcurl.dll" ..\..\..\..\Release
+copy "libcurl.dll" ..\..\..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
-cd ..
+cd ..\..\..
 echo.
 echo *************************************************************************
 echo *                                                                       *
