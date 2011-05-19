@@ -15,6 +15,12 @@
 #include "NTService.h"
 #include "NTServiceMsg.h" // Event message ids
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 // static variables
 CNTService* CNTService::m_pThis = NULL;
 

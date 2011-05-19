@@ -24,6 +24,12 @@
 #include "ComProvider.h"
 #include "InventoryRequest.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 COcsService::COcsService():CNTService( OCS_SERVICE_SECTION)
 {
 }

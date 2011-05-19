@@ -13,11 +13,17 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+
 #include "Windows.h"
 #include "Winbase.h" 
 #include "SysInfoClasses.h"
-
 #include "Memory.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
 // Under Windows 2K or higher, use MEMORYSTATUSEX
 BOOL (__stdcall *lpfnGlobalMemoryStatusEx) ( LPMEMORYSTATUSEX lpBuffer);

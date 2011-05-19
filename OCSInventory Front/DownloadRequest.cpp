@@ -11,6 +11,12 @@
 #include "StdAfx.h"
 #include "DownloadRequest.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 CDownloadRequest::CDownloadRequest(void)
 {
 	CDeviceid *pDeviceid = getOcsDeviceID();

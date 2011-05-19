@@ -14,6 +14,10 @@
 
 #pragma once
 
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#endif
+
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1
 #endif
@@ -32,23 +36,12 @@
 #include <afxwin.h>         // MFC core and standard components
 #include <afxext.h>         // MFC extensions
 
-
-
-
-
 #ifndef _AFX_NO_OLE_SUPPORT
 #include <afxdtctl.h>           // MFC support for Internet Explorer 4 Common Controls
 #endif
 #ifndef _AFX_NO_AFXCMN_SUPPORT
 #include <afxcmn.h>                     // MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
-
-
-
-
-
-
-
 
 
 #ifdef _UNICODE

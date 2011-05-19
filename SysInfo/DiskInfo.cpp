@@ -16,8 +16,13 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "StdAfx.h"
-
 #include "DiskInfo.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
 char DiskInfo::HardDriveSerialNumber [1024];
 
@@ -410,8 +415,13 @@ DiskInfo::DiskInfo(void)
 
 DiskInfo::~DiskInfo(void)
 {
+	vector <WORD*>::iterator listIter;
+	for (listIter = m_list.begin(); listIter != m_list.end(); listIter++)
+		delete *listIter;
+/*
 	for(UINT i = 0; i< m_list.size(); i++)
 		delete m_list[i];
+*/
 	m_list.clear();
 }
 

@@ -15,6 +15,10 @@
 
 #pragma once
 
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#endif
+
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1
 #endif

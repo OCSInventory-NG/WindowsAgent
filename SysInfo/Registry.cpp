@@ -16,6 +16,12 @@
 #include "SysInfo.h"
 #include "DebugLog.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 // Defines for retrieving Windows registration
 #define WIN_REGISTRATION_KEY					_T( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion")
 #define WIN_REGISTRATION_PRODUCT_ID_VALUE		_T( "ProductId")

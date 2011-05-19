@@ -18,6 +18,12 @@
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 CStringA OCSINVENTORYFRONT_API GetAnsiFromUnicode(LPCTSTR a_wstrString)
 {
 /*	static char	szBuffer[1024*1024+1]; // 1MB buffer to handle string 

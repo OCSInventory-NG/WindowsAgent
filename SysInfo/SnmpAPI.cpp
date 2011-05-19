@@ -13,6 +13,12 @@
 #include <snmp.h>
 #include "snmpapi.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 //******************************************************************
 //*
 //*      Copyright (C) Stas Khirman 1998.  All rights reserved.         

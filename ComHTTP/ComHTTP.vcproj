@@ -73,7 +73,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\External_Deps\libeay32.lib ..\External_Deps\libcurl_imp.lib"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				ModuleDefinitionFile=".\HTTP.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"

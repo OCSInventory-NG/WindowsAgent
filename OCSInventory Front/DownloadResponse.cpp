@@ -11,6 +11,12 @@
 #include "stdafx.h"
 #include "DownloadResponse.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 CDownloadResponse::CDownloadResponse( CByteArray *rawResponse) : CResponseAbstract( rawResponse)
 {
 }

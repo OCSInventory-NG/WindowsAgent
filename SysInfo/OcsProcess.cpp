@@ -19,9 +19,9 @@
 #include "DebugLog.h"
 
 #ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 // Process Status Helper functions for Windows NT 3.5X/4.0/2000 in PSAPI.DLL

@@ -21,6 +21,12 @@
 #include "ZipArchive.h"
 #include "ExecCommand.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 CPackage::CPackage(void)
 {
 	m_uPriority = 0;
