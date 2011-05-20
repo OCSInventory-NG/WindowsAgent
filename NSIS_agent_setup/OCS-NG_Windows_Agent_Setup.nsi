@@ -12,7 +12,7 @@ setcompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "OCS Inventory NG Agent"
-!define PRODUCT_VERSION "2.0.0.20"
+!define PRODUCT_VERSION "2.0.0.21"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
@@ -1512,9 +1512,9 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
     	strcpy $installSatus ":("
         clearerrors
-        File "..\Release\libcurl.dll.manifest"
+        Delete /REBOOTOK "$INSTDIR\libcurl.dll.manifest"
         Iferrors 0 +5
-        StrCpy $logBuffer "$logBuffer ERROR copying libcurl.dll.manifest $\r$\n"
+        StrCpy $logBuffer "$logBuffer ERROR removing libcurl.dll.manifest $\r$\n"
         Call Write_Log
     	strcpy $installSatus ":("
         clearerrors

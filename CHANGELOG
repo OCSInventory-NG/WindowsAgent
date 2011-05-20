@@ -1,3 +1,8 @@
+2.0.0.21
+  * Fix memory leak in WMI Storage query
+  * Delete OCS agent setup done file if found, when cleaning a package
+  * Build libcurl using _BIND_TO_CURRENT_VCLIBS_VERSION preprocessor define to bind it to the installed CRT versions, and include libcurl manifest as resource into DLL
+  * Compute new TTO_WAIT only if agent wasn't launched in notify mode
 2.0 Final aka 2.0.0.20
   * Fix memory leak into OCsWmi.dll
   * Fix bogus network adapter description in some Cyrillic OS (perhaps other charset affected)
