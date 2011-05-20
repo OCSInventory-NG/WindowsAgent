@@ -490,6 +490,7 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
+		di.Destroy();
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
