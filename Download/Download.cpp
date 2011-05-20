@@ -229,6 +229,13 @@ CLEAN_AND_EXIT:
 			if (pServerConfig != NULL)
 				pProvider->deleteConfig( pServerConfig);
 		}
+		// Try to see if OCS Agent installer done file exists
+		csMessage.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
+		if (fileExists( csMessage))
+		{
+			m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Deleting OCS Inventory Agent Setup result file <%s>"), csMessage);
+			DeleteFile( csMessage);
+		}
 
 		/*****
 		 *
