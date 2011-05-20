@@ -112,8 +112,7 @@ CString CPrologResponse::getIpdiscoverLatency()
 		return csLatency;
 	// There is only one record for IpDiscover parameters
 	cmParams->GetAt(0)->Lookup( _T( "IPDISC_LAT"), csLatency);
-	if (cmParams)
-		delete cmParams;
+	delete cmParams;
 	return csLatency;
 }
 
@@ -126,8 +125,7 @@ CString	CPrologResponse::getIpdiscoverLan()
 		return csLan;
 	// There is only one record for IpDiscover parameters
 	cmParams->GetAt(0)->Lookup( _T( "VAL"), csLan);
-	if (cmParams)
-		delete cmParams;
+	delete cmParams;
 	return csLan;
 }
 

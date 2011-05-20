@@ -160,6 +160,7 @@ BOOL CCapDownload::retrievePackages()
 			m_tPackages.Add(pOptDownloadPackage);
 	}	
 	cFileHistory.Close();
+	delete pMapArray;
 	// Cleaning file history for duplicates
 	switch (CFilePackageHistory::CleanDuplicates( getPackageHistoryFilename()))
 	{

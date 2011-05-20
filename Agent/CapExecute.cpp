@@ -32,8 +32,6 @@ CCapExecute::~CCapExecute(void)
 
 BOOL CCapExecute::executePlugins( LPCTSTR lpstrPath)
 {
-	ASSERT( lpstrPath);
-
 	return (execute( TRUE, lpstrPath) && execute( FALSE, lpstrPath));
 }
 
@@ -45,7 +43,6 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 	BOOL	bFound = FALSE;
 	CMarkup myXml;
 
-	ASSERT( lpstrPath);
 	try
 	{
 		CFileFind			cFinder;
