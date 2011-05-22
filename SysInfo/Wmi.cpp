@@ -1570,7 +1570,6 @@ BOOL CWmi::ParseChassisType(CString &csType)
 	if (!csData.IsEmpty())
 	{
 		csResult += CBios::ParseChassisType( _ttoi( csData));
-		csResult += _T( ";");
 	}
 	csType = csResult;
 	return TRUE;
