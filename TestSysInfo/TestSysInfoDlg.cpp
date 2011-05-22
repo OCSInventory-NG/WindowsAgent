@@ -530,6 +530,10 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			res = myWmiDll.GetClassObjectStringValue( _T( "ReleaseDate"));
 			str += res;
 			m_List.AddString( str);
+			str = _T( "BIOS Serial Number = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "SerialNumber"));
+			str += res;
+			m_List.AddString( str);
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();

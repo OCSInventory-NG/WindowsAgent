@@ -180,6 +180,15 @@ BOOL CWmi::GetBiosInfo(CBios *pMyBios)
 		return bResult;
 
 	pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
+	// GET BIOS Informations
+	if (GetBios( csManufacturer, csBiosVer, csRdate, csSN))
+	{
+		pMyBios->SetBiosManufacturer( csManufacturer);
+		pMyBios->SetBiosDateFormat( csRdate);
+		pMyBios->SetBiosVersion( csBiosVer);
+		pMyBios->SetSystemSerialNumber( csSN);
+		bResult = TRUE;
+	}
 	// Try to use win32 computer system object to get System Manufacturer, Model
 	if (GetSystemInformation( csManufacturer, csModel))
 	{
@@ -192,7 +201,8 @@ BOOL CWmi::GetBiosInfo(CBios *pMyBios)
 		if (!pMyBios->IsValidSystemManufacturer())
 			pMyBios->SetSystemManufacturer( csManufacturer);
 		pMyBios->SetMachineType( csChassisType);
-		pMyBios->SetSystemSerialNumber( csSN);
+		if (!pMyBios->IsValidSystemSerialNumber())
+			pMyBios->SetSystemSerialNumber( csSN);
 		pMyBios->SetAssetTag( csAssetTag);
 		bResult = TRUE;
 	}
@@ -205,16 +215,6 @@ BOOL CWmi::GetBiosInfo(CBios *pMyBios)
 			pMyBios->SetSystemModel( csModel);
 		if (!pMyBios->IsValidSystemSerialNumber())
 			pMyBios->SetSystemSerialNumber( csSN);
-	}
-	// GET BIOS Informations
-	if (GetBios( csManufacturer, csBiosVer, csRdate, csSN))
-	{
-		pMyBios->SetBiosManufacturer( csManufacturer);
-		pMyBios->SetBiosDateFormat( csRdate);
-		pMyBios->SetBiosVersion( csBiosVer);
-		if (!pMyBios->IsValidSystemSerialNumber())
-			pMyBios->SetSystemSerialNumber( csSN);
-		bResult = TRUE;
 	}
 	return bResult;
 }
