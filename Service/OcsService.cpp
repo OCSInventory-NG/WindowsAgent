@@ -401,7 +401,7 @@ void COcsService::Run()
 #ifdef _DEBUG
 	showInventory();
 
-	for (int i=0; i<10; i++)
+	for (int i=0; i<WRITE_TTOWAIT_EACH+10; i++)
 #else
 	while (IsRunning())
 #endif
