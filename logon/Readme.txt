@@ -30,7 +30,8 @@ REQUIREMENTS
 ============
 
 - NSIS 2.46 or higher (http://nsis.sourceforge.net))
-- Inetc plugin (http://nsis.sourceforge.net/Inetc_plug-in)
+- Inetc plugin (http://nsis.sourceforge.net/Inetc_plug-in), at least 2011/04/28
+  release
 
 
 OCSLOGON COMMAND LINE OPTIONS

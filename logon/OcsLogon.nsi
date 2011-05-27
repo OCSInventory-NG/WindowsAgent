@@ -12,7 +12,7 @@ setcompressor /SOLID lzma
 
 ; Version informations
 !define PRODUCT_NAME "OCS Inventory NG Logon Installer"
-!define PRODUCT_VERSION "2.0.0.1"
+!define PRODUCT_VERSION "2.0.0.2"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 
@@ -510,7 +510,7 @@ Function DownloadFile
     StrCmp "$strProxy_Type" "HTTP" DownloadFile_ProxyHTTP
     ; Not using proxy, or unssupported proxy
     StrCpy $R1 "/NOPROXY"
-   StrCpy $logBuffer "Download does not use HTTP proxy server.$\r$\n"
+    StrCpy $logBuffer "Download does not use HTTP proxy server.$\r$\n"
     Call Write_Log
     goto DownloadFile_ProxyEnd
 DownloadFile_ProxyHTTP:
@@ -540,7 +540,7 @@ DownloadFile_ProxyEnd:
        StrCpy $R2 "$strOCS_Server/deploy/ocspackage.exe"
     ${Else}
         ; Packager not used
-        StrCpy $R2 "$strOCS_Server/deploy/ocsagent.exe"
+        StrCpy $R2 "$strOCS_Server/deploy/OCS-NG-Windows-Agent-Setup.exe"
     ${EndIf}
     StrCpy $logBuffer "Downloading file <$R2> "
     Call Write_Log
@@ -581,7 +581,10 @@ DownloadFile_badGpo:
         Call Write_Log
         Abort "*** ERROR: Failed copying file !$\r$\n"
     ${EndIf}
-    inetc::get $R1 /SILENT /TIMEOUT $nTimeOut "$R2" "$R0.new"
+    IntOp $0 $nTimeOut / 1000
+    ; Using Inetc plugin at least release of 2011/04/28
+    ; /TIMEOUT x (in ms) replaced by /CONNECTIONTIMEOUT x (in s) and /RECEIVETIMEOUT x (in s)
+    inetc::get /CONNECTTIMEOUT $0 /RECEIVETIMEOUT $0  $R1 '$R2' '$R0.new' /END
     Pop $0
     StrCmp $0 "OK" DownloadFile_End 0
     ; Error downloading file
@@ -736,7 +739,7 @@ Job_AgentStart:
     ReadRegStr $R0 HKLM "SYSTEM\CurrentControlSet\Services\OCS Inventory Service" "Start"
     ${If} "$R0" == "2"
         ; Service start status set to auto
-        StrCpy $logBuffer "Windows automatically starts OCS Inventory NG Agent Service, no need to launch Agent.$\r$\n"
+        StrCpy $logBuffer "Windows automatically starts OCS Inventory NG Service, no need to launch Agent.$\r$\n"
         Call Write_Log
         goto Job_RunEnd
     ${EndIf}
@@ -745,7 +748,7 @@ Job_AgentStart:
 	Call GetParameters
 	Pop $R0
 	; Start Agent using provided parameters
-    StrCpy $logBuffer "Starting OCS Inventory NG Agent <$agentFile>..."
+    StrCpy $logBuffer "Windows does not automatically start OCS Inventory NG Service, so starting Agent <$agentFile>..."
     Call Write_Log
     ExecWait "$agentFile $R0" $0
     StrCpy $logBuffer "OK (exit code is $0)$\r$\n"
