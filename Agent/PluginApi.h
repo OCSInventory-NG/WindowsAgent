@@ -29,6 +29,10 @@
 
 #define PLUGIN_OK 0
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef int (*HOOK_START)(void);
 typedef int (*HOOK_END)(void);
 typedef int (*HOOK_CLEAN)(void);
@@ -41,5 +45,9 @@ OCSINVENTORY_API_EXPORTED int OCS_CALL_PROLOGWRITE_EXPORTED(CPrologRequest*);
 OCSINVENTORY_API_EXPORTED int OCS_CALL_PROLOGRESP_EXPORTED(CPrologResponse*);
 OCSINVENTORY_API_EXPORTED int OCS_CALL_END_EXPORTED();
 OCSINVENTORY_API_EXPORTED int OCS_CALL_START_EXPORTED();
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif // _PLUGIN_API_H_INCLUDED_

@@ -24,12 +24,20 @@
 #include "ServerConfig.h"
 #include "Provider Classes.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef OCS_PROVIDER_API CServerConfig * (*NEW_SERVER_CONFIG_OBJECT)( LPCTSTR, LPCTSTR);
 typedef OCS_PROVIDER_API BOOL (*SAVE_SERVER_CONFIG_OBJECT)( CServerConfig *, LPCTSTR, LPCTSTR);
 typedef OCS_PROVIDER_API void (*DELETE_SERVER_CONFIG_OBJECT)(CServerConfig *);
 
 typedef OCS_PROVIDER_API CConnexionAbstract * (*NEW_SERVER_OBJECT)(CServerConfig *);
 typedef OCS_PROVIDER_API void (*DELETE_SERVER_OBJECT)(CConnexionAbstract *);
+
+#ifdef __cplusplus
+};
+#endif
 
 class OCSINVENTORYFRONT_API CComProvider 
 {

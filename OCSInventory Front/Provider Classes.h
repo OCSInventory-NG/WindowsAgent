@@ -29,6 +29,10 @@
 class CServerConfig;
 class CConnexionAbstract;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 // CreateServerConfig - create an instance of the class CServerConfig
 OCS_PROVIDER_API CServerConfig * newServerConfig( LPCTSTR lpstrFile = NULL, LPCTSTR lpstrSection = NULL);
@@ -41,5 +45,9 @@ OCS_PROVIDER_API CConnexionAbstract * newServerConnexion( CServerConfig *pConfig
 ///////////////////////////////////////////////////////////////////////////////
 // DestroyServerConnexion - free the memory for the class instance 
 OCS_PROVIDER_API void deleteServerConnexion(CConnexionAbstract *pCon);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif // _OCS_PROVIDER_CLASSES_INCLUDED_

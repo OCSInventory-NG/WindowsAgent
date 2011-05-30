@@ -82,7 +82,7 @@
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="C:\Program Files\Vieux Microsoft SDK\Lib,..\include\zlib,..\include\openssl\lib\VC,..\ocsinventory front\debug,..\sysinfo\debug"
-				ModuleDefinitionFile=".\OCSPlugin_Example.def"
+				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/OCSPlugin_Example.pdb"
 				SubSystem="2"
@@ -181,7 +181,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="C:\Program Files\Vieux Microsoft SDK\Lib,..\include\zlib,..\include\openssl\lib\VC,..\ocsinventory front\debug,../sysinfo/release"
-				ModuleDefinitionFile=".\OCSPlugin_Example.def"
+				ModuleDefinitionFile=""
 				ProgramDatabaseFile=".\Release/OCSPlugin_Example.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -240,18 +240,6 @@
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="OCSPlugin_Example.def"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 			</File>
