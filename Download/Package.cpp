@@ -192,13 +192,6 @@ BOOL CPackage::clean()
 	// Only delete unzip directory if is not a store action 
 	if ((m_csAction != OCS_DOWNLOAD_ACTION_STORE) && !m_csPath.IsEmpty() && fileExists( m_csPath))
 		directoryDelete( m_csPath);
-	// Try to see if OCS Agent installer done file exists
-	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
-	if (fileExists( csPath))
-	{
-		getOcsLogger()->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Deleting OCS Inventory Agent Setup result file <%s>"), csPath);
-		DeleteFile( csPath);
-	}
 	// Delete download package directory and registry key
 	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), m_csID);
 	return (regDeletePackageDigest() && directoryDelete( csPath));
@@ -210,13 +203,6 @@ BOOL CPackage::clean( LPCTSTR lpstrID)
 
 	ASSERT( lpstrID);
 
-	// Try to see if OCS Agent installer done file exists
-	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
-	if (fileExists( csPath))
-	{
-		getOcsLogger()->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Deleting OCS Inventory Agent Setup result file <%s>"), csPath);
-		DeleteFile( csPath);
-	}
 	// Now, really delete package directory
 	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), lpstrID);
 	return directoryDelete( csPath);
@@ -268,12 +254,8 @@ BOOL CPackage::existDone()
 {
 	CString csTaskDone;
 
-	// First, try default package done file
+	// Is package done file existing
 	csTaskDone.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_DONE);
-	if (fileExists( csTaskDone))
-		return TRUE;
-	// Try to see if OCS Agent installer done file exists
-	csTaskDone.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
 	return fileExists( csTaskDone);;
 }
 
@@ -312,11 +294,8 @@ BOOL CPackage::getDone( CString &csCode)
 	csCode = ERR_DONE_FAILED;
 	try
 	{
-		// First, try default package done file
+		// Open package done file
 		csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_DONE);
-		if (!fileExists( csFile))
-			// Then, Try OCS Agent installer done 
-			csFile.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
 		if (!myFile.Open( csFile, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
 			return FALSE;
 		// Read only first line to get OCS result code
@@ -341,11 +320,8 @@ BOOL CPackage::getDone( CString &csCode, CString &csOutput)
 	csCode = ERR_DONE_FAILED;
 	try
 	{
-		// First, try default package done file
+		// Open package done file
 		csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_DONE);
-		if (!fileExists( csFile))
-			// Then, Try OCS Agent installer done 
-			csFile.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
 		if (!myFile.Open( csFile, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
 			return FALSE;
 		// Read first line to get result code
@@ -693,6 +669,18 @@ BOOL CPackage::unZip()
 		for(ZIP_INDEX_TYPE i=0; i<cZip.GetCount();i++)
 			cZip.ExtractFile(i, m_csPath);
 		cZip.Close();
+		// Create package ID file into unzip directory only if not in store action 
+		if (m_csAction != OCS_DOWNLOAD_ACTION_STORE)
+		{
+			CStdioFile cFile;
+
+			csFile.Format( _T( "%s\\%s"), m_csPath, OCS_DOWNLOAD_PACKAGE_ID);
+			if (cFile.Open( csFile, CFile::modeCreate|CFile::modeWrite|CFile::typeText))
+			{
+				cFile.WriteString( m_csID);
+				cFile.Close();
+			}
+		}
 	}
 	catch (CException *pE)
 	{		
@@ -703,6 +691,7 @@ BOOL CPackage::unZip()
 	catch (std::exception *pEx)
 	{
 		cZip.Close( CZipArchive::afAfterException);
+		delete pEx;
 		return FALSE;			
 	}
 	return TRUE;

@@ -28,12 +28,19 @@ public: // Methods
 	CCapDownload();
 	virtual ~CCapDownload();
 
-	// Get download package informations for server
+	// Get download package informations from server
 	BOOL retrievePackages();
 	// Write download tool general configuration parameters
 	BOOL writeConfig();
 	// Launch download in another process, using the download tool
 	BOOL launch();
+	
+	// Check for OCSNG Windows Agent Setup execution result, and send result to server if found
+	// This is a special work because OCS Agent Setup kill download process. So we loose package infos
+	// such as package ID and temporary unzip folder. As a workaround, Agent setup create a result file 
+	// OCSNG-Windows-Agent-Setup_done into Agent's download folder to store package ID and result.  
+	// We have to read this file if exists, and send result message to server.
+	BOOL checkOcsAgentSetupResult();
 
 protected: // Methods
 	// Send package result code to server

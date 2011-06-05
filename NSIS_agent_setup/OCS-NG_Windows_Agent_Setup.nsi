@@ -1163,6 +1163,41 @@ FunctionEnd
 
 
 #####################################################################
+# This function write agent setup result code to file
+# This is a special work because OCS Agent Setup kill download process.
+# So Agent looses package infos sucg as package ID and temporary unzip
+# folder. As a workaround, Setup creates a result file OCSNG-Windows-Agent-Setup_done
+# into Agent's download folder to store package ID and result. 
+# Package ID is read from a file named OCSNG-Windows-Agent-PackageID
+# stored by agent into the same folder as the installer
+#####################################################################
+Function WriteAgentSetupDone
+	; Write deployement status file if required
+	StrCmp "$OcsUpgrade" "TRUE" 0 WriteAgentSetupDone_end
+	; Read package ID from same directory as the installer
+    FileOpen $0 "$EXEDIR\OCSNG-Windows-Agent-PackageID" r
+    FileRead $0 $1
+	FileClose $0
+	; Get result code to write
+	Pop $2
+	; WRITE ../done
+	SetOutPath "$exedir"
+	FileOpen $0 "..\done" w
+	FileWrite $0 "$2$\r$\n"
+	FileWrite $0 "$1$\r$\n"
+	FileClose $0
+	; WRITE OCSNG-Windows-Agent-Setup_done into "$APPDATA\OCS Inventory NG\Agent\Download" directory, because in 2.0 or higher,
+    ; package is unzipped into system TEMP directory and no more under "$APPDATA\OCS Inventory NG\Agent\Download\PackID\Temp"
+    SetShellVarContext All
+	FileOpen $0 "$APPDATA\OCS Inventory NG\Agent\Download\OCSNG-Windows-Agent-Setup_done" w
+	FileWrite $0 "$2$\r$\n"
+	FileWrite $0 "$1$\r$\n"
+	FileClose $0
+WriteAgentSetupDone_end:
+FunctionEnd
+
+
+#####################################################################
 # This function ask user for agent and server options
 #####################################################################
 Function AskServerOptions
@@ -1758,20 +1793,6 @@ Section "Uninstaller" SEC06
 	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
 	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
 	WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
-	; Write deployement status file if required
-	StrCmp "$OcsUpgrade" "TRUE" 0 Uninstall_end
-	; WRITE ../done
-	SetOutPath "$exedir"
-	FileOpen $1 "..\done" w
-	FileWrite $1 "SUCCESS"
-	FileClose $1
-	; WRITE OCSNG-Windows-Agent-Setup_done into "$APPDATA\OCS Inventory NG\Agent\Download" directory, because in 2.0 or higher,
-    ; package is unzipped into system TEMP directory and no more under "$APPDATA\OCS Inventory NG\Agent\Download\PackID\Temp"
-    SetShellVarContext All
-	FileOpen $1 "$APPDATA\OCS Inventory NG\Agent\Download\OCSNG-Windows-Agent-Setup_done" w
-	FileWrite $1 "SUCCESS"
-	FileClose $1
-Uninstall_end:
 SectionEnd
 
 
@@ -1794,12 +1815,18 @@ SectionEnd
 Function .onInstSuccess
 	${GetTime} "" "L" $0 $1 $2 $3 $4 $5 $6
 	strcmp "$installSatus" ";-)" 0 onInstSuccess_Error
-	StrCpy $logBuffer "SUCESS: ${PRODUCT_NAME} ${PRODUCT_VERSION} successfuly installed on $0/$1/$2 at $4:$5:$6$\r$\n$installSatus$\r$\n "
+	StrCpy $logBuffer "SUCCESS: ${PRODUCT_NAME} ${PRODUCT_VERSION} successfuly installed on $0/$1/$2 at $4:$5:$6$\r$\n$installSatus$\r$\n "
+	Call Write_Log
+	Push "SUCCESS"
+	Call WriteAgentSetupDone
 	goto onInstSuccess_end
 onInstSuccess_Error:
 	StrCpy $logBuffer "ERROR: ${PRODUCT_NAME} ${PRODUCT_VERSION} may not work correctly since $0/$1/$2 at $4:$5:$6$\r$\n$installSatus$\r$\n "
-onInstSuccess_end:
 	Call Write_Log
+	; Windows ERROR_WRITE_FAULT
+	Push "EXIT_CODE_29"
+	Call WriteAgentSetupDone
+onInstSuccess_end:
 FunctionEnd
 
 
@@ -1809,6 +1836,8 @@ FunctionEnd
 Function .onInstFailed
 	StrCpy $logBuffer "ABORT: installation of ${PRODUCT_NAME} ${PRODUCT_VERSION} failed :-($\r$\n"
 	Call Write_Log
+	Push "ERR_ABORTED"
+	Call WriteAgentSetupDone
 FunctionEnd
 
 

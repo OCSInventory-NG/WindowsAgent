@@ -279,6 +279,69 @@ BOOL CCapDownload::sendMessage( LPCTSTR lpstrPackID, LPCTSTR lpstrCode)
 
 }
 
+BOOL CCapDownload::checkOcsAgentSetupResult()
+{
+	CString csFile, csCode = ERR_DONE_FAILED, csID;
+	CStdioFile myFile;
+	HKEY  hKey;
+
+	csFile.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
+	if (!fileExists( csFile))
+		// No OCS Agent Setup done file
+		return TRUE;
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Found OCS Inventory Agent Setup result file <%s>"), csFile);
+	// Open OCS Agent Setup done file to read exit code and package ID
+	try
+	{
+		if (!myFile.Open( csFile, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
+			return FALSE;
+		// First line contains result code and seconf line contains package ID
+		myFile.ReadString( csCode);
+		myFile.ReadString( csID);
+		myFile.Close();
+	}
+	catch( CException *pEx)
+	{
+		pEx->Delete();
+		myFile.Abort();
+		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed reading OCS Inventory Agent Setup result file <%s>"), csFile);
+		return FALSE;
+	}
+	if (csCode.Compare( CODE_SUCCESS) == 0)
+	{
+		// Package execute successful
+		if (!CFilePackageHistory::AddPackage( getPackageHistoryFilename(), csID))
+			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Cannot add OCS Inventory Agent Setup package <%s> to History file <%s>"), csID, getPackageHistoryFilename());
+	}
+	else
+	{
+		// Package execute failed
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Will not register OCS Inventory Agent Setup package <%s> in history: result <%s> not a success"), csID, csCode);
+	}
+	m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Sending result code <%s> for OCS Inventory Agent Setup package <%s>"), csCode, csID);
+	if (sendMessage( csID, csCode))
+	{
+		// Agent setup result code successfully sent => delete result file and registry package digest
+		if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, KEY_WRITE, &hKey) == ERROR_SUCCESS)
+		{
+			RegDeleteValue( hKey, csID);
+			RegCloseKey( hKey);
+		}
+		DeleteFile( csFile);
+	}
+	// Delete download directory of package, to avoid Download tool running setup another time
+	csFile.Format( _T( "%s\\%s"), getDownloadFolder(), csID);
+	if (!directoryDelete( csFile))
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to delete directory <%s> of package <%s>"), csFile);
+	// Delete tmp path folder where package was unzip
+	if (GetTempPath( _MAX_PATH, csFile.GetBufferSetLength( _MAX_PATH+1)) == 0)
+		return FALSE;
+	csFile.ReleaseBuffer();
+	csFile.AppendFormat( _T( "\\%s.OCS"), csID);
+	directoryDelete( csFile);
+	return TRUE;
+}
+
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
