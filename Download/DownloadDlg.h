@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "SimpleBrowser.h"
+
 #define MAX_LINES 15
 #define MIN_LINES 3
 
@@ -48,6 +50,7 @@ protected:
 	CButton	m_buttonCancel;
 	CButton	m_buttonWait;
 	CEdit	m_editText;
+	SimpleBrowser m_Browser;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
