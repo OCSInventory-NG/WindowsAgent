@@ -1343,7 +1343,8 @@ Section "Upgrade from 1.X Agent" SEC02
     IfErrors 0 +3
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
-    ; Copy cacert.pem file to new folder, continue on error
+    ; Copy cacert.pem file to new folder, continue on error, skip if exist on new folder
+    IfFileExists "$APPDATA\OCS Inventory NG\Agent\cacert.pem" UpgradeSkipCacert
 	StrCpy $logBuffer "$\r$\nCopying cacert.pem file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
 	ClearErrors
@@ -1351,6 +1352,11 @@ Section "Upgrade from 1.X Agent" SEC02
     IfErrors 0 +3
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
+	goto UpgradeEndCacert
+UpgradeSkipCacert:
+	StrCpy $logBuffer "$\r$\nFile <$APPDATA\OCS Inventory NG\Agent\cacert.pem> exists, skipping it..."
+	Call Write_Log
+UpgradeEndCacert:
     ; Copy label file to new folder, continue on error
 	StrCpy $logBuffer "$\r$\nCopying label file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
