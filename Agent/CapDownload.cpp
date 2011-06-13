@@ -307,6 +307,13 @@ BOOL CCapDownload::checkOcsAgentSetupResult()
 		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed reading OCS Inventory Agent Setup result file <%s>"), csFile);
 		return FALSE;
 	}
+	if (csID.IsEmpty())
+	{
+		// Upgrading from agent 1.X or previous to 2.0.0.22 ?
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Found result code <%s> for OCS Inventory Agent Setup package but no package ID specified, so unable to send result code"), csCode);
+		return FALSE;
+	}
+	// All information available => try to register package and send result code
 	if (csCode.Compare( CODE_SUCCESS) == 0)
 	{
 		// Package execute successful
@@ -458,7 +465,7 @@ int COptDownloadPackage::downloadInfoFile()
 	// Open metadata file to add fragment location
 	CString csBuffer;
 	CMarkup xml;
-	if (!LoadFileToText( csBuffer, getLocalMetadataFilename()))
+/*	if (!LoadFileToText( csBuffer, getLocalMetadataFilename()))
 	{
 		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Cannot read Metadata file <%s>"), getLocalMetadataFilename());
 		return FALSE;
@@ -467,6 +474,12 @@ int COptDownloadPackage::downloadInfoFile()
 	if(!xml.SetDoc( csBuffer))
 	{
 		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Metadata file <%s> is not XML"), getLocalMetadataFilename());
+		return FALSE;
+	}
+*/
+	if(!xml.LoadFile( getLocalMetadataFilename()))
+	{
+		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Cannot read or parse Metadata file <%s>"), getLocalMetadataFilename());
 		return FALSE;
 	}
 	// Add fragment location to meta data

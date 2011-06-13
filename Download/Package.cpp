@@ -55,10 +55,13 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 	try
 	{
 		// Load "info" file content
-		if (!LoadFileToText( csBuffer, lpstrFile))
+/*		if (!LoadFileToText( csBuffer, lpstrFile))
 			return FALSE;
 		// Parse XML
 		if (!myXml.SetDoc( csBuffer))
+			return FALSE;
+*/
+		if (!myXml.LoadFile( lpstrFile))
 			return FALSE;
 		myXml.ResetPos();
 		if (!myXml.FindFirstElem( _T( "DOWNLOAD")))
