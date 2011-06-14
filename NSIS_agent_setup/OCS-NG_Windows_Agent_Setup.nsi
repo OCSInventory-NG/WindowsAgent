@@ -1379,11 +1379,11 @@ UpgradeEndCacert:
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
 	; Transfer Downloads
-	StrCpy $logBuffer "$\r$\nCopying current downloads from <$INSTDIR\download> to <$APPDATA\OCS Inventory NG\Agen\download>...$\r$\n"
+	StrCpy $logBuffer "$\r$\nCopying current downloads from <$INSTDIR\download> to <$APPDATA\OCS Inventory NG\Agent\download>...$\r$\n"
 	Call Write_Log
 	ClearErrors
     CreateDirectory "$APPDATA\OCS Inventory NG\Agent\download"
-    CopyFiles /SILENT "$INSTDIR\download\*.*" "$APPDATA\OCS Inventory NG\Agen\download"
+    CopyFiles /SILENT "$INSTDIR\download\*.*" "$APPDATA\OCS Inventory NG\Agent\download"
     IfErrors 0 +3
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
