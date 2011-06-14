@@ -63,7 +63,9 @@ TiXmlElement *CMarkup::AddElem( LPCTSTR szName, LPCTSTR szValue)
 
 	try
 	{
-		// Create XML element
+		// Create XML element and avoid producing "(null)" string we converting
+		if ((szName != NULL) && (_tcslen( szName) == 0))
+			return NULL;
 		TiXmlElement *pXmlElement = new TiXmlElement( CT2A( szName, CP_UTF8));
 		if (pXmlElement == NULL)
 			return NULL;
@@ -73,6 +75,7 @@ TiXmlElement *CMarkup::AddElem( LPCTSTR szName, LPCTSTR szValue)
 			m_pDoc->LinkEndChild( pXmlElement);
 		else
 			m_pCurrentNode->LinkEndChild( pXmlElement);
+		// Avoid producing "(null)" string we converting
 		if ((szValue != NULL) && (_tcslen( szValue) != 0))
 		{
 			// There is text to set between <Element></Element>
@@ -110,7 +113,9 @@ TiXmlElement *CMarkup::AddChildElem( LPCTSTR szName, LPCTSTR szValue)
 
 	try
 	{
-		// Create XML element
+		// Create XML element and avoid producing "(null)" string we converting
+		if ((szName != NULL) && (_tcslen( szName) == 0))
+			return NULL;
 		TiXmlElement *pXmlElement = new TiXmlElement( CT2A( szName, CP_UTF8));
 		if (pXmlElement == NULL)
 			return NULL;
@@ -120,6 +125,7 @@ TiXmlElement *CMarkup::AddChildElem( LPCTSTR szName, LPCTSTR szValue)
 			m_pDoc->LinkEndChild( pXmlElement);
 		else
 			m_pCurrentNode->LinkEndChild( pXmlElement);
+		// Avoid producing "(null)" string we converting
 		if ((szValue != NULL) && (_tcslen( szValue) != 0))
 		{
 			// There is text to set between <Element></Element>
@@ -167,6 +173,7 @@ BOOL CMarkup::SetData( LPCTSTR szValue)
 				pChild = NULL;
 			}
 		}
+		// Avoid producing "(null)" string we converting
 		if ((szValue != NULL) && (_tcslen( szValue) != 0))
 		{
 			// There is text to set between <Element></Element>
@@ -201,7 +208,13 @@ BOOL CMarkup::SetAttrib( LPCTSTR szName, LPCTSTR szValue)
 
 	try
 	{
-		m_pCurrentNode->SetAttribute( CT2A( szName, CP_UTF8), CT2A(  szValue, CP_UTF8));
+		// Avoid producing "(null)" string we converting
+		if ((szName != NULL) && (_tcslen( szName) == 0))
+			return FALSE;
+		if ((szValue != NULL) && (_tcslen( szValue) == 0))
+			m_pCurrentNode->SetAttribute( CT2A( szName, CP_UTF8), CT2A(  szValue, CP_UTF8));
+		else
+			m_pCurrentNode->SetAttribute( CT2A( szName, CP_UTF8), "");
 		return TRUE;
 	}
 	catch (CException *pEx)
@@ -410,7 +423,7 @@ LPCTSTR CMarkup::GetData( TiXmlElement *pXmlNode)
 		else
 			pNode = pXmlNode;
 		const char *szValue = pNode->GetText();
-		if (szValue)
+		if ((szValue != NULL) && (strlen( szValue) > 0))
 		{
 			csResult.Format( _T( "%s"), CA2T( szValue, CP_UTF8));
 			return csResult;
@@ -434,7 +447,7 @@ LPCTSTR CMarkup::GetAttrib( LPCTSTR szAttrib)
 	try
 	{
 		const char *szValue = m_pCurrentNode->Attribute( CT2A( szAttrib, CP_UTF8));
-		if (szValue)
+		if ((szValue != NULL) && (strlen( szValue) > 0))
 		{
 			csResult.Format( _T( "%s"), CA2T( szValue, CP_UTF8));
 			return csResult;
@@ -533,15 +546,24 @@ BOOL CMarkup::AddXml( CMarkup *pSource)
 
 	for (pElem = hdl.FirstChildElement().Element(); pElem; pElem = pElem->NextSiblingElement())
 	{
-		// Add section to destination document
-		csSection.Format( _T( "%s"), CA2CT( pElem->Value()));
+		// Add section to destination document and avoid producing "(null)" string we converting
+		if ((pElem->Value() != NULL) && (strlen(  pElem->Value()) > 0))
+			csSection.Format( _T( "%s"), CA2CT( pElem->Value(), CP_UTF8));
+		else
+			csSection.Empty();
 		if (!AddElem( csSection))
 			return FALSE;
 		for (pChild = pElem->FirstChildElement(); pChild; pChild = pChild->NextSiblingElement())
 		{
-			// Add child elem to destination document
-			csProperty.Format( _T( "%s"), CA2CT( pChild->Value(), CP_UTF8));
-			csValue.Format( _T( "%s"), CA2CT( pChild->GetText(), CP_UTF8));
+			// Add child elem to destination document and avoid producing "(null)" string we converting
+			if ((pChild->Value() != NULL) && (strlen(  pChild->Value()) > 0))
+				csProperty.Format( _T( "%s"), CA2CT( pChild->Value(), CP_UTF8));
+			else
+				csProperty.Empty();
+			if ((pChild->GetText() != NULL) && (strlen( pChild->GetText()) > 0))
+				csValue.Format( _T( "%s"), CA2CT( pChild->GetText(), CP_UTF8));
+			else
+				csValue.Empty();
 			if (!AddChildElem( csProperty, csValue))
 				return FALSE;
 		}

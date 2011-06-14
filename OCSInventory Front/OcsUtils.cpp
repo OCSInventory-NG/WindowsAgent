@@ -26,33 +26,27 @@ static char THIS_FILE[] = __FILE__;
 
 CStringA OCSINVENTORYFRONT_API GetAnsiFromUnicode(LPCTSTR a_wstrString)
 {
-/*	static char	szBuffer[1024*1024+1]; // 1MB buffer to handle string 
-
-	if (_tcslen( a_wstrString) > 1024*1024)
-		AfxThrowMemoryException();
-	strcpy_s( szBuffer, 1024*1024, CT2CA(a_wstrString));
-	return szBuffer;
-*/
 	static CStringA csAnsi;
 	CT2W			pszA( a_wstrString);
 
-	csAnsi = pszA;
+	// Avoid producing "(null)" string we converting
+	if ((a_wstrString != NULL) && (_tcslen( a_wstrString) > 0))
+		csAnsi = pszA;
+	else
+		csAnsi.Empty();
 	return csAnsi;
 }
 
 CStringW OCSINVENTORYFRONT_API GetUnicodeFromAnsi(LPCSTR a_strString)
 {
-/*	static TCHAR szBuffer[1024*1024]; // 1MB buffer to handle string 
-
-	if (strlen( a_strString) > 1024*1024)
-		AfxThrowMemoryException();
-	_tcscpy_s( szBuffer, 1024*1024, CA2CT( a_strString));
-	return szBuffer;
-*/
 	static CStringW csWide;
 	CA2W			pszW( a_strString);
 
-	csWide = pszW;
+	// Avoid producing "(null)" string we converting
+	if ((a_strString != NULL) && (strlen( a_strString) > 0))
+		csWide = pszW;
+	else
+		csWide.Empty();
 	return csWide;
 
 }
@@ -64,7 +58,11 @@ CStringA OCSINVENTORYFRONT_API GetUTF8FromUnicode( LPCTSTR a_wstrString)
 	static CStringA utf8;
 	CT2W			pszA( a_wstrString, CP_UTF8);
 
-	utf8 = pszA;
+	// Avoid producing "(null)" string we converting
+	if ((a_wstrString != NULL) && (_tcslen( a_wstrString) > 0))
+		utf8 = pszA;
+	else
+		utf8.Empty();
 	return utf8;
 }
 
@@ -75,7 +73,11 @@ CStringW OCSINVENTORYFRONT_API GetUnicodeFromUTF8( LPCSTR a_strString)
 	static CStringW unicode;
 	CA2W			pszW( a_strString, CP_UTF8);
 
-	unicode = pszW;
+	// Avoid producing "(null)" string we converting
+	if ((a_strString != NULL) && (strlen( a_strString) > 0))
+		unicode = pszW;
+	else
+		unicode.Empty();
 	return unicode;
 }
 
