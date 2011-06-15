@@ -47,39 +47,46 @@ COCSInventoryApp theApp;
 
 BOOL COCSInventoryApp::InitInstance()
 {
-	// InitCommonControlsEx() is required on Windows XP if an application
-	// manifest specifies use of ComCtl32.dll version 6 or later to enable
-	// visual styles.  Otherwise, any window creation will fail.
-	INITCOMMONCONTROLSEX InitCtrls;
-	InitCtrls.dwSize = sizeof(InitCtrls);
-	// Set this to include all the common control classes you want to use
-	// in your application.
-	InitCtrls.dwICC = ICC_WIN95_CLASSES;
-	InitCommonControlsEx(&InitCtrls);
+	HANDLE hMutexOneInstance = NULL;
 
-	CWinApp::InitInstance();
-
-	/*****
-	 *
-	 *	Checks wether another instance of ocsinventory.exe is 
-	 *	already running.
-	 *
-	 ****/
-
-    HANDLE hMutexOneInstance = ::CreateMutex( NULL, TRUE, _T("OCSINVENTORY-088FA840-B10D-11D3-BC36-006067709674"));
-    if ( GetLastError() == ERROR_ALREADY_EXISTS )
-	{
-	    return FALSE; // terminates the application
-		m_nExitCode = OCS_APP_ALREADY_RUNNING_ERROR;
-	}
-
-	/*****
-	 *
-	 *	Main initinstance block 
-	 *
-	 ****/		
 	try
 	{
+/*		// InitCommonControlsEx() is required on Windows XP if an application
+		// manifest specifies use of ComCtl32.dll version 6 or later to enable
+		// visual styles.  Otherwise, any window creation will fail.
+		INITCOMMONCONTROLSEX InitCtrls;
+		InitCtrls.dwSize = sizeof(InitCtrls);
+		// Set this to include all the common control classes you want to use
+		// in your application.
+		InitCtrls.dwICC = ICC_WIN95_CLASSES;
+		InitCommonControlsEx( &InitCtrls);
+*/
+		if (!CWinApp::InitInstance())
+		{
+			m_nExitCode = OCS_APP_GENERIC_ERROR;
+			return FALSE; // terminates the application
+		}
+
+
+		/*****
+		 *
+		 *	Checks wether another instance of ocsinventory.exe is 
+		 *	already running.
+		 *
+		 ****/
+
+		hMutexOneInstance = ::CreateMutex( NULL, TRUE, _T("OCSINVENTORY-088FA840-B10D-11D3-BC36-006067709674"));
+		if ( GetLastError() == ERROR_ALREADY_EXISTS )
+		{
+			m_nExitCode = OCS_APP_ALREADY_RUNNING_ERROR;
+			return FALSE; // terminates the application
+		}
+
+		/*****
+		 *
+		 *	Main initinstance block 
+		 *
+		 ****/		
 		AfxEnableControlContainer();
 
 		// Standard initialization
@@ -206,7 +213,8 @@ BOOL COCSInventoryApp::InitInstance()
 			}
 			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT => Using Communication Provider <%s> Version <%s>"), pProvider->getName(), pProvider->getVersion());
 			// Parse command line arguments
-			pServerConfig->parseCommandLine( m_lpCmdLine);
+			if (!pServerConfig->parseCommandLine( m_lpCmdLine))
+				m_pLogger->log( LOG_PRIORITY_ERROR, _T( "AGENT => Failed parsing Communication Provider command line arguments"));
 			// Create provider connection object
 			if ((pConnexion = pProvider->newConnexion( pServerConfig)) == NULL)
 			{
@@ -620,10 +628,10 @@ CLEAN_AND_EXIT:
 	 ****/
 	if (hMutexOneInstance != NULL)
 	{
-        ::ReleaseMutex(hMutexOneInstance);
+        ::ReleaseMutex( hMutexOneInstance);
     }
 	// Since the dialog has been closed, return FALSE so that we exit the
-	//  application, rather than start the application's message pump.
+	// application, rather than start the application's message pump.
 	return FALSE;
 }
 

@@ -47,9 +47,7 @@ CSysInfoApp theApp;
 
 BOOL CSysInfoApp::InitInstance()
 {
-	CWinApp::InitInstance();
-
-	return TRUE;
+	return CWinApp::InitInstance();
 }
 
 

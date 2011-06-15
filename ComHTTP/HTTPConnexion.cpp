@@ -341,343 +341,418 @@ CByteArray * CHTTPConnexion::sendRequest( CRequestAbstract * pRequest)
 	CByteArray	*pContentToSend,
 				*pResponse = NULL;
 	DWORD		dwContentLength;
-    struct curl_slist *pRequestHeaders = NULL;
+	struct curl_slist *pRequestHeaders = NULL;
 	CURLcode	codeCurl;
 
 	ASSERT( pRequest);
 
-	// Reset Error Code
-	m_dwErrorCode = OCS_RESPONSE_ERROR_SUCCESS;
-	m_csErrorString = _T( "No error");
-	// Finalize and compress data to be sent
-	if (!pRequest->final())
+	try
 	{
-		m_dwErrorCode = OCS_RESPONSE_ERROR_ZLIB;
-		m_csErrorString = _T( "Zlib compress error");
-		return pResponse;
-	}
-	pContentToSend = pRequest->getRawMessage();
-	dwContentLength = pRequest->getRawMessageLength();
-	// Initialize cURL
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Initializing cURL library for sendRequest"));
-	if (!initLibCurl())
-	{
-		m_dwErrorCode = OCS_RESPONSE_ERROR_CURL;
-		m_csErrorString = _T( "Failed to initialize cURL");
-		return pResponse;
-	}
-	// Set the URL to receive our POST
-	csUrl =  m_pConfig->getServer();
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( csUrl))) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post address <%s>"), curl_easy_strerror( codeCurl));
-	}
-	// Set cURL function and buffer to receive POST response data
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEFUNCTION, HTTPConnexionByteArrayWriter)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer callback <%s>"), curl_easy_strerror( codeCurl));
-	}
-	pResponse = new CByteArray();
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEDATA, pResponse)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer buffer <%s>"), curl_easy_strerror( codeCurl));
-	}
-	// Set cURL function and buffer to receive POST response header
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HEADERFUNCTION, HTTPConnexionHeaderWriter)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header callback <%s>"), curl_easy_strerror( codeCurl));
-	}
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEHEADER, &csHeader)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header buffer <%s>"), curl_easy_strerror( codeCurl));
-	}
-    // Now specify cURL POST data
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POST, 1)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post method <%s>"), curl_easy_strerror( codeCurl));
-	}
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POSTFIELDSIZE, dwContentLength)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post data length <%s>"), curl_easy_strerror( codeCurl));
-	}
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POSTFIELDS, pContentToSend->GetData())) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post data <%s>"), curl_easy_strerror( codeCurl));
-	}
-	// Set cURL content type
-	pRequestHeaders = curl_slist_append( pRequestHeaders, "Content-Type: application/x-compressed");
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HTTPHEADER, pRequestHeaders)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response Content-Type <%s>"), curl_easy_strerror( codeCurl));
-	}
-    // Perform the request
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Sending HTTP Post request to URL <%s>"), csUrl);
-	codeCurl = curl_easy_perform( m_pCurl);
-    if (codeCurl != CURLE_OK)
-	{
-		m_dwErrorCode = codeCurl;
-		m_csErrorString = curl_easy_strerror( codeCurl);
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to send HTTP Post request <%s>"), m_csErrorString);
-	}
-	else
-	{
-		m_dwErrorCode = getHttpCode( csHeader);
-		m_csErrorString.Format( _T( "HTTP Status Code #%lu"), m_dwErrorCode);
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => HTTP Post response received <%s>"), m_csErrorString);
-	}
+		// Reset Error Code
+		m_dwErrorCode = OCS_RESPONSE_ERROR_SUCCESS;
+		m_csErrorString = _T( "No error");
+		// Finalize and compress data to be sent
+		if (!pRequest->final())
+		{
+			m_dwErrorCode = OCS_RESPONSE_ERROR_ZLIB;
+			m_csErrorString = _T( "Zlib compress error");
+			return pResponse;
+		}
+		pContentToSend = pRequest->getRawMessage();
+		dwContentLength = pRequest->getRawMessageLength();
+		// Initialize cURL
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Initializing cURL library for sendRequest"));
+		if (!initLibCurl())
+		{
+			m_dwErrorCode = OCS_RESPONSE_ERROR_CURL;
+			m_csErrorString = _T( "Failed to initialize cURL");
+			return pResponse;
+		}
+		// Set the URL to receive our POST
+		csUrl =  m_pConfig->getServer();
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( csUrl))) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post address <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Set cURL function and buffer to receive POST response data
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEFUNCTION, HTTPConnexionByteArrayWriter)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer callback <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((pResponse = new CByteArray()) == NULL)
+		{
+			m_dwErrorCode = OCS_RESPONSE_ERROR_CURL;
+			m_csErrorString = _T( "Failed to allocate byte array for HTTP Response");
+			return pResponse;
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEDATA, pResponse)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer buffer <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Set cURL function and buffer to receive POST response header
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HEADERFUNCTION, HTTPConnexionHeaderWriter)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header callback <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEHEADER, &csHeader)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header buffer <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Now specify cURL POST data
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POST, 1)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post method <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POSTFIELDSIZE, dwContentLength)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post data length <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POSTFIELDS, pContentToSend->GetData())) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post data <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Set cURL content type
+		pRequestHeaders = curl_slist_append( pRequestHeaders, "Content-Type: application/x-compressed");
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HTTPHEADER, pRequestHeaders)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response Content-Type <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Perform the request
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Sending HTTP Post request to URL <%s>"), csUrl);
+		codeCurl = curl_easy_perform( m_pCurl);
+		if (codeCurl != CURLE_OK)
+		{
+			m_dwErrorCode = codeCurl;
+			m_csErrorString = curl_easy_strerror( codeCurl);
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to send HTTP Post request <%s>"), m_csErrorString);
+		}
+		else
+		{
+			m_dwErrorCode = getHttpCode( csHeader);
+			m_csErrorString.Format( _T( "HTTP Status Code #%lu"), m_dwErrorCode);
+			m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => HTTP Post response received <%s>"), m_csErrorString);
+		}
 
-	// Clean cURL
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Cleaning cURL library"));
-	curl_slist_free_all( pRequestHeaders);
-	curl_easy_cleanup( m_pCurl);
-	m_pCurl = NULL;
-	// Return the response pointer
-	return pResponse;
+		// Clean cURL
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Cleaning cURL library"));
+		curl_slist_free_all( pRequestHeaders);
+		curl_easy_cleanup( m_pCurl);
+		m_pCurl = NULL;
+		// Return the response pointer
+		return pResponse;
+	}
+	catch (CException *pEx)
+	{
+		m_dwErrorCode = OCS_RESPONSE_ERROR_FILE;
+		if (pEx->GetErrorMessage( m_csErrorString.GetBuffer( 1024), 1024, NULL))
+			m_csErrorString.ReleaseBuffer();
+		else
+			// Error getting exception description
+			m_csErrorString = _T( "Unhandled exception");
+		pEx->Delete();
+		return NULL;
+	}
 }
 
 CByteArray * CHTTPConnexion::simplePost( LPCTSTR lpstrURL, LPCTSTR lpstrPost)
 {
 	CString		csHeader;
 	CByteArray	*pResponse = NULL;
-    struct curl_slist *pRequestHeaders = NULL;
+	struct curl_slist *pRequestHeaders = NULL;
 	CURLcode	codeCurl;
 
 	ASSERT( lpstrURL);
 	ASSERT( lpstrPost);
 
-	// Reset Error Code
-	m_dwErrorCode = OCS_RESPONSE_ERROR_SUCCESS;
-	m_csErrorString = _T( "No error");
-	// Initialize cURL
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Initializing cURL library for simplePost"));
-	if (!initLibCurl())
+	try
 	{
-		m_dwErrorCode = OCS_RESPONSE_ERROR_CURL;
-		m_csErrorString = _T( "Failed to initialize cURL");
+		// Reset Error Code
+		m_dwErrorCode = OCS_RESPONSE_ERROR_SUCCESS;
+		m_csErrorString = _T( "No error");
+		// Initialize cURL
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Initializing cURL library for simplePost"));
+		if (!initLibCurl())
+		{
+			m_dwErrorCode = OCS_RESPONSE_ERROR_CURL;
+			m_csErrorString = _T( "Failed to initialize cURL");
+			return pResponse;
+		}
+		// Set the URL to receive our POST
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( lpstrURL))) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL simplePost address <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Set cURL function and buffer to receive POST response data
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEFUNCTION, HTTPConnexionByteArrayWriter)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer callback <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((pResponse = new CByteArray()) == NULL)
+		{
+			m_dwErrorCode = OCS_RESPONSE_ERROR_CURL;
+			m_csErrorString = _T( "Failed to allocate byte array for HTTP Response");
+			return pResponse;
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEDATA, pResponse)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer buffer <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Set cURL function and buffer to receive POST response header
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HEADERFUNCTION, HTTPConnexionHeaderWriter)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header callback <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEHEADER, &csHeader)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header buffer <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Now specify cURL POST data
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POST, 1)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post method <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POSTFIELDSIZE, _tcslen( lpstrPost))) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post data length <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POSTFIELDS, GetAnsiFromUnicode( lpstrPost))) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post data <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Perform the request
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Sending HTTP Post request to URL <%s>"), lpstrURL);
+		codeCurl = curl_easy_perform( m_pCurl);
+		if (codeCurl != CURLE_OK)
+		{
+			m_dwErrorCode = codeCurl;
+			m_csErrorString = curl_easy_strerror( codeCurl);
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to send HTTP Post request <%s>"), m_csErrorString);
+		}
+		else
+		{
+			m_dwErrorCode = getHttpCode( csHeader);
+			m_csErrorString.Format( _T( "HTTP Status Code #%lu"), m_dwErrorCode);
+			m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => HTTP Post response received <%s>"), m_csErrorString);
+		}
+
+		// Clean cURL
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Cleaning cURL library"));
+		curl_slist_free_all( pRequestHeaders);
+		curl_easy_cleanup( m_pCurl);
+		m_pCurl = NULL;
+		// Return the response pointer
 		return pResponse;
 	}
-	// Set the URL to receive our POST
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( lpstrURL))) != CURLE_OK)
+	catch (CException *pEx)
 	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL simplePost address <%s>"), curl_easy_strerror( codeCurl));
+		m_dwErrorCode = OCS_RESPONSE_ERROR_FILE;
+		if (pEx->GetErrorMessage( m_csErrorString.GetBuffer( 1024), 1024, NULL))
+			m_csErrorString.ReleaseBuffer();
+		else
+			// Error getting exception description
+			m_csErrorString = _T( "Unhandled exception");
+		pEx->Delete();
+		if (pResponse != NULL)
+			delete pResponse;
+		return NULL;
 	}
-	// Set cURL function and buffer to receive POST response data
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEFUNCTION, HTTPConnexionByteArrayWriter)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer callback <%s>"), curl_easy_strerror( codeCurl));
-	}
-	pResponse = new CByteArray();
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEDATA, pResponse)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer buffer <%s>"), curl_easy_strerror( codeCurl));
-	}
-	// Set cURL function and buffer to receive POST response header
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HEADERFUNCTION, HTTPConnexionHeaderWriter)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header callback <%s>"), curl_easy_strerror( codeCurl));
-	}
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEHEADER, &csHeader)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header buffer <%s>"), curl_easy_strerror( codeCurl));
-	}
-    // Now specify cURL POST data
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POST, 1)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post method <%s>"), curl_easy_strerror( codeCurl));
-	}
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POSTFIELDSIZE, _tcslen( lpstrPost))) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post data length <%s>"), curl_easy_strerror( codeCurl));
-	}
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_POSTFIELDS, GetAnsiFromUnicode( lpstrPost))) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Post data <%s>"), curl_easy_strerror( codeCurl));
-	}
-    // Perform the request
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Sending HTTP Post request to URL <%s>"), lpstrURL);
-	codeCurl = curl_easy_perform( m_pCurl);
-    if (codeCurl != CURLE_OK)
-	{
-		m_dwErrorCode = codeCurl;
-		m_csErrorString = curl_easy_strerror( codeCurl);
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to send HTTP Post request <%s>"), m_csErrorString);
-	}
-	else
-	{
-		m_dwErrorCode = getHttpCode( csHeader);
-		m_csErrorString.Format( _T( "HTTP Status Code #%lu"), m_dwErrorCode);
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => HTTP Post response received <%s>"), m_csErrorString);
-	}
-
-	// Clean cURL
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Cleaning cURL library"));
-	curl_slist_free_all( pRequestHeaders);
-	curl_easy_cleanup( m_pCurl);
-	m_pCurl = NULL;
-	// Return the response pointer
-	return pResponse;
 }
 
 CByteArray * CHTTPConnexion::simpleGet( LPCTSTR lpstrURL)
 {
 	CString		csHeader;
 	CByteArray	*pResponse = NULL;
-    struct curl_slist *pRequestHeaders = NULL;
+	struct curl_slist *pRequestHeaders = NULL;
 	CURLcode	codeCurl;
 
 	ASSERT( lpstrURL);
 
-	// Reset Error Code
-	m_dwErrorCode = OCS_RESPONSE_ERROR_SUCCESS;
-	m_csErrorString = _T( "No error");
-	// Initialize cURL
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Initializing cURL library for simpleGet"));
-	if (!initLibCurl())
+	try
 	{
-		m_dwErrorCode = OCS_RESPONSE_ERROR_CURL;
-		m_csErrorString = _T( "Failed to initialize cURL");
+		// Reset Error Code
+		m_dwErrorCode = OCS_RESPONSE_ERROR_SUCCESS;
+		m_csErrorString = _T( "No error");
+		// Initialize cURL
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Initializing cURL library for simpleGet"));
+		if (!initLibCurl())
+		{
+			m_dwErrorCode = OCS_RESPONSE_ERROR_CURL;
+			m_csErrorString = _T( "Failed to initialize cURL");
+			return pResponse;
+		}
+		// Set the URL to receive our GET
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( lpstrURL))) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL simpleGet address <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Set cURL function and buffer to receive Get response data
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEFUNCTION, HTTPConnexionByteArrayWriter)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer callback <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((pResponse = new CByteArray()) == NULL)
+		{
+			m_dwErrorCode = OCS_RESPONSE_ERROR_CURL;
+			m_csErrorString = _T( "Failed to allocate byte array for HTTP Response");
+			return pResponse;
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEDATA, pResponse)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer buffer <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Set cURL function and buffer to receive Get response header
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HEADERFUNCTION, HTTPConnexionHeaderWriter)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header callback <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEHEADER, &csHeader)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header buffer <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Now specify cURL GET
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HTTPGET, 1)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Get method <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Perform the request
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Sending HTTP Get request to URL <%s>"), lpstrURL);
+		codeCurl = curl_easy_perform( m_pCurl);
+		if (codeCurl != CURLE_OK)
+		{
+			m_dwErrorCode = codeCurl;
+			m_csErrorString = curl_easy_strerror( codeCurl);
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to send HTTP Get request <%s>"), m_csErrorString);
+		}
+		else
+		{
+			m_dwErrorCode = getHttpCode( csHeader);
+			m_csErrorString.Format( _T( "HTTP Status Code #%lu"), m_dwErrorCode);
+			m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => HTTP Get response received <%s>"), m_csErrorString);
+		}
+		// Clean cURL
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Cleaning cURL library"));
+		curl_slist_free_all( pRequestHeaders);
+		curl_easy_cleanup( m_pCurl);
+		m_pCurl = NULL;
+		// Return the response pointer
 		return pResponse;
 	}
-	// Set the URL to receive our GET
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( lpstrURL))) != CURLE_OK)
+	catch (CException *pEx)
 	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL simpleGet address <%s>"), curl_easy_strerror( codeCurl));
+		m_dwErrorCode = OCS_RESPONSE_ERROR_FILE;
+		if (pEx->GetErrorMessage( m_csErrorString.GetBuffer( 1024), 1024, NULL))
+			m_csErrorString.ReleaseBuffer();
+		else
+			// Error getting exception description
+			m_csErrorString = _T( "Unhandled exception");
+		pEx->Delete();
+		if (pResponse != NULL)
+			delete pResponse;
+		return NULL;
 	}
-	// Set cURL function and buffer to receive Get response data
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEFUNCTION, HTTPConnexionByteArrayWriter)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer callback <%s>"), curl_easy_strerror( codeCurl));
-	}
-	pResponse = new CByteArray();
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEDATA, pResponse)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer buffer <%s>"), curl_easy_strerror( codeCurl));
-	}
-	// Set cURL function and buffer to receive Get response header
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HEADERFUNCTION, HTTPConnexionHeaderWriter)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header callback <%s>"), curl_easy_strerror( codeCurl));
-	}
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEHEADER, &csHeader)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header buffer <%s>"), curl_easy_strerror( codeCurl));
-	}
-    // Now specify cURL GET
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HTTPGET, 1)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Get method <%s>"), curl_easy_strerror( codeCurl));
-	}
-    // Perform the request
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Sending HTTP Get request to URL <%s>"), lpstrURL);
-	codeCurl = curl_easy_perform( m_pCurl);
-    if (codeCurl != CURLE_OK)
-	{
-		m_dwErrorCode = codeCurl;
-		m_csErrorString = curl_easy_strerror( codeCurl);
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to send HTTP Get request <%s>"), m_csErrorString);
-	}
-	else
-	{
-		m_dwErrorCode = getHttpCode( csHeader);
-		m_csErrorString.Format( _T( "HTTP Status Code #%lu"), m_dwErrorCode);
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => HTTP Get response received <%s>"), m_csErrorString);
-	}
-	// Clean cURL
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Cleaning cURL library"));
-	curl_slist_free_all( pRequestHeaders);
-	curl_easy_cleanup( m_pCurl);
-	m_pCurl = NULL;
-	// Return the response pointer
-	return pResponse;
 }
 
 BOOL CHTTPConnexion::getFile( LPCTSTR lpstrURL, LPCTSTR lpstrFilename)
 {
 	CString		csHeader;
 	CFile		myFile;
-    struct curl_slist *pRequestHeaders = NULL;
+	struct curl_slist *pRequestHeaders = NULL;
 	CURLcode	codeCurl;
 	BOOL		bResult = FALSE;
 
 	ASSERT( lpstrURL);
 	ASSERT( lpstrFilename);
 
-	// Reset Error Code
-	m_dwErrorCode = OCS_RESPONSE_ERROR_SUCCESS;
-	m_csErrorString = _T( "No error");
-	// Open file
-	if (!myFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite|CFile::shareDenyWrite))
+	try
+	{
+		// Reset Error Code
+		m_dwErrorCode = OCS_RESPONSE_ERROR_SUCCESS;
+		m_csErrorString = _T( "No error");
+		// Open file
+		if (!myFile.Open( lpstrFilename, CFile::modeCreate|CFile::modeWrite|CFile::shareDenyWrite))
+		{
+			m_dwErrorCode = OCS_RESPONSE_ERROR_FILE;
+			m_csErrorString.Format( _T( "Failed to open file <%s> for writing"), lpstrFilename);
+			return bResult;
+		}
+		// Initialize cURL
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Initializing cURL library for getFile"));
+		if (!initLibCurl())
+		{
+			m_dwErrorCode = OCS_RESPONSE_ERROR_CURL;
+			m_csErrorString = _T( "Failed to initialize cURL");
+			myFile.Abort();
+			return bResult;
+		}
+		// Set the URL to receive our GET
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( lpstrURL))) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL fileGet address <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Set cURL function and buffer to receive Get response data
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEFUNCTION, HTTPConnexionFileWriter)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer callback <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEDATA, &myFile)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer buffer <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Set cURL function and buffer to receive Get response header
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HEADERFUNCTION, HTTPConnexionHeaderWriter)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header callback <%s>"), curl_easy_strerror( codeCurl));
+		}
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEHEADER, &csHeader)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header buffer <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Now specify cURL GET
+		if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HTTPGET, 1)) != CURLE_OK)
+		{
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Get method <%s>"), curl_easy_strerror( codeCurl));
+		}
+		// Perform the request
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Sending fileGet request to URL <%s>"), lpstrURL);
+		codeCurl = curl_easy_perform( m_pCurl);
+		if (codeCurl != CURLE_OK)
+		{
+			m_dwErrorCode = codeCurl;
+			m_csErrorString = curl_easy_strerror( codeCurl);
+			m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to send HTTP Get request <%s>"), m_csErrorString);
+			myFile.Abort();
+		}
+		else
+		{
+			m_dwErrorCode = getHttpCode( csHeader);
+			m_csErrorString.Format( _T( "HTTP Status Code #%lu"), m_dwErrorCode);
+			m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => fileGet response received <%s>"), m_csErrorString);
+			myFile.Close();
+			if (m_dwErrorCode >= 400)
+				// HTTP client or server error
+				bResult = FALSE;
+			else
+				bResult = TRUE;
+		}
+		// Clean cURL
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Cleaning cURL library"));
+		curl_slist_free_all( pRequestHeaders);
+		curl_easy_cleanup( m_pCurl);
+		m_pCurl = NULL;
+		// Return the result
+		return bResult;
+	}
+	catch (CException *pEx)
 	{
 		m_dwErrorCode = OCS_RESPONSE_ERROR_FILE;
-		m_csErrorString.Format( _T( "Failed to open file <%s> for writing"), lpstrFilename);
-		return bResult;
-	}
-	// Initialize cURL
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Initializing cURL library for getFile"));
-	if (!initLibCurl())
-	{
-		m_dwErrorCode = OCS_RESPONSE_ERROR_CURL;
-		m_csErrorString = _T( "Failed to initialize cURL");
-		myFile.Abort();
-		return bResult;
-	}
-	// Set the URL to receive our GET
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_URL, GetAnsiFromUnicode( lpstrURL))) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL fileGet address <%s>"), curl_easy_strerror( codeCurl));
-	}
-	// Set cURL function and buffer to receive Get response data
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEFUNCTION, HTTPConnexionFileWriter)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer callback <%s>"), curl_easy_strerror( codeCurl));
-	}
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEDATA, &myFile)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response writer buffer <%s>"), curl_easy_strerror( codeCurl));
-	}
-	// Set cURL function and buffer to receive Get response header
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HEADERFUNCTION, HTTPConnexionHeaderWriter)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header callback <%s>"), curl_easy_strerror( codeCurl));
-	}
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_WRITEHEADER, &csHeader)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL response header buffer <%s>"), curl_easy_strerror( codeCurl));
-	}
-    // Now specify cURL GET
-	if ((codeCurl = curl_easy_setopt( m_pCurl, CURLOPT_HTTPGET, 1)) != CURLE_OK)
-	{
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to set cURL HTTP Get method <%s>"), curl_easy_strerror( codeCurl));
-	}
-    // Perform the request
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Sending fileGet request to URL <%s>"), lpstrURL);
-	codeCurl = curl_easy_perform( m_pCurl);
-    if (codeCurl != CURLE_OK)
-	{
-		m_dwErrorCode = codeCurl;
-		m_csErrorString = curl_easy_strerror( codeCurl);
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "COM SERVER => Failed to send HTTP Get request <%s>"), m_csErrorString);
-		myFile.Abort();
-	}
-	else
-	{
-		m_dwErrorCode = getHttpCode( csHeader);
-		m_csErrorString.Format( _T( "HTTP Status Code #%lu"), m_dwErrorCode);
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => fileGet response received <%s>"), m_csErrorString);
-		myFile.Close();
-		if (m_dwErrorCode >= 400)
-			// HTTP client or server error
-			bResult = FALSE;
+		if (pEx->GetErrorMessage( m_csErrorString.GetBuffer( 1024), 1024, NULL))
+			m_csErrorString.ReleaseBuffer();
 		else
-			bResult = TRUE;
+			// Error getting exception description
+			m_csErrorString = _T( "Unhandled exception");
+		pEx->Delete();
+		return FALSE;
 	}
-	// Clean cURL
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "COM SERVER => Cleaning cURL library"));
-	curl_slist_free_all( pRequestHeaders);
-	curl_easy_cleanup( m_pCurl);
-	m_pCurl = NULL;
-	// Return the result
-	return bResult;
 }
 
 BOOL CHTTPConnexion::getLabel( LPCTSTR lpstrFilename)

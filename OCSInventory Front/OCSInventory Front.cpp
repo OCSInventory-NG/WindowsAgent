@@ -43,61 +43,84 @@ COCSInventoryFrontApp theApp;
 // COCSInventoryFrontApp initialization
 BOOL COCSInventoryFrontApp::InitInstance()
 {
-	CWinApp::InitInstance();
-
-	UINT uIndex;
-   /*****
-	*
-	* Get application installation path	
-	*
-	****/		
-	if (GetModuleFileName( AfxGetInstanceHandle(), m_csInstallFolder.GetBuffer( _MAX_PATH*4+1), _MAX_PATH*4) == 0)
+	try
 	{
-		AfxMessageBox( _T( "Unable to initialize OCS Inventory NG installation path!"), MB_ICONSTOP);
+		if (!CWinApp::InitInstance())
+		{
+#ifdef _DEBUG
+			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG FrameWork instance!"), MB_ICONSTOP);
+#endif
+			return FALSE;
+		}
+
+		UINT uIndex;
+	   /*****
+		*
+		* Get application installation path	
+		*
+		****/		
+		if (GetModuleFileName( AfxGetInstanceHandle(), m_csInstallFolder.GetBuffer( _MAX_PATH*4+1), _MAX_PATH*4) == 0)
+		{
+#ifdef _DEBUG
+			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG installation path!"), MB_ICONSTOP);
+#endif
+			return FALSE;
+		}
+		m_csInstallFolder.ReleaseBuffer();
+		if ((uIndex = m_csInstallFolder.ReverseFind( '\\')) > 0)
+			m_csInstallFolder = m_csInstallFolder.Left( uIndex);
+
+	   /*****
+		*
+		* Get application data storage path path	
+		*
+		****/		
+		if (!SHGetSpecialFolderPath( NULL, m_csDataFolder.GetBuffer( _MAX_PATH+1), CSIDL_COMMON_APPDATA, TRUE))
+		{
+#ifdef _DEBUG
+			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG data storage path!"), MB_ICONSTOP);
+#endif
+			return FALSE;
+		}
+		m_csDataFolder.ReleaseBuffer();
+		m_csDataFolder += OCSNG_COMMON_APPDATA;
+		// Create it if not exists
+		if (!directoryCreate( m_csDataFolder))
+		{
+#ifdef _DEBUG
+			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG data storage path!"), MB_ICONSTOP);
+#endif
+			return FALSE;
+		}
+
+	   /*****
+		*
+		* Initialise logging machine	
+		*
+		****/		
+		m_pLogger = CLog::getInstance();
+	   /*****
+		*
+		* Load default Agent config
+		*
+		****/		
+		m_pAgentConfig = CConfig::getInstance();
+	   /*****
+		*
+		* Load communication provider
+		*
+		****/
+		m_pComServerProvider = new CComProvider();
+		return TRUE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+#ifdef _DEBUG
+		AfxMessageBox( _T( "Unhandled exception during OCSS Inventory NG FrameWork initialization!"), MB_ICONSTOP);
+#endif
 		return FALSE;
 	}
-	m_csInstallFolder.ReleaseBuffer();
-	if ((uIndex = m_csInstallFolder.ReverseFind( '\\')) > 0)
-		m_csInstallFolder = m_csInstallFolder.Left( uIndex);
-
-   /*****
-	*
-	* Get application data storage path path	
-	*
-	****/		
-	if (!SHGetSpecialFolderPath( NULL, m_csDataFolder.GetBuffer( _MAX_PATH+1), CSIDL_COMMON_APPDATA, TRUE))
-	{
-		AfxMessageBox( _T( "Unable to initialize OCS Inventory NG data storage path!"), MB_ICONSTOP);
-		return FALSE;
-	}
-	m_csDataFolder.ReleaseBuffer();
-	m_csDataFolder += OCSNG_COMMON_APPDATA;
-	// Create it if not exists
-	if (!directoryCreate( m_csDataFolder))
-	{
-		AfxMessageBox( _T( "Unable to initialize OCS Inventory NG data storage path!"), MB_ICONSTOP);
-		return FALSE;
-	}
-
-   /*****
-	*
-	* Initialise logging machine	
-	*
-	****/		
-	m_pLogger = CLog::getInstance();
-   /*****
-	*
-	* Load default Agent config
-	*
-	****/		
-	m_pAgentConfig = CConfig::getInstance();
-   /*****
-	*
-	* Load communication provider
-	*
-	****/
-	m_pComServerProvider = new CComProvider();
-	return TRUE;
 }
 
 

@@ -38,23 +38,27 @@ CHTTPApp theApp;
 // CHTTPApp initialization
 BOOL CHTTPApp::InitInstance()
 {
-	CWinApp::InitInstance();
-
-	return TRUE;
+	return CWinApp::InitInstance();;
 }
 
 
 CServerConfig * CHTTPApp::createServerConfig( LPCTSTR lpstrFile, LPCTSTR lpstrSection)
 {
-	CHTTPConfig *pConfig;
-
-    if ((pConfig = new CHTTPConfig( lpstrFile, lpstrSection)) == NULL)
+	try
+	{
+		return new CHTTPConfig( lpstrFile, lpstrSection);
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
 		return NULL;
-	return pConfig;
+	}
 }
 
 BOOL CHTTPApp::writeServerConfig( CServerConfig *pConfig, LPCTSTR lpstrFile, LPCTSTR lpstrSection)
 {
+	ASSERT( pConfig);
+
 	CHTTPConfig *pHttpConfig = (CHTTPConfig *) pConfig;
 
 	return pHttpConfig->save( lpstrFile, lpstrSection);
@@ -64,7 +68,7 @@ void CHTTPApp::destroyServerConfig(CServerConfig *pConfig)
 {
     CHTTPConfig *pHTTP = (CHTTPConfig *) pConfig;
 
-    if (pHTTP)
+    if (pHTTP != NULL)
         delete pHTTP;
 }
 
@@ -72,16 +76,24 @@ CConnexionAbstract * CHTTPApp::createServerConnexion( CServerConfig *pConfig)
 {
 	ASSERT( pConfig);
 
-	CHTTPConfig *pHTTP = (CHTTPConfig *)pConfig;
+	try
+	{
+		CHTTPConfig *pHTTP = (CHTTPConfig *)pConfig;
 
-    return new CHTTPConnexion( pHTTP);
+		return new CHTTPConnexion( pHTTP);
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		return NULL;
+	}
 }
 
 void CHTTPApp::destroyServerConnexion(CConnexionAbstract *pCon)
 {
     CHTTPConnexion *pHTTP = (CHTTPConnexion *) pCon;
 
-    if (pHTTP)
+    if (pHTTP != NULL)
         delete pHTTP;
 }
 

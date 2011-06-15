@@ -47,7 +47,7 @@ BOOL COcsSystrayApp::InitInstance()
 	// Set this to include all the common control classes you want to use
 	// in your application.
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
-	InitCommonControlsEx(&InitCtrls);
+	InitCommonControlsEx( &InitCtrls);
 
 	CWinApp::InitInstance();
 

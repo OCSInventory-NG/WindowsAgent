@@ -44,9 +44,7 @@ COcsWmiApp theApp;
 
 BOOL COcsWmiApp::InitInstance()
 {
-	CWinApp::InitInstance();
-
-	return TRUE;
+	return CWinApp::InitInstance();;
 }
 
 
