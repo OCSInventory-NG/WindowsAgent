@@ -1,4 +1,11 @@
-2.0.0.21
+2.0.0.22
+  * In service, run agent without grabbing stdout/stderr, to avoid dealing with unclosed handles
+  * Fix Bug ID 778335 empty values are shown as (null) in XML (produced by string conversion between unicode, ansi and UTF-8)
+  * Fix bug #797182 "2 directories was created in APPDATA when upgrade windows agent"
+  * When upgrading from agent 1.X, do not copy cacert.pem from INSTDIR to APPDATADIR if file exists into APPDATADIR, to allow changing cacert.pem using Packager
+  * Send setup result to server when deploying new OCS agent, without interfering with other package download
+  * Fix bug #783611  semicolon added to Type under Bios when using WMI
+  * When using WMI, get S/N from Win32_Bios, and if not availble, try Win32_SystemEnclosure then Win32_Baseboard
   * Fix memory leak in WMI Storage query
   * Delete OCS agent setup done file if found, when cleaning a package
   * Build libcurl using _BIND_TO_CURRENT_VCLIBS_VERSION preprocessor define to bind it to the installed CRT versions, and include libcurl manifest as resource into DLL
