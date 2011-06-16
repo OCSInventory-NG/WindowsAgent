@@ -104,6 +104,8 @@ BOOL CProcessProps::isRunning()
 CExecCommand::CExecCommand()
 {
     initialize();
+	m_dwTimeout = INFINITE;
+	m_bComspec = TRUE;
 }
 
 CExecCommand::~CExecCommand()
@@ -128,8 +130,6 @@ void CExecCommand::initialize()
     m_fdStdOut		= -1;
     m_fdStdErr		= -1;
 	m_csOutput.Empty();
-	m_dwTimeout = INFINITE;
-	m_bComspec = TRUE;
 }
 
 void CExecCommand::setTimeout( DWORD dwTimeout)
@@ -207,6 +207,11 @@ BOOL CExecCommand::closeHandles()
 		bRet = FALSE;
 	}
 	m_hChildStderrWr = NULL;
+	if (m_hProcessHandle && !CloseHandle( m_hProcessHandle))
+	{
+		bRet = FALSE;
+	}
+	m_hProcessHandle = NULL;
 	return bRet;
 }
 
@@ -228,7 +233,7 @@ DWORD CExecCommand::realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, B
 			/*
 			* Oh gag, we're on Win9x or using COMMAND.COM. Not supported
 			*/
-			m_csOutput.AppendFormat( "Get COMSPEC Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+			m_csOutput.Format( "Get COMSPEC Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			return 0;
 		}
 		csCommand.Format( _T( "\"%s\" /c %s"), csComspec, lpstrCommand);
@@ -253,14 +258,14 @@ DWORD CExecCommand::realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, B
 	siStartInfo.wShowWindow = SW_HIDE;
 
 	if (!CreateProcess( NULL, csCommand.GetBuffer(), NULL, NULL, TRUE,
-                    0, //CREATE_NEW_CONSOLE,
-                    NULL, lpstrPath, &siStartInfo, &piProcInfo)) 
-    {
-		m_csOutput.AppendFormat( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+					0, //CREATE_NEW_CONSOLE,
+					NULL, lpstrPath, &siStartInfo, &piProcInfo)) 
+	{
+		m_csOutput.Format( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 		return 0;
 	}
 	// Close the handles now so anyone waiting is woken.
-	CloseHandle(piProcInfo.hThread);
+	CloseHandle( piProcInfo.hThread);
 	// Return process handle
 	m_hProcessHandle = piProcInfo.hProcess;
 	dwProcessID = piProcInfo.dwProcessId;
@@ -272,142 +277,167 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	SECURITY_ATTRIBUTES saAttr;
 	int fd1, fd2, fd3;
 
-	try
+	ASSERT( lpstrCommand);
+	initialize();
+
+	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+	saAttr.bInheritHandle = TRUE;
+	saAttr.lpSecurityDescriptor = NULL;
+
+	fd1 = 0;
+	fd2 = 0;
+	fd3 = 0;
+
+	////////////////////////////////////////////////////////////////
+	// Capture stdin
+	if (!CreatePipe(&m_hChildStdinRd, &m_hChildStdinWr, &saAttr, 0))
 	{
-		ASSERT( lpstrCommand);
-		initialize();
-
-		saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-		saAttr.bInheritHandle = TRUE;
-		saAttr.lpSecurityDescriptor = NULL;
-
-		fd1 = 0;
-		fd2 = 0;
-		fd3 = 0;
-
-		////////////////////////////////////////////////////////////////
-		// Capture stdin
-		if (!CreatePipe(&m_hChildStdinRd, &m_hChildStdinWr, &saAttr, 0))
-		{
-			m_csOutput.AppendFormat( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
-			return FALSE;
-		}
-		/* Create new output read handle and the input write handle. Set
-		* the inheritance properties to FALSE. Otherwise, the child inherits
-		* the these handles; resulting in non-closeable handles to the pipes
-		* being created. */
-		if (!DuplicateHandle( GetCurrentProcess(), m_hChildStdinWr, GetCurrentProcess(), &m_hChildStdinWrDup, 0,
-			 FALSE, DUPLICATE_SAME_ACCESS))
-		{
-			m_csOutput.AppendFormat( "DuplicateHandle Error");
-			return FALSE;
-		}
-
-		// Close the inheritable version of ChildStdin that we're using.
-		CloseHandle( m_hChildStdinWr);
-		m_hChildStdinWr = NULL;
-
-		////////////////////////////////////////////////////////////////
-		// Capture stdout
-		if (!CreatePipe(&m_hChildStdoutRd, &m_hChildStdoutWr, &saAttr, 0))
-		{
-			m_csOutput.AppendFormat( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
-			return FALSE;
-		}
-		if (!DuplicateHandle( GetCurrentProcess(), m_hChildStdoutRd, GetCurrentProcess(), &m_hChildStdoutRdDup, 0,
-			 FALSE, DUPLICATE_SAME_ACCESS))
-		{
-			m_csOutput.AppendFormat( "DuplicateHandle Error");
-			return FALSE;
-		}
-
-		// Close the inheritable version of ChildStdout that we're using.
-		CloseHandle( m_hChildStdoutRd);
-		m_hChildStdoutRd = NULL;
-
-		////////////////////////////////////////////////////////////////
-		// Capture stderr
-		if (!CreatePipe( &m_hChildStderrRd, &m_hChildStderrWr, &saAttr, 0))
-		{
-			m_csOutput.AppendFormat( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
-			return FALSE;
-		}
-		if (!DuplicateHandle( GetCurrentProcess(), m_hChildStderrRd, GetCurrentProcess(), &m_hChildStderrRdDup, 0,
-			  FALSE, DUPLICATE_SAME_ACCESS))
-		{
-			m_csOutput.AppendFormat( "DuplicateHandle Error");
-			return FALSE;
-		}
-		// Close the inheritable version of ChildStdErr that we're using.
-		CloseHandle( m_hChildStderrRd);
-		m_hChildStderrRd = NULL;
-
-		fd1 = _open_osfhandle(TO_INTPTR(m_hChildStdinWrDup), _O_RDONLY|_O_TEXT);
-		fd2 = _open_osfhandle(TO_INTPTR(m_hChildStdoutRdDup), _O_RDONLY|_O_TEXT);
-		fd3 = _open_osfhandle(TO_INTPTR(m_hChildStderrRdDup), _O_RDONLY|_O_TEXT);
-
-		if (realCreateProcess( lpstrCommand, lpstrPath, TRUE) == 0)
-		{
-			if(fd1 >= 0)
-			{
-				_close(fd1);
-			}
-			if(fd2 >= 0)
-			{
-				_close(fd2);
-			}
-			if(fd3 >= 0)
-			{
-				_close(fd3);
-			}
-			return FALSE;
-		}
-
-		/*
-		* Insert the files we've created into the process dictionary
-		* all referencing the list with the process handle and the
-		* initial number of files (see description below in _PyPclose).
-		* Since if _PyPclose later tried to wait on a process when all
-		* handles weren't closed, it could create a deadlock with the
-		* child, we spend some energy here to try to ensure that we
-		* either insert all file handles into the dictionary or none
-		* at all.  It's a little clumsy with the various popen modes
-		* and variable number of files involved.
-		*/
-
-		/* Child is launched. Close the parents copy of those pipe
-		* handles that only the child should have open.  You need to
-		* make sure that no handles to the write end of the output pipe
-		* are maintained in this process or else the pipe will not close
-		* when the child process exits and the ReadFile will hang. */
-		if ( fd1 >= 0 )
-		{
-			m_fdStdIn = fd1;
-		}
-		if ( fd2 >= 0 )
-		{
-			m_fdStdOut = fd2;
-		}
-		if ( fd3 >= 0 )
-		{
-			m_fdStdErr = fd3;
-		}
-		return TRUE;
-	}
-	catch (CException *pEx)
-	{
-		pEx->Delete();
+		m_csOutput.Format( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 		return FALSE;
 	}
+	/* Create new output read handle and the input write handle. Set
+	* the inheritance properties to FALSE. Otherwise, the child inherits
+	* the these handles; resulting in non-closeable handles to the pipes
+	* being created. */
+	if (!DuplicateHandle( GetCurrentProcess(), m_hChildStdinWr, GetCurrentProcess(), &m_hChildStdinWrDup, 0,
+		 FALSE, DUPLICATE_SAME_ACCESS))
+	{
+		m_csOutput.Format( "DuplicateHandle Error");
+		return FALSE;
+	}
+
+	// Close the inheritable version of ChildStdin that we're using.
+	CloseHandle( m_hChildStdinWr);
+	m_hChildStdinWr = NULL;
+
+	////////////////////////////////////////////////////////////////
+	// Capture stdout
+	if (!CreatePipe(&m_hChildStdoutRd, &m_hChildStdoutWr, &saAttr, 0))
+	{
+		m_csOutput.Format( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+		return FALSE;
+	}
+	if (!DuplicateHandle( GetCurrentProcess(), m_hChildStdoutRd, GetCurrentProcess(), &m_hChildStdoutRdDup, 0,
+		 FALSE, DUPLICATE_SAME_ACCESS))
+	{
+		m_csOutput.Format( "DuplicateHandle Error");
+		return FALSE;
+	}
+
+	// Close the inheritable version of ChildStdout that we're using.
+	CloseHandle( m_hChildStdoutRd);
+	m_hChildStdoutRd = NULL;
+
+	////////////////////////////////////////////////////////////////
+	// Capture stderr
+	if (!CreatePipe( &m_hChildStderrRd, &m_hChildStderrWr, &saAttr, 0))
+	{
+		m_csOutput.Format( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+		return FALSE;
+	}
+	if (!DuplicateHandle( GetCurrentProcess(), m_hChildStderrRd, GetCurrentProcess(), &m_hChildStderrRdDup, 0,
+		  FALSE, DUPLICATE_SAME_ACCESS))
+	{
+		m_csOutput.Format( "DuplicateHandle Error");
+		return FALSE;
+	}
+	// Close the inheritable version of ChildStdErr that we're using.
+	CloseHandle( m_hChildStderrRd);
+	m_hChildStderrRd = NULL;
+
+	fd1 = _open_osfhandle(TO_INTPTR(m_hChildStdinWrDup), _O_RDONLY|_O_TEXT);
+	fd2 = _open_osfhandle(TO_INTPTR(m_hChildStdoutRdDup), _O_RDONLY|_O_TEXT);
+	fd3 = _open_osfhandle(TO_INTPTR(m_hChildStderrRdDup), _O_RDONLY|_O_TEXT);
+
+	if (realCreateProcess( lpstrCommand, lpstrPath, TRUE) == 0)
+	{
+		if(fd1 >= 0)
+		{
+			_close(fd1);
+		}
+		if(fd2 >= 0)
+		{
+			_close(fd2);
+		}
+		if(fd3 >= 0)
+		{
+			_close(fd3);
+		}
+		return FALSE;
+	}
+
+	/*
+	* Insert the files we've created into the process dictionary
+	* all referencing the list with the process handle and the
+	* initial number of files (see description below in _PyPclose).
+	* Since if _PyPclose later tried to wait on a process when all
+	* handles weren't closed, it could create a deadlock with the
+	* child, we spend some energy here to try to ensure that we
+	* either insert all file handles into the dictionary or none
+	* at all.  It's a little clumsy with the various popen modes
+	* and variable number of files involved.
+	*/
+
+	/* Child is launched. Close the parents copy of those pipe
+	* handles that only the child should have open.  You need to
+	* make sure that no handles to the write end of the output pipe
+	* are maintained in this process or else the pipe will not close
+	* when the child process exits and the ReadFile will hang. */
+	if ( fd1 >= 0 )
+	{
+		m_fdStdIn = fd1;
+	}
+	if ( fd2 >= 0 )
+	{
+		m_fdStdOut = fd2;
+	}
+	if ( fd3 >= 0 )
+	{
+		m_fdStdErr = fd3;
+	}
+	return TRUE;
 }
 
-int CExecCommand::execWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
+int CExecCommand::execWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath, BOOL bCapture)
 {
-	if (!startProcessCapture( lpstrCommand, lpstrPath))
+	ASSERT( lpstrCommand);
+
+	try
+	{
+		if (bCapture)
+		{
+			// Initialize environnement for capturing stdout and stderr
+			// then start process an
+			if (!startProcessCapture( lpstrCommand, lpstrPath))
+			{
+				closeHandles();
+				return EXEC_ERROR_START_COMMAND;
+			}
+		}
+		else
+		{
+			// Just start process
+			initialize();
+			if (realCreateProcess( lpstrCommand, lpstrPath) == 0) 
+			{
+				closeHandles();
+				return EXEC_ERROR_START_COMMAND;
+			}
+		}
+		// Wait for process ending, capturing stdout/stderr if needed
+		if (!wait( bCapture))
+		{
+			return EXEC_ERROR_WAIT_COMMAND;
+		}
+		return EXEC_SUCCESSFULL;
+	}
+	catch( CException *pEx)
+	{
+		pEx->Delete();
+		closeHandles();
+		m_csOutput = "Unhandled exception Error";
 		return EXEC_ERROR_START_COMMAND;
-	if (!waitCapture())
-		return EXEC_ERROR_WAIT_COMMAND;
-	return EXEC_SUCCESSFULL;
+	}
 }
 
 int CExecCommand::execNoWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
@@ -420,91 +450,79 @@ int CExecCommand::execNoWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		// Start process
 		if (realCreateProcess( lpstrCommand, lpstrPath) == 0) 
 		{
+			closeHandles();
 			return EXEC_ERROR_START_COMMAND;
 		}
+		closeHandles();
 		return EXEC_SUCCESSFULL;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
+		closeHandles();
+		m_csOutput = "Unhandled exception Error";
 		return EXEC_ERROR_START_COMMAND;
 	}
 }
 
-BOOL  CExecCommand::waitCapture()
+BOOL  CExecCommand::wait( BOOL bCapture)
 {
 	int		nResult = -1;
-	DWORD	dwExitCode;
+	DWORD	dwExitCode,
+			dwTime = 0;
 	char	bBuffer[1024];
 	int		nLength;
 
 	m_csOutput = "";
-	BOOL bDone = false;
 
-	try
+	// If capturing stdout/stderr enabled, and timeout is not reached
+	while (bCapture && (dwTime < m_dwTimeout))
 	{
-		while(!bDone)
+		// Each 10 millisecond, store stdout and stderr
+		dwTime += 10;
+		Sleep(10);
+		struct _stat fsout;
+		struct _stat fserr;
+		int rOut = _fstat( m_fdStdOut, &fsout);
+		int rErr = _fstat( m_fdStdErr, &fserr);
+		if ( rOut && rErr )
 		{
-			Sleep(10);
-			BOOL bHaveSome = false;
-			struct _stat fsout;
-			struct _stat fserr;
-			int rOut = _fstat( m_fdStdOut, &fsout);
-			int rErr = _fstat( m_fdStdErr, &fserr);
-			if ( rOut && rErr )
-			{
-				break;
-			}
-			if (fserr.st_size > 0)
-			{
-				nLength = _read( m_fdStdErr, bBuffer, 1023);
-				bBuffer[nLength] = 0;
-				m_csOutput.AppendFormat( "%s", bBuffer);
-				bHaveSome = TRUE;
-			}
-			if (fsout.st_size > 0)
-			{
-				nLength = _read( m_fdStdOut, bBuffer, 1023);
-				bBuffer[nLength] = 0;
-				m_csOutput.AppendFormat( "%s", bBuffer);
-				bHaveSome = TRUE;
-			}
-			if (!bHaveSome)
-			{
-				GetExitCodeProcess( m_hProcessHandle, &dwExitCode);
-				if (dwExitCode != STILL_ACTIVE)
-				{
-					break;
-				}
-			}
-		}  
-
-		if ((WaitForSingleObject( m_hProcessHandle, m_dwTimeout) != WAIT_FAILED) &&
-			GetExitCodeProcess( m_hProcessHandle, &dwExitCode)) 
-		{
-			nResult = dwExitCode;
-		} 
-		else 
-		{
-			m_csOutput.Format( "GetExitCode Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
-			nResult = -1;
+			break;
 		}
-
-		// Free up the native handle at this point
-		CloseHandle( m_hProcessHandle);
-		m_hProcessHandle = NULL;
-		m_nExitValue = nResult;
-		if (nResult < 0 || !closeHandles())
+		if (fserr.st_size > 0)
 		{
-			return FALSE;
+			nLength = _read( m_fdStdErr, bBuffer, 1023);
+			bBuffer[nLength] = 0;
+			m_csOutput.AppendFormat( "%s", bBuffer);
 		}
-		return TRUE;
-	}
-	catch (CException *pEx)
+		if (fsout.st_size > 0)
+		{
+			nLength = _read( m_fdStdOut, bBuffer, 1023);
+			bBuffer[nLength] = 0;
+			m_csOutput.AppendFormat( "%s", bBuffer);
+		}
+		// Check if process still active
+		if (!GetExitCodeProcess( m_hProcessHandle, &dwExitCode) || (dwExitCode != STILL_ACTIVE))
+		{
+			// Process not active, exit loop
+			break;
+		}
+	}  
+	// Wait for process ending (not capturing output or error capturing output)
+	if ((WaitForSingleObject( m_hProcessHandle, m_dwTimeout) != WAIT_FAILED) &&
+		GetExitCodeProcess( m_hProcessHandle, &dwExitCode)) 
 	{
-		pEx->Delete();
-		return FALSE;
+		nResult = dwExitCode;
+	} 
+	else 
+	{
+		m_csOutput.Format( "GetExitCode Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+		nResult = -1;
 	}
+	// Free up the native handle at this point
+	closeHandles();
+	m_nExitValue = nResult;
+	return (nResult >= 0);
 }
 
 int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
@@ -512,7 +530,8 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	CObArray		myProcessList;
 	CProcessProps	*pProcess;
 	DWORD			dwExitCode,
-					dwProcessID;
+					dwProcessID,
+					dwTime = 0;
 
 	try
 	{
@@ -522,6 +541,7 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		// Start process
 		if ((dwProcessID = realCreateProcess( lpstrCommand, lpstrPath)) == 0) 
 		{
+			closeHandles();
 			return EXEC_ERROR_START_COMMAND;
 		}
 		// We need high priority on OS to follow thread/process created by main command
@@ -530,17 +550,19 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		pProcess = new CProcessProps();
 		pProcess->set( dwProcessID, GetCurrentProcessId(), lpstrCommand);
 		myProcessList.Add( pProcess);
-		// While there is running processes
-		while (myProcessList.GetCount() > 0)
+		// While there is running processes or timeout not reached
+		while ((myProcessList.GetCount() > 0) && (dwTime < m_dwTimeout))
 		{
 			// Parse memory processes for new childs process or terminated processes
 			if (!parseRunningProcesses( &myProcessList))
 			{
-				m_csOutput.AppendFormat( "Parse running processes Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 				SetPriorityClass( GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+				m_csOutput.Format( "Parse running processes Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+				closeHandles();
 				return EXEC_ERROR_WAIT_COMMAND;
 			}
 			Sleep( EXEC_WAIT_CHECK_LATENCY);
+			dwTime += EXEC_WAIT_CHECK_LATENCY;
 		}
 		// Now return to normal prioity
 		SetPriorityClass( GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
@@ -552,14 +574,18 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		else
 		{
 			m_nExitValue = -1;
-			m_csOutput.AppendFormat( "GetExitCode Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+			m_csOutput.Format( "GetExitCode Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+			closeHandles();
 			return EXEC_ERROR_WAIT_COMMAND;
 		}
+		closeHandles();
 		return EXEC_SUCCESSFULL;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
+		closeHandles();
+		m_csOutput = "Unhandled exception Error";
 		return EXEC_ERROR_START_COMMAND;
 	}
 }

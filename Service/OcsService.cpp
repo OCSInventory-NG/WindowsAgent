@@ -523,7 +523,7 @@ BOOL COcsService::runAgent( BOOL bNotify)
 	// Unprotect files to allow agent change them if needed
 	unProtectCommonFiles();
 	unProtectConfigFiles();
-	switch (cmProcess.execWait( csCmd, getDataFolder()))
+	switch (cmProcess.execWait( csCmd, getDataFolder(), FALSE))
 	{
 		case EXEC_ERROR_START_COMMAND:
 		csMessage.Format( _T( "Can't launch OCS Inventory NG Agent (%s)"), cmProcess.getOutput());
