@@ -211,7 +211,7 @@ BOOL CMarkup::SetAttrib( LPCTSTR szName, LPCTSTR szValue)
 		// Avoid producing "(null)" string we converting
 		if ((szName != NULL) && (_tcslen( szName) == 0))
 			return FALSE;
-		if ((szValue != NULL) && (_tcslen( szValue) == 0))
+		if ((szValue != NULL) && (_tcslen( szValue) != 0))
 			m_pCurrentNode->SetAttribute( CT2A( szName, CP_UTF8), CT2A(  szValue, CP_UTF8));
 		else
 			m_pCurrentNode->SetAttribute( CT2A( szName, CP_UTF8), "");
