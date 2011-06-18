@@ -1720,7 +1720,8 @@ Section "OCS Inventory Agent" SEC03
 	Call Write_Log
 	; Write configuration file
 	Call WriteServiceIni
-	; Launch inventory now
+	; Launch inventory now only if not /UPGRADE
+	StrCmp "$OcsUpgrade" "TRUE" WriteServiceIni_Skip_Now
 	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 9" "State"
 	StrCmp $R0 "1" 0 WriteServiceIni_Skip_Now
 	StrCpy $logBuffer '[/NOW] used, so launching "$INSTDIR\ocsinventory.exe"...'
