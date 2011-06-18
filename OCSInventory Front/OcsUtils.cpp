@@ -406,28 +406,32 @@ BOOL OCSINVENTORYFRONT_API hex_encode( LPBYTE pBuffer, UINT uLength, CString &cs
 /* A helper function for base64 encoding */
 BOOL OCSINVENTORYFRONT_API base64_encode( LPBYTE pBuffer, UINT uLength, CString &csBase64)
 {
-  LPBYTE	pRet = NULL;
-  UINT		uLengthB64;
+	LPBYTE	pRet = NULL;
+	int		nLengthB64;
 
 	ASSERT( pBuffer);
 
 	try
 	{
 		csBase64.Empty();
-		// the b64data to data ratio is 3 to 4.
-		// integer divide by 3 then multiply by 4, add one for NULL terminator.
-		uLengthB64 = (((uLength+2) / 3) * 4) + 1;
-		if ((pRet = (unsigned char *) malloc( uLengthB64)) == NULL)
+		/* Base64 encoded data is 4/3 bigger than orignal data, 
+		   so allocated more than 4/3 of length.
+		   However, we allocated the 2*size of input data for base64,
+		   to ensure no memory overflow
+		*/
+		if ((pRet = (LPBYTE) malloc( 2*uLength)) == NULL)
 			return FALSE;
-		if (EVP_EncodeBlock( pRet, pBuffer, uLength) < 0)
+		memset( pRet, 0, 2*uLength);
+		// Base64 encode data and returns the number of bytes written
+		if ((nLengthB64 = EVP_EncodeBlock( pRet, pBuffer, uLength)) < 0)
 		{
 			free( pRet);
 			return FALSE;
 		}
-		pRet[uLengthB64 - 1] = 0;
-		for (UINT uIndex = 0; uIndex<uLengthB64; uIndex++)
+		// Put base64 encoded result into string
+		for (int nIndex = 0; nIndex<nLengthB64; nIndex++)
 		{
-			csBase64.AppendFormat( _T( "%c"), pRet[uIndex]);
+			csBase64.AppendFormat( _T( "%c"), pRet[nIndex]);
 		}
 		free( pRet);
 		return TRUE;
@@ -444,41 +448,35 @@ BOOL OCSINVENTORYFRONT_API base64_encode( LPBYTE pBuffer, UINT uLength, CString 
 LPBYTE OCSINVENTORYFRONT_API base64_decode( LPCTSTR lpstrBase64, UINT *uLength)
 {
 	LPBYTE	pRet = NULL;
-	UINT	uOutLength;
+	int		nOutLength;
 
 	ASSERT( lpstrBase64);
 
 	try
 	{
-		/* The exact amount is 3 * inlen / 4, minus 1 if the input ends
-		 with "=" and minus another 1 if the input ends with "==".
-		 Dividing before multiplying avoids the possibility of overflow.
+		/* The exact amount of decoded data is 3 * inlen / 4, minus 1
+		   if the input ends with "=" and minus another 1 if the input
+		   ends with "==".
+		   However, we allocated the size of base64 data for decoded data,
+		   to ensure no memory overflow
 		 */
-		uOutLength = _tcslen( lpstrBase64);
-		if (uOutLength < 2)
+		// Ensure lpstrBase64 contains base64 encoded data
+		nOutLength = _tcslen( lpstrBase64);
+		if (nOutLength < 2)
 			// Buffer to small, not base 64 encoded
 			return NULL;
-		if ((lpstrBase64[uOutLength-1] == '=') &&
-			(lpstrBase64[uOutLength-2] == '='))
-			// end with "=="
-			uOutLength = 3 * (_tcslen( lpstrBase64) / 4) - 2;
-		else
-		{
-			if (lpstrBase64[uOutLength-1] != '=')
-				// Not base64 encoded
-				return NULL;
-			// end with "="
-			uOutLength = 3 * (_tcslen( lpstrBase64) / 4) - 1;
-		}
-		if ((pRet = (LPBYTE) malloc( uOutLength)) == NULL)
+		if (lpstrBase64[nOutLength-1] != '=')
+			// Not ending with =, not base64 encoded
 			return NULL;
-		memset( pRet, 0, uOutLength);
-		if (EVP_DecodeBlock( pRet, (LPBYTE) LPCSTR( GetAnsiFromUnicode( lpstrBase64)), _tcslen( lpstrBase64)) < 0)
+		if ((pRet = (LPBYTE) malloc( nOutLength)) == NULL)
+			return NULL;
+		memset( pRet, 0, nOutLength);
+		if ((nOutLength = EVP_DecodeBlock( pRet, (LPBYTE) LPCSTR( GetAnsiFromUnicode( lpstrBase64)), nOutLength)) < 0)
 		{
 			free( pRet);
 			return NULL;
 		}
-		*uLength = uOutLength;
+		*uLength = nOutLength;
 		return pRet;
 	}
 	catch (CException *pEx)

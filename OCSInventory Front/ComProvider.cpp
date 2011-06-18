@@ -44,10 +44,11 @@ CComProvider::~CComProvider()
 BOOL CComProvider::load(LPCTSTR lpstrProvider)
 {
 	CLog *pLogger = getOcsLogger();
-	CFileVersion fileVer;
 
 	try
 	{
+		CFileVersion fileVer;
+
 		unload();
 
 		pLogger->log( LOG_PRIORITY_DEBUG,  _T( "COM PROVIDER => Loading Communication Provider <%s>"), lpstrProvider);

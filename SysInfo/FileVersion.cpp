@@ -31,7 +31,8 @@ CFileVersion::~CFileVersion()
 
 void CFileVersion::Close()
 {
-    delete[] m_lpVersionData; 
+	if (m_lpVersionData != NULL)
+		delete[] m_lpVersionData; 
     m_lpVersionData = NULL;
     m_dwLangCharset = 0;
 }
