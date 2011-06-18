@@ -1,4 +1,5 @@
 2.0.0.22
+  * Fix Bud #754410 "OcsInvetory.exe Application Error" on some systems
   * In service, run agent without grabbing stdout/stderr, to avoid dealing with unclosed handles
   * Fix Bug ID 778335 empty values are shown as (null) in XML (produced by string conversion between unicode, ansi and UTF-8)
   * Fix bug #797182 "2 directories was created in APPDATA when upgrade windows agent"
