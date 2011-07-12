@@ -159,23 +159,18 @@ BOOL CHTTPCrypt::encrypt( CString &csInput, CString &csOutput)
     if ((pOutBuffer = (LPBYTE) malloc( nOutBufferLength)) == NULL)
 		return FALSE;
 	memset( pOutBuffer, 0, nOutBufferLength);
-	// Encrypt most of the data
+	// Encrypt most of the data (Input must include the null terminating char)
 	nLength = nOutBufferLength;
     if (EVP_EncryptUpdate( &oEncCtx, pOutBuffer, &nLength,
-							(LPBYTE) LPCSTR( csInputA), csInputA.GetLength()) < 0)
+							(LPBYTE) LPCSTR( csInputA), csInputA.GetLength()+1) < 0)
 	{
 		// Encryption fail
 		free( pOutBuffer);
         return FALSE;
     }
-    // Add last block+padding:
-    nPaddingBufferLength = 2*AES_BLOCK_SIZE; // To be sure add two blocks.
-    if ((pPaddingBuffer = (LPBYTE) malloc( nPaddingBufferLength)) == NULL)
-	{
-		free( pOutBuffer);
-		return FALSE;
-	}
-	memset( pPaddingBuffer, 0, nPaddingBufferLength);
+    // Add last block+padding
+	pPaddingBuffer = pOutBuffer+nLength;
+	nPaddingBufferLength = nLength;
     if (EVP_EncryptFinal_ex( &oEncCtx, pPaddingBuffer, &nPaddingBufferLength) < 0)
 	{
 		// Encryption fail
@@ -183,7 +178,6 @@ BOOL CHTTPCrypt::encrypt( CString &csInput, CString &csOutput)
 		free( pOutBuffer);
         return FALSE;
     }
-	memcpy( pOutBuffer+nLength, pPaddingBuffer, nPaddingBufferLength);
     // Base64 encode encrypted data
 	if (!base64_encode( pOutBuffer, nLength+nPaddingBufferLength, csBuffer))
 	{
@@ -194,7 +188,6 @@ BOOL CHTTPCrypt::encrypt( CString &csInput, CString &csOutput)
     }
 	// Create output string using initialization vector and encrypted data
 	csOutput.Format( _T( "%s%s%s"), csVector,  OCS_HTTP_SEPARATOR_VALUE, csBuffer);
-	free( pPaddingBuffer);
 	free( pOutBuffer);
 
     EVP_CIPHER_CTX_cleanup(&oEncCtx);
@@ -208,9 +201,11 @@ BOOL CHTTPCrypt::decrypt(CString &csInput, CString &csOutput)
 	int		nSep;
 	UINT	uLength;
 	LPBYTE	pOutBuffer = NULL,
+			pOutPaddingBuffer = NULL,
 			pInitVector = NULL,
 			pInBuffer = NULL;
-	int nOutBufferLength;
+	int nOutBufferLength,
+		nOutPaddingLength;
 	CString	csBuffer;
     
     // Set aes key
@@ -236,6 +231,7 @@ BOOL CHTTPCrypt::decrypt(CString &csInput, CString &csOutput)
 	// Create decryption context using initialization vector  
 	EVP_CIPHER_CTX_init( &oEncCtx);
 	EVP_DecryptInit_ex( &oEncCtx, oChiper, 0, (LPBYTE) LPCSTR( m_csKey), pInitVector);
+	free( pInitVector);
 	// Get real encrypted data from input string
 	csBuffer = csInput.Mid( nSep+_tcslen( OCS_HTTP_SEPARATOR_VALUE), csInput.GetLength()-nSep-_tcslen( OCS_HTTP_SEPARATOR_VALUE));
 	if ((pInBuffer = base64_decode( csBuffer, &uLength)) == NULL)
@@ -258,19 +254,10 @@ BOOL CHTTPCrypt::decrypt(CString &csInput, CString &csOutput)
 		free( pOutBuffer);
         return FALSE;
     }
-	// Add decrypted data to output buffer
-	for (int i=0; i<nOutBufferLength; i++)
-		csOutput.AppendFormat( _T( "%c"), pOutBuffer[i]);
-	free( pOutBuffer);
-	//Add last block+padding:
-	nOutBufferLength = 2*AES_BLOCK_SIZE; // To be sure add two blocks.
-	if ((pOutBuffer = (LPBYTE) malloc( nOutBufferLength * sizeof( BYTE))) == NULL)
-	{
-		free( pInBuffer);
-		return FALSE;
-	}
-	memset( pOutBuffer, 0, nOutBufferLength);
-	if (EVP_DecryptFinal_ex( &oEncCtx, pOutBuffer, &nOutBufferLength) < 0)
+	// Decrypt last block+padding:
+	pOutPaddingBuffer = pOutBuffer + nOutBufferLength;
+	nOutPaddingLength = nOutBufferLength;
+	if (EVP_DecryptFinal_ex( &oEncCtx, pOutPaddingBuffer, &nOutPaddingLength) < 0)
 	{
 		// Decryption fail
 		free( pInBuffer);
@@ -278,9 +265,9 @@ BOOL CHTTPCrypt::decrypt(CString &csInput, CString &csOutput)
         return FALSE;
     }
 
-	// Add decrypted data to output:
-	for (int i=0; i<nOutBufferLength; i++)
-		csOutput.AppendFormat( _T( "%c"), pOutBuffer[i]);
+	// Copy decrypted data to output
+	for (nSep = 0; (nSep<nOutBufferLength+nOutPaddingLength) && (pOutBuffer[nSep]!=0); nSep++)
+		csOutput.AppendFormat( _T( "%c"), pOutBuffer[nSep]);
 	free( pInBuffer);
 	free( pOutBuffer);
 	EVP_CIPHER_CTX_cleanup(&oEncCtx);
