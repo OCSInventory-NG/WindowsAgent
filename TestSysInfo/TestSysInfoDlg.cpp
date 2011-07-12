@@ -3164,7 +3164,8 @@ void CTestSysInfoDlg::OnBnClickedLoadXml()
 		while( pXmlLine)
 		{
 			const char *pszText = pXmlLine->GetText();
-			m_List.AddString( CA2T( pszText, CP_UTF8));
+			// Thanks to Tommy Teague
+			m_List.AddString( pszText ? CA2T( pszText, CP_UTF8) : _T(""));
 			pXmlLine = pXmlLine->NextSiblingElement( "Line");
 		}
 	}
