@@ -40,6 +40,9 @@ OCS_PROVIDER_API CServerConfig * newServerConfig( LPCTSTR lpstrFile = NULL, LPCT
 // DestroyServerConfig - free the memory for the class instance 
 OCS_PROVIDER_API void deleteServerConfig( CServerConfig *pConfig);
 ///////////////////////////////////////////////////////////////////////////////
+// DestroyServerConnexion - free the memory for the class instance 
+OCS_PROVIDER_API BOOL saveServerConfig( CServerConfig *pConfig, LPCTSTR lpstrFile = NULL, LPCTSTR lpstrSection = NULL);
+///////////////////////////////////////////////////////////////////////////////
 // CreateServerConnexion - create an instance of the class CConnexionAbstract
 OCS_PROVIDER_API CConnexionAbstract * newServerConnexion( CServerConfig *pConfig);
 ///////////////////////////////////////////////////////////////////////////////
