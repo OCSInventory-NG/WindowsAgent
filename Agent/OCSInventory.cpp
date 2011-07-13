@@ -226,6 +226,20 @@ BOOL COCSInventoryApp::InitInstance()
 
 		/*****
 		 *
+		 *	Get the tag value from command line if provided
+		 *
+		 ****/
+		if (m_pConfig->isTagTextProvided())
+		{
+			csMessage.Format( _T( "%s\\%s"), getDataFolder(), OCS_ACCOUNTINFO_FILENAME);
+			if (!m_pConfig->writeAccountInfos( _T( "TAG"), m_pConfig->getTagText()))
+				m_pLogger->log(LOG_PRIORITY_ERROR, _T( "AGENT => Cannot write TAG <%s>"), LookupError( GetLastError()));
+			else
+				m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "AGENT => Tag forced by /TAG, value is <%s>"), m_pConfig->getTagText()); 
+		}
+
+		/*****
+		 *
 		 *	Check if writing config file is required in command line
 		 *
 		 ****/
@@ -298,20 +312,6 @@ BOOL COCSInventoryApp::InitInstance()
 					}
 				}
 			}
-		}
-
-		/*****
-		 *
-		 *	Get the tag value from command line if provided
-		 *
-		 ****/
-		if (m_pConfig->isTagTextProvided())
-		{
-			csMessage.Format( _T( "%s\\%s"), getDataFolder(), OCS_ACCOUNTINFO_FILENAME);
-			if (!m_pConfig->writeAccountInfos( _T( "TAG"), m_pConfig->getTagText()))
-				m_pLogger->log(LOG_PRIORITY_ERROR, _T( "AGENT => Cannot write TAG <%s>"), LookupError( GetLastError()));
-			else
-				m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "AGENT => Tag forced by /TAG, value is <%s>"), m_pConfig->getTagText()); 
 		}
 
 		/*****
