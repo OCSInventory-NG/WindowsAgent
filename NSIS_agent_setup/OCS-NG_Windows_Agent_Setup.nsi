@@ -489,6 +489,18 @@ Function ParseCmd
 	; Remove parsed arg from command line
 	${WordReplace} "$9" "/DEBUG=$R0" "" "+" $R1
 	StrCpy $9 $R1
+	; No Software
+	Push "/NOSOFTWARE" ; push the search string onto the stack
+	Push "1"      ; No Software by default
+	Call GetParameterValue
+	Pop $R0
+	${If} "$R0" == "1"
+	    ; Scan for Software allowed
+        WriteINIStr "$PLUGINSDIR\agent.ini" "Field 10" "State" "0"
+    ${Else}
+        ; Never scan for Software
+	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 10" "State" "1"
+	${EndIf}
 	; No TAG
 	Push "/NOTAG" ; push the search string onto the stack
 	Push "1"      ; No TAG by default
@@ -1017,6 +1029,12 @@ WriteServiceIni_End_Proxy:
 	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 4" "State"
 	StrCpy $R1 "$R2 /DEBUG=$R0"
 	StrCpy $R2 $R1
+	; No Software
+	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 10" "State"
+	StrCmp $R0 "1" 0 WriteServiceIni_Skip_NoSoftware
+	StrCpy $R1 "$R2 /NOSOFTWARE"
+	StrCpy $R2 $R1
+WriteServiceIni_Skip_NoSoftware:
 	; No Tag
 	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 5" "State"
 	StrCmp $R0 "1" 0 WriteServiceIni_Skip_NoTag

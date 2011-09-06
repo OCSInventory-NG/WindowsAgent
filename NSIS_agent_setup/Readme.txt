@@ -76,6 +76,7 @@ parameters (see agent's options for more detail):
 - /DEBUG=
 - /NOTAG
 - /TAG=
+- /NOSOFTWARE
 
 
 We hope it will works for you !

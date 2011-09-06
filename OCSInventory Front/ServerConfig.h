@@ -29,6 +29,9 @@ public: // Methods
 	// Standard destructor
 	virtual ~CServerConfig();
 
+	// Reset default values
+	virtual void Clear() = NULL;
+
 	// Allow parsing agent command line to grab command line params for
 	// Communication provider
 	virtual BOOL parseCommandLine( LPCTSTR lpstrCommand) = NULL;

@@ -33,20 +33,22 @@ OCS Inventory NG Windows Agent Command Line Options:
                                             1 => enable default verbose logs (default when no level provided provided)
                                             2 => enable debuging logs
 
-/notag		                                  Agent must NOT prompt user for TAG in any case
+/nosoftware	                                Agent must NOT scan computer for installed software in any case
+	
+/notag		                                Agent must NOT prompt user for TAG in any case
 	
 /tag="my value"                             Agent must set "my value" as TAG value
 	
 /xml=["path to folder"]                     Agent must store inventory in uncompressed xml format into folder "path to folder" 
                                             If no "path to folder" provided, agent assume folder as data folder
 	
-/force		                                  Always send inventory, even if server do not ask for it (use only for debugging purpose !)
+/force		                                Always send inventory, even if server do not ask for it (use only for debugging purpose !)
 	
-/ipdisc="network number"	                  Agent must launch IP discovery on network "network number" (use only for debugging purpose !)
+/ipdisc="network number"	                Agent must launch IP discovery on network "network number" (use only for debugging purpose !)
 
 /ipdisc_lat="number of milliseconds"        Set latency between 2 IP Discover requests to "number of milliseconds"
     
-/fastip		                                  Never wait for latency  between 2 IP Discover requests (use only for debugging purpose !)
+/fastip		                                Never wait for latency  between 2 IP Discover requests (use only for debugging purpose !)
 	
 /hkcu                                       Search also for software under HKEY_CURRENT_USER registry hive (do not work with service as LocalSystem !)
 
@@ -95,6 +97,8 @@ Local=
 ; Enable agent scanning HKEY_CURRENT_USER hive for printers and sofware
 ; (0 => disabled, 1 => enabled) 
 HKCU=0
+; Disable scanning computer for installed software (0 => software scan allowed, 1 => disabled) 
+NoSOFTWARE=0
 ; Disable prompting user for TAG value (0 => prompt allowed, 1 => disabled) 
 NoTAG=0
 ; Force agent launching IpDiscover on specified network (network address => enabled,

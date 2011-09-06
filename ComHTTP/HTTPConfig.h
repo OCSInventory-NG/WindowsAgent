@@ -43,6 +43,9 @@ public: // Methods
 	// Standard destructor
 	virtual ~CHTTPConfig();
 
+	// Reset default values
+	void Clear();
+
 	// Load configuration from specified file (default agent config used if NULL)
 	// Use specified section (Communication server used if NULL)
 	BOOL load( LPCTSTR lpstrFile = NULL, LPCTSTR lpstrSection = OCS_HTTP_PROVIDER_SECTION);

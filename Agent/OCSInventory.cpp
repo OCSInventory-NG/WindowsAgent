@@ -131,6 +131,12 @@ BOOL COCSInventoryApp::InitInstance()
 		CPrologResponse		*pPrologResp = NULL;
 		CInventoryResponse	*pInventoryResponse = NULL;
 
+		// If we want to store new settings, clear old settings
+		if (isRequired( m_lpCmdLine, OCS_AGENT_SAVE_SETTINGS))
+		{
+			m_pConfig->Clear();
+		}
+
 		/*****
 		*
 		* Parse command line
@@ -212,6 +218,11 @@ BOOL COCSInventoryApp::InitInstance()
 				goto CLEAN_AND_EXIT;
 			}
 			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT => Using Communication Provider <%s> Version <%s>"), pProvider->getName(), pProvider->getVersion());
+			// If we want to store new settings, clear old settings
+			if (isRequired( m_lpCmdLine, OCS_AGENT_SAVE_SETTINGS))
+			{
+				pServerConfig->Clear();
+			}
 			// Parse command line arguments
 			if (!pServerConfig->parseCommandLine( m_lpCmdLine))
 				m_pLogger->log( LOG_PRIORITY_ERROR, _T( "AGENT => Failed parsing Communication Provider command line arguments"));
@@ -243,7 +254,7 @@ BOOL COCSInventoryApp::InitInstance()
 		 *	Check if writing config file is required in command line
 		 *
 		 ****/
-		if (isRequired( m_lpCmdLine, _T( "save_conf")))
+		if (isRequired( m_lpCmdLine, OCS_AGENT_SAVE_SETTINGS))
 		{
 			// Save parameters to config file
 			m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "AGENT => Writing configuration to file <%s>"), m_pConfig->getConfigFile());
@@ -680,7 +691,7 @@ BOOL COCSInventoryApp::parseCommandLine()
 		else
 			return FALSE;
 	}
-	// /DEBUG[:level] 
+	// /DEBUG[=level] 
 	if (isRequired( m_lpCmdLine, _T( "debug")))
 	{
 		CString csLevel = getParamValue( m_lpCmdLine, _T( "debug"));
@@ -697,22 +708,22 @@ BOOL COCSInventoryApp::parseCommandLine()
 		m_pConfig->setNoTagRequired();
 	// Get TAG value if needed (/TAG:"my value"
 	m_pConfig->setTagText( getParamValue( m_lpCmdLine, _T( "tag")));
-	// /LOCAL[:path_to_folder]
+	// /LOCAL[=path_to_folder]
 	if (isRequired( m_lpCmdLine, _T( "local")))
 		// Get path to folder
 		m_pConfig->setLocalInventory( getParamValue( m_lpCmdLine, _T( "local")));
-	// /XML[:path_to_folder]
+	// /XML[=path_to_folder]
 	if (isRequired( m_lpCmdLine, _T( "xml"))) 
 		// Get path to folder
 		m_pConfig->setXmlFolder( getParamValue( m_lpCmdLine, _T( "xml")));
 	// /FORCE
 	if (isRequired( m_lpCmdLine, _T( "force")))
 		m_pConfig->setForceInventoryRequired();
-	// /IPDISC:network
+	// /IPDISC=network
 	if (isRequired( m_lpCmdLine, _T( "ipdisc"))) 
 		// get network address
 		m_pConfig->setIpDiscoverRequired( getParamValue( m_lpCmdLine, _T( "ipdisc")));
-	// /IPDISC_LAT:num_secs
+	// /IPDISC_LAT=num_secs
 	if (isRequired( m_lpCmdLine, _T( "ipdisc_lat"))) 
 		// get number of seconds
 		m_pConfig->setIpDiscoverLatency( getParamValue( m_lpCmdLine, _T( "ipdisc_lat")));

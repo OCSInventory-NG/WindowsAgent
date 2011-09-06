@@ -24,6 +24,8 @@
 #define OCS_CONFIG_FILENAME		_T( "ocsinventory.ini")
 // Section for Agent parameters
 #define OCS_AGENT_SECTION		_T( "OCS Inventory Agent")
+// Command line option used to save settings
+#define OCS_AGENT_SAVE_SETTINGS	_T( "save_conf")
 // Debug mode
 #define OCS_DEBUG_MODE_OFF		0
 #define OCS_DEBUG_MODE_STANDARD	1
@@ -57,6 +59,9 @@ public: // Methods
 	//Standards constructrs and destructors
 	CConfig();
 	virtual ~CConfig();
+
+	// Reset default values
+	void Clear();
 
 	// Set Agent version
 	void setVersion( LPCTSTR lpstrVersion);

@@ -29,21 +29,32 @@ static char THIS_FILE[] = __FILE__;
 
 CConfig::CConfig()
 {
-	m_csVersion.Empty();
+	Clear();
 	// Load settings from config file
 	load();
-	// Initialize others settings not in config file
-	m_bFastIp = FALSE;
-	m_bForce = FALSE;
-	m_bNoSoftware = FALSE;
-	m_bUID = FALSE;
-	m_bNotify = FALSE;
-	m_csTag.Empty();
-	m_csXml.Empty();
 }
 
 CConfig::~CConfig()
 {
+}
+
+void CConfig::Clear()
+{
+	// Initialize default settings
+	m_bForce = FALSE;
+	m_uDebug = 0;
+	m_csLocal.Empty();
+	m_csXml.Empty();
+	m_bNoTag = FALSE;
+	m_bNoSoftware = FALSE;
+	m_csTag.Empty();
+	m_bHKCU = FALSE;
+	m_bUID = FALSE;
+	m_bNotify = FALSE;
+	m_csIpDisc.Empty();
+	m_csIpDiscLat.Empty();
+	m_bFastIp = FALSE;
+	m_csVersion.Empty();
 }
 
 LPCTSTR CConfig::getVersion()
@@ -167,6 +178,8 @@ BOOL CConfig::load( LPCTSTR lpstrFile)
 	// Local inventory mode, get path to folder to store .ocs file
 	GetPrivateProfileString( OCS_AGENT_SECTION, _T( "Local"), _T( ""), m_csLocal.GetBuffer( 1024), 1024, m_csConfigFile);
 	m_csLocal.ReleaseBuffer();
+	//  Scan for installed software or not
+	m_bNoSoftware = (BOOL)GetPrivateProfileInt( OCS_AGENT_SECTION, _T( "NoSoftware"), FALSE, m_csConfigFile);
 	//  Scanning HKEY_CURRENT_USER hive for printers and sofware
 	m_bHKCU = (BOOL)GetPrivateProfileInt( OCS_AGENT_SECTION, _T( "HKCU"), FALSE, m_csConfigFile);
 	//  Disable prompting user for TAG value
@@ -195,7 +208,10 @@ BOOL CConfig::save( LPCTSTR lpstrFile)
 		bResult = WritePrivateProfileString( OCS_AGENT_SECTION, _T( "Debug"), csBuffer, m_csConfigFile);
 		// Local inventory mode, get path to folder to store .ocs file
 		bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "Local"), m_csLocal, m_csConfigFile);
-		//  Scanning HKEY_CURRENT_USER hive for printers and sofware
+		//  Scan for installed software or not
+		csBuffer.Format( _T( "%u"), m_bNoSoftware);
+		bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "NoSoftware"), csBuffer, m_csConfigFile);
+		//  Scanning HKEY_CURRENT_USER hive for printers and software
 		csBuffer.Format( _T( "%u"), m_bHKCU);
 		bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "HKCU"), csBuffer, m_csConfigFile);
 		//  Disable prompting user for TAG value

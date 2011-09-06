@@ -27,12 +27,40 @@ static char THIS_FILE[] = __FILE__;
 
 CHTTPConfig::CHTTPConfig( LPCTSTR lpstrFile, LPCTSTR lpstrSection)
 {
+	Clear();
 	// Load default configuration from default file
 	load( lpstrFile, lpstrSection);
 }
 
 CHTTPConfig::~CHTTPConfig()
 {
+}
+
+void CHTTPConfig::Clear()
+{
+	// Server address
+	m_csServerName = OCS_HTTP_DEFAULT_SERVER;
+
+	// SSL connection required
+	m_uSSL = OCS_HTTP_SSL_VALIDATION_REQUIRED;
+	// Path to CA certificate chain file in PEM format
+	m_csCaBundle.Format( _T( "%s\\%s"), getDataFolder(), OCS_HTTP_CA_DEFAULT_BUNDLE);
+
+	// HTTP credentials if needed
+	m_bAuthRequired = OCS_HTTP_AUTH_TYPE_NONE;
+	m_csHttpUser.Empty();
+	m_csHttpPwd.Empty();
+	
+	// Proxy type
+	m_uProxyType = OCS_HTTP_PROXY_TYPE_NONE;
+	m_csProxyName.Empty();
+	// Proxy port
+	m_uProxyPort = OCS_HTTP_DEFAULT_PROXY_PORT;
+	// Proxy auth
+	m_bProxyAuthRequired = OCS_HTTP_AUTH_TYPE_NONE;
+	// Proxy credentials
+	m_csProxyUser.Empty();
+	m_csProxyPwd.Empty();
 }
 
 LPCTSTR CHTTPConfig::getServer()
