@@ -289,7 +289,7 @@ CString CDownloadApp::getVersion()
 	{
 		myVer = fileVer.GetProductVersion();
 		myVer.Remove( ' ');
-		myVer.Remove( ',');
+		myVer.Replace( _T( ","), _T( "."));
 		fileVer.Close();
 	}
 	else

@@ -1,4 +1,4 @@
-2.0.1, aka 2.0.0.25
+2.0.1, aka 2.0.1.0
   * Fix Bug #815891: Add /NOSOFTWARE support in service and installer 
 2.0.0.24
   * Fix Bug #805039: Installer creates incomplete ocsinventory.ini
