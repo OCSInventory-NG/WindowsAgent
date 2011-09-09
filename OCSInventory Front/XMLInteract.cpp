@@ -96,7 +96,7 @@ BOOL CXMLInteract::UpdateDeviceProperties( CDeviceProperties &pPC)
 		m_pXml->AddChildElem( _T( "OSNAME"), pPC.GetOSName());
 		m_pXml->AddChildElem( _T( "OSVERSION"), pPC.GetOSVersion());
 		m_pXml->AddChildElem( _T( "OSCOMMENTS"), pPC.GetOSComment());
-		m_pXml->AddChildElem( _T( "ARCH"), pPC.Is64bitsOS() ? _T( "64") : _T( "32"));
+		m_pXml->AddChildElem( _T( "ARCH"), pPC.Is64bitsOS() ? _T( "x86 64 bits") : _T( "x86 32 bits"));
 		m_pXml->AddChildElem( _T( "PROCESSORT"), pPC.GetProcessorType());
 		m_pXml->AddChildElem( _T( "PROCESSORS"), pPC.GetProcessorSpeed());
 		m_pXml->AddChildElem( _T( "PROCESSORN"), pPC.GetNumberOfProcessors());
