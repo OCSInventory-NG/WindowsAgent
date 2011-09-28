@@ -36,6 +36,9 @@ SET XML_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\Exte
 Rem Set path to ZipArchive sources, for example
 SET ZIP_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\ZipArchive
 
+Rem Set path to Net-SNMP sources, for example
+SET SNMP_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\net-snmp-5.7
+
 Rem ========= DO NOT MODIFY BELOW, UNTIL YOU KNOW WHAT YOU ARE DOING =========
 
 Rem Ensure MS Visual C++ environnement is set
@@ -123,6 +126,30 @@ copy "libcurl.dll" ..\..\..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
 cd ..\..\..
+
+echo.
+echo *************************************************************************
+echo *                                                                       *
+echo * Preparing for OCS Inventory NG : Configuring Net-SNMP DLL...          *
+echo *                                                                       *
+echo *************************************************************************
+echo.
+cd "%SNMP_PATH%\win32"
+Rem Configure Net-SNMP for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
+perl.exe Configure --linktype=dynamic
+if ERRORLEVEL 1 goto ERROR
+Rem Build Net-SNMP dll using OpenSSL Dlls and Zlib dll
+cd libsnmp_dll
+nmake
+if ERRORLEVEL 1 goto ERROR
+cd ..
+copy "bin\release\netsnmp.dll" ..\..\..\Release
+copy "bin\release\netsnmp.dll" ..\..\..\Debug
+if ERRORLEVEL 1 goto ERROR
+copy "lib\release\netsnmp.lib" ..\..
+if ERRORLEVEL 1 goto ERROR
+
+cd ..\..
 echo.
 echo *************************************************************************
 echo *                                                                       *

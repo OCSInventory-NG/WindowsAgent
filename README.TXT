@@ -38,6 +38,7 @@ OCS Inventory NG Agent for Windows needs followong libraries:
 - openssl 1.0.0c or newer (www.openssl.org)
 - curl 7.21.2 or newer (http://curl.haxx.se/)
 - tinyXML 2.6.1 or newer (http://www.sourceforge.net/projects/tinyxml/)
+- Net-SNMP 5.7 or newer (http://www.net-snmp.org/)
 - ZipArchive GPL Edition 4.0.1 or newer (http://www.artpol-software.com)
 
 Uncompress sources of these libraries into directory "External_Deps" to create
@@ -46,6 +47,7 @@ the followong directory structures.
 - External_Deps\openssl-1.0.0c
 - External_Deps\curl-7.21.3
 - External_Deps\tinyxml
+- External_Deps\net-snmp-5.7
 - External_Deps\ZipArchive
 
 Open "ZipArchive.sln" Visual C++ 2008 solution in folder
