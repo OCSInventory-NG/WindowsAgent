@@ -55,7 +55,7 @@ echo *************************************************************************
 echo.
 cd "%ZLIB_PATH%"
 Rem Build Zlib using precompiled asm code for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
-nmake -f Win32\Makefile.msc LOC="-DASMV -DASMINF -D_BIND_TO_CURRENT_VCLIBS_VERSION" OBJA="inffas32.obj match686.obj"
+nmake /NOLOGO -f Win32\Makefile.msc LOC="-DASMV -DASMINF -D_BIND_TO_CURRENT_VCLIBS_VERSION" OBJA="inffas32.obj match686.obj"
 if ERRORLEVEL 1 goto ERROR
 
 Rem copy libs to use them in OCS
@@ -82,7 +82,7 @@ Rem Prepare OpenSSL build for MS Visual C++
 call ms\do_ms.bat
 if ERRORLEVEL 1 goto ERROR
 Rem Build OpenSSL
-nmake -f ms\ntdll.mak
+nmake /NOLOGO -f ms\ntdll.mak
 if ERRORLEVEL 1 goto ERROR
 Rem Test OpenSSL build
 cd out32dll
@@ -110,9 +110,11 @@ echo.
 cd "%CURL_PATH%"
 Rem Disable LDAP support, not needed in OCS Inventory NG Agent
 set WINDOWS_SSPI=0
-Rem Build cURL dll using OpenSSL Dlls and Zlib dll
 cd lib
-nmake /f Makefile.vc9 cfg=release-dll-ssl-dll-zlib-dll
+Rem Fix cURL DLL config for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
+perl.exe -pi.bak -e "s# /DBUILDING_LIBCURL# /DBUILDING_LIBCURL /D_BIND_TO_CURRENT_VCLIBS_VERSION#g" Makefile.vc9
+Rem Build cURL dll using OpenSSL Dlls and Zlib dll
+nmake /NOLOGO /f Makefile.vc9 cfg=release-dll-ssl-dll-zlib-dll
 if ERRORLEVEL 1 goto ERROR
 Rem Insert manifest into DLL
 cd release-dll-ssl-dll-zlib-dll
@@ -135,12 +137,14 @@ echo *                                                                       *
 echo *************************************************************************
 echo.
 cd "%SNMP_PATH%\win32"
-Rem Configure Net-SNMP for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
+Rem Configure Net-SNMP
 perl.exe Configure --linktype=dynamic
 if ERRORLEVEL 1 goto ERROR
-Rem Build Net-SNMP dll using OpenSSL Dlls and Zlib dll
 cd libsnmp_dll
-nmake
+Rem Fix Net-SNMP DLL config for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
+perl.exe -pi.bak -e "s# /D \"WIN32\"# /D \"WIN32\" /D_BIND_TO_CURRENT_VCLIBS_VERSION#g" Makefile
+Rem Build Net-SNMP dll
+nmake /NOLOGO
 if ERRORLEVEL 1 goto ERROR
 cd ..
 copy "bin\release\netsnmp.dll" ..\..\..\Release

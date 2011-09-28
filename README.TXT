@@ -38,7 +38,7 @@ OCS Inventory NG Agent for Windows needs followong libraries:
 - openssl 1.0.0c or newer (www.openssl.org)
 - curl 7.21.2 or newer (http://curl.haxx.se/)
 - tinyXML 2.6.1 or newer (http://www.sourceforge.net/projects/tinyxml/)
-- Net-SNMP 5.7 or newer (http://www.net-snmp.org/)
+- net-snmp 5.7 or newer (http://www.net-snmp.org/)
 - ZipArchive GPL Edition 4.0.1 or newer (http://www.artpol-software.com)
 
 Uncompress sources of these libraries into directory "External_Deps" to create
@@ -59,8 +59,8 @@ C++ 2008 SP1 CRT and MFC versions (for more explanation, see Jochen Kalmbach's B
 http://blog.kalmbach-software.de/2009/05/27/deployment-of-vc2008-apps-without-installing-anything/)
 Save and build to create unicode DLL for ZipArchive Library.
 
-Also, edit curl Makefile for Visual C++ 2008, aka lib/makefile.vc9, and add 
-"/D_BIND_TO_CURRENT_VCLIBS_VERSION" at the end of CFLAGS line 95. As is, libcurl
+Script for building dependancy automatically fixess cURL and net-snmp Makefiles for Visual C++ 2008,
+by adding "/D_BIND_TO_CURRENT_VCLIBS_VERSION" to the CFLAGS. As is, libcurl and net-snmp
 DLL will be binded to lastest Visual C++ 2008 SP1 CRT versions.
 
 For Zlib, OpenSSL and TinyXML, compiling using _BIND_TO_CURRENT_VCLIBS_VERSION 
