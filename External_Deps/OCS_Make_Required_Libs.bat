@@ -1,11 +1,11 @@
 @echo off
-
+title OCS Inventory NG Agent for Windows - Building required libraries
 echo.
 echo *************************************************************************
 echo *                                                                       *
 echo *                 OCS Inventory NG agent for Windows                    *
 echo *                                                                       *
-echo * Building of required libraries Zlib1, OpenSSL and cURL                *
+echo *                      Building required libraries                      *
 echo *                                                                       *
 echo *************************************************************************
 echo.
@@ -46,6 +46,7 @@ call "%VC_PATH%\VCVARSALL.BAT"
 Rem Add perl to PATH
 set PATH=%PATH%;%PERL_PATH%
 
+title OCS Inventory NG Agent for Windows - Building Zlib DLL...
 echo.
 echo *************************************************************************
 echo *                                                                       *
@@ -67,6 +68,7 @@ copy zlib1.dll ..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
 cd ..
+title OCS Inventory NG Agent for Windows - Building OpenSSL DLLs...
 echo.
 echo *************************************************************************
 echo *                                                                       *
@@ -100,6 +102,7 @@ if ERRORLEVEL 1 goto ERROR
 
 
 cd ..\..
+title OCS Inventory NG Agent for Windows - Building cURL DLL...
 echo.
 echo *************************************************************************
 echo *                                                                       *
@@ -128,7 +131,7 @@ copy "libcurl.dll" ..\..\..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
 cd ..\..\..
-
+title OCS Inventory NG Agent for Windows - Building Net-SNMP DLL...
 echo.
 echo *************************************************************************
 echo *                                                                       *
@@ -154,6 +157,7 @@ copy "lib\release\netsnmp.lib" ..\..
 if ERRORLEVEL 1 goto ERROR
 
 cd ..\..
+title OCS Inventory NG Agent for Windows - Building ZipArchive DLL...
 echo.
 echo *************************************************************************
 echo *                                                                       *
@@ -169,6 +173,7 @@ copy "ZipArchive.dll" ..\..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
 cd ..\..
+title OCS Inventory NG Agent for Windows - Building service message file...
 echo.
 echo *************************************************************************
 echo *                                                                       *
@@ -181,6 +186,7 @@ mc.exe NTServiceMsg.mc
 if ERRORLEVEL 1 goto ERROR
 
 cd ..\External_Deps
+title OCS Inventory NG Agent for Windows - SUCCESSFUL build of required libraries 
 echo.
 echo *************************************************************************
 echo *                                                                       *
@@ -195,6 +201,7 @@ echo *************************************************************************
 goto END
 
 :ERROR
+title OCS Inventory NG Agent for Windows - ERROR building required libraries  !!!!
 echo.
 echo *************************************************************************
 echo *                                                                       *
