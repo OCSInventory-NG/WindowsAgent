@@ -28,6 +28,7 @@
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
+#include "vld.h"
 #endif
 
 COcsService::COcsService():CNTService( OCS_SERVICE_SECTION)
