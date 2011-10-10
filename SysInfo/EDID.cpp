@@ -619,7 +619,8 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 				myMonitor.SetDescription( CA2T( csDescription));
 				if (myMonitor.IsValidSerial( CA2T( csSerial)))
 					myMonitor.SetSerial( CA2T( csSerial));
-				pMyList->AddTail( myMonitor);
+				if (!pMyList->AddUniqueSerial( myMonitor))
+					AddLog( _T( "\tEDID : Monitor serial <%s> already registered, so ignoring\n"), csSerial); 
 			}
 			dwIndex++;
 		}
@@ -703,7 +704,8 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 				myMonitor.SetCaption( CA2T( csCaption));
 				myMonitor.SetDescription( CA2T( csDescription));
 				myMonitor.SetSerial( CA2T( csSerial));
-				pMyList->AddTail( myMonitor);
+				if (!pMyList->AddUniqueSerial( myMonitor))
+					AddLog( _T( "\tEDID : Monitor serial <%s> already registered, so ignoring\n"), csSerial);
 			}
 			dwIndex++;
 		}

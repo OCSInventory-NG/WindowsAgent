@@ -27,6 +27,11 @@ public: // Methods
 	//////////////////////////////////
 	CMonitorList();
 	virtual ~CMonitorList();
+
+	// Add monitor to the list, but verify if another monitor with the same serial is not already registered
+	// Return TRUE if monitor added to the list, FALSE if another monitor with the same serial already exists
+	BOOL AddUniqueSerial( CMonitor &myMonitor);
+
 	// Get hash code of data, to determine if changed since last inventory
 	LPCTSTR GetHash();
 };

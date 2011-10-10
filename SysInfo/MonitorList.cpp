@@ -59,3 +59,35 @@ LPCTSTR CMonitorList::GetHash()
 	}
 	return myHash.HashFinal();
 }
+
+BOOL CMonitorList::AddUniqueSerial( CMonitor &myMonitor)
+{
+	CMonitor	myObject;
+	POSITION	pos;
+	BOOL		bContinue;
+	CString		csSN;
+
+	csSN = myMonitor.GetSerial();
+	if (!csSN.IsEmpty())
+	{
+		// There is a a valid serial number => try to see if not already registered
+		pos = GetHeadPosition();
+		bContinue = (pos != NULL);
+		if (bContinue)
+			// There is one record => get the first
+			myObject = GetNext( pos);
+		while (bContinue)
+		{
+			csSN = myObject.GetSerial();
+			if (!csSN.IsEmpty() && (csSN.Compare( myMonitor.GetSerial()) == 0))
+				// This serial is already registered => do not register this monitor
+				return FALSE;
+			bContinue = (pos != NULL);
+			if (bContinue)
+				myObject = GetNext( pos);
+		}
+	}
+	// Register this monitor
+	AddTail( myMonitor);
+	return TRUE;
+}
