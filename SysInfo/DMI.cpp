@@ -815,7 +815,7 @@ BOOL CDMI::GetUUID( CString &csUUID)
 			 * network byte order, so I am reluctant to apply the byte-swapping
 			 * for older versions.
 			 */
-			if ((m_nSMBiosVersionMajor > 2) ||(m_nSMBiosVersionMajor = 2) && (m_nSMBiosVersionMinor >= 6))
+			if ((m_nSMBiosVersionMajor > 2) ||(m_nSMBiosVersionMajor == 2) && (m_nSMBiosVersionMinor >= 6))
 				csUUID.Format( _T( "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X"),
 					pUUID[3], pUUID[2], pUUID[1], pUUID[0], pUUID[5], pUUID[4], pUUID[7], pUUID[6],
 					pUUID[8], pUUID[9], pUUID[10], pUUID[11], pUUID[12], pUUID[13], pUUID[14], pUUID[15]);
