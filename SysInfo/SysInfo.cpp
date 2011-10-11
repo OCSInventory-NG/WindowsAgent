@@ -514,7 +514,9 @@ BOOL CSysInfo::getSystemSlots( CSystemSlotList *pMyList)
 BOOL CSysInfo::getBiosInfo( CBios *pMyBios)
 {
 	// First, try SMBios/DMI
-	if (m_dmiInfo.GetBiosInfo( pMyBios))
+	if (m_dmiInfo.GetBiosInfo( pMyBios) &&
+		pMyBios->IsValidSystemSerialNumber() &&
+		pMyBios->IsValidSystemModel())
 		return TRUE;
 	// Next, try WMI
 	if (m_wmiInfo.GetBiosInfo( pMyBios))
