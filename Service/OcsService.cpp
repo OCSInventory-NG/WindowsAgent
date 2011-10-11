@@ -119,7 +119,7 @@ int COcsService::generateRandNumber(int nMax)
 
 	if( ! errorOccured )
 	{
-		fRand.Read( randBuf, 4);
+		fRand.Read( randBuf, sizeof(UINT));
 		fRand.Close();
 		DeleteFile( csNamePath);
 		UINT dest;
