@@ -129,6 +129,7 @@ protected:
    */
   BOOL parseRunningProcesses( CObArray *pProcessList);
   BOOL isProcessListed( CObArray *pProcessList, DWORD dwProcessID);
+  BOOL freeProcessList( CObArray *pProcessList);
 
 protected:
   HANDLE m_hProcessHandle;

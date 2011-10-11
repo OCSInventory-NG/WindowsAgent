@@ -558,12 +558,14 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 			{
 				SetPriorityClass( GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
 				m_csOutput.Format( "Parse running processes Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+				freeProcessList( &myProcessList);
 				closeHandles();
 				return EXEC_ERROR_WAIT_COMMAND;
 			}
 			Sleep( EXEC_WAIT_CHECK_LATENCY);
 			dwTime += EXEC_WAIT_CHECK_LATENCY;
 		}
+		freeProcessList( &myProcessList);
 		// Now return to normal prioity
 		SetPriorityClass( GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
 		// Get exit code
@@ -664,4 +666,27 @@ BOOL CExecCommand::isProcessListed( CObArray *pProcessList, DWORD dwProcessID)
 		}
 	}
 	return FALSE;
+}
+
+BOOL CExecCommand::freeProcessList( CObArray *pProcessList)
+{
+	INT_PTR 		uIndex;
+	CProcessProps	*pProc;
+
+	try
+	{
+		// By default, set all already listed processes as not running
+		for (uIndex=0; uIndex<pProcessList->GetCount(); uIndex++)
+		{
+			pProc = (CProcessProps *) pProcessList->GetAt( uIndex);
+			delete pProc;
+		}
+		pProcessList->RemoveAll();
+		return TRUE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		return FALSE;
+	}
 }
