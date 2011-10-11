@@ -192,6 +192,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	}
 	if ((pAdapterTable = (PIP_ADAPTER_INFO) malloc( ulLength+1)) == NULL)
 	{
+		free( pIfTable);
 		FreeLibrary( hDll);
 		AddLog( _T( "Failed because memory error !\n" ));
 		return FALSE;

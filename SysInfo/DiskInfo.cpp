@@ -417,7 +417,7 @@ DiskInfo::~DiskInfo(void)
 {
 	vector <WORD*>::iterator listIter;
 	for (listIter = m_list.begin(); listIter != m_list.end(); listIter++)
-		delete *listIter;
+		delete [] *listIter;
 /*
 	for(UINT i = 0; i< m_list.size(); i++)
 		delete m_list[i];
@@ -434,7 +434,7 @@ long DiskInfo::LoadDiskInfo()
 	version.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
 	GetVersionEx (&version);
 	for(UINT i = 0; i< m_list.size(); i++)
-		delete m_list[i];
+		delete [] m_list[i];
 	m_list.clear();
 	if (version.dwPlatformId == VER_PLATFORM_WIN32_NT)
 	{
