@@ -5395,7 +5395,7 @@ BOOL CRegistry::GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive)
 					dwResult = VerLanguageName( dwLanguage, lpstrData, dwSize);
 					if ((dwResult != 0) && (dwResult < dwSize - 1))
 					{
-						lpstrData[dwSize]=0;
+						lpstrData[dwResult]=0;
 						csLanguage = lpstrData;
 					}
 				}
@@ -5591,7 +5591,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 					dwResult = VerLanguageName( dwLanguage, lpstrData, dwSize);
 					if ((dwResult != 0) && (dwResult < dwSize - 1))
 					{
-						lpstrData[dwSize]=0;
+						lpstrData[dwResult]=0;
 						csLanguage = lpstrData;
 					}
 				}

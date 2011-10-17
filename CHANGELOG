@@ -1,4 +1,5 @@
 2.0.2, aka 2.0.2.0
+  * Fix Bug #872768: Crash in Registry.cpp - "Run-Time Check Failure #2 - Stack around the variable 'lpstrData' was corrupted."
   * Ensure all array and objects are correctly freed
   * Fix Bug #859574: Switch to WMI to retreive Bios infos even if DMI access is successfull, but serial or model is not valid
   * Fix Bug #435068: Do not register multiple time a monitor with the same serial
