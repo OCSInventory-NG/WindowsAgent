@@ -50,6 +50,9 @@ public: // Methods
 	// Write hardware info in XML document
 	// Return TRUE if they are successfully updated
 	BOOL UpdateDeviceProperties( CDeviceProperties &pPC);
+	// Write hardware info in XML document for NOTIFY mode
+	// Return TRUE if they are successfully updated
+	BOOL NotifyDeviceProperties( CDeviceProperties &pPC);
 	// Write memory slots in XML document
 	// Return TRUE if they are successfully updated
 	BOOL UpdateMemorySlots( CMemorySlotList &myMemoryList);

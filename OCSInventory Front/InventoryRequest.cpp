@@ -56,19 +56,20 @@ BOOL CInventoryRequest::initInventory()
 		// Notify IP information changes
 		setQuery( _T( "NOTIFY"), _T( "IP"));
 	else
+	{
 		setQuery( _T( "INVENTORY"));
 
-	/****	
-	*
-	* Other inventory sections
-	*
-	****/
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Loading Download history"));
-	if (!loadDownloadHistory())
-	{
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T("INVENTORY => Failed opening Download Package history file <%s>"), LookupError( GetLastError()));
+		/****	
+		*
+		* Package history inventory section
+		*
+		****/
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Loading Download history"));
+		if (!loadDownloadHistory())
+		{
+			m_pLogger->log( LOG_PRIORITY_DEBUG, _T("INVENTORY => Failed opening Download Package history file <%s>"), LookupError( GetLastError()));
+		}
 	}
-
 	/******************/
 
 	if( m_pDeviceid->getOldDeviceID() != _T("") )
@@ -117,7 +118,8 @@ BOOL CInventoryRequest::final()
 		m_pState->SetNetworks( m_NetworkList.GetHash());
 		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "INVENTORY => Network adapters inventory state changed"));
 		// Create XML only to notify network inventory changes
-		bSuccess = m_pTheDB->NotifyNetworks( m_NetworkList);
+		bSuccess = m_pTheDB->NotifyDeviceProperties( m_Device);
+		bSuccess = bSuccess && m_pTheDB->NotifyNetworks( m_NetworkList);
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Notify %u Network Adapter(s)"), m_NetworkList.GetCount());
 	}
 	else

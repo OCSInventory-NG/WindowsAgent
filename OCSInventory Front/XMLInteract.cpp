@@ -120,6 +120,19 @@ BOOL CXMLInteract::UpdateDeviceProperties( CDeviceProperties &pPC)
 	return TRUE;
 }
 
+BOOL CXMLInteract::NotifyDeviceProperties( CDeviceProperties &pPC)
+{
+	m_pXml->AddElem( _T( "HARDWARE"));
+		m_pXml->AddChildElem( _T( "NAME"), pPC.GetDeviceName());
+		m_pXml->AddChildElem( _T( "WORKGROUP"), pPC.GetDomainOrWorkgroup());
+		m_pXml->AddChildElem( _T( "USERDOMAIN"), pPC.GetUserDomain());
+		m_pXml->AddChildElem( _T( "IPADDR"), pPC.GetIPAddress());
+		m_pXml->AddChildElem( _T( "USERID"), pPC.GetLoggedOnUser());
+		m_pXml->AddChildElem( _T( "LASTLOGGEDUSER"),pPC.GetLastLoggedUser());
+	m_pXml->OutOfElem();
+	return TRUE;
+}
+
 BOOL CXMLInteract::UpdateInputDevices( CInputDeviceList &myInputList)
 {
 	CInputDevice cObject;
