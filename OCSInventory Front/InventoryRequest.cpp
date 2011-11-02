@@ -111,10 +111,11 @@ BOOL CInventoryRequest::final()
 	BOOL bSuccess = FALSE;
 	CString	csFilename;
 
-	getXmlPointerContent();
 	if (m_bNotify)
 	{
-		// Notify mode => Save inventory state only for Network adapters
+		// Notify mode => Only send minimum network informations
+		getXmlPointerRequest();
+		// Save inventory state only for Network adapters
 		m_pState->SetNetworks( m_NetworkList.GetHash());
 		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "INVENTORY => Network adapters inventory state changed"));
 		// Create XML only to notify network inventory changes
@@ -125,6 +126,7 @@ BOOL CInventoryRequest::final()
 	else
 	{
 		// Standard inventory => Send full inventory information
+		getXmlPointerContent();
 		// Check state to see if there is something changed
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Checking last inventory state"));
 		if (isStateChanged())

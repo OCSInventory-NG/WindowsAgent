@@ -1,3 +1,4 @@
+  * Fix bug in NOTIFY mode, where data must be inserted into <CONTENT> XML node
   * Fix Bug #860466: Fix incorrect permission propagation on $AppData\OCS Inventory NG\Agent in some cases
 2.0.2, aka 2.0.2.0
   * Fix Bug #872768: Crash in Registry.cpp - "Run-Time Check Failure #2 - Stack around the variable 'lpstrData' was corrupted."
