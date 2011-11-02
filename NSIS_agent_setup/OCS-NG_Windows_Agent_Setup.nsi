@@ -1298,7 +1298,7 @@ Section "!Working data folder" SEC01
     ; Propagate inherited permissions to Download directory
     StrCpy $logBuffer "SetACL propagating inherited permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
     Call Write_Log
-    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -rec cont_obj -actn rstchldrn -rst "dacl,sacl"'
+    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -actn setprot -op "dacl:np;sacl:np" -rec cont_obj -actn clear -clr "dacl,sacl"'
     pop $0
     StrCpy $logBuffer "Result: $0$\r$\n"
     Call Write_Log
