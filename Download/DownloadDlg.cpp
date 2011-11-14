@@ -77,7 +77,7 @@ void CDownloadDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDOK, m_buttonOK);
 	DDX_Control(pDX, IDCANCEL, m_buttonCancel);
 	DDX_Control(pDX, IDC_DELAY, m_buttonWait);
-	DDX_Control(pDX, IDC_EDIT1, m_editText);
+//	DDX_Control(pDX, IDC_EDIT1, m_editText);
 }
 
 BEGIN_MESSAGE_MAP(CDownloadDlg, CDialog)
@@ -124,19 +124,21 @@ BOOL CDownloadDlg::OnInitDialog()
 	m_bDelayed = FALSE;
 	m_uWaited = 0;	
 
-	CRect cr, win;
+/*	CRect cr, win;
 	int nbl = m_editText.GetLineCount();
 	if( nbl > MAX_LINES ) nbl = MAX_LINES;
 	if( nbl < MIN_LINES ) nbl = MIN_LINES;
 
 	m_editText.GetWindowRect(&cr);
+
 	GetWindowRect(&win);
 
 	long double ldTemp = nbl*cr.Height() / 3;
 	int newHeight = int( ceil( ldTemp));
 	m_editText.SetWindowPos( &CWnd::wndTop, 0, 0, cr.Width() , newHeight, SWP_NOMOVE );
-	SetWindowPos( &CWnd::wndTopMost, 0, 0, win.Width() , newHeight + win.Height() - cr.Height() + 10, SWP_NOMOVE );
 
+	SetWindowPos( &CWnd::wndTopMost, 0, 0, win.Width() , newHeight + win.Height() - cr.Height() + 10, SWP_NOMOVE );
+*/
 	// Display HTML message using SimpleBrowser
 	m_Browser.CreateFromControl( this, IDC_EDIT1);
 	m_Browser.Write( m_csEdit);
