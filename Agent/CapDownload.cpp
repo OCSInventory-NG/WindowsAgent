@@ -180,9 +180,15 @@ BOOL CCapDownload::retrievePackages()
 	{
 		pOptDownloadPackage = (COptDownloadPackage*) (m_tPackages[nPack]);
 		if (pOptDownloadPackage->makeDirectory() && !fileExists( pOptDownloadPackage->getLocalMetadataFilename()))
+		{
 			// Download metadata from deployment server
 			if (pOptDownloadPackage->downloadInfoFile())
 				m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Package <%s> added to download queue"), pOptDownloadPackage->getId());
+			else
+				// Error dowloading metadata => remove package directory to avoid error message into download tool
+				directoryDelete( pOptDownloadPackage->getLocalPackFolder());
+		}
+
 	}
 	// Now, allow Download tool
 	unlockDownload();
