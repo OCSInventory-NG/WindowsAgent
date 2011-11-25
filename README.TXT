@@ -37,7 +37,7 @@ OCS Inventory NG Agent for Windows needs followong libraries:
 - zlib 1.2.5 or newer (www.zlib.net)
 - openssl 1.0.0c or newer (www.openssl.org)
 - curl 7.21.2 or newer (http://curl.haxx.se/)
-- tinyXML 2.6.1 or newer (http://www.sourceforge.net/projects/tinyxml/)
+- tinyXML 2.6.2 or newer (http://www.sourceforge.net/projects/tinyxml/)
 - net-snmp 5.7 or newer (http://www.net-snmp.org/)
 - ZipArchive GPL Edition 4.0.1 or newer (http://www.artpol-software.com)
 
