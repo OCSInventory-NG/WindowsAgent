@@ -1315,7 +1315,7 @@ Section "Upgrade from 1.X Agent" SEC02
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Check if it is an upgrade from old agent 4000 series
     ClearErrors
-    FileOpen $R0 "$INSTDIR\OcsService.dll" r
+    FileOpen $R0 "$INSTDIR\PsApi.dll" r
     IfErrors TestInstall_End_Upgrade
     FileClose $R0
 	StrCpy $logBuffer "Old agent 4000 series detected, running migration process...$\r$\n"
@@ -1440,7 +1440,7 @@ UpgradeEndCacert:
 	StrCpy $logBuffer "Failed to remove key, but non blocking !"
 	Call Write_Log
 	; Ensure service uninstall and migration process successfull
-    IfFileExists "$INSTDIR\OcsService.dll" TestInstall_Upgrade_Error
+    IfFileExists "$INSTDIR\PsApi.dll" TestInstall_Upgrade_Error
 	StrCpy $logBuffer "$\r$\nMigration process from old agent 4000 series succesfull, continuing setup...$\r$\n"
 	Call Write_Log
     goto TestInstall_End_Upgrade
