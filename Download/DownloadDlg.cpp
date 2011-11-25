@@ -78,6 +78,7 @@ void CDownloadDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDCANCEL, m_buttonCancel);
 	DDX_Control(pDX, IDC_DELAY, m_buttonWait);
 //	DDX_Control(pDX, IDC_EDIT1, m_editText);
+//	DDX_Text( pDX, IDC_EDIT1, m_csEdit);
 }
 
 BEGIN_MESSAGE_MAP(CDownloadDlg, CDialog)
@@ -138,12 +139,30 @@ BOOL CDownloadDlg::OnInitDialog()
 	m_editText.SetWindowPos( &CWnd::wndTop, 0, 0, cr.Width() , newHeight, SWP_NOMOVE );
 
 	SetWindowPos( &CWnd::wndTopMost, 0, 0, win.Width() , newHeight + win.Height() - cr.Height() + 10, SWP_NOMOVE );
-*/
-	// Display HTML message using SimpleBrowser
-	m_Browser.CreateFromControl( this, IDC_EDIT1);
-	m_Browser.Write( m_csEdit);
 
-	// Bring window to front
+	OSVERSIONINFO osvi;
+    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    GetVersionEx(&osvi);
+
+	if (osvi.dwMajorVersion < 6)
+	{
+		// Windows 2000/XP/2003 => Display as plain text
+*/		
+		SetDlgItemText( IDC_EDIT1, m_csEdit);
+/*	}
+	else
+	{
+		// Windows Vista/2008/Seven or + => Display HTML message using SimpleBrowser
+		if (m_Browser.CreateFromControl( this, IDC_EDIT1))
+		{
+			CString csMessage;
+			csMessage.Format( _T( "<HTML><BODY><HEAD><TITLE>OCS Inventory NG Deployment Status text</TITLE></HEAD><P>%s</P></BODY></HTML>"),
+								m_csEdit);
+			m_Browser.Write( csMessage);
+		}
+	}
+*/	// Bring window to front
 	BringWindowToTop();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -191,7 +210,7 @@ void CDownloadDlg::OnPaint()
 	{
 		// Enable and/or center button
 		m_buttonOK.SetFocus();
-		m_editText.SetSel(-1);
+//		m_editText.SetSel(-1);
 		CRect fen, ok, cancel, wait;
 		CRect v_fen, v_ok, v_cancel, v_wait;
 		int xok,xcancel,xwait,y;	
@@ -271,7 +290,7 @@ void CDownloadDlg::OnTimer(UINT nIDEvent)
 	CString csMessage;
 
 	m_uWaited++;
-	if( m_uWaited >= m_uNotifyCountdown)
+	if (m_uWaited >= m_uNotifyCountdown)
 		OnOK();
 	
 	TCHAR szUseless[255];
@@ -300,8 +319,7 @@ void CDownloadDlg::setPackage( CPackage *pPack)
 	m_bAbortAllowed = pPack->isAbortAllowed();
 	m_bDelayAllowed = pPack->isDelayAllowed();
 	m_uNotifyCountdown = pPack->getNotifyCountdown();
-	m_csEdit.Format( _T( "<HTML><BODY><HEAD><TITLE>OCS Inventory NG Deployment Status text</TITLE></HEAD><P>%s</P></BODY></HTML>"),
-					 pPack->getNotifyText());
+	m_csEdit = pPack->getNotifyText();
 	m_uWaited = 0;
 	m_bDelayed = FALSE;
 }

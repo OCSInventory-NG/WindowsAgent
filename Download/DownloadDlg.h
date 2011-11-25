@@ -49,7 +49,7 @@ protected:
 	CButton	m_buttonOK;
 	CButton	m_buttonCancel;
 	CButton	m_buttonWait;
-	CEdit	m_editText;
+//	CEdit	m_editText;
 	SimpleBrowser m_Browser;
 
 	// Generated message map functions

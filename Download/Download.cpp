@@ -71,7 +71,6 @@ BOOL CDownloadApp::InitInstance()
 			return FALSE; // terminates the application
 		}
 
-
 		/*****
 		 *
 		 *	Checks wether another instance of ocsinventory.exe is 
@@ -574,8 +573,6 @@ BOOL CDownloadApp::downloadFragment( CPackage *pPack)
 
 BOOL CDownloadApp::executePackage( CPackage *pPack)
 {
-	CString csFragID;
-
 	// Create ZIP if not already done
 	if (!pPack->isBuilt())
 	{
@@ -591,28 +588,41 @@ BOOL CDownloadApp::executePackage( CPackage *pPack)
 	if (pPack->isNotifyUserRequired())
 	{
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Notifying user for package <%s>"), pPack->getID());
-		CDownloadDlg cDlg;
-		cDlg.setPackage( pPack);
-		switch (cDlg.DoModal())
+
+		try
 		{
-		case IDCANCEL:
-			// Canceled by user
-			pPack->setDone( ERR_ABORTED);
-			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Package <%s> cancelled by user"), pPack->getID());
-			return TRUE;
-		case IDOK:
-			if (cDlg.isDelayed())
+			CDownloadDlg cDlg;
+			cDlg.setPackage( pPack);
+			switch (cDlg.DoModal())
 			{
-				m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Package <%s> delayed by user"), pPack->getID());
-				m_BlackList.Add( pPack->getID());
+			case IDCANCEL:
+				// Canceled by user
+				pPack->setDone( ERR_ABORTED);
+				m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Package <%s> cancelled by user"), pPack->getID());
 				return TRUE;
+			case IDOK:
+				if (cDlg.isDelayed())
+				{
+					m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Package <%s> delayed by user"), pPack->getID());
+					m_BlackList.Add( pPack->getID());
+					return TRUE;
+				}
+				break;
+			default:
+				m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to notify user for package <%s>, will retry later"), pPack->getID());
+				return FALSE;
 			}
-			break;
-		default:
-			m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to notify user for package <%s>, will retry later"), pPack->getID());
-			return FALSE;
+		}
+		catch (CException *pEx)
+		{
+			pEx->Delete();
+			m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Error notifying user for package <%s>, executing default action after %u seconds"), 
+				pPack->getID(), pPack->getNotifyCountdown());
+			if (pPack->getNotifyCountdown())
+				Sleep( pPack->getNotifyCountdown()*1000);
 		}
 	}
+
 	// Execute package
 	m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Executing action <%s> for package <%s>"), pPack->getAction(), pPack->getID());
 	if (!pPack->execute())
