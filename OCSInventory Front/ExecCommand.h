@@ -137,19 +137,13 @@ protected:
   HANDLE m_hChildStdinWr;
   HANDLE m_hChildStdoutRd;
   HANDLE m_hChildStdoutWr;
-  HANDLE m_hChildStderrRd;
-  HANDLE m_hChildStderrWr;
   HANDLE m_hChildStdinWrDup;
   HANDLE m_hChildStdoutRdDup;
-  HANDLE m_hChildStderrRdDup;
   DWORD  m_dwTimeout;
   BOOL	 m_bComspec;
   
-  int m_fdStdIn;
-  int m_fdStdOut;
-  int m_fdStdErr;
-
   int m_nExitValue;
+  int m_fdStdOut;
 
   CStringA m_csOutput;
 };

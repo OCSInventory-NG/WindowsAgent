@@ -120,15 +120,10 @@ void CExecCommand::initialize()
 	m_hChildStdinWr = NULL;
 	m_hChildStdoutRd = NULL;
 	m_hChildStdoutWr = NULL;
-	m_hChildStderrRd = NULL;
-	m_hChildStderrWr = NULL;
 	m_hChildStdinWrDup = NULL;
 	m_hChildStdoutRdDup = NULL;
-	m_hChildStderrRdDup = NULL;
-    m_nExitValue    = -1;
-    m_fdStdIn		= -1;
-    m_fdStdOut		= -1;
-    m_fdStdErr		= -1;
+	m_fdStdOut = NULL;
+    m_nExitValue = -1;
 	m_csOutput.Empty();
 }
 
@@ -156,26 +151,12 @@ BOOL CExecCommand::closeHandles()
 {
 	BOOL bRet = TRUE;
 
-	if (m_fdStdErr != -1)
+	if (m_fdStdOut > 0)
 	{
-		// This will close this as well: this->hChildStderrRdDup
-		_close( m_fdStdErr);
-		m_fdStdErr = -1;
-		m_hChildStderrRdDup = NULL;
-	}
-	if (m_fdStdIn != -1)
-	{
-		// This will close this as well: this->hChildStdinWrDup
-		_close( m_fdStdIn);
-		m_fdStdIn = -1;
-		m_hChildStdinWrDup = NULL;
-	}
-	if (m_fdStdOut != -1)
-	{
-		// This will close this as well: this->hChildStdoutRdDup
 		_close( m_fdStdOut);
-		m_fdStdOut = -1;
-		m_hChildStdoutRdDup = NULL;
+		m_fdStdOut = NULL;
+		// This will close this as well: this->hChildStdoutRdDup
+//		m_hChildStdoutRdDup = NULL;
 	}
 	if (m_hChildStdinRd && !CloseHandle( m_hChildStdinRd))
 	{
@@ -197,16 +178,6 @@ BOOL CExecCommand::closeHandles()
 		bRet = FALSE;
 	}
 	m_hChildStdoutWr = NULL;
-	if (m_hChildStderrRd && !CloseHandle( m_hChildStderrRd))
-	{
-		bRet = FALSE;
-	}
-	m_hChildStderrRd = NULL;
-	if (m_hChildStderrWr && !CloseHandle( m_hChildStderrWr))
-	{
-		bRet = FALSE;
-	}
-	m_hChildStderrWr = NULL;
 	if (m_hProcessHandle && !CloseHandle( m_hProcessHandle))
 	{
 		bRet = FALSE;
@@ -275,7 +246,6 @@ DWORD CExecCommand::realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, B
 BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 {
 	SECURITY_ATTRIBUTES saAttr;
-	int fd1, fd2, fd3;
 
 	ASSERT( lpstrCommand);
 	initialize();
@@ -283,10 +253,6 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
 	saAttr.bInheritHandle = TRUE;
 	saAttr.lpSecurityDescriptor = NULL;
-
-	fd1 = 0;
-	fd2 = 0;
-	fd3 = 0;
 
 	////////////////////////////////////////////////////////////////
 	// Capture stdin
@@ -297,7 +263,7 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	}
 	/* Create new output read handle and the input write handle. Set
 	* the inheritance properties to FALSE. Otherwise, the child inherits
-	* the these handles; resulting in non-closeable handles to the pipes
+	* these handles; resulting in non-closeable handles to the pipes
 	* being created. */
 	if (!DuplicateHandle( GetCurrentProcess(), m_hChildStdinWr, GetCurrentProcess(), &m_hChildStdinWrDup, 0,
 		 FALSE, DUPLICATE_SAME_ACCESS))
@@ -311,7 +277,7 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	m_hChildStdinWr = NULL;
 
 	////////////////////////////////////////////////////////////////
-	// Capture stdout
+	// Capture stdout and stderr
 	if (!CreatePipe(&m_hChildStdoutRd, &m_hChildStdoutWr, &saAttr, 0))
 	{
 		m_csOutput.Format( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
@@ -328,73 +294,20 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	CloseHandle( m_hChildStdoutRd);
 	m_hChildStdoutRd = NULL;
 
-	////////////////////////////////////////////////////////////////
-	// Capture stderr
-	if (!CreatePipe( &m_hChildStderrRd, &m_hChildStderrWr, &saAttr, 0))
+	// Associates a C run-time file descriptor with an existing operating-system file handle
+	// It's easier to use for the console
+	if ((m_fdStdOut = _open_osfhandle(TO_INTPTR(m_hChildStdoutRdDup), _O_RDONLY|_O_TEXT)) == -1)
 	{
-		m_csOutput.Format( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+		m_csOutput.Format( "_open_osfhandle Error");
 		return FALSE;
 	}
-	if (!DuplicateHandle( GetCurrentProcess(), m_hChildStderrRd, GetCurrentProcess(), &m_hChildStderrRdDup, 0,
-		  FALSE, DUPLICATE_SAME_ACCESS))
-	{
-		m_csOutput.Format( "DuplicateHandle Error");
-		return FALSE;
-	}
-	// Close the inheritable version of ChildStdErr that we're using.
-	CloseHandle( m_hChildStderrRd);
-	m_hChildStderrRd = NULL;
-
-	fd1 = _open_osfhandle(TO_INTPTR(m_hChildStdinWrDup), _O_RDONLY|_O_TEXT);
-	fd2 = _open_osfhandle(TO_INTPTR(m_hChildStdoutRdDup), _O_RDONLY|_O_TEXT);
-	fd3 = _open_osfhandle(TO_INTPTR(m_hChildStderrRdDup), _O_RDONLY|_O_TEXT);
 
 	if (realCreateProcess( lpstrCommand, lpstrPath, TRUE) == 0)
 	{
-		if(fd1 >= 0)
-		{
-			_close(fd1);
-		}
-		if(fd2 >= 0)
-		{
-			_close(fd2);
-		}
-		if(fd3 >= 0)
-		{
-			_close(fd3);
-		}
+		// m_csOuput already conatins error description
 		return FALSE;
 	}
 
-	/*
-	* Insert the files we've created into the process dictionary
-	* all referencing the list with the process handle and the
-	* initial number of files (see description below in _PyPclose).
-	* Since if _PyPclose later tried to wait on a process when all
-	* handles weren't closed, it could create a deadlock with the
-	* child, we spend some energy here to try to ensure that we
-	* either insert all file handles into the dictionary or none
-	* at all.  It's a little clumsy with the various popen modes
-	* and variable number of files involved.
-	*/
-
-	/* Child is launched. Close the parents copy of those pipe
-	* handles that only the child should have open.  You need to
-	* make sure that no handles to the write end of the output pipe
-	* are maintained in this process or else the pipe will not close
-	* when the child process exits and the ReadFile will hang. */
-	if ( fd1 >= 0 )
-	{
-		m_fdStdIn = fd1;
-	}
-	if ( fd2 >= 0 )
-	{
-		m_fdStdOut = fd2;
-	}
-	if ( fd3 >= 0 )
-	{
-		m_fdStdErr = fd3;
-	}
 	return TRUE;
 }
 
@@ -404,10 +317,11 @@ int CExecCommand::execWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath, BOOL bCaptu
 
 	try
 	{
+		initialize();
 		if (bCapture)
 		{
 			// Initialize environnement for capturing stdout and stderr
-			// then start process an
+			// then start process
 			if (!startProcessCapture( lpstrCommand, lpstrPath))
 			{
 				closeHandles();
@@ -417,7 +331,6 @@ int CExecCommand::execWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath, BOOL bCaptu
 		else
 		{
 			// Just start process
-			initialize();
 			if (realCreateProcess( lpstrCommand, lpstrPath) == 0) 
 			{
 				closeHandles();
@@ -427,8 +340,10 @@ int CExecCommand::execWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath, BOOL bCaptu
 		// Wait for process ending, capturing stdout/stderr if needed
 		if (!wait( bCapture))
 		{
+			closeHandles();
 			return EXEC_ERROR_WAIT_COMMAND;
 		}
+		closeHandles();
 		return EXEC_SUCCESSFULL;
 	}
 	catch( CException *pEx)
@@ -445,9 +360,9 @@ int CExecCommand::execNoWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	try
 	{
 		ASSERT( lpstrCommand);
-		initialize();
 		
 		// Start process
+		initialize();
 		if (realCreateProcess( lpstrCommand, lpstrPath) == 0) 
 		{
 			closeHandles();
@@ -472,31 +387,25 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 			dwTime = 0;
 	char	bBuffer[1024];
 	int		nLength;
+	struct _stat fsOut;
 
 	m_csOutput = "";
 
 	// If capturing stdout/stderr enabled, and timeout is not reached
 	while (bCapture && (dwTime < m_dwTimeout))
 	{
-		// Each 10 millisecond, store stdout and stderr
-		dwTime += 10;
-		Sleep(10);
-		struct _stat fsout;
-		struct _stat fserr;
-		int rOut = _fstat( m_fdStdOut, &fsout);
-		int rErr = _fstat( m_fdStdErr, &fserr);
-		if ( rOut && rErr )
+		// Each 200 millisecond, store stdout and stderr
+		dwTime += 200;
+		if (WaitForSingleObject( m_hProcessHandle, 200) == WAIT_FAILED)
 		{
-			break;
+			m_csOutput.Format( "WaitForSingleObject Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+			m_nExitValue = -1;
+			return -1; 
 		}
-		if (fserr.st_size > 0)
+		// Read console output
+		if ((_fstat( m_fdStdOut, &fsOut) == 0 ) && (fsOut.st_size > 0))
 		{
-			nLength = _read( m_fdStdErr, bBuffer, 1023);
-			bBuffer[nLength] = 0;
-			m_csOutput.AppendFormat( "%s", bBuffer);
-		}
-		if (fsout.st_size > 0)
-		{
+			// There is something to read
 			nLength = _read( m_fdStdOut, bBuffer, 1023);
 			bBuffer[nLength] = 0;
 			m_csOutput.AppendFormat( "%s", bBuffer);
@@ -509,8 +418,7 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 		}
 	}  
 	// Wait for process ending (not capturing output or error capturing output)
-	if ((WaitForSingleObject( m_hProcessHandle, m_dwTimeout) != WAIT_FAILED) &&
-		GetExitCodeProcess( m_hProcessHandle, &dwExitCode)) 
+	if (GetExitCodeProcess( m_hProcessHandle, &dwExitCode)) 
 	{
 		nResult = dwExitCode;
 	} 
@@ -519,8 +427,6 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 		m_csOutput.Format( "GetExitCode Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 		nResult = -1;
 	}
-	// Free up the native handle at this point
-	closeHandles();
 	m_nExitValue = nResult;
 	return (nResult >= 0);
 }
@@ -536,9 +442,9 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	try
 	{
 		ASSERT( lpstrCommand);
-		initialize();
 
 		// Start process
+		initialize();
 		if ((dwProcessID = realCreateProcess( lpstrCommand, lpstrPath)) == 0) 
 		{
 			closeHandles();
