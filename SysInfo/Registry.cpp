@@ -1347,6 +1347,32 @@ DWORD CRegistry::GetProcessorsNT(CString &csProcType, CString &csProcSpeed)
 	return dwIndex;
 }
 
+BOOL CRegistry::GetCPUName( UINT uCPUID, CString &csName)
+{
+	HKEY			hKeyObject;
+	CString			csKey;
+
+	AddLog( _T( "Registry NT GetCPUName for CPUID %u..."), uCPUID);
+	// Windows NT => Open the processor key
+	csKey.Format( _T( "%s\\%u"), NT_PROCESSOR_KEY, uCPUID);
+	if (RegOpenKeyEx( m_hKey, csKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
+	{
+		if (GetValue( hKeyObject, NT_PROCESSOR_NAME_STRING_VALUE, csName) == ERROR_SUCCESS)
+		{
+			RegCloseKey( hKeyObject);
+			AddLog( _T( "OK (%s)\n"), csName);
+			return TRUE;
+		}
+		RegCloseKey( hKeyObject);
+		AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+						   csKey, NT_PROCESSOR_NAME_STRING_VALUE);
+	}
+	else
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+						   csKey);
+	return FALSE;
+}
+
 BOOL CRegistry::GetPrinters(CPrinterList *pList)
 {
 	HKEY			hKeyEnum,

@@ -126,6 +126,21 @@ LPCTSTR CWmi::GetArchitecture( DWORD dwArch)
 	}
 }
 
+LPCTSTR CWmi::GetVoltage( DWORD dwVolts)
+{
+	switch (dwVolts)
+	{
+	case 1:
+		return _T( "5 volts");
+	case 2:
+		return _T( "3.3 volts");
+	case 4:
+		return _T( "2.9 volts");
+	default:
+		return NOT_AVAILABLE;
+	}
+}
+
 BOOL CWmi::IsNotebook()
 {
 	CString csBuffer;
@@ -1409,6 +1424,88 @@ DWORD CWmi::GetProcessors(CString &csProcType, CString &csProcSpeed)
 	{
 		pEx->Delete();
 		AddLog( _T( "Failed because unknown exception !\n"));
+		return 0;
+	}
+}
+
+DWORD CWmi::GetCPU( CCpuList *pMyList, CRegistry *pReg)
+{
+	static DWORD	dwNumber;
+	DWORD			dwValue,
+					dwNumberOfLogicalCPU = 0;
+	CString         csValue;
+	CCpu            myObject;
+
+	ASSERT( pMyList);
+	ASSERT( pReg);
+
+	// If not WMI connected => cannot do this
+	if (!m_bConnected)
+		return FALSE;
+
+	AddLog( _T( "WMI GetCPU: Trying to find Win32_Processor WMI objects...\n"));
+	// Reset object list content
+	pMyList->RemoveAll();
+	dwNumber = 0;
+
+	try
+	{
+		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_Processor")))
+		{
+			while (m_dllWMI.MoveNextEnumClassObject())
+			{
+				myObject.Clear();
+				csValue = m_dllWMI.GetClassObjectStringValue( _T( "Manufacturer"));
+				myObject.SetManufacturer( csValue);
+				csValue = m_dllWMI.GetClassObjectStringValue( _T( "Name"));
+				if (csValue.Find( _T( "Intel Pentium III Xeon")) == -1)
+				{
+					// Bogus WMI, use registry for Processor name
+					AddLog( _T( "\tBogus CPU name <%s> detected => Using "), csValue);
+					pReg->GetCPUName( dwNumberOfLogicalCPU, csValue);
+				}
+				myObject.SetName( csValue);
+				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "Architecture"));
+				myObject.SetArchitecture( GetArchitecture( dwValue));
+				if ((dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "NumberOfCores"))) == 0)
+					// If value NumberOfCores is not available, assume at least 1 core
+					dwValue = 1;
+				myObject.SetNumberOfCores( dwValue);
+				if ((dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "NumberOfLogicalProcessors"))) == 0)
+					// If value NumberOfLogicalProcessors is not available, assume at least 1 logical processor
+					dwValue = 1;
+				dwNumberOfLogicalCPU += dwValue;
+				myObject.SetNumberOfLogicalProcessors( dwValue);
+				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "CurrentClockSpeed"));
+				myObject.SetCurrentSpeed( dwValue);
+				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "MaxClockSpeed"));
+				myObject.SetMaxSpeed( dwValue);
+				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "L2CacheSize"));
+				myObject.SetL2CacheSize( dwValue);
+				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "AddressWidth"));
+				myObject.SetAddressWith( dwValue);
+				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "DataWidth"));
+				myObject.SetDataWidth( dwValue);
+				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "VoltageCaps"));
+				myObject.SetVoltage( GetVoltage( dwValue));
+				// Device is OK
+				pMyList->AddTail( myObject);
+				dwNumber ++;
+			}
+			m_dllWMI.CloseEnumClassObject();
+		}
+		if (dwNumber > 0)
+		{
+			AddLog( _T( "WMI GetCPU: OK (%u objects)\n"), dwNumber);
+			return dwNumber;
+		}
+		AddLog( _T( "WMI GetCPU: Failed because no Win32_Processor object !\n"));
+		return 0;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		AddLog( _T( "WMI GetCPU: Failed because unknown exception !\n"));
 		return 0;
 	}
 }

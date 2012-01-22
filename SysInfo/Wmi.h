@@ -53,6 +53,7 @@ public: // Methods
 	BOOL GetSystemPorts( CSystemPortList *pMyList);
 	BOOL GetPrinters( CPrinterList *pMyList);
 	DWORD GetProcessors( CString &csProcType, CString &csProcSpeed);
+	DWORD GetCPU( CCpuList *pMyList, CRegistry *pReg);
 	BOOL GetLogicalDrives( CLogicalDriveList *pMyList);
 	BOOL GetMemorySlots( CMemorySlotList *pMyList);
 	BOOL GetModems( CModemList *pMyList);
@@ -72,6 +73,7 @@ protected: // Methods
 	BOOL ParseChassisType( CString &csType);
 	BOOL IsDeviceReallyConnected( DWORD dwStatus);
 	LPCTSTR GetArchitecture( DWORD dwArch);
+	LPCTSTR GetVoltage( DWORD dwVolts);
 
 protected: // Attributes
 	COcsWmi m_dllWMI;	// Class to access WMI

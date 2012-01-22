@@ -361,6 +361,11 @@ DWORD CSysInfo::getProcessors( CString &csProcType, CString &csProcSpeed)
 	return dwRegNumber;
 }
 
+DWORD CSysInfo::getCPU( CCpuList *pMyList)
+{
+	return m_wmiInfo.GetCPU( pMyList, &m_registryInfo);
+}
+
 DWORD CSysInfo::getAddressWidthOS()
 {
 	if (m_dwAddressWidth == 0)

@@ -820,27 +820,47 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			CString str, res;
 
 			str = _T( "Processor Family = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "Caption"));
+			res = myWmiDll.GetClassObjectStringValue( _T( "Manufacturer"));
 			str += res;
 			m_List.AddString( str);
 			str = _T( "Name = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "Name"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "Speed = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "CurrentClockSpeed"));
-			str += res;
-			m_List.AddString( str);
 			str = _T( "Architecture = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "Architecture"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "NumberOfCores = ");
+			str = _T( "Number Of Cores = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "NumberOfCores"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "AddressWidth = ");
+			str = _T( "Number Of Logical Processors = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "NumberOfLogicalProcessors"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Current Clock Speed = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "CurrentClockSpeed"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Max Clock Speed = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "MaxClockSpeed"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "L2 Cache Size = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "L2CacheSize"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Address Width = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "AddressWidth"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Data Width = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "DataWidth"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Voltage Caps = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "VoltageCaps"));
 			str += res;
 			m_List.AddString( str);
 			m_List.AddString( _T( ""));
@@ -2423,6 +2443,52 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
+	SysInfoLog( _T( "CPU List infos"));
+	SysInfoLog( _T( "------------------------------------------------------"));
+	CCpu myCpu;
+	pos = m_CpuList.GetHeadPosition();
+	bContinue = (pos != NULL);
+	if (bContinue)
+		// There is one record => get the first
+		myCpu = m_CpuList.GetNext( pos);
+	while (bContinue)
+	{
+		bContinue = (pos != NULL);
+		str.Format( _T( "Manufacturer: %s"), myCpu.GetManufacturer());
+		SysInfoLog( str);
+		str.Format( _T( "Name: %s"), myCpu.GetName());
+		SysInfoLog( str);
+		str.Format( _T( "Architecture: %s"), myCpu.GetArchitecture());
+		SysInfoLog( str);
+		str.Format( _T( "Number Of Cores: %u"), myCpu.GetNumberOfCores());
+		SysInfoLog( str);
+		str.Format( _T( "Number Of Logical Processors: %u"), myCpu.GetNumberOfLogicalProcessors());
+		SysInfoLog( str);
+		str.Format( _T( "Current Clock Speed: %u MHz"), myCpu.GetCurrentClockSpeed());
+		SysInfoLog( str);
+		str.Format( _T( "Max Clock Speed: %u MHz"), myCpu.GetMaxClockSpeed());
+		SysInfoLog( str);
+		str.Format( _T( "LEvel 2 Cache Size: %u KB"), myCpu.GetL2CacheSize());
+		SysInfoLog( str);
+		str.Format( _T( "Address Width: %u"), myCpu.GetAddressWidth());
+		SysInfoLog( str);
+		str.Format( _T( "Data Width: %u"), myCpu.GetDataWidth());
+		SysInfoLog( str);
+		str.Format( _T( "Voltage: %s"), myCpu.GetVoltage());
+		SysInfoLog( str);
+		if (pos != NULL)
+		{
+			myCpu = m_CpuList.GetNext( pos);
+			SysInfoLog( _T( ""));
+		}
+	}
+	SysInfoLog( _T( ""));
+	str.Format( _T( "CPU List Hash: %s"), m_CpuList.GetHash());
+	SysInfoLog( str);
+
+
+	SysInfoLog( _T( ""));
+	SysInfoLog( _T( "------------------------------------------------------"));
 	SysInfoLog( _T( "Memory Slots infos"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CMemorySlot myMemSlot;
@@ -3067,6 +3133,9 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	if ((dwValue = mySysInfo.getProcessors( cs1, cs2)) == 0)
 		AfxMessageBox( _T( "Failed to get Processors informations !"));
 	m_Device.SetProcessor( cs1, cs2, dwValue);
+	// Get Processor list infos (0 means error)
+	if ((dwValue = mySysInfo.getCPU( &m_CpuList)) == 0)
+		AfxMessageBox( _T( "Failed to get Processors list informations !"));
 	// Get memory informations
 	if (!mySysInfo.getMemory( &ulPhysicalMemory, &ulSwapSize))
 		AfxMessageBox( _T( "Failed to get Memory informations !"));

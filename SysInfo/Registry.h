@@ -55,6 +55,7 @@ public: // Methods
 	BOOL GetSystemPorts( CSystemPortList *pMyList);
 	BOOL GetPrinters( CPrinterList *pMyList);
 	DWORD GetProcessors( CString &csProcType, CString &csProcSpeed);
+	BOOL GetCPUName( UINT uCPUID, CString &csName);
 	BOOL GetRegistryApplications( CSoftwareList *pList, BOOL hkcu);
 	BOOL GetSoundDevices( CSoundDeviceList *pMyList);
 	BOOL GetStoragePeripherals( CStoragePeripheralList *pMyList);

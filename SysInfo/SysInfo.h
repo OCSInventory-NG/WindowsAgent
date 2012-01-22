@@ -27,6 +27,8 @@
 #include "SysInfoClasses.h"
 #include "AccessLog.h"
 #include "Bios.h"
+#include "Cpu.h"
+#include "CpuList.h"
 #include "FileVersion.h"
 #include "InputDevice.h"
 #include "InputDeviceList.h"
@@ -61,9 +63,9 @@
 #include "VideoAdapterList.h"
 #include "WindowsSocket.h"
 #include "DeviceProperties.h"
+#include "Registry.h"
 #include "Wmi.h"
 #include "EDID.h"
-#include "Registry.h"
 #include "DMI.h"
 #include "VMSystem.h"
 
@@ -122,6 +124,7 @@ public: // Methods
 	BOOL getSystemPorts( CSystemPortList *pMyList);
 	BOOL getPrinters( CPrinterList *pMyList);
 	DWORD getProcessors( CString &csProcType, CString &csProcSpeed);
+	DWORD getCPU( CCpuList *pMyList);
 	BOOL getSoundDevices( CSoundDeviceList *pMyList);
 	BOOL getStoragePeripherals( CStoragePeripheralList *pMyList);
 	BOOL getSystemControllers( CSystemControllerList *pMyList);

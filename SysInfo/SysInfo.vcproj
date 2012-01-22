@@ -316,6 +316,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Cpu.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CpuList.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DebugLog.h"
 				>
 			</File>
@@ -553,6 +561,14 @@
 			</File>
 			<File
 				RelativePath=".\bios.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Cpu.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CpuList.cpp"
 				>
 			</File>
 			<File
