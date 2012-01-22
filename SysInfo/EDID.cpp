@@ -341,6 +341,8 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "Hyundai Electronics Industries Co., Ltd.";
 	else if (_strnicmp( lpstrID, "HIT", 3) == 0)
 		return "Hitachi";
+	else if (_strnicmp( lpstrID, "HSD", 3) == 0)
+		return "Hannspree Inc";
 	else if (_strnicmp( lpstrID, "HSL", 3) == 0)
 		return "Hansol Electronics";
 	else if (_strnicmp( lpstrID, "HTC", 3) == 0)
@@ -405,6 +407,8 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "Sceptre";
 	else if (_strnicmp( lpstrID, "SRC", 3) == 0)
 		return "Shamrock Technology";
+	else if (_strnicmp( lpstrID, "STN", 3) == 0)
+		return "Samtron";
 	else if (_strnicmp( lpstrID, "STP", 3) == 0)
 		return "Sceptre";
 	else if (_strnicmp( lpstrID, "TAT", 3) == 0)
