@@ -291,7 +291,7 @@ BOOL CDMI::Connect()
 			unsigned char* p_data = (unsigned char *)p_array->pvData;
 
 			m_nStructureLength = p_array->rgsabound[0].cElements;
-			if (m_pTables == NULL)
+			if (m_pTables != NULL)
 				free( m_pTables);
 			if ((m_pTables = (UCHAR*) malloc( m_nStructureLength+2)) == NULL) 
 			{
@@ -306,6 +306,7 @@ BOOL CDMI::Connect()
 			memset( m_pTables, 0, m_nStructureLength+2);
 			// OK, we've found them
 			memcpy( m_pTables, p_data, m_nStructureLength);
+			SafeArrayDestroy( p_array);
 			break;
 		}
 		// Not already found, enumerate next object
