@@ -302,12 +302,6 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		return FALSE;
 	}
 
-	if (realCreateProcess( lpstrCommand, lpstrPath, TRUE) == 0)
-	{
-		// m_csOuput already conatins error description
-		return FALSE;
-	}
-
 	return TRUE;
 }
 
@@ -318,24 +312,17 @@ int CExecCommand::execWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath, BOOL bCaptu
 	try
 	{
 		initialize();
-		if (bCapture)
+		// Initialize environnement for capturing stdout and stderr if asked
+		if (bCapture && !startProcessCapture( lpstrCommand, lpstrPath))
 		{
-			// Initialize environnement for capturing stdout and stderr
-			// then start process
-			if (!startProcessCapture( lpstrCommand, lpstrPath))
-			{
-				closeHandles();
-				return EXEC_ERROR_START_COMMAND;
-			}
+			closeHandles();
+			return EXEC_ERROR_START_COMMAND;
 		}
-		else
+		// Now start process
+		if (realCreateProcess( lpstrCommand, lpstrPath, bCapture) == 0) 
 		{
-			// Just start process
-			if (realCreateProcess( lpstrCommand, lpstrPath) == 0) 
-			{
-				closeHandles();
-				return EXEC_ERROR_START_COMMAND;
-			}
+			closeHandles();
+			return EXEC_ERROR_START_COMMAND;
 		}
 		// Wait for process ending, capturing stdout/stderr if needed
 		if (!wait( bCapture))
@@ -388,32 +375,40 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 	char	bBuffer[1024];
 	int		nLength;
 	struct _stat fsOut;
+	BOOL	bWait = TRUE;
 
 	m_csOutput = "";
 
-	// If capturing stdout/stderr enabled, and timeout is not reached
-	while (bCapture && (dwTime < m_dwTimeout))
+	// While timeout is not reached
+	while (bWait)
 	{
 		// Each 200 millisecond, store stdout and stderr
 		dwTime += 200;
+		if ((m_dwTimeout != INFINITE) && (dwTime >= m_dwTimeout))
+			// Timeout reached
+			bWait = FALSE;
 		if (WaitForSingleObject( m_hProcessHandle, 200) == WAIT_FAILED)
 		{
 			m_csOutput.Format( "WaitForSingleObject Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			m_nExitValue = -1;
-			return -1; 
+			return FALSE; 
 		}
-		// Read console output
-		if ((_fstat( m_fdStdOut, &fsOut) == 0 ) && (fsOut.st_size > 0))
+		if (bCapture)
 		{
-			// There is something to read
-			nLength = _read( m_fdStdOut, bBuffer, 1023);
-			bBuffer[nLength] = 0;
-			m_csOutput.AppendFormat( "%s", bBuffer);
+			// Read console output
+			if ((_fstat( m_fdStdOut, &fsOut) == 0 ) && (fsOut.st_size > 0))
+			{
+				// There is something to read
+				nLength = _read( m_fdStdOut, bBuffer, 1023);
+				bBuffer[nLength] = 0;
+				m_csOutput.AppendFormat( "%s", bBuffer);
+			}
 		}
 		// Check if process still active
 		if (!GetExitCodeProcess( m_hProcessHandle, &dwExitCode) || (dwExitCode != STILL_ACTIVE))
 		{
 			// Process not active, exit loop
+			bWait = FALSE;
 			break;
 		}
 	}  

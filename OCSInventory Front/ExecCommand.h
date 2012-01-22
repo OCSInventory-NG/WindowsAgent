@@ -108,8 +108,7 @@ protected:
    */
   DWORD realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, BOOL bCapture = FALSE);
   /**
-   * Prepare handle to capture stdin, stdout and stderr, start the process and
-   * and prepare for waiting end of process to get exit code
+   * Prepare handle to capture stdin, stdout and stderr
    */
   BOOL startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath);
   /**
