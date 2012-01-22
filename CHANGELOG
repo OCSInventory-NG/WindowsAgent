@@ -1,3 +1,7 @@
+2.0.3.1
+  * Fix bug #911696: Add manufacturer code HSD "Hannspree Inc" and STN "Samtron"
+  * Fix bug #765893: Slow memory leak. Include ElNounch patch for DMI slow memory leak. Many Thanks ElNounch
+  * Fix bug #901270: Exit code 259. Rewrite wait for process ending function, in way like ElNounch proposed. Many Thanks ElNounch
 2.0.3, aka 2.0.3.0 
   * Fix bug #765893: Use TinyXML 2.6.2 or newer, to prevent memory leak issue when using VBS plugin => agent ran into an infinite loop (refer http://sourceforge.net/tracker/index.php?func=detail&aid=3217501&group_id=13559&atid=313559) 
   * Optimize ExecCommand code, to reduce Handle usage 
