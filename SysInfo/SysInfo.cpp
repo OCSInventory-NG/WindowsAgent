@@ -342,20 +342,19 @@ DWORD CSysInfo::getProcessors( CString &csProcType, CString &csProcSpeed)
 			csWmiSpeed = NOT_AVAILABLE;
 	static DWORD	dwRegNumber = 0,
 					dwWmiNumber = 0;
+	CCpuList		myList;
+	CCpu			myCpu;
 
-	// First, check registry
-	dwRegNumber = m_registryInfo.GetProcessors( csRegType, csRegSpeed);
-	// Better to use WMI, but fails in some cases
-	if ((dwWmiNumber = m_wmiInfo.GetProcessors( csWmiType, csWmiSpeed)) > 0)	
+	// First, check WMI combined to registry for bogus WMI CPU name
+	if ((dwWmiNumber = m_wmiInfo.GetCPU( &myList, &m_registryInfo)) > 0)	
 	{
-		if (csWmiType.Find( _T( "Intel Pentium III Xeon")) != -1)
-			// Bogus WMI, use registry for ProcType
-			csProcType = csRegType;
-		else
-			csProcType = csWmiType;
-		csProcSpeed = csWmiSpeed;
+		myCpu = myList.GetHead();
+		csProcType.Format( _T( "%s [%u core(s) %s]"), myCpu.GetName(), myCpu.GetNumberOfCores(), myCpu.GetArchitecture());
+		csProcSpeed.Format( _T( "%u"), myCpu.GetMaxClockSpeed());
 		return dwWmiNumber;
 	}
+	// Last, check only registry
+	dwRegNumber = m_registryInfo.GetProcessors( csRegType, csRegSpeed);
 	csProcType = csRegType;
 	csProcSpeed = csRegSpeed;
 	return dwRegNumber;

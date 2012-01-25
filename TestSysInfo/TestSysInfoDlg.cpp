@@ -3133,9 +3133,6 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	if ((dwValue = mySysInfo.getProcessors( cs1, cs2)) == 0)
 		AfxMessageBox( _T( "Failed to get Processors informations !"));
 	m_Device.SetProcessor( cs1, cs2, dwValue);
-	// Get Processor list infos (0 means error)
-	if ((dwValue = mySysInfo.getCPU( &m_CpuList)) == 0)
-		AfxMessageBox( _T( "Failed to get Processors list informations !"));
 	// Get memory informations
 	if (!mySysInfo.getMemory( &ulPhysicalMemory, &ulSwapSize))
 		AfxMessageBox( _T( "Failed to get Memory informations !"));

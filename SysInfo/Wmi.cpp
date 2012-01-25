@@ -1458,7 +1458,7 @@ DWORD CWmi::GetCPU( CCpuList *pMyList, CRegistry *pReg)
 				csValue = m_dllWMI.GetClassObjectStringValue( _T( "Manufacturer"));
 				myObject.SetManufacturer( csValue);
 				csValue = m_dllWMI.GetClassObjectStringValue( _T( "Name"));
-				if (csValue.Find( _T( "Intel Pentium III Xeon")) == -1)
+				if (csValue.Find( _T( "Intel Pentium III Xeon")) != -1)
 				{
 					// Bogus WMI, use registry for Processor name
 					AddLog( _T( "\tBogus CPU name <%s> detected => Using "), csValue);
