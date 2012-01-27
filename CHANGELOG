@@ -1,3 +1,8 @@
+2.0.4.0
+  * Fix bogus CPU name with lastest CPU, which may not show number of cores and architecture
+  * Bug #920044 fixed by same fix as bug #901270
+  * Bug #904162 fixed by same fix as bug #901270
+  * Bug #909161 fixed by same fix as bug #901270
 2.0.3.1
   * Fix bug #911696: Add manufacturer code HSD "Hannspree Inc" and STN "Samtron"
   * Fix bug #765893: Slow memory leak. Include ElNounch patch for DMI slow memory leak. Many Thanks ElNounch
