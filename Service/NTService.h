@@ -85,8 +85,12 @@ public:
 protected:
 	// Is service already regsitered
     BOOL IsInstalled();
+	// Is service's event viewer support already registered
+    BOOL IsEventViewerSupportInstalled();
 	// Register service into Windows Service Manager
     BOOL Install( LPCTSTR lpstrDescription = NULL, LPCTSTR lpstrDependancies = NULL);
+	// Register service's event viewer support
+    BOOL InstallEventViewerSupport();
 	// Unregister service into Windows Service Manager
     BOOL Uninstall();
 	// Set service status

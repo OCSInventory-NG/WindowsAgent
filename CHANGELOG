@@ -1,3 +1,4 @@
+  * Fix bug #923112: Event viewer support not repaired when upgrading version. Many Thanks ElNounch for this patch !
   * Fix bug #911696: Add manufacturer code ACI "Asus Computer Inc"
 2.0.4.0
   * Fix bogus CPU name with lastest CPU, which may not show number of cores and architecture

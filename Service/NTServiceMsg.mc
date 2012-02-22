@@ -75,3 +75,9 @@ SymbolicName=EVMSG_GENERIC_ERROR
 Language=English
 Service encounter error <%1>.
 .
+
+MessageId=21
+SymbolicName=EVMSG_EVENTVIEWER_SUPPORT_INSTALLED
+Language=English
+Event viewer support for "%1" successfully registered.
+.

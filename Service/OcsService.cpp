@@ -67,8 +67,19 @@ BOOL COcsService::ParseCommandLine(int argc, LPTSTR argv[])
         // Request to install
         if (IsInstalled()) 
 		{
-			csMessage.Format( _T( "Service <%s> is already registered."), m_csServiceName);
-			AfxMessageBox( csMessage, MB_OK|MB_ICONEXCLAMATION);
+			if (IsEventViewerSupportInstalled())
+			{
+				csMessage.Format( _T( "Service <%s> is already registered."), m_csServiceName);
+				AfxMessageBox( csMessage, MB_OK|MB_ICONEXCLAMATION);
+			}
+			else
+			{
+				if (!InstallEventViewerSupport())
+				{
+					csMessage.Format( _T( "Failed to fix event viewer support for Service <%s>."), m_csServiceName);
+					AfxMessageBox( csMessage, MB_OK|MB_ICONSTOP);
+				}
+			}
         } 
 		else if (!Install( OCS_SERVICE_DESCRIPTION, OCS_SERVICE_DEPENDANCIES))
 		{

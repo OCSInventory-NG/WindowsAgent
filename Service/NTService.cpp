@@ -84,8 +84,19 @@ BOOL CNTService::ParseCommandLine(int argc, LPTSTR argv[])
         // Request to install
         if (IsInstalled()) 
 		{
-			csMessage.Format( _T( "Service <%s> is already registered."), m_csServiceName);
-			AfxMessageBox( csMessage, MB_OK|MB_ICONEXCLAMATION);
+			if (IsEventViewerSupportInstalled())
+			{
+				csMessage.Format( _T( "Service <%s> is already registered."), m_csServiceName);
+				AfxMessageBox( csMessage, MB_OK|MB_ICONEXCLAMATION);
+			} 
+			else 
+			{
+				if (!InstallEventViewerSupport())
+				{
+					csMessage.Format( _T( "Failed to fix event viewer support for Service <%s>."), m_csServiceName);
+					AfxMessageBox( csMessage, MB_OK|MB_ICONSTOP);
+				}
+			}
         } 
 		else if (!Install())
 		{
@@ -139,6 +150,21 @@ BOOL CNTService::IsInstalled()
         ::CloseServiceHandle(hSCM);
     }
     return bResult;
+}
+
+// Test if the service's event viewer support is currently installed
+BOOL CNTService::IsEventViewerSupportInstalled()
+{
+	HKEY hKey;
+	CString csKey;
+
+    csKey.Format( _T( "%s\\%s"), HKEY_NT_LOG_EVENT, m_csServiceName);
+	if (::RegOpenKeyEx( HKEY_LOCAL_MACHINE, csKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS)
+	{
+		::RegCloseKey( hKey);
+		return TRUE;
+	}
+	return FALSE;
 }
 
 BOOL CNTService::Install( LPCTSTR lpstrDescription, LPCTSTR lpstrDependancies)
@@ -196,13 +222,28 @@ BOOL CNTService::Install( LPCTSTR lpstrDescription, LPCTSTR lpstrDependancies)
         return FALSE;
     }
 	RegCloseKey( hKey);
+	if (!InstallEventViewerSupport())
+        return FALSE;
+	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_INSTALLED, m_csServiceName);
+    ::CloseServiceHandle(hService);
+    ::CloseServiceHandle(hSCM);
+    return TRUE;
+}
+
+BOOL CNTService::InstallEventViewerSupport()
+{
+    TCHAR szFilePath[_MAX_PATH+1];
+	CString csKey;
+	HKEY hKey;
+
+    // Get the executable file path
+    if (::GetModuleFileName( NULL, szFilePath, sizeof( szFilePath)) == 0)
+		return FALSE;
     // Create registry entries to support logging messages
     // Add the source name as a subkey under the Application key in the EventLog service portion of the registry.
     csKey.Format( _T( "%s\\%s"), HKEY_NT_LOG_EVENT, m_csServiceName);
     if (::RegCreateKey( HKEY_LOCAL_MACHINE, csKey, &hKey) != ERROR_SUCCESS) 
 	{
-        ::CloseServiceHandle(hService);
-        ::CloseServiceHandle(hSCM);
         return FALSE;
     }
     // Add the Event ID message-file name to the 'EventMessageFile' subkey.
@@ -211,9 +252,7 @@ BOOL CNTService::Install( LPCTSTR lpstrDescription, LPCTSTR lpstrDependancies)
     DWORD dwData = EVENTLOG_ERROR_TYPE | EVENTLOG_WARNING_TYPE | EVENTLOG_INFORMATION_TYPE;
     ::RegSetValueEx( hKey, _T( "TypesSupported"), 0, REG_DWORD, (CONST BYTE*)&dwData, sizeof(DWORD));
     ::RegCloseKey(hKey);
-    LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_INSTALLED, m_csServiceName);
-    ::CloseServiceHandle(hService);
-    ::CloseServiceHandle(hSCM);
+    LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_EVENTVIEWER_SUPPORT_INSTALLED, m_csServiceName);
     return TRUE;
 }
 
