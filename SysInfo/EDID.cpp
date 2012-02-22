@@ -297,6 +297,8 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "Acer, Inc.";
 	else if (_strnicmp( lpstrID, "ACT", 3) == 0)
 		return "Targa";
+	else if (_strnicmp( lpstrID, "ACI", 3) == 0)
+		return "Asus Computer Inc.";
 	else if (_strnicmp( lpstrID, "ADI", 3) == 0)
 		return "ADI Corporation http://www.adi.com.tw";
 	else if (_strnicmp( lpstrID, "AOC", 3) == 0)

@@ -1,3 +1,4 @@
+  * Fix bug #911696: Add manufacturer code ACI "Asus Computer Inc"
 2.0.4.0
   * Fix bogus CPU name with lastest CPU, which may not show number of cores and architecture
   * Bug #920044 fixed by same fix as bug #901270
