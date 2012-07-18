@@ -161,6 +161,41 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 210
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_DOWNLOAD_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+
+    IDD_WAIT_SETUP_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 311
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 112
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Version
 //
 
@@ -208,41 +243,6 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ico"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
-BEGIN
-    IDD_ABOUTBOX, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 210
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 55
-    END
-
-    IDD_DOWNLOAD_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 292
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 176
-    END
-
-    IDD_WAIT_SETUP_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 311
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 112
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -309,11 +309,11 @@ CAPTION "OCS Inventory NG: Softwareverteilung"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,7,162,50,14
-    PUSHBUTTON      "Später ausführen!",IDC_DELAY,124,162,50,14
+    PUSHBUTTON      "Später ausführen!",IDC_DELAY,114,162,66,14
     PUSHBUTTON      "Abbrechen",IDCANCEL,242,162,50,14
     EDITTEXT        IDC_EDIT1,13,63,273,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
     LTEXT           "OCS Inventory NG: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,33,7,259,25
-    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
     GROUPBOX        "Nachricht von OCS Inventory NG: Softwareverteilung...",IDC_STATIC,7,46,285,110
     LTEXT           "",IDC_STATUS,13,136,273,12
 END
@@ -341,14 +341,6 @@ BEGIN
         RIGHTMARGIN, 292
         TOPMARGIN, 7
         BOTTOMMARGIN, 176
-    END
-    
-    IDD_WAIT_SETUP_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 311
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 112
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -437,14 +429,6 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO 
 BEGIN
-    IDD_WAIT_SETUP_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 311
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 112
-    END
-
     IDD_DOWNLOAD_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -452,7 +436,7 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 176
     END
-    
+
     IDD_WAIT_SETUP_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7

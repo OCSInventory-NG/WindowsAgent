@@ -214,23 +214,12 @@ void CDownloadDlg::OnPaint()
 		CRect fen, ok, cancel, wait;
 		CRect v_fen, v_ok, v_cancel, v_wait;
 		int xok,xcancel,xwait,y;	
-/*		
-		// Temporary, for french translation
-		int french[] = { 0x040c, 0x080c, 0x0c0c, 0x100c, 0x140c, 0x180c };
-		LANGID languageId = GetSystemDefaultLangID();
-		for(int i=0; i<sizeof(french); i++){
-			if( languageId == french[i] ){
-				m_buttonCancel.SetWindowText( _T( "Annuler"));
-				m_buttonWait.SetWindowText( _T( "Plus tard..."));
-				break;
-			}
-		}
-*/		// Load language dependant button message
-		csMessage.LoadString( IDS_CANCEL_STRING);
+		// Load language dependant button message
+/*		csMessage.LoadString( IDS_CANCEL_STRING);
 		m_buttonCancel.SetWindowText( csMessage);
 		csMessage.LoadString( IDS_DELAY_STRING);
 		m_buttonWait.SetWindowText( csMessage);
-
+*/
 		GetClientRect(&fen);
 		m_buttonOK.GetClientRect(&ok);
 		m_buttonCancel.GetClientRect(&cancel);
