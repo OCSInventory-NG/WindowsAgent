@@ -288,6 +288,7 @@ void CDownloadDlg::OnTimer(UINT nIDEvent)
 	SetWindowText( csMessage);
 	SetDlgItemText( IDC_STATUS, csMessage);
 	BringWindowToTop();
+	SetWindowPos( &wndTopMost, 0,0,0,0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_SHOWWINDOW);
 	CDialog::OnTimer( nIDEvent);
 }
 
