@@ -1371,6 +1371,14 @@ UpgradeEndCacert:
     IfErrors 0 +3
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
+    ; Copy history file to new folder, continue on error
+	StrCpy $logBuffer "$\r$\nCopying History file from <$INSTDIR\download> to <$APPDATA\OCS Inventory NG\Agent>..."
+	Call Write_Log
+	ClearErrors
+    CopyFiles /SILENT "$INSTDIR\download\History" "$APPDATA\OCS Inventory NG\Agent\History"
+    IfErrors 0 +3
+	StrCpy $logBuffer "Failed, but non blocking !"
+	Call Write_Log
     ; Transfer old service config to new file (TTO_WAIT, PROLOG_FREQ...)
 	StrCpy $logBuffer "$\r$\nCopying service configuration from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
