@@ -324,14 +324,22 @@ BOOL CHTTPConfig::parseCommandLine(LPCTSTR lpstrCommand)
 		if (isRequired( lpstrCommand, _T( "ca"))) 
 			// get network address
 			setServerCA( getParamValue( lpstrCommand, _T( "ca")));
+		// By default, server authentication not required, unless user or pwd option specified
+		m_bAuthRequired = FALSE;
 		// /USER:username
 		if (isRequired( lpstrCommand, _T( "user"))) 
+		{
 			// get username
 			setServerAuthUser( getParamValue( lpstrCommand, _T( "user")));
+			m_bAuthRequired = TRUE;
+		}
 		// /PWD:userpwd
 		if (isRequired( lpstrCommand, _T( "pwd"))) 
+		{
 			// get password
 			setServerAuthPasswd( getParamValue( lpstrCommand, _T( "pwd")));
+			m_bAuthRequired = TRUE;
+		}
 		// /PROXY_TYPE:type
 		if (isRequired( lpstrCommand, _T( "proxy_type"))) 
 			// get proxy type
@@ -344,14 +352,22 @@ BOOL CHTTPConfig::parseCommandLine(LPCTSTR lpstrCommand)
 		if (isRequired( lpstrCommand, _T( "proxy_port"))) 
 			// get network port
 			setProxyPort( _ttol( getParamValue( lpstrCommand, _T( "proxy_port"))));
+		// By default, proxy authentication not required, unless proxy_user or proxy_pwd option specified
+		m_bProxyAuthRequired = FALSE;
 		// /PROXY_USER:username
 		if (isRequired( lpstrCommand, _T( "proxy_user"))) 
+		{
 			// get username
 			setProxyAuthUser( getParamValue( lpstrCommand, _T( "proxy_user")));
+			m_bProxyAuthRequired = TRUE;
+		}
 		// /PROXY_PWD:userpwd
-		if (isRequired( lpstrCommand, _T( "proxy_pwd"))) 
+		if (isRequired( lpstrCommand, _T( "proxy_pwd")))
+		{
 			// get password
 			setProxyAuthPasswd( getParamValue( lpstrCommand, _T( "proxy_pwd")));
+			m_bProxyAuthRequired = TRUE;
+		}
 		return TRUE;
 	}
 	catch (CException *pEx)
