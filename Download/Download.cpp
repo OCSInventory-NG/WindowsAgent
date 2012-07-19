@@ -212,7 +212,13 @@ BOOL CDownloadApp::InitInstance()
 				goto CLEAN_AND_EXIT;
 			}
 			// Process 
-			runPeriod();
+			if (!runPeriod())
+			{
+				// No package to process
+				m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => All package action failed during this session, exiting"));
+				unlockDownload();
+				goto CLEAN_AND_EXIT;
+			}
 			unlockDownload();
 			m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Pausing for period latency (%u seconds)"), m_uDownloadPeriodLatency);
 			Sleep( m_uDownloadPeriodLatency * 1000 );
@@ -498,8 +504,10 @@ BOOL CDownloadApp::runPeriod()
 {
 	CPackage	*pPack;
 	INT_PTR		nIndex;
-	UINT		uPeriod;
-	CTime		cCycleTime;		// Start time of the cycle
+	UINT		uPeriod,
+				uFragToDownload = 0,// Number of fragment to download
+				uError = 0;			// Number of download error
+	CTime		cCycleTime;			// Start time of the cycle
 
 	// Start period length cycle of download
 	for (uPeriod=1; uPeriod<=m_uDownloadPeriodLength; uPeriod++)
@@ -520,8 +528,12 @@ BOOL CDownloadApp::runPeriod()
 			{
 				// Package not yet fully done, download one fargment or execute 
 				if (pPack->isFragTodownload())
+				{
 					// There is one or more fragment to download
-					downloadFragment( pPack);
+					uFragToDownload++;
+					if (!downloadFragment( pPack))
+						uError++;
+				}
 				else
 					// all fragment downloaded, unzip and execute
 					if (!pPack->existDone() && executePackage( pPack))
@@ -533,6 +545,9 @@ BOOL CDownloadApp::runPeriod()
 		m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Pausing for cycle latency (%u seconds)"), m_uDownloadCycleLatency);
 		Sleep( m_uDownloadCycleLatency * 1000 );
 	}
+	// Return error if 2/3 of package download fails
+	if ((uFragToDownload > 0) && (uError > 2*uFragToDownload/3))
+		return FALSE;
 	return TRUE;
 }
 
