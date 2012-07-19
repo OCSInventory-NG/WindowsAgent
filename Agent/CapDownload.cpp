@@ -186,9 +186,15 @@ BOOL CCapDownload::retrievePackages()
 				m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Package <%s> added to download queue"), pOptDownloadPackage->getId());
 			else
 				// Error dowloading metadata => remove package directory to avoid error message into download tool
-				directoryDelete( pOptDownloadPackage->getLocalPackFolder());
+				pOptDownloadPackage->clean();
 		}
-
+		// Check if package is not expired
+		if (pOptDownloadPackage->isExpired( m_csDownloadTimeout))
+		{
+			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Package <%s> timed out (now:%lu, since:%lu, Timeout:%s)"), pOptDownloadPackage->getId(), time( NULL), pOptDownloadPackage->getTimeStamp(), m_csDownloadTimeout);
+			if (sendMessage( csId, ERR_TIMEOUT))
+				pOptDownloadPackage->clean();
+		}
 	}
 	// Now, allow Download tool
 	unlockDownload();
@@ -512,9 +518,14 @@ int COptDownloadPackage::downloadInfoFile()
 	}
 	// Now create a timestamp 
 	csBuffer.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csId, OCS_DOWNLOAD_TIMESTAMP);
-	_ltot( time( NULL), szDummy, 10);
-	if (!WriteTextToFile( szDummy, csBuffer))
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't create timestamp file <%s>"), csBuffer);
+	if (!fileExists( csBuffer))
+	{
+		_ltot( time( NULL), szDummy, 10);
+		if (!WriteTextToFile( szDummy, csBuffer))
+			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't create timestamp file <%s>"), csBuffer);
+	}
+	else
+		m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Timestamp file <%s> already exists"), csBuffer);
 	m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Retrieve info file...OK (pack %s)"), m_csId );
     return TRUE;
 }
@@ -535,4 +546,60 @@ BOOL COptDownloadPackage::regAddPackageDigest( LPCTSTR lpstrPackID, LPCTSTR lpst
 	}
 	RegCloseKey( hKey); 
 	return TRUE;
+}
+
+BOOL COptDownloadPackage::regDeletePackageDigest( LPCTSTR lpstrPackID)
+{
+	HKEY  hKey;
+
+	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+		return FALSE;
+	if (RegDeleteValue( hKey, lpstrPackID) != ERROR_SUCCESS)
+	{
+		RegCloseKey( hKey);
+		return FALSE;
+	}
+	RegCloseKey( hKey);
+	return TRUE;
+}
+
+BOOL COptDownloadPackage::isExpired( LPCTSTR csTimeOut)
+{
+	time_t	tTimeNow;
+	UINT	uTimeOut = _ttol( csTimeOut);
+
+	tTimeNow = time( NULL);
+	return (((tTimeNow - getTimeStamp())/86400) >  uTimeOut);
+}
+
+BOOL COptDownloadPackage::clean()
+{
+	return (regDeletePackageDigest( m_csId) && directoryDelete( getLocalPackFolder()));
+}
+
+time_t COptDownloadPackage::getTimeStamp()
+{
+	CString csFilename, csTimestamp;
+
+	// Check if not already retrieved from file
+	if (m_tTimePack != 0)
+		return m_tTimePack;
+
+	try
+	{
+		// Load "since" file content
+		csFilename.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csId, OCS_DOWNLOAD_TIMESTAMP);
+		if (!LoadFileToText( csTimestamp, csFilename))
+		{
+			m_tTimePack = 0;
+			return m_tTimePack;
+		}
+		m_tTimePack = (time_t) _ttol( csTimestamp);
+	}
+	catch( CException *pEx)
+	{
+		pEx->Delete();
+		m_tTimePack = 0;
+	}
+	return m_tTimePack;
 }

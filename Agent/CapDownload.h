@@ -88,10 +88,17 @@ public: // Methods
 	LPCTSTR getRemotePackURL();
 	// Download metadata from remote server to local
 	BOOL downloadInfoFile();
+	// Get package timestamp
+	time_t getTimeStamp();
+	// Check if package is expired
+	BOOL isExpired( LPCTSTR csTimeOut);
+	// Remove package directory
+	BOOL clean();
 
 protected:
-	// Add package digest to registry
+	// Add and delete package digest to registry
 	BOOL regAddPackageDigest( LPCTSTR lpstrPackID, LPCTSTR lpstrDigest);
+	BOOL regDeletePackageDigest( LPCTSTR lpstrPackID);
 
 protected: // Attributes
 	CString		m_csId;				// Download package ID
@@ -101,6 +108,7 @@ protected: // Attributes
 	CString		m_csLocalInfoLoc;	// Local directory where to store/find metadata file
 	CString		m_csRemotePackLoc;	// Remote directory on server where to find fragments
 	CString		m_csLocalPackLoc;	// Local directory where to store/find fragments
+	time_t		m_tTimePack;
 	CCapDownload *pM;
 	CLog		*m_pLogger;
 };
