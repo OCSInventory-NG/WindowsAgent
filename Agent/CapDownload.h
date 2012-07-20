@@ -94,11 +94,12 @@ public: // Methods
 	BOOL isExpired( LPCTSTR csTimeOut);
 	// Remove package directory
 	BOOL clean();
+	static BOOL clean( LPCTSTR lpstrID);
 
 protected:
 	// Add and delete package digest to registry
 	BOOL regAddPackageDigest( LPCTSTR lpstrPackID, LPCTSTR lpstrDigest);
-	BOOL regDeletePackageDigest( LPCTSTR lpstrPackID);
+	static BOOL regDeletePackageDigest( LPCTSTR lpstrPackID);
 
 protected: // Attributes
 	CString		m_csId;				// Download package ID

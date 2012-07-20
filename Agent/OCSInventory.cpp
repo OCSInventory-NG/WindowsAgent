@@ -550,8 +550,6 @@ BOOL COCSInventoryApp::InitInstance()
 		if (!m_pConfig->isNotifyRequired() && pPrologResp->isDownloadRequired())
 		{
 			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT =>  Communication Server ask for Package Download"));
-			// Check for new package to download
-			cCapDownload.retrievePackages();
 			// Check if OCS Agent Setup was previously downloaded and run
 			// This is a special work because OCS Agent Setup kill download process. So we loose package infos
 			// such as package ID and temporary unzip folder. As a workaround, Agent setup create a result file 
@@ -559,6 +557,8 @@ BOOL COCSInventoryApp::InitInstance()
 			// We have to read this file if exists, and send result message to server, then clean package 
 			// before laucnhing download tool, to avoid running Agent setup in loop ! 
 			cCapDownload.checkOcsAgentSetupResult();
+			// Check for new package to download
+			cCapDownload.retrievePackages();
 			// Start download tool for already existing packages and new ones
 			cCapDownload.launch();
 		}

@@ -153,6 +153,8 @@ BOOL CCapDownload::retrievePackages()
 			// Package ID found in history, do not download
 			m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Will not download package <%s>, already in the package history"), csId);
 			sendMessage( csId, ERR_ALREADY_SETUP);
+			// Delete already download directory if needed 
+			pOptDownloadPackage->clean();
 			delete pOptDownloadPackage;
 		}
 		else
@@ -179,21 +181,25 @@ BOOL CCapDownload::retrievePackages()
 	for (nPack=0; nPack<m_tPackages.GetSize(); nPack++)
 	{
 		pOptDownloadPackage = (COptDownloadPackage*) (m_tPackages[nPack]);
-		if (pOptDownloadPackage->makeDirectory() && !fileExists( pOptDownloadPackage->getLocalMetadataFilename()))
-		{
-			// Download metadata from deployment server
-			if (pOptDownloadPackage->downloadInfoFile())
-				m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Package <%s> added to download queue"), pOptDownloadPackage->getId());
-			else
-				// Error dowloading metadata => remove package directory to avoid error message into download tool
-				pOptDownloadPackage->clean();
-		}
 		// Check if package is not expired
 		if (pOptDownloadPackage->isExpired( m_csDownloadTimeout))
 		{
 			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Package <%s> timed out (now:%lu, since:%lu, Timeout:%s)"), pOptDownloadPackage->getId(), time( NULL), pOptDownloadPackage->getTimeStamp(), m_csDownloadTimeout);
-			if (sendMessage( csId, ERR_TIMEOUT))
+			if (sendMessage( pOptDownloadPackage->getId(), ERR_TIMEOUT))
 				pOptDownloadPackage->clean();
+		}
+		else
+		{
+			// Check if package not already added to download queue
+			if (pOptDownloadPackage->makeDirectory() && !fileExists( pOptDownloadPackage->getLocalMetadataFilename()))
+			{
+				// Download metadata from deployment server
+				if (pOptDownloadPackage->downloadInfoFile())
+					m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Package <%s> added to download queue"), pOptDownloadPackage->getId());
+				else
+					// Error dowloading metadata => remove package directory to avoid error message into download tool
+					pOptDownloadPackage->clean();
+			}
 		}
 	}
 	// Now, allow Download tool
@@ -295,7 +301,6 @@ BOOL CCapDownload::checkOcsAgentSetupResult()
 {
 	CString csFile, csCode = ERR_DONE_FAILED, csID;
 	CStdioFile myFile;
-	HKEY  hKey;
 
 	csFile.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
 	if (!fileExists( csFile))
@@ -341,23 +346,11 @@ BOOL CCapDownload::checkOcsAgentSetupResult()
 	if (sendMessage( csID, csCode))
 	{
 		// Agent setup result code successfully sent => delete result file and registry package digest
-		if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, KEY_WRITE, &hKey) == ERROR_SUCCESS)
-		{
-			RegDeleteValue( hKey, csID);
-			RegCloseKey( hKey);
-		}
 		DeleteFile( csFile);
 	}
 	// Delete download directory of package, to avoid Download tool running setup another time
-	csFile.Format( _T( "%s\\%s"), getDownloadFolder(), csID);
-	if (!directoryDelete( csFile))
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to delete directory <%s> of package <%s>"), csFile);
-	// Delete tmp path folder where package was unzip
-	if (GetTempPath( _MAX_PATH, csFile.GetBufferSetLength( _MAX_PATH+1)) == 0)
-		return FALSE;
-	csFile.ReleaseBuffer();
-	csFile.AppendFormat( _T( "\\%s.OCS"), csID);
-	directoryDelete( csFile);
+	if (!COptDownloadPackage::clean( csID))
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to delete directory of package <%s>"), csID);
 	return TRUE;
 }
 
@@ -373,12 +366,12 @@ COptDownloadPackage::COptDownloadPackage( CCapDownload * pC)
 };
 
 
-void COptDownloadPackage::setId(LPCTSTR lpstrId)
+void COptDownloadPackage::setId( LPCTSTR lpstrId)
 {
 	m_csId = lpstrId;
 }
 
-void COptDownloadPackage::setCertPath(LPCTSTR lpstrCertPath)
+void COptDownloadPackage::setCertPath( LPCTSTR lpstrCertPath)
 {
 	m_csCertPath = lpstrCertPath;
 	// Expand INSTALL_PATH if needed
@@ -386,7 +379,7 @@ void COptDownloadPackage::setCertPath(LPCTSTR lpstrCertPath)
 	m_csCertPath.Replace(  _T( "/"),  _T( "\\") );
 }
 
-void COptDownloadPackage::setCertFile(LPCTSTR lpstrCertFile)
+void COptDownloadPackage::setCertFile( LPCTSTR lpstrCertFile)
 {
 	m_csCertFile = lpstrCertFile;
 	// Expand INSTALL_PATH if needed
@@ -394,7 +387,7 @@ void COptDownloadPackage::setCertFile(LPCTSTR lpstrCertFile)
 	m_csCertFile.Replace(  _T( "/"),  _T( "\\") );
 }
 
-void COptDownloadPackage::setInfoLocation(LPCTSTR lpstrInfoLoc)
+void COptDownloadPackage::setInfoLocation( LPCTSTR lpstrInfoLoc)
 {
 	m_csRemoteInfoLoc.Format( _T( "https://%s/%s/%s"), lpstrInfoLoc, m_csId, OCS_DOWNLOAD_METADATA);
 	m_csLocalInfoLoc.Format( _T( "%s\\%s\\%s\\%s"), getDataFolder(), OCS_DOWNLOAD_FOLDER, m_csId, OCS_DOWNLOAD_METADATA);
@@ -477,18 +470,6 @@ int COptDownloadPackage::downloadInfoFile()
 	// Open metadata file to add fragment location
 	CString csBuffer;
 	CMarkup xml;
-/*	if (!LoadFileToText( csBuffer, getLocalMetadataFilename()))
-	{
-		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Cannot read Metadata file <%s>"), getLocalMetadataFilename());
-		return FALSE;
-	}
-	// Parse metadata and ensure XML well formed
-	if(!xml.SetDoc( csBuffer))
-	{
-		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Metadata file <%s> is not XML"), getLocalMetadataFilename());
-		return FALSE;
-	}
-*/
 	if(!xml.LoadFile( getLocalMetadataFilename()))
 	{
 		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Cannot read or parse Metadata file <%s>"), getLocalMetadataFilename());
@@ -574,7 +555,24 @@ BOOL COptDownloadPackage::isExpired( LPCTSTR csTimeOut)
 
 BOOL COptDownloadPackage::clean()
 {
-	return (regDeletePackageDigest( m_csId) && directoryDelete( getLocalPackFolder()));
+	return clean( m_csId);
+}
+
+BOOL COptDownloadPackage::clean( LPCTSTR lpstrID)
+{
+	CString csPath;
+
+	ASSERT( lpstrID);
+
+	// Delete tmp path folder where package was unzipped (not an eror if not existing)
+	if (GetTempPath( _MAX_PATH, csPath.GetBufferSetLength( _MAX_PATH+1)) == 0)
+		return FALSE;
+	csPath.ReleaseBuffer();
+	csPath.AppendFormat( _T( "\\%s.OCS"), lpstrID);
+	directoryDelete( csPath);
+	// Now, really delete package directory and registry signature
+	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), lpstrID);
+	return (regDeletePackageDigest( lpstrID) && directoryDelete( csPath));
 }
 
 time_t COptDownloadPackage::getTimeStamp()
