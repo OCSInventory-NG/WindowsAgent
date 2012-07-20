@@ -1198,6 +1198,8 @@ Function WriteAgentSetupDone
 	FileClose $0
 	; Get result code to write
 	Pop $2
+	StrCpy $logBuffer "Writing setup result <$2> for Package ID <$1> to file <$APPDATA\OCS Inventory NG\Agent\Download\OCSNG-Windows-Agent-Setup_done>...$\r$\n"
+	Call Write_Log
 	; WRITE ../done
 	SetOutPath "$exedir"
 	FileOpen $0 "..\done" w
@@ -1834,19 +1836,20 @@ SectionEnd
 # This function writes install status into log file when sucessfull install
 #####################################################################
 Function .onInstSuccess
-	${GetTime} "" "L" $0 $1 $2 $3 $4 $5 $6
 	strcmp "$installSatus" ";-)" 0 onInstSuccess_Error
-	StrCpy $logBuffer "SUCCESS: ${PRODUCT_NAME} ${PRODUCT_VERSION} successfuly installed on $0/$1/$2 at $4:$5:$6$\r$\n$installSatus$\r$\n "
-	Call Write_Log
 	Push "SUCCESS"
 	Call WriteAgentSetupDone
+	${GetTime} "" "L" $0 $1 $2 $3 $4 $5 $6
+	StrCpy $logBuffer "SUCCESS: ${PRODUCT_NAME} ${PRODUCT_VERSION} successfuly installed on $0/$1/$2 at $4:$5:$6$\r$\n$installSatus$\r$\n "
+	Call Write_Log
 	goto onInstSuccess_end
 onInstSuccess_Error:
-	StrCpy $logBuffer "ERROR: ${PRODUCT_NAME} ${PRODUCT_VERSION} may not work correctly since $0/$1/$2 at $4:$5:$6$\r$\n$installSatus$\r$\n "
-	Call Write_Log
 	; Windows ERROR_WRITE_FAULT
 	Push "EXIT_CODE_29"
 	Call WriteAgentSetupDone
+	${GetTime} "" "L" $0 $1 $2 $3 $4 $5 $6
+	StrCpy $logBuffer "ERROR: ${PRODUCT_NAME} ${PRODUCT_VERSION} may not work correctly since $0/$1/$2 at $4:$5:$6$\r$\n$installSatus$\r$\n "
+	Call Write_Log
 onInstSuccess_end:
 FunctionEnd
 
