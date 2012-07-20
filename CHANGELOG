@@ -1,9 +1,9 @@
-  * Fix Bud #948155: Validation message popup are not localized in english, german, spanish and french
-  * Fix Bug #929549: By default, server authentication not required unless user or proxy option specified, and proxy authentication not required unless proxy_user or proxy_pwd option specified
-  * Fix Bug #943182: Copying History file from <$INSTDIR\download> to <$APPDATA\OCS Inventory NG\Agent>
-  * Fix Bug #948172: Validation message popup comes up in foreground, but not activated
+  * Fix bug #948155: Validation message popup are not localized in english, german, spanish and french
+  * Fix bug #929549: By default, server authentication not required unless user or proxy option specified, and proxy authentication not required unless proxy_user or proxy_pwd option specified
+  * Fix bug #943182: Copying History file from <$INSTDIR\download> to <$APPDATA\OCS Inventory NG\Agent>
+  * Fix bug #948172: Validation message popup comes up in foreground, but not activated
   * Bug #966320: Disable redirection immediately prior to the native API function call if compiled for Windows XP or higher. However, agent 2.0 supports Windows 2000, and this fix only apply if compiled without Windows 2000 support, but only Windows XP or higher support.        
-  * Fix Bug #1024077: Agent ensure package timestamp does not exist before creating it, and delete package directory if expired before launching package download and setup tool
+  * Fix bug #1024077: Agent ensure package timestamp does not exist before creating it, and delete package directory if expired before launching package download and setup tool
   * Fix bug #1021497: Stop downloading if 2/3 of fragment download fail, and wait for next agent launch
   * Fix bug #1021357: Run download at each prolog freq if server ask for download in prolog response, instead to run it at each inventory launch.
   * Fix bug #1015434: Add better package cleaning process, and check for OCS Agent setup package result before try to compute other packages      
