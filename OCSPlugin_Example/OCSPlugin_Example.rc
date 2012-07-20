@@ -13,6 +13,82 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
+// English (Neutral) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDP_SOCKETS_INIT_FAILED "Echec de l'initialisation des sockets Windows."
+END
+
+#endif    // English (Neutral) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral (Default) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "Sample Plugin DLL for OCS Inventory NG Agent"
+            VALUE "CompanyName", "OCS Inventory NG"
+            VALUE "FileDescription", "Sample Plugin DLL for OCS Inventory NG Agent"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "OCSPlugin_Example"
+            VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
+            VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
+            VALUE "OriginalFilename", "OCSPlugin_Example.DLL"
+            VALUE "ProductName", "DLL OCSPlugin_Example"
+            VALUE "ProductVersion", "1, 0, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+#endif    // Neutral (Default) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
 // French (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
@@ -57,58 +133,6 @@ BEGIN
 END
 
 #endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Version
-//
-
-VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
- FILEFLAGSMASK 0x3fL
-#ifdef _DEBUG
- FILEFLAGS 0x1L
-#else
- FILEFLAGS 0x0L
-#endif
- FILEOS 0x4L
- FILETYPE 0x2L
- FILESUBTYPE 0x0L
-BEGIN
-    BLOCK "StringFileInfo"
-    BEGIN
-        BLOCK "000004b0"
-        BEGIN
-            VALUE "Comments", "Sample Plugin DLL for OCS Inventory NG Agent"
-            VALUE "CompanyName", "OCS Inventory NG"
-            VALUE "FileDescription", "Sample Plugin DLL for OCS Inventory NG Agent"
-            VALUE "FileVersion", "1, 0, 0, 1"
-            VALUE "InternalName", "OCSPlugin_Example"
-            VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
-            VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
-            VALUE "OriginalFilename", "OCSPlugin_Example.DLL"
-            VALUE "ProductName", "DLL OCSPlugin_Example"
-            VALUE "ProductVersion", "1, 0, 0, 1"
-        END
-    END
-    BLOCK "VarFileInfo"
-    BEGIN
-        VALUE "Translation", 0x0, 1200
-    END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table
-//
-
-STRINGTABLE 
-BEGIN
-    IDP_SOCKETS_INIT_FAILED "Echec de l'initialisation des sockets Windows."
-END
 
 #endif    // French (France) resources
 /////////////////////////////////////////////////////////////////////////////
