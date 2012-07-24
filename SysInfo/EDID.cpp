@@ -359,6 +359,8 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "Idek Iiyama North America, Inc.";
 	else if (_strnicmp( lpstrID, "KFC", 3) == 0)
 		return "KFC Computek";
+	else if (_strnicmp( lpstrID, "LEN", 3) == 0)
+		return "Lenovo";
 	else if (_strnicmp( lpstrID, "LKM", 3) == 0)
 		return "ADLAS / AZALEA";
 	else if (_strnicmp( lpstrID, "LNK", 3) == 0)
