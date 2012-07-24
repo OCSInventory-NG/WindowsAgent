@@ -95,6 +95,8 @@ public: // Methods
 	// Remove package directory
 	BOOL clean();
 	static BOOL clean( LPCTSTR lpstrID);
+	// Remove all packages into download directory
+	static BOOL cleanAll();
 
 protected:
 	// Add and delete package digest to registry

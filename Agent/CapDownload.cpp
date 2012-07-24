@@ -186,7 +186,8 @@ BOOL CCapDownload::retrievePackages()
 		{
 			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Package <%s> timed out (now:%lu, since:%lu, Timeout:%s)"), pOptDownloadPackage->getId(), time( NULL), pOptDownloadPackage->getTimeStamp(), m_csDownloadTimeout);
 			if (sendMessage( pOptDownloadPackage->getId(), ERR_TIMEOUT))
-				pOptDownloadPackage->clean();
+				if (!pOptDownloadPackage->clean())
+					m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to remove timed out package <%s>"), pOptDownloadPackage->getId());
 		}
 		else
 		{
@@ -327,30 +328,19 @@ BOOL CCapDownload::checkOcsAgentSetupResult()
 	if (csID.IsEmpty())
 	{
 		// Upgrading from agent 1.X or previous to 2.0.0.22 ?
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Found result code <%s> for OCS Inventory Agent Setup package but no package ID specified, so unable to send result code"), csCode);
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Found result code <%s> for OCS Inventory Agent Setup package but no package ID specified, so remove all packages to avoid running Agent setup in loop !"), csCode);
+		COptDownloadPackage::cleanAll();
 		return FALSE;
 	}
-	// All information available => try to register package and send result code
-	if (csCode.Compare( CODE_SUCCESS) == 0)
+	// All informations available => copy result file to Package directory
+	csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), csID, OCS_DOWNLOAD_DONE);
+	if (!CopyFile( myFile.GetFilePath(), csFile, FALSE))
 	{
-		// Package execute successful
-		if (!CFilePackageHistory::AddPackage( getPackageHistoryFilename(), csID))
-			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Cannot add OCS Inventory Agent Setup package <%s> to History file <%s>"), csID, getPackageHistoryFilename());
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to copy result code for OCS Inventory Agent Setup package to file <%s>"), csFile);
+		return FALSE;
 	}
-	else
-	{
-		// Package execute failed
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Will not register OCS Inventory Agent Setup package <%s> in history: result <%s> not a success"), csID, csCode);
-	}
-	m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Sending result code <%s> for OCS Inventory Agent Setup package <%s>"), csCode, csID);
-	if (sendMessage( csID, csCode))
-	{
-		// Agent setup result code successfully sent => delete result file and registry package digest
-		DeleteFile( csFile);
-	}
-	// Delete download directory of package, to avoid Download tool running setup another time
-	if (!COptDownloadPackage::clean( csID))
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to delete directory of package <%s>"), csID);
+	DeleteFile( myFile.GetFilePath());
+	m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Validated result code <%s> for OCS Inventory Agent Setup package <%s>"), csCode, csID);
 	return TRUE;
 }
 
@@ -572,7 +562,8 @@ BOOL COptDownloadPackage::clean( LPCTSTR lpstrID)
 	directoryDelete( csPath);
 	// Now, really delete package directory and registry signature
 	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), lpstrID);
-	return (regDeletePackageDigest( lpstrID) && directoryDelete( csPath));
+	regDeletePackageDigest( lpstrID);
+	return (directoryDelete( csPath));
 }
 
 time_t COptDownloadPackage::getTimeStamp()
@@ -600,4 +591,26 @@ time_t COptDownloadPackage::getTimeStamp()
 		m_tTimePack = 0;
 	}
 	return m_tTimePack;
+}
+
+BOOL COptDownloadPackage::cleanAll()
+{
+	CString csPath;
+	CFileFind cFinder;
+	BOOL	bWorking;
+
+	csPath.Format( _T( "%s\\*.*"), getDownloadFolder());
+	bWorking = cFinder.FindFile( csPath);
+	while (bWorking)
+	{
+		bWorking = cFinder.FindNextFile();
+		// Skip . and .. files; otherwise, we'd recur infinitely!
+		if (cFinder.IsDots())
+			continue;
+		// if it's a directory, delete corresponding package
+		if (cFinder.IsDirectory())
+			COptDownloadPackage::clean( cFinder.GetFileName());
+   }
+   cFinder.Close();
+   return TRUE;
 }

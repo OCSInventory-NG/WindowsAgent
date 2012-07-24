@@ -554,7 +554,7 @@ BOOL COCSInventoryApp::InitInstance()
 			// This is a special work because OCS Agent Setup kill download process. So we loose package infos
 			// such as package ID and temporary unzip folder. As a workaround, Agent setup create a result file 
 			// OCSNG-Windows-Agent-Setup_done into Agent's download folder to store package ID and result.  
-			// We have to read this file if exists, and send result message to server, then clean package 
+			// We have to read this file if exists, and move result file to package directory 
 			// before laucnhing download tool, to avoid running Agent setup in loop ! 
 			cCapDownload.checkOcsAgentSetupResult();
 			// Check for new package to download
