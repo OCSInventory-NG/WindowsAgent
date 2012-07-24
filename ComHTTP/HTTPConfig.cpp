@@ -141,13 +141,14 @@ void CHTTPConfig::setServerCA( LPCTSTR lpstrCaBundle)
 void CHTTPConfig::setServerAuthUser( LPCTSTR lpstrHttpUser)
 {
 	m_csHttpUser = lpstrHttpUser;
-	m_bAuthRequired = TRUE;
+	if (!m_csHttpUser.IsEmpty())
+		// Authentication is required if User ID not null
+		m_bAuthRequired = TRUE;
 }
 
 void CHTTPConfig::setServerAuthPasswd( LPCTSTR lpstrHttpPwd)
 {
 	m_csHttpPwd = lpstrHttpPwd;
-	m_bAuthRequired = TRUE;
 }
 
 void CHTTPConfig::setProxyType( UINT uProxyType)
@@ -168,13 +169,14 @@ void CHTTPConfig::setProxyPort( UINT uPort)
 void CHTTPConfig::setProxyAuthUser( LPCTSTR lpstrProxyUser)
 {
 	m_csProxyUser = lpstrProxyUser;
-	m_bProxyAuthRequired = TRUE;
+	if (!m_csProxyUser.IsEmpty())
+		// Authentication is required if User ID not null
+		m_bProxyAuthRequired = TRUE;
 }
 
 void CHTTPConfig::setProxyAuthPasswd( LPCTSTR lpstrProxyPwd)
 {
 	m_csProxyPwd = lpstrProxyPwd;
-	m_bProxyAuthRequired = TRUE;
 }
 
 BOOL CHTTPConfig::load( LPCTSTR lpstrFile, LPCTSTR lpstrSection)
@@ -280,7 +282,10 @@ BOOL CHTTPConfig::save( LPCTSTR lpstrFile, LPCTSTR lpstrSection)
 		bResult = bResult && WritePrivateProfileString( lpstrSection, _T( "SSL"), csBuffer, csConfigFile);
 		// Path to CA certificate chain file in PEM format
 		bResult = bResult && WritePrivateProfileString( lpstrSection, _T( "CaBundle"), m_csCaBundle, csConfigFile);
-		// HTTP credentials 
+		// HTTP credentials
+		if (m_csHttpUser.IsEmpty())
+			// Authentication is required if User ID not null
+			m_bAuthRequired = FALSE;
 		csBuffer.Format( _T( "%u"), m_bAuthRequired ? 1 : 0);
 		bResult = bResult && WritePrivateProfileString( lpstrSection, _T( "AuthRequired"), csBuffer, csConfigFile);
 		bResult = bResult && myCrypt.setData( m_csHttpUser, csBuffer);
@@ -293,7 +298,10 @@ BOOL CHTTPConfig::save( LPCTSTR lpstrFile, LPCTSTR lpstrSection)
 		bResult = bResult && WritePrivateProfileString( lpstrSection, _T( "Proxy"), m_csProxyName, csConfigFile);
 		csBuffer.Format( _T( "%u"), m_uProxyPort);
 		bResult = bResult && WritePrivateProfileString( lpstrSection, _T( "ProxyPort"), csBuffer, csConfigFile);
-		csBuffer.Format( _T( "%u"), m_bProxyAuthRequired);
+		if (m_csProxyUser.IsEmpty())
+			// Authentication is required if User ID not null
+			m_bProxyAuthRequired = FALSE;
+		csBuffer.Format( _T( "%u"), m_bProxyAuthRequired ? 1 : 0);
 		bResult = bResult && WritePrivateProfileString( lpstrSection, _T( "ProxyAuthRequired"), csBuffer, csConfigFile);
 		bResult = bResult && myCrypt.setData( m_csProxyUser, csBuffer);
 		bResult = bResult && WritePrivateProfileString( lpstrSection, _T( "ProxyUser"), csBuffer, csConfigFile);
