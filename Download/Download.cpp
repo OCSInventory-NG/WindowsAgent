@@ -419,7 +419,8 @@ UINT CDownloadApp::findPackages()
 		{
 			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => ID <%s> differs from the directory <%s>"), pPack->getID(), cFinder.GetFileName());
 			if (!sendResult( cFinder.GetFileName(), ERR_BAD_ID))
-				pPack->clean( cFinder.GetFileName());
+				if (!pPack->clean( cFinder.GetFileName()))
+					m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to remove directory <%s> for package <%s>"), cFinder.GetFilePath(), pPack->getID());
 			delete pPack;
 			continue;
 		}
@@ -428,7 +429,8 @@ UINT CDownloadApp::findPackages()
 		{
 			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Package <%s> timed out (now:%lu, since:%lu, Timeout:%lu)"), pPack->getID(), time( NULL), pPack->getTimeStamp(), m_uDownloadTimeout);
 			if (!sendResult( cFinder.GetFileName(), ERR_TIMEOUT))
-				pPack->clean();
+				if (!pPack->clean( cFinder.GetFileName()))
+					m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to remove timed out package <%s>"), pPack->getID());
 			delete pPack;
 			continue;
 		}
