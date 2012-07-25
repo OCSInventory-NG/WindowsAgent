@@ -317,6 +317,8 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "Compal Electronics, Inc. / ALFA";
 	else if (_strnicmp( lpstrID, "CPQ", 3) == 0)
 		return "COMPAQ Computer Corp.";
+	else if (_strnicmp( lpstrID, "CPT", 3) == 0)
+		return "Chunghwa Picture Tubes, Ltd.";
 	else if (_strnicmp( lpstrID, "CTX", 3) == 0)
 		return "CTX - Chuntex Electronic Co.";
 	else if (_strnicmp( lpstrID, "DEC", 3) == 0)
@@ -331,9 +333,13 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "ELITEGROUP Computer Systems";
 	else if (_strnicmp( lpstrID, "EIZ", 3) == 0)
 		return "EIZO";
+	else if (_strnicmp( lpstrID, "ENC", 3) == 0)
+		return "EIZO";
 	else if (_strnicmp( lpstrID, "FCM", 3) == 0)
 		return "Funai Electric Company of Taiwan";
 	else if (_strnicmp( lpstrID, "FUS", 3) == 0)
+		return "Fujitsu Siemens";
+	else if (_strnicmp( lpstrID, "FUJ", 3) == 0)
 		return "Fujitsu Siemens";
 	else if (_strnicmp( lpstrID, "GSM", 3) == 0)
 		return "LG Electronics Inc. (GoldStar Technology, Inc.)";
@@ -361,6 +367,8 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "KFC Computek";
 	else if (_strnicmp( lpstrID, "LEN", 3) == 0)
 		return "Lenovo";
+	else if (_strnicmp( lpstrID, "LGD", 3) == 0)
+		return "Asus Computer Inc.";
 	else if (_strnicmp( lpstrID, "LKM", 3) == 0)
 		return "ADLAS / AZALEA";
 	else if (_strnicmp( lpstrID, "LNK", 3) == 0)
@@ -379,12 +387,16 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "miro Computer Products AG";
 	else if (_strnicmp( lpstrID, "MTC", 3) == 0)
 		return "MITAC";
+	else if (_strnicmp( lpstrID, "MS_", 3) == 0)
+		return "Panasonic Comm. & Systems Co.";
 	else if (_strnicmp( lpstrID, "NAN", 3) == 0)
 		return "NANAO";
 	else if (_strnicmp( lpstrID, "NEC", 3) == 0)
 		return "NEC Technologies, Inc.";
 	else if (_strnicmp( lpstrID, "NOK", 3) == 0)
 		return "Nokia";
+	else if (_strnicmp( lpstrID, "NVD", 3) == 0)
+		return "Fujitsu Siemens";
 	else if (_strnicmp( lpstrID, "OQI", 3) == 0)
 		return "OPTIQUEST";
 	else if (_strnicmp( lpstrID, "PBN", 3) == 0)
