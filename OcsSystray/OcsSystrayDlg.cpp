@@ -209,8 +209,7 @@ void COcsSystrayDlg::OnRunAgent()
 	CWaitCursor myCursor;
 
 	if (ServiceSendMessage( OCS_SERVICE_CONTROL_RUN_INVENTORY_NOW))
-		AfxMessageBox( _T( "Start inventory notification successfully sent to OCS Inventory NG Service"),
-						MB_OK|MB_ICONINFORMATION);
+		AfxMessageBox( IDS_START_INVENTORY_SUCCESSFULL, MB_OK|MB_ICONINFORMATION);
 }
 
 void COcsSystrayDlg::OnShowInventory()
@@ -225,13 +224,15 @@ void COcsSystrayDlg::OnShowInventory()
 	csXml.Format( _T( "%s\\OCSInventory.xml"), getDataFolder());
 	if (!fileExists( csXml))
 	{
-		AfxMessageBox( _T( "Cannot display inventory informations !\n\nService did not generate XML file."), MB_OK|MB_ICONEXCLAMATION);
+		csXml.FormatMessage( IDS_SHOW_INVENTORY_FAILED, _T( "Service did not generate XML file"));
+		AfxMessageBox( csXml, MB_OK|MB_ICONEXCLAMATION);
 		return;
 	}
 	cDlg.SetInventory( csXml);
 	if (cDlg.DoModal() != IDCANCEL)
 	{
-		AfxMessageBox( _T( "Cannot display inventory informations !"), MB_OK|MB_ICONEXCLAMATION);
+		csXml.FormatMessage( IDS_SHOW_INVENTORY_FAILED, _T( "Unknown"));
+		AfxMessageBox( csXml, MB_OK|MB_ICONEXCLAMATION);
 		return;
 	}
 	DeleteFile( csXml);

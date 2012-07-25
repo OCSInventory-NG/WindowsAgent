@@ -11,6 +11,8 @@
 #define IDS_SERVICE_STARTED             133
 #define IDS_SERVICE_STOPPING            134
 #define IDS_SERVICE_STOPPED             135
+#define IDS_START_INVENTORY_SUCCESSFULL 136
+#define IDS_SHOW_INVENTORY_FAILED		137
 #define IDC_VERSION_SERVICE             1000
 #define IDC_VERSION_AGENT               1001
 #define IDC_VERSION_DOWNLOAD            1002
