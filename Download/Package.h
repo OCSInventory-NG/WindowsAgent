@@ -64,8 +64,8 @@ public:
 	BOOL isBuilt();
 	// Concatenete fragment to create build.zip, verify signature, delete fragment
 	BOOL build();
-	// Execute package
-	UINT execute();
+	// Execute package using provided time out in minutes
+	UINT execute( UINT uCommandTimeOut);
 
 	// User notification
 	BOOL isNotifyUserRequired();

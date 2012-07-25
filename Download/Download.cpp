@@ -335,6 +335,7 @@ BOOL CDownloadApp::readConfig()
 	m_uDownloadPeriodLatency = GetPrivateProfileInt( OCS_AGENT_SECTION, _T( "PeriodLatency"), _ttoi( PERIOD_LATENCY_DEFAULT), csFileName);
 	m_uDownloadPeriodLength = GetPrivateProfileInt( OCS_AGENT_SECTION, _T( "PeriodLength"), _ttoi( PERIOD_LENGTH_DEFAULT), csFileName);
 	m_uDownloadTimeout = GetPrivateProfileInt( OCS_AGENT_SECTION, _T( "Timeout"), _ttoi( TIMEOUT_DEFAULT), csFileName);
+	m_uCommandTimeout = GetPrivateProfileInt( OCS_AGENT_SECTION, _T( "CommandTimeout"), _ttoi( COMMAND_TIMEOUT_DEFAULT), csFileName);
 	m_bDownloadOn = (GetPrivateProfileInt( OCS_AGENT_SECTION, _T( "On"), 0, csFileName) != 0);
 	return TRUE;
 }
@@ -644,7 +645,7 @@ BOOL CDownloadApp::executePackage( CPackage *pPack)
 
 	// Execute package
 	m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Executing action <%s> for package <%s>"), pPack->getAction(), pPack->getID());
-	if (!pPack->execute())
+	if (!pPack->execute( m_uCommandTimeout))
 	{
 		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to execute action <%s> for package <%s>"), pPack->getAction(), pPack->getID());
 		return FALSE;

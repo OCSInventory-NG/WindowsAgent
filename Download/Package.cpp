@@ -700,7 +700,7 @@ BOOL CPackage::unZip()
 	return TRUE;
 }
 
-UINT CPackage::execute()
+UINT CPackage::execute( UINT uCommandTimeOut)
 {
 	CLog *pLog = getOcsLogger();
 	CExecCommand cmProcess;
@@ -730,6 +730,9 @@ UINT CPackage::execute()
 			setDone( ERR_BAD_PARAM);
 			return FALSE;
 		}
+		// Set command time out in milliseconds
+		cmProcess.setTimeout( uCommandTimeOut * 60 * 1000);
+		// Execute command and wait for all childs to terminate
 		switch (cmProcess.execWaitForAllChilds( m_csCommand, m_csPath))
 		{
 		case EXEC_ERROR_START_COMMAND:
@@ -739,6 +742,10 @@ UINT CPackage::execute()
 		case EXEC_ERROR_WAIT_COMMAND:
 			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Failed to get command <%s> result code for package <%s> (%s)"), m_csCommand, m_csID, cmProcess.getOutput());
 			csBuffer = ERR_EXECUTE_PACK;
+			break;
+		case EXEC_ERROR_TIMEOUT_COMMAND:
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Command <%s> execution reached timeout (%s)"), m_csCommand, cmProcess.getOutput());
+			csBuffer = ERR_TIMEOUT;
 			break;
 		default:
 			pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Package <%s> successfully launched. Command exit code is <%d>"), m_csID, cmProcess.getExitValue());
@@ -769,6 +776,9 @@ UINT CPackage::execute()
 			setDone( ERR_BAD_PARAM);
 			return FALSE;
 		}
+		// Set command time out in milliseconds
+		cmProcess.setTimeout( uCommandTimeOut * 60 * 1000);
+		// Execute command and wait only for main process to terminate
 		switch (cmProcess.execWait( m_csCommand, m_csPath))
 		{
 		case EXEC_ERROR_START_COMMAND:
@@ -778,6 +788,10 @@ UINT CPackage::execute()
 		case EXEC_ERROR_WAIT_COMMAND:
 			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Failed to get command <%s> result code for package <%s> (%s)"), m_csCommand, m_csID, cmProcess.getOutput());
 			csBuffer = ERR_EXECUTE_PACK;
+			break;
+		case EXEC_ERROR_TIMEOUT_COMMAND:
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Command <%s> execution reached timeout (%s)"), m_csCommand, cmProcess.getOutput());
+			csBuffer = ERR_TIMEOUT;
 			break;
 		default:
 			pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Package <%s> successfully executed. Command exit code is <%d>"), m_csID, cmProcess.getExitValue());

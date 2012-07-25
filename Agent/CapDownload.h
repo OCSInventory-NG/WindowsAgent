@@ -52,7 +52,8 @@ protected: // Attributes
 	CString m_csDownloadCycleLatency;	// Time to wait between download cycle
 	CString m_csDownloadPeriodLatency;	// Time to wait between each cycle priority ( = period)
 	CString m_csDownloadPeriodLength;	// Number of period in a download cycle
-	CString m_csDownloadTimeout;		// Timeout
+	CString m_csDownloadTimeout;		// Package deployment Timeout (download + execution) in days
+	CString m_csCommandTimeout;			// Command execution time out in minutes
 	CString m_csDownloadOn;				// Is download enabled
 };
 

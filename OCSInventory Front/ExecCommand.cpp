@@ -348,6 +348,8 @@ int CExecCommand::execWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath, BOOL bCaptu
 		if (!wait( bCapture))
 		{
 			closeHandles();
+			if (m_nExitValue == STILL_ACTIVE)
+				return EXEC_ERROR_TIMEOUT_COMMAND;
 			return EXEC_ERROR_WAIT_COMMAND;
 		}
 		closeHandles();
@@ -403,16 +405,16 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 	while (bWait)
 	{
 		// Each 200 millisecond, store stdout and stderr
-		dwTime += 200;
-		if ((m_dwTimeout != INFINITE) && (dwTime >= m_dwTimeout))
-			// Timeout reached
-			bWait = FALSE;
 		if (WaitForSingleObject( m_hProcessHandle, 200) == WAIT_FAILED)
 		{
 			m_csOutput.Format( "WaitForSingleObject Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			m_nExitValue = -1;
 			return FALSE; 
 		}
+		dwTime += 200;
+		if ((m_dwTimeout != INFINITE) && (dwTime >= m_dwTimeout))
+			// Timeout reached
+			bWait = FALSE;
 		if (bCapture)
 		{
 			// Read console output
@@ -436,6 +438,8 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 	if (GetExitCodeProcess( m_hProcessHandle, &dwExitCode)) 
 	{
 		nResult = dwExitCode;
+		if (dwExitCode == STILL_ACTIVE)
+			m_csOutput.Format( "Command execution timeout of %lu milliseconds reached", m_dwTimeout);
 	} 
 	else 
 	{
@@ -489,6 +493,15 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		freeProcessList( &myProcessList);
 		// Now return to normal prioity
 		SetPriorityClass( GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+		// check time out
+		if (dwTime >= m_dwTimeout)
+		{
+			// Time out reached
+			m_nExitValue = STILL_ACTIVE;
+			m_csOutput.Format( "Command execution timeout of %lu milliseconds reached", m_dwTimeout);
+			closeHandles();
+			return EXEC_ERROR_TIMEOUT_COMMAND;
+		}
 		// Get exit code
 		if (GetExitCodeProcess( m_hProcessHandle, &dwExitCode)) 
 		{

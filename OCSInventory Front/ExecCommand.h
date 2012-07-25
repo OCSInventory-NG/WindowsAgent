@@ -22,6 +22,7 @@
 #define EXEC_SUCCESSFULL			0	// Excute success
 #define EXEC_ERROR_START_COMMAND	1	// Failed to launch command
 #define EXEC_ERROR_WAIT_COMMAND		2	// Failed to wait command termination or to get exit code
+#define EXEC_ERROR_TIMEOUT_COMMAND	3	// Command execution timeout reached
 // Time to wait in ms between each check for alive process
 #define EXEC_WAIT_CHECK_LATENCY		1000	
 

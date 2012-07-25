@@ -52,6 +52,7 @@
 #define MAX_ERROR_COUNT			30
 #define PERIOD_LENGTH_DEFAULT	_T( "10")
 #define TIMEOUT_DEFAULT			_T( "30")
+#define COMMAND_TIMEOUT_DEFAULT	_T( "120")
 
 // Download tool actions
 #define OCS_DOWNLOAD_ACTION_LAUNCH	_T( "LAUNCH")

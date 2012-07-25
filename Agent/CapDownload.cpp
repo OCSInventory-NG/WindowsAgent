@@ -109,6 +109,9 @@ BOOL CCapDownload::retrievePackages()
 	pMap->Lookup( _T( "PERIOD_LATENCY"), m_csDownloadPeriodLatency);
 	pMap->Lookup( _T( "PERIOD_LENGTH"), m_csDownloadPeriodLength);
 	pMap->Lookup( _T( "TIMEOUT"), m_csDownloadTimeout);
+	pMap->Lookup( _T( "EXECUTION_TIMEOUT"), m_csCommandTimeout);
+	if (m_csCommandTimeout.IsEmpty())
+		m_csCommandTimeout = COMMAND_TIMEOUT_DEFAULT;
 	pMap->Lookup( _T( "ON"), m_csDownloadOn);
 	writeConfig();
 	delete pMapArray;
@@ -224,6 +227,7 @@ BOOL CCapDownload::writeConfig()
 	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "PeriodLatency"), m_csDownloadPeriodLatency, csFileName);
 	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "PeriodLength"), m_csDownloadPeriodLength, csFileName);
 	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "Timeout"), m_csDownloadTimeout, csFileName);
+	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "CommandTimeout"), COMMAND_TIMEOUT_DEFAULT, csFileName);
 	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "On"), m_csDownloadOn, csFileName);
 	return bResult;
 }
