@@ -236,8 +236,8 @@ IDR_MAINFRAME           ICON                    "res\\OCSInventory.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,4,2
- PRODUCTVERSION 2,0,4,2
+ FILEVERSION 2,0,4,3
+ PRODUCTVERSION 2,0,4,3
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -255,13 +255,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory NG Agent"
             VALUE "CompanyName", "OCS Inventory NG"
             VALUE "FileDescription", "OCS Inventory NG Agent"
-            VALUE "FileVersion", "2, 0, 4, 2"
+            VALUE "FileVersion", "2, 0, 4, 3"
             VALUE "InternalName", "OCSInventory.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OCSInventory.exe"
             VALUE "ProductName", "OCS Inventory NG Windows Agent"
-            VALUE "ProductVersion", "2, 0, 4, 2"
+            VALUE "ProductVersion", "2, 0, 4, 3"
         END
     END
     BLOCK "VarFileInfo"

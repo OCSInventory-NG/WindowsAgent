@@ -1,3 +1,6 @@
+  * Fix big #1015434 : Try to also search for package ID file in installer parent directory
+  * Avoid sending ERR_ALREADY_SETUP after agent upgrade using deployement. This is done by movng agent's setup result code file to package directory
+  * Fix bug #1028353: Add LEN as Lenovo manufacturer code for EDID monitor  
   * Fix bug #948155: Validation message popup are not localized in english, german, spanish and french
   * Fix bug #929549: By default, server authentication not required unless user or proxy option specified, and proxy authentication not required unless proxy_user or proxy_pwd option specified
   * Fix bug #943182: Copying History file from <$INSTDIR\download> to <$APPDATA\OCS Inventory NG\Agent>
