@@ -76,7 +76,11 @@ BOOL CNTService::ParseCommandLine(int argc, LPTSTR argv[])
 				_T( "   [-?] or [/?] or [-h] or [/h] to show this help."),
 				_T( "   [-install] or [/install] to register service autostart at system startup."),
 				_T( "   [-uninstall] or [/uninstall]  or [-remove] or [/remove] to unregister service."));
+#ifdef _DEBUG
 		AfxMessageBox( csMessage, MB_OK|MB_ICONINFORMATION);
+#else
+		_tprintf( csMessage);
+#endif
         return TRUE; // say we processed the argument
     } 
 	if ((csParam.CompareNoCase( _T( "-install")) == 0) || (csParam.CompareNoCase( _T( "/install")) == 0))
@@ -87,21 +91,33 @@ BOOL CNTService::ParseCommandLine(int argc, LPTSTR argv[])
 			if (IsEventViewerSupportInstalled())
 			{
 				csMessage.Format( _T( "Service <%s> is already registered."), m_csServiceName);
+#ifdef _DEBUG
 				AfxMessageBox( csMessage, MB_OK|MB_ICONEXCLAMATION);
+#else
+				_tprintf( csMessage);
+#endif
 			} 
 			else 
 			{
 				if (!InstallEventViewerSupport())
 				{
 					csMessage.Format( _T( "Failed to fix event viewer support for Service <%s>."), m_csServiceName);
+#ifdef _DEBUG
 					AfxMessageBox( csMessage, MB_OK|MB_ICONSTOP);
+#else
+					_tprintf( csMessage);
+#endif
 				}
 			}
         } 
 		else if (!Install())
 		{
 			csMessage.Format( _T( "Failed to register Service <%s> into Windows Service Manager."), m_csServiceName);
+#ifdef _DEBUG
 			AfxMessageBox( csMessage, MB_OK|MB_ICONSTOP);
+#else
+			_tprintf( csMessage);
+#endif
         }
         return TRUE; // say we processed the argument
     } 
@@ -115,7 +131,11 @@ BOOL CNTService::ParseCommandLine(int argc, LPTSTR argv[])
             if (!Uninstall()) 
 			{
 				csMessage.Format( _T( "Failed to unregister Service <%s> from Windows Service Manager."), m_csServiceName);
+#ifdef _DEBUG
 				AfxMessageBox( csMessage, MB_OK|MB_ICONSTOP);
+#else
+				_tprintf( csMessage);
+#endif
             }
         }
         return TRUE; // say we processed the argument

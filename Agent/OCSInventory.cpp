@@ -629,7 +629,11 @@ CLEAN_AND_EXIT:
 	}
 	catch( CException *pEx)
 	{
+#ifdef _DEBUG
 		AfxMessageBox( LookupError( pEx), MB_OK|MB_ICONSTOP);
+#else
+		_tprintf( LookupError( pEx)); 
+#endif 
 		pEx->Delete();
 		m_nExitCode = OCS_APP_GENERIC_ERROR;
 	}	

@@ -50,6 +50,8 @@ BOOL COCSInventoryFrontApp::InitInstance()
 		{
 #ifdef _DEBUG
 			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG FrameWork instance!"), MB_ICONSTOP);
+#else
+			_tprintf( _T( "Unable to initialize OCS Inventory NG FrameWork instance!")); 
 #endif
 			return FALSE;
 		}
@@ -64,6 +66,8 @@ BOOL COCSInventoryFrontApp::InitInstance()
 		{
 #ifdef _DEBUG
 			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG installation path!"), MB_ICONSTOP);
+#else
+			_tprintf( _T( "Unable to initialize OCS Inventory NG installation path!")); 
 #endif
 			return FALSE;
 		}
@@ -80,6 +84,8 @@ BOOL COCSInventoryFrontApp::InitInstance()
 		{
 #ifdef _DEBUG
 			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG data storage path!"), MB_ICONSTOP);
+#else
+			_tprintf( _T( "Unable to initialize OCS Inventory NG data storage path!")); 
 #endif
 			return FALSE;
 		}
@@ -90,6 +96,8 @@ BOOL COCSInventoryFrontApp::InitInstance()
 		{
 #ifdef _DEBUG
 			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG data storage path!"), MB_ICONSTOP);
+#else
+			_tprintf( _T( "Unable to initialize OCS Inventory NG data storage path!"));
 #endif
 			return FALSE;
 		}
@@ -119,6 +127,8 @@ BOOL COCSInventoryFrontApp::InitInstance()
 		pEx->Delete();
 #ifdef _DEBUG
 		AfxMessageBox( _T( "Unhandled exception during OCSS Inventory NG FrameWork initialization!"), MB_ICONSTOP);
+#else
+			_tprintf( _T( "Unhandled exception during OCSS Inventory NG FrameWork initialization!")); 
 #endif
 		return FALSE;
 	}

@@ -257,7 +257,6 @@ BOOL CProcess::IsProcessRunningNT(LPCTSTR lpstrProcessName)
 					lpfnGetModuleFileNameEx( hProcess, lphModule[ lCptModule], szModuleName, cbSize);
 					csFindedModuleName.ReleaseBuffer( (int) _tcslen( szModuleName)+1);
 					csFindedModuleName.MakeLower();
-					//AfxMessageBox( csFindedModuleName);
 					if (csFindedModuleName.Find( csModuleNameToFind) >= 0)
 						// Finded
 						bFound = TRUE;
