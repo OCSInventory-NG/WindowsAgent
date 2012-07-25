@@ -12,7 +12,7 @@ setcompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "OCS Inventory NG Agent"
-!define PRODUCT_VERSION "2.0.4.2"
+!define PRODUCT_VERSION "2.0.4.3"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
@@ -1194,6 +1194,11 @@ Function WriteAgentSetupDone
 	StrCmp "$OcsUpgrade" "TRUE" 0 WriteAgentSetupDone_end
 	; Read package ID from same directory as the installer
     FileOpen $0 "$EXEDIR\OCSNG-Windows-Agent-PackageID" r
+    IfErrors WriteAgentSetupDone_Parent WriteAgentSetupDone_ReadFile
+WriteAgentSetupDone_Parent:
+	; Read package ID from parent directory of the installer
+    FileOpen $0 "$EXEDIR\..\OCSNG-Windows-Agent-PackageID" r
+WriteAgentSetupDone_ReadFile:
     FileRead $0 $1
 	FileClose $0
 	; Get result code to write
