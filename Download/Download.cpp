@@ -410,7 +410,7 @@ UINT CDownloadApp::findPackages()
 			// Error loading metadata
 			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Error loading metadata file <%s>, removing package <%s>"), csMessage, cFinder.GetFileName());
 			if (!pPack->clean( cFinder.GetFileName()))
-				m_pLogger->log(LOG_PRIORITY_WARNING, _T( "DOWNLOAD => Error removing package <%s>"), cFinder.GetFileName());
+				m_pLogger->log(LOG_PRIORITY_WARNING, _T( "DOWNLOAD => Error removing corrupted package <%s>"), cFinder.GetFileName());
 			delete pPack;
 			continue;
 		}
@@ -418,7 +418,8 @@ UINT CDownloadApp::findPackages()
 		if (_tcsicmp( pPack->getID(), cFinder.GetFileName()) != 0)
 		{
 			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => ID <%s> differs from the directory <%s>"), pPack->getID(), cFinder.GetFileName());
-			if (!sendResult( cFinder.GetFileName(), ERR_BAD_ID))
+			if (sendResult( cFinder.GetFileName(), ERR_BAD_ID))
+				// Server successfully notified => remove package
 				if (!pPack->clean( cFinder.GetFileName()))
 					m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to remove directory <%s> for package <%s>"), cFinder.GetFilePath(), pPack->getID());
 			delete pPack;
@@ -428,7 +429,8 @@ UINT CDownloadApp::findPackages()
 		if (pPack->isExpired( m_uDownloadTimeout))
 		{
 			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Package <%s> timed out (now:%lu, since:%lu, Timeout:%lu)"), pPack->getID(), time( NULL), pPack->getTimeStamp(), m_uDownloadTimeout);
-			if (!sendResult( cFinder.GetFileName(), ERR_TIMEOUT))
+			if (sendResult( cFinder.GetFileName(), ERR_TIMEOUT))
+				// Server successfully notified => remove package
 				if (!pPack->clean( cFinder.GetFileName()))
 					m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to remove timed out package <%s>"), pPack->getID());
 			delete pPack;

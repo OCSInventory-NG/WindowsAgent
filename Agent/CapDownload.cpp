@@ -186,6 +186,7 @@ BOOL CCapDownload::retrievePackages()
 		{
 			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Package <%s> timed out (now:%lu, since:%lu, Timeout:%s)"), pOptDownloadPackage->getId(), time( NULL), pOptDownloadPackage->getTimeStamp(), m_csDownloadTimeout);
 			if (sendMessage( pOptDownloadPackage->getId(), ERR_TIMEOUT))
+				// Server successfully notified => remove package
 				if (!pOptDownloadPackage->clean())
 					m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to remove timed out package <%s>"), pOptDownloadPackage->getId());
 		}
@@ -201,6 +202,8 @@ BOOL CCapDownload::retrievePackages()
 					// Error dowloading metadata => remove package directory to avoid error message into download tool
 					pOptDownloadPackage->clean();
 			}
+			else
+				m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Package <%s> already in download queue, keeping on package"), pOptDownloadPackage->getId());
 		}
 	}
 	// Now, allow Download tool
