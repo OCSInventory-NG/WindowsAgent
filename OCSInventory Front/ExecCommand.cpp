@@ -129,6 +129,9 @@ void CExecCommand::initialize()
 
 void CExecCommand::setTimeout( DWORD dwTimeout)
 {
+	if (dwTimeout == 0)
+		// Timeout MUS be greater than zero
+		dwTimeout = INFINITE;
 	m_dwTimeout = dwTimeout;
 }
 
