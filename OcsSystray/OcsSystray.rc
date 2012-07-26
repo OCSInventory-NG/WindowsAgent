@@ -127,8 +127,10 @@ BEGIN
     IDS_SERVICE_STARTED     "%s wurde gestartet..."
     IDS_SERVICE_STOPPING    "%s wird gestoppt..."
     IDS_SERVICE_STOPPED     "%s wurde gestoppt..."
-    IDS_START_INVENTORY_SUCCESSFULL "Startup-Meldung wurde erfolgreich an Service geschickt"
-    IDS_SHOW_INVENTORY_FAILED "Kann Inventarisierungs-Informationen anzeigen !\n\nGrund: %s"
+    IDS_START_INVENTORY_SUCCESSFULL 
+                            "Die Inventarisierungsaufforderung wurde erfolgreich an den Dienst OCS Inventory NG gesendet"
+    IDS_SHOW_INVENTORY_FAILED 
+                            "Die Inventarisierungsinformationen können nicht angezeigt werden! Der Grund ist: %s"
 END
 
 #endif    // German (Neutral) resources
@@ -246,8 +248,10 @@ BEGIN
     IDS_SERVICE_STARTED     "%s is started..."
     IDS_SERVICE_STOPPING    "%s is stopping..."
     IDS_SERVICE_STOPPED     "%s is stopped..."
-    IDS_START_INVENTORY_SUCCESSFULL "Start inventory notification successfully sent to OCS Inventory NG Service"
-    IDS_SHOW_INVENTORY_FAILED "Cannot display inventory informations !\n\nReason: %s"
+    IDS_START_INVENTORY_SUCCESSFULL 
+                            "Start inventory notification successfully sent to OCS Inventory NG Service"
+    IDS_SHOW_INVENTORY_FAILED 
+                            "Cannot display inventory informations !\n\nReason: %s"
 END
 
 #endif    // English (Neutral) resources
@@ -365,8 +369,10 @@ BEGIN
     IDS_SERVICE_STARTED     "%s está activo..."
     IDS_SERVICE_STOPPING    "%s está parando..."
     IDS_SERVICE_STOPPED     "%s está parado..."
-    IDS_START_INVENTORY_SUCCESSFULL "La notificación de inicio de inventario se ha enviado correctamente al servicio OCS Inventory NG"
-    IDS_SHOW_INVENTORY_FAILED "No se puede mostrar información del inventario !\n\nRazón: %s"
+    IDS_START_INVENTORY_SUCCESSFULL 
+                            "La notificación de inicio de inventario se ha mandado correctamente al Servicio OCS Inventory NG"
+    IDS_SHOW_INVENTORY_FAILED 
+                            "No se puede mostrar la información del inventario ! Razón: %s"
 END
 
 #endif    // Spanish (Neutral) resources
@@ -484,8 +490,10 @@ BEGIN
     IDS_SERVICE_STARTED     "%s est démarré..."
     IDS_SERVICE_STOPPING    "%s est en cours d'arrêt..."
     IDS_SERVICE_STOPPED     "%s est arrété..."
-    IDS_START_INVENTORY_SUCCESSFULL "La notification de démarrage d'inventaire a été envoyée avec succès au service OCS Inventory NG"
-    IDS_SHOW_INVENTORY_FAILED "Impossible d'afficher les informations d'inventaire !\n\nRaison: %s"
+    IDS_START_INVENTORY_SUCCESSFULL 
+                            "La notification de démarrage d'inventaire a été envoyée avec succès au service OCS Inventory NG"
+    IDS_SHOW_INVENTORY_FAILED 
+                            "Impossible d'afficher les informations d'inventaire !\n\nRaison: %s"
 END
 
 #endif    // French (Neutral) resources
