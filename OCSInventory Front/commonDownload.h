@@ -33,6 +33,8 @@
 #define OCS_DOWNLOAD_TIMESTAMP	_T( "since")
 // This file contains list of package fragment to download
 #define OCS_DOWNLOAD_TASK		_T( "task")
+// This file contains execute try number
+#define OCS_DOWNLOAD_EXECUTE_TRY _T( "exec_try")
 // This file contains package execution result
 #define OCS_DOWNLOAD_DONE		_T( "done")
 // This file contains OCSNG Windows Agent Setup execution result and
@@ -49,7 +51,7 @@
 #define FRAG_LATENCY_DEFAULT	_T( "10")
 #define PERIOD_LATENCY_DEFAULT	_T( "0")
 #define CYCLE_LATENCY_DEFAULT	_T( "10")
-#define MAX_ERROR_COUNT			30
+#define MAX_ERROR_COUNT			5
 #define PERIOD_LENGTH_DEFAULT	_T( "10")
 #define TIMEOUT_DEFAULT			_T( "30")
 #define COMMAND_TIMEOUT_DEFAULT	_T( "120")

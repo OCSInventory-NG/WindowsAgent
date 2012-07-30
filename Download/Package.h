@@ -50,6 +50,10 @@ public:
 	BOOL getDone( CString &csCode, CString &csOutput);
 	// Set task result code into "done" file, with optional command output
 	BOOL setDone( LPCTSTR lpstrCode, LPCTSTR lpstrOutput = _T( ""));
+	// Get execute try number from "exec_try" file
+	BOOL getExecTry( UINT *puTry);
+	// Set execute try number to "exec_try" file
+	BOOL setExecTry( UINT uTry);
 	// Is there any more frag to download (task filesize > 0)
 	BOOL isFragTodownload();
 	// Get next frag ID to download from task file (the first one)

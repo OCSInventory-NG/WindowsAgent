@@ -55,12 +55,6 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 	try
 	{
 		// Load "info" file content
-/*		if (!LoadFileToText( csBuffer, lpstrFile))
-			return FALSE;
-		// Parse XML
-		if (!myXml.SetDoc( csBuffer))
-			return FALSE;
-*/
 		if (!myXml.LoadFile( lpstrFile))
 			return FALSE;
 		myXml.ResetPos();
@@ -372,18 +366,61 @@ BOOL CPackage::setDone( LPCTSTR lpstrCode, LPCTSTR lpstrOutput)
 	return TRUE;
 }
 
+BOOL CPackage::setExecTry( UINT uTry)
+{
+	CStdioFile myFile;
+	CString	   csFile;
+
+	csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_EXECUTE_TRY);
+	try
+	{
+		if (!myFile.Open( csFile, CFile::modeCreate|CFile::modeWrite|CFile::typeText|CFile::shareDenyWrite))
+			return FALSE;
+		// First line is result code
+		csFile.Format( _T( "%u"), uTry);
+		myFile.WriteString( csFile);
+		myFile.Close();
+	}
+	catch( CException *pEx)
+	{
+		pEx->Delete();
+		myFile.Abort();
+		DeleteFile( csFile);
+		return FALSE;
+	}
+	return TRUE;
+}
+
+BOOL CPackage::getExecTry( UINT *puTry)
+{
+	CString csFile;
+	CStdioFile myFile;
+
+	try
+	{
+		// Open package done file
+		csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_EXECUTE_TRY);
+		if (!myFile.Open( csFile, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
+			return FALSE;
+		// Read only first line to get OCS result code
+		myFile.ReadString( csFile);
+		*puTry = _ttol( csFile);
+		myFile.Close();
+		return TRUE;
+	}
+	catch( CException *pEx)
+	{
+		pEx->Delete();
+		myFile.Abort();
+		return FALSE;
+	}
+}
 
 BOOL CPackage::isFragTodownload()
 {
 	CString csTask, csTempTask;
 	CFileStatus rStatus;
 
-/*
-	// Check if build.zip exists
-	csTask.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_BUILD);
-	if (fileExists( csTask))
-		return FALSE;
-*/
 	csTask.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_TASK);
 	// Check if task.tmp exists (task save before update). If so, use it
 	csTempTask.Format( _T( "%s\\%s\\%s.tmp"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_TASK);
@@ -705,6 +742,7 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 	CLog *pLog = getOcsLogger();
 	CExecCommand cmProcess;
 	CString csBuffer;
+	UINT	uTry;
 
 	// Check signature before executing package
 	if (!checkSignature())
@@ -713,6 +751,20 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 		setDone( ERR_BAD_DIGEST);
 		return FALSE;
 	}
+	// Check if package not crashing all time
+	if (!getExecTry( &uTry))
+		// Assuming first execution try
+		uTry = 0;
+	uTry++;
+	if (uTry > MAX_ERROR_COUNT)
+	{
+		pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Max error count (%u) reached while executing Package <%s>"), uTry, m_csID);
+		setDone( ERR_EXECUTE_PACK);
+		return FALSE;
+	}
+	else
+		setExecTry( uTry);
+	
 	if (m_csAction == OCS_DOWNLOAD_ACTION_LAUNCH)
 	{
 		// We need to wait for all threads/processes started
