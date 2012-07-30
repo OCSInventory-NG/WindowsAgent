@@ -1223,6 +1223,61 @@ FunctionEnd
 
 
 #####################################################################
+# This function configure Windows Firewall to allow  OCS Inventory NG
+# Agent contacting OCS Inventory NG  server and scanning network for
+# devices
+#####################################################################
+Function ConfigureFirewall
+    ; Check if the firewall is enabled
+    SimpleFC::IsFirewallEnabled
+    Pop $0 ; return error(1)/success(0)
+    Pop $1 ; return 1=Enabled/0=Disabled
+    ${If} $1 == 1
+        StrCpy $logBuffer "Windows Firewall is enabled...$\r$\n"
+        Call Write_Log
+        ; Check if agent firewall exists
+        SimpleFC::AdvExistsRule "OCS Inventory NG Agent"
+        Pop $0 ; return error(1)/success(0)
+        Pop $1 ; return 1=Exists/0=Doesn´t exists
+        StrCmp "$1" "1" ConfigureFirewall_Skip_Agent
+        StrCpy $logBuffer "Adding custom Windows Firewall rule for <$INSTDIR\ocsinventory.exe>..."
+        Call Write_Log
+        ; Add Agent application to the firewall exception list - All protocol, outgoing, enabled, Networks, All Profiles, Allow, any icmp code, any group, any local port, any remote port, any local address, any remote address
+        SimpleFC::AdvAddRule "OCS Inventory NG Agent" "Allows any outgoing request for OCS Inventory NG Agent" "256" "2" "1" "2147483647" "1" "$INSTDIR\ocsinventory.exe" "" "" "" "" "" ""
+        Pop $0 ; return error(1)/success(0)
+        ${If} $0 > 0
+            StrCpy $logBuffer "Failed !$\r$\n"
+            Call Write_Log
+        ${Else}
+            StrCpy $logBuffer "OK.$\r$\n"
+            Call Write_Log
+        ${EndIf}
+ConfigureFirewall_Skip_Agent:
+        ; Check if download firewall exists
+        SimpleFC::AdvExistsRule "OCS Inventory NG Download and Setup tool"
+        Pop $0 ; return error(1)/success(0)
+        Pop $1 ; return 1=Exists/0=Doesn´t exists
+        StrCmp "$1" "1" ConfigureFirewall_Skip_Download
+        StrCpy $logBuffer "Adding custom Windows Firewall rule for <$INSTDIR\download.exe>..."
+        Call Write_Log
+        ; Add download application to the firewall exception list - TCP protocol, outgoing, enabled, Networks, All Profiles, Allow, any icmp code, any group, any local port, any remote port, any local address, any remote address
+        SimpleFC::AdvAddRule "OCS Inventory NG Download and Setup tool" "Allows TCP outgoing request for OCS Inventory NG Download and Setup tool" "6" "2" "1" "2147483647" "1" "$INSTDIR\download.exe" "" "" "" "" "" ""
+        Pop $0 ; return error(1)/success(0)
+        ${If} $0 > 0
+            StrCpy $logBuffer "Failed !$\r$\n"
+            Call Write_Log
+        ${Else}
+            StrCpy $logBuffer "OK.$\r$\n"
+            Call Write_Log
+        ${EndIf}
+ConfigureFirewall_Skip_Download:
+    ${Else}
+   	    StrCpy $logBuffer "Windows Firewall is disabled. Skip adding rules.$\r$\n"
+	    Call Write_Log
+    ${EndIf}
+FunctionEnd
+
+#####################################################################
 # This function ask user for agent and server options
 #####################################################################
 Function AskServerOptions
@@ -1741,6 +1796,8 @@ Section "OCS Inventory Agent" SEC03
 	Call Write_Log
 	; Write configuration file
 	Call WriteServiceIni
+	; Configure Windows Firewall is needed
+	Call ConfigureFirewall
 	; Launch inventory now only if not /UPGRADE
 	StrCmp "$OcsUpgrade" "TRUE" WriteServiceIni_Skip_Now
 	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 9" "State"

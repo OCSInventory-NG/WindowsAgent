@@ -17,6 +17,7 @@ REQUIREMENTS
 - Services plugin (http://nsis.sourceforge.net/Services_plug-in)
 - KillProcDLL plug-in (http://nsis.sourceforge.net/KillProcDLL_plug-in)
 - SetACL 2.0.3 or higher (http://setacl.sourceforge.net/)
+- NSIS Simple Firewall Plugin 1.19 or higher (http://nsis.sourceforge.net/NSIS_Simple_Firewall_Plugin)
 
 Put SetACL.exe into OCS-NG_Windows_Agent_Setup.nsi script directory, and 
 compile OCS-NG_Windows_Agent_Setup.nsi (Script assume that agent's binary
