@@ -66,6 +66,7 @@ BOOL CCapKeyFinder::decodeMicrosoftKey( LPBYTE lpData, UINT uLength, CString csK
 	}
 	szResult[29]='\0';
 	csKey = szResult;
+	return TRUE;
 }
 
 /***
