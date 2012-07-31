@@ -1228,12 +1228,17 @@ FunctionEnd
 # devices
 #####################################################################
 Function ConfigureFirewall
+    ${If} ${AtLeastWinVista}
+   	    StrCpy $logBuffer "Windows Advanced Firewall is not available (Vista or higher). Skip adding custom rules.$\r$\n"
+	    Call Write_Log
+        Goto ConfigureFirewall_Skip_End
+    ${EndIf}
     ; Check if the firewall is enabled
     SimpleFC::IsFirewallEnabled
     Pop $0 ; return error(1)/success(0)
     Pop $1 ; return 1=Enabled/0=Disabled
     ${If} $1 == 1
-        StrCpy $logBuffer "Windows Firewall is enabled...$\r$\n"
+        StrCpy $logBuffer "Windows Advanced Firewall is enabled...$\r$\n"
         Call Write_Log
         ; Check if agent firewall exists
         SimpleFC::AdvExistsRule "OCS Inventory NG Agent"
@@ -1272,9 +1277,10 @@ ConfigureFirewall_Skip_Agent:
         ${EndIf}
 ConfigureFirewall_Skip_Download:
     ${Else}
-   	    StrCpy $logBuffer "Windows Firewall is disabled. Skip adding rules.$\r$\n"
+   	    StrCpy $logBuffer "Windows Advanced Firewall is disabled. Skip adding custom rules.$\r$\n"
 	    Call Write_Log
     ${EndIf}
+ConfigureFirewall_Skip_End:
 FunctionEnd
 
 #####################################################################
