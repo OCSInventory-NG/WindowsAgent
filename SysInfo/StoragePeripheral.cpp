@@ -133,9 +133,35 @@ void CStoragePeripheral::SetSize( unsigned __int64 u64Size)
 	m_u64Size = u64Size;
 }
 
-void CStoragePeripheral::SetSN(LPCTSTR lpstrSN)
+void CStoragePeripheral::SetSN( LPCTSTR lpstrSN)
 {
-	m_csSN = lpstrSN;
+	CString	csSubString;
+	TCHAR	*pStopChar,
+			cPermute;
+	char	myCar;
+
+	m_csSN.Empty();
+	if (_tcslen( lpstrSN) > STORAGE_MAX_LENGTH_SERIAL)
+	{
+		// Each serial number character is coded in ASCII hexadecimal value using 2 bytes, so we have to decode it
+		for (size_t i=0; (i<STORAGE_MAX_LENGTH_SERIAL) && ((i*2)<_tcslen( lpstrSN)); i++) 
+		{
+			csSubString.Empty();
+			csSubString.Format( _T( "%.02s"), lpstrSN+2*i);
+			myCar = (char) _tcstol( csSubString, &pStopChar, 16);
+			m_csSN.AppendFormat( _T( "%c"), myCar);
+		}
+		// Permute low order and high order characters if serial length is multiple of 2
+		for (int i=0; (i<m_csSN.GetLength()) && (m_csSN.GetLength() % 2 == 0); i+=2)
+		{
+			cPermute = m_csSN.GetAt( i);
+			m_csSN.SetAt( i, m_csSN.GetAt( i+1));
+			m_csSN.SetAt( i+1, cPermute);
+		}
+	}
+	else
+		// Serial length seems good, assume well formatted
+		m_csSN = lpstrSN;
 	StrForSQL( m_csSN);
 }
 

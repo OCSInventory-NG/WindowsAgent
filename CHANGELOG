@@ -1,3 +1,4 @@
+  * Fix bug described in blueprint "serialnumber": Wrong disk serial number is some case under Windows 7. if serial number length is greater than the max allowed size of 20, then assume serial is encoded in hexadecimal. So we have to decode string to store it.
   * Fix bug #1008562: New network parameters not sent to server. This bug is related to bug #1015434. 
   * Fix bug #820209: Add Windows firewall rules for OCS Inventory NG, only if firewall is enabled
   * Fix bug #1021367: Set Max Error allowed to 5 consecutive errors instead of 30, and also uses this parameter into package execution. Package will return ERR_EXECUTE_PACK if execution fails more then MAX_ERROR_COUNT set to 5. Also uses a timeout into command execution (default 120 minutes)

@@ -19,6 +19,7 @@
 
 #include "SysInfoClasses.h"
 
+#define  STORAGE_MAX_LENGTH_SERIAL 20
 
 class SYSINFO_API CStoragePeripheral  
 {
