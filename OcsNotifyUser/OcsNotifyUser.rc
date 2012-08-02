@@ -1,0 +1,593 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// German (Neutral) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_WAIT_SETUP_DIALOG DIALOGEX 0, 0, 318, 119
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
+EXSTYLE WS_EX_NOACTIVATE
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "OCS Inventory NG: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    CTEXT           "Ihre Maus und Tastatur sind gesperrt, solange die Installation ausgeführt wird.\n\nBitte warten... ",IDC_STATUS,7,59,304,53
+END
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 217, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Über..."
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "OCS Inventory NG: Softwareverteilung",IDC_STATIC,42,14,168,8,SS_NOPREFIX
+    LTEXT           "Internetseite: http://www.ocsinventory-ng.org",IDC_STATIC,42,26,168,8
+    DEFPUSHBUTTON   "OK",IDOK,160,41,50,14,WS_GROUP
+END
+
+IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 299, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,162,50,14
+    PUSHBUTTON      "Später ausführen!",IDC_DELAY,114,162,66,14
+    PUSHBUTTON      "Abbrechen",IDCANCEL,242,162,50,14
+    EDITTEXT        IDC_EDIT1,13,63,273,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    LTEXT           "OCS Inventory NG: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,33,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    GROUPBOX        "Nachricht von OCS Inventory NG: Softwareverteilung...",IDC_STATIC,7,46,285,110
+    LTEXT           "",IDC_STATUS,13,136,273,12
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_WAIT_SETUP_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 311
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 112
+    END
+
+    IDD_DOWNLOAD_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "&Über..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_AUTO_VALIDATE_STRING "Wird automatisch in %s Sekunden gestartet!"
+    IDS_WAIT_SETUP_STRING   "Ihre Maus und Tastatur sind gesperrt, solange die Installation ausgeführt wird.\n\nBitte warten... "
+    IDS_CANCEL_STRING       "Abbrechen"
+    IDS_DELAY_STRING        "Später ausführen!"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
+END
+
+#endif    // German (Neutral) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (Neutral) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 217, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About..."
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "OCS Inventory NG for Windows Notification",IDC_STATIC,42,14,168,8,SS_NOPREFIX
+    LTEXT           "Web site: http://www.ocsinventory-ng.org",IDC_STATIC,42,26,168,8
+    DEFPUSHBUTTON   "OK",IDOK,160,41,50,14,WS_GROUP
+END
+
+IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 299, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,162,50,14
+    PUSHBUTTON      "Later...",IDC_DELAY,124,162,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,242,162,50,14
+    EDITTEXT        IDC_EDIT1,13,63,273,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    LTEXT           "OCS Inventory NG for Windows Notification\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,33,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    GROUPBOX        "Message from OCS Inventory NG Agent Package Setup...",IDC_STATIC,7,46,285,110
+    LTEXT           "",IDC_STATUS,13,136,273,12
+END
+
+IDD_WAIT_SETUP_DIALOG DIALOGEX 0, 0, 318, 119
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
+EXSTYLE WS_EX_NOACTIVATE
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "OCS Inventory NG for Windows Notification\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    CTEXT           "Your keyboard and mouse are locked while Setup is running.\n\nPlease, wait... ",IDC_STATUS,7,59,304,53
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 210
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_DOWNLOAD_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+
+    IDD_WAIT_SETUP_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 311
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 112
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_AUTO_VALIDATE_STRING "AUTOMATICALLY VALIDATING IN %s SECONDS"
+    IDS_WAIT_SETUP_STRING   "Your keyboard and mouse are locked while Setup is running.\n\nPlease wait... "
+    IDS_CANCEL_STRING       "Cancel"
+    IDS_DELAY_STRING        "Later..."
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
+END
+
+#endif    // English (Neutral) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Spanish (Neutral) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
+#ifdef _WIN32
+LANGUAGE LANG_SPANISH, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 217, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Acerca de..."
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "OCS Inventory NG: Paquete de instalación",IDC_STATIC,42,14,168,8,SS_NOPREFIX
+    LTEXT           "Web site: http://www.ocsinventory-ng.org",IDC_STATIC,42,26,168,8
+    DEFPUSHBUTTON   "OK",IDOK,160,41,50,14,WS_GROUP
+END
+
+IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 299, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,162,50,14
+    PUSHBUTTON      "Más tarde...",IDC_DELAY,124,162,50,14
+    PUSHBUTTON      "Cancelar",IDCANCEL,242,162,50,14
+    EDITTEXT        IDC_EDIT1,13,63,273,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    LTEXT           "OCS Inventory NG: Paquete de instalación\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,33,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    GROUPBOX        "Mensaje desde el paquete de instalación del Agente OCS...",IDC_STATIC,7,46,285,110
+    LTEXT           "",IDC_STATUS,13,136,273,12
+END
+
+IDD_WAIT_SETUP_DIALOG DIALOGEX 0, 0, 318, 119
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
+EXSTYLE WS_EX_NOACTIVATE
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "OCS Inventory NG: Paquete de instalación\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    CTEXT           "Su teclado y ratón están bloqueados durante la instalación.\n\nPor favor, espere... ",IDC_STATUS,7,59,304,53
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_DOWNLOAD_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+
+    IDD_WAIT_SETUP_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 311
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 112
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "&Acerca de la descarga..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_AUTO_VALIDATE_STRING "VALIDACIÓN AUTOMÁTICA EN %s SEGUNDOS"
+    IDS_WAIT_SETUP_STRING   "Su teclado y ratón están bloqueados durante la instalación.\n\nPor favor, espere... "
+    IDS_CANCEL_STRING       "Cancelar"
+    IDS_DELAY_STRING        "Más tarde..."
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
+END
+
+#endif    // Spanish (Neutral) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// French (Neutral) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_WAIT_SETUP_DIALOG DIALOGEX 0, 0, 318, 119
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
+EXSTYLE WS_EX_NOACTIVATE
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "OCS Inventory NG Agent Package Setup Tool\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    CTEXT           "Votre souris et votre clavier sont bloqués pendant l'installation.\n\nMerci de patienter... ",IDC_STATUS,7,59,304,53
+END
+
+IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 299, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,162,50,14
+    PUSHBUTTON      "Plus tard...",IDC_DELAY,124,162,50,14
+    PUSHBUTTON      "Annuler",IDCANCEL,242,162,50,14
+    EDITTEXT        IDC_EDIT1,13,63,273,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    LTEXT           "OCS Inventory NG for Windows Notification\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,33,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    GROUPBOX        "Message d'information d'OCS Inventory NG Agent Package Setup...",IDC_STATIC,7,46,285,110
+    LTEXT           "",IDC_STATUS,13,136,273,12
+END
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 217, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "A propos de..."
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "OCS Inventory NG for Windows Notification",IDC_STATIC,42,14,168,8,SS_NOPREFIX
+    LTEXT           "Web site: http://www.ocsinventory-ng.org",IDC_STATIC,42,26,168,8
+    DEFPUSHBUTTON   "OK",IDOK,160,41,50,14,WS_GROUP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_WAIT_SETUP_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 311
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 112
+    END
+
+    IDD_DOWNLOAD_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 210
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "&A propos..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_AUTO_VALIDATE_STRING "VALIDATION AUTOMATIQUE DANS %s SECONDES"
+    IDS_WAIT_SETUP_STRING   "Votre clavier et votre souris sont bloqués durant l'installation.\n\nVeuillez patienter... "
+    IDS_CANCEL_STRING       "Annuler"
+    IDS_DELAY_STRING        "Plus tard..."
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
+END
+
+#endif    // French (Neutral) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral (Default) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "TODO: <Company name>"
+            VALUE "FileDescription", "TODO: <File description>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "OcsNotifyUser.exe"
+            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "OriginalFilename", "OcsNotifyUser.exe"
+            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+#endif    // Neutral (Default) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// French (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\OcsNotifyUser.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""     // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // French (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\OcsNotifyUser.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"     // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

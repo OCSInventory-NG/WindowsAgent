@@ -12,8 +12,7 @@
 //
 
 #include "stdafx.h"
-#include "Download.h"
-#include "Package.h"
+#include "OcsNotifyUser.h"
 #include "DownloadDlg.h"
 #include <math.h>
 
@@ -124,8 +123,8 @@ BOOL CDownloadDlg::OnInitDialog()
 		SetTimer( WM_TIMER, 1000, NULL );	
 	m_bDelayed = FALSE;
 	m_uWaited = 0;	
-
-/*	CRect cr, win;
+/*
+	CRect cr, win;
 	int nbl = m_editText.GetLineCount();
 	if( nbl > MAX_LINES ) nbl = MAX_LINES;
 	if( nbl < MIN_LINES ) nbl = MIN_LINES;
@@ -139,21 +138,21 @@ BOOL CDownloadDlg::OnInitDialog()
 	m_editText.SetWindowPos( &CWnd::wndTop, 0, 0, cr.Width() , newHeight, SWP_NOMOVE );
 
 	SetWindowPos( &CWnd::wndTopMost, 0, 0, win.Width() , newHeight + win.Height() - cr.Height() + 10, SWP_NOMOVE );
-
+*/
 	OSVERSIONINFO osvi;
     ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionEx(&osvi);
 
-	if (osvi.dwMajorVersion < 6)
+	if ((osvi.dwMajorVersion < 5) ||
+		((osvi.dwMajorVersion == 5) && (osvi.dwMinorVersion == 0)))
 	{
-		// Windows 2000/XP/2003 => Display as plain text
-*/		
+		// Windows 2000 or previous => Display as plain text
 		SetDlgItemText( IDC_EDIT1, m_csEdit);
-/*	}
+	}
 	else
 	{
-		// Windows Vista/2008/Seven or + => Display HTML message using SimpleBrowser
+		// Windows XP/2003/Vista/2008/Seven or + => Display HTML message using SimpleBrowser
 		if (m_Browser.CreateFromControl( this, IDC_EDIT1))
 		{
 			CString csMessage;
@@ -162,9 +161,8 @@ BOOL CDownloadDlg::OnInitDialog()
 			m_Browser.Write( csMessage);
 		}
 	}
-*/	// Bring window to front
+	// Bring window to front
 	BringWindowToTop();
-
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -304,14 +302,26 @@ void CDownloadDlg::OnDelay()
 	CDialog::OnOK();
 }
 
-void CDownloadDlg::setPackage( CPackage *pPack)
+void CDownloadDlg::setAbortAllowed( BOOL bAbort)
 {
-	m_bAbortAllowed = pPack->isAbortAllowed();
-	m_bDelayAllowed = pPack->isDelayAllowed();
-	m_uNotifyCountdown = pPack->getNotifyCountdown();
-	m_csEdit = pPack->getNotifyText();
-	m_uWaited = 0;
+	m_bAbortAllowed = bAbort;
+}
+
+void CDownloadDlg::setDelayAllowed( BOOL bDelay)
+{
+	m_bDelayAllowed = bDelay;
 	m_bDelayed = FALSE;
+}
+
+void CDownloadDlg::setTimeOut( UINT uTimeOut)
+{
+	m_uNotifyCountdown = uTimeOut;
+	m_uWaited = 0;
+}
+
+void CDownloadDlg::setNotification( LPCTSTR lpstrText)
+{
+	m_csEdit = lpstrText;
 }
 
 BOOL CDownloadDlg::isDelayed()

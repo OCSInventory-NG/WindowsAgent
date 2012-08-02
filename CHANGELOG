@@ -1,3 +1,4 @@
+  * Fix bug #809417: Delegate action to display message to user to a separate OcsNotifyUser.exe tool under Vista and +. This tool is launched under the session of the active user.
   * Fix bug described in blueprint "serialnumber": Wrong disk serial number is some case under Windows 7. if serial number length is greater than the max allowed size of 20, then assume serial is encoded in hexadecimal. So we have to decode string to store it.
   * Fix bug #1008562: New network parameters not sent to server. This bug is related to bug #1015434. 
   * Fix bug #820209: Add Windows firewall rules for OCS Inventory NG, only if firewall is enabled

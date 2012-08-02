@@ -1779,6 +1779,14 @@ Section "OCS Inventory Agent" SEC03
     Call Write_Log
   	strcpy $installSatus ":("
 	clearerrors
+	; User notification tool
+	File "..\Release\OcsNotifyUser.exe"
+	Iferrors 0 +5
+	StrCpy $logBuffer "$logBuffer ERROR copying OcsNotifyUser.exe $\r$\n"
+    Call Write_Log
+  	strcpy $installSatus ":("
+	clearerrors
+    ; XSL for displaying inventory to user
 	File "Ocs-Transform.xsl"
 	Iferrors 0 +5
 	StrCpy $logBuffer "$logBuffer ERROR copying Ocs-Transform.xsl $\r$\n"

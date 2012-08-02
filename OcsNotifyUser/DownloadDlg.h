@@ -27,7 +27,10 @@ public:
 	CDownloadDlg(CWnd* pParent = NULL);	// standard constructor
 
 	// Set package informations
-	void setPackage( CPackage *pPack);
+	void setAbortAllowed( BOOL bAbort = FALSE);
+	void setDelayAllowed( BOOL bDelay = FALSE);
+	void setTimeOut( UINT uTimeOut = 0);
+	void setNotification( LPCTSTR lpstrText);
 	// Allow to check if user press "delay" button
 	BOOL isDelayed();
 
