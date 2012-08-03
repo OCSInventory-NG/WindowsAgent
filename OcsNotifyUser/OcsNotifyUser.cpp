@@ -26,6 +26,7 @@ COcsNotifyUserApp::COcsNotifyUserApp()
 {
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
+	m_nExitCode = OCS_NOTIFY_APP_GENERIC_ERROR;
 }
 
 
@@ -54,7 +55,6 @@ BOOL COcsNotifyUserApp::InitInstance()
 
 		if (!CWinApp::InitInstance())
 		{
-			m_nExitCode = OCS_NOTIFY_APP_GENERIC_ERROR;
 #ifdef _DEBUG
 			AfxMessageBox( _T( "Failed to initialize!"), MB_OK|MB_ICONSTOP);
 #else
@@ -98,11 +98,10 @@ BOOL COcsNotifyUserApp::InitInstance()
 		****/
 		if (!parseCommandLine())
 		{
-			m_nExitCode = OCS_NOTIFY_APP_GENERIC_ERROR;
 #ifdef _DEBUG
-			AfxMessageBox( _T( "Failed to parse command line!"), MB_OK|MB_ICONSTOP);
+			AfxMessageBox( _T( "Failed to parse command line!\n\nUsage: OcsNotifyUser.exe /MSG=\"my message to display\" [/PREINSTALL] [/NOCANCEL] [/DELAY] [/TIMEOUT=n seconds]"), MB_OK|MB_ICONSTOP);
 #else
-			_tprintf( _T( "Failed to parse command line!")); 
+			_tprintf( _T( "Failed to parse command line!\n\nUsage: OcsNotifyUser.exe /MSG=\"my message to display\" [/PREINSTALL] [/NOCANCEL] [/DELAY] [/TIMEOUT=n seconds]")); 
 #endif 
 			goto CLEAN_AND_EXIT;
 		}
@@ -128,11 +127,10 @@ BOOL COcsNotifyUserApp::InitInstance()
 					m_nExitCode = OCS_NOTIFY_APP_OK;
 				break;
 			default:
-				m_nExitCode = OCS_NOTIFY_APP_GENERIC_ERROR;
 #ifdef _DEBUG
-				AfxMessageBox( _T( "Failed to display preinstall dialogbox!"), MB_OK|MB_ICONSTOP);
+				AfxMessageBox( _T( "Failed to display preinstall DialogBox!"), MB_OK|MB_ICONSTOP);
 #else
-				_tprintf( _T( "Failed to display preinstall dialogbox!")); 
+				_tprintf( _T( "Failed to display preinstall DialogBox!")); 
 #endif 
 				return FALSE;
 			}
@@ -142,20 +140,39 @@ BOOL COcsNotifyUserApp::InitInstance()
 			if (m_bCancel)
 			{
 				// Cancel is allowed
-				if (AfxMessageBox( m_csMessage, MB_OKCANCEL|MB_ICONQUESTION|MB_SYSTEMMODAL) == IDCANCEL)
+				switch (AfxMessageBox( m_csMessage, MB_OKCANCEL|MB_ICONQUESTION|MB_SYSTEMMODAL))
+				{
+				case IDOK:
 					m_nExitCode = OCS_NOTIFY_APP_OK;
-				else
+					break;
+				case IDCANCEL:
 					m_nExitCode = OCS_NOTIFY_APP_CANCEL;
+					break;
+				default:
+#ifdef _DEBUG
+					AfxMessageBox( _T( "Failed to display standard MessageBox!"), MB_OK|MB_ICONSTOP);
+#else
+					_tprintf( _T( "Failed to display standard MessageBox!")); 
+#endif 
+					break;
+				}
 			}
 			else
 			{
 				// Cancel not allowed
-				AfxMessageBox( m_csMessage, MB_OK|MB_ICONINFORMATION|MB_SYSTEMMODAL);
-				m_nExitCode = OCS_NOTIFY_APP_OK;
+				if (AfxMessageBox( m_csMessage, MB_OK|MB_ICONINFORMATION|MB_SYSTEMMODAL) == IDOK)
+					m_nExitCode = OCS_NOTIFY_APP_OK;
+				else
+				{
+#ifdef _DEBUG
+					AfxMessageBox( _T( "Failed to display standard MessageBox!"), MB_OK|MB_ICONSTOP);
+#else
+					_tprintf( _T( "Failed to display standard MessageBox!")); 
+#endif 
+				}
 			}
 			break;
 		default:
-			m_nExitCode = OCS_NOTIFY_APP_GENERIC_ERROR;
 #ifdef _DEBUG
 				AfxMessageBox( _T( "Wrong notification type!"), MB_OK|MB_ICONSTOP);
 #else
@@ -174,13 +191,13 @@ CLEAN_AND_EXIT:
 	}
 	catch( CException *pEx)
 	{
+		m_nExitCode = OCS_NOTIFY_APP_GENERIC_ERROR;
 #ifdef _DEBUG
 		AfxMessageBox( LookupError( pEx), MB_OK|MB_ICONSTOP);
 #else
 		_tprintf( LookupError( pEx)); 
 #endif 
 		pEx->Delete();
-		m_nExitCode = OCS_NOTIFY_APP_GENERIC_ERROR;
 	}	
 	
 	/*****
@@ -216,6 +233,8 @@ BOOL COcsNotifyUserApp::parseCommandLine()
 		// Show default messagebox
 		m_uNotifcation = NOTIFY_TYPE_MSGBOX;
 	// /MSG=message (mandatory)
+	if (!isRequired(  m_lpCmdLine, _T( "msg")))
+		return FALSE;
 	m_csMessage = getParamValue( m_lpCmdLine, _T( "msg"));
 	// /NOCANCEL 
 	if (isRequired( m_lpCmdLine, _T( "nocancel")))
