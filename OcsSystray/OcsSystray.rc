@@ -29,18 +29,18 @@ LANGUAGE LANG_GERMAN, SUBLANG_NEUTRAL
 // Dialog
 //
 
-IDD_OCSSYSTRAY_DIALOG DIALOGEX 0, 0, 301, 212
+IDD_OCSSYSTRAY_DIALOG DIALOGEX 0, 0, 301, 232
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "OCS Inventory NG Agent für Windows"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDCANCEL,111,185,80,20
+    DEFPUSHBUTTON   "OK",IDCANCEL,111,205,80,20
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
     LTEXT           "OCS Inventory NG Agent für Windows",IDC_STATIC,42,7,218,8
     LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
     GROUPBOX        "OCS Inventory NG Dienst Status",IDC_STATIC,7,41,287,30
     LTEXT           "Dienst ist gestartet...",IDC_SERVICE_STATUS,35,55,252,8
-    GROUPBOX        "OCS Inventory NG Komponenten",IDC_STATIC,7,75,287,105
+    GROUPBOX        "OCS Inventory NG Komponenten",IDC_STATIC,7,75,287,124
     LTEXT           "Dienst Version xx.xx.xx.xx",IDC_VERSION_SERVICE,35,95,252,8
     LTEXT           "Agent Version xx.xx.xx.xx",IDC_VERSION_AGENT,35,107,252,8
     LTEXT           "Download Version xx.xx.xx.xx",IDC_VERSION_DOWNLOAD,35,119,252,8
@@ -48,6 +48,7 @@ BEGIN
     LTEXT           "Sysinfo Version xx.xx.xx.xx",IDC_VERSION_SYSINFO,35,143,252,8
     LTEXT           "WMI Version xx.xx.xx.xx",IDC_VERSION_WMI,35,155,252,8
     LTEXT           "ComProvider Version xx.xx.xx.xx",IDC_VERSION_COM_PROVIDER,35,167,252,8
+    LTEXT           "Notification Provider Version xx.xx.xx.xx",IDC_VERSION_NOTIFICATION,35,179,252,8
 END
 
 IDD_SHOW_INVENTORY_DIALOG DIALOGEX 0, 0, 600, 400
@@ -151,18 +152,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
 // Dialog
 //
 
-IDD_OCSSYSTRAY_DIALOG DIALOGEX 0, 0, 301, 212
+IDD_OCSSYSTRAY_DIALOG DIALOGEX 0, 0, 301, 232
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "OCS Inventory NG Agent for Windows"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDCANCEL,111,185,80,20
+    DEFPUSHBUTTON   "OK",IDCANCEL,111,205,80,20
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
     LTEXT           "OCS Inventory NG Agent for Windows",IDC_STATIC,42,7,218,8
     LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
     GROUPBOX        "OCS Inventory NG Service Status",IDC_STATIC,7,41,287,30
     LTEXT           "Service is running...",IDC_SERVICE_STATUS,35,55,252,8
-    GROUPBOX        "OCS Inventory NG Components",IDC_STATIC,7,75,287,105
+    GROUPBOX        "OCS Inventory NG Components",IDC_STATIC,7,75,287,124
     LTEXT           "Service Version xx.xx.xx.xx",IDC_VERSION_SERVICE,35,95,252,8
     LTEXT           "Agent Version xx.xx.xx.xx",IDC_VERSION_AGENT,35,107,252,8
     LTEXT           "Download Version xx.xx.xx.xx",IDC_VERSION_DOWNLOAD,35,119,252,8
@@ -170,6 +171,7 @@ BEGIN
     LTEXT           "Sysinfo Version xx.xx.xx.xx",IDC_VERSION_SYSINFO,35,143,252,8
     LTEXT           "WMI Version xx.xx.xx.xx",IDC_VERSION_WMI,35,155,252,8
     LTEXT           "ComProvider Version xx.xx.xx.xx",IDC_VERSION_COM_PROVIDER,35,167,252,8
+    LTEXT           "Notification Provider Version xx.xx.xx.xx",IDC_VERSION_NOTIFICATION,35,179,252,8
 END
 
 IDD_SHOW_INVENTORY_DIALOG DIALOGEX 0, 0, 600, 400
@@ -199,7 +201,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 294
         TOPMARGIN, 7
-        BOTTOMMARGIN, 205
+        BOTTOMMARGIN, 225
     END
 
     IDD_SHOW_INVENTORY_DIALOG, DIALOG
@@ -272,18 +274,18 @@ LANGUAGE LANG_SPANISH, SUBLANG_NEUTRAL
 // Dialog
 //
 
-IDD_OCSSYSTRAY_DIALOG DIALOGEX 0, 0, 301, 212
+IDD_OCSSYSTRAY_DIALOG DIALOGEX 0, 0, 301, 232
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "OCS Inventory NG Agent for Windows"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDCANCEL,111,185,80,20
-    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    DEFPUSHBUTTON   "OK",IDCANCEL,111,205,80,20
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
     LTEXT           "Agente OCS Inventory NG para Windows",IDC_STATIC,42,7,218,8
     LTEXT           "Visita http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
     GROUPBOX        "Estado del servicio OCS Inventory NG",IDC_STATIC,7,41,287,30
     LTEXT           "El servicio está en marcha...",IDC_SERVICE_STATUS,35,55,252,8
-    GROUPBOX        "Componentes del OCS Inventory NG",IDC_STATIC,7,75,287,105
+    GROUPBOX        "Componentes del OCS Inventory NG",IDC_STATIC,7,75,287,124
     LTEXT           "Versión del servicio xx.xx.xx.xx",IDC_VERSION_SERVICE,35,95,252,8
     LTEXT           "Versión del Agente xx.xx.xx.xx",IDC_VERSION_AGENT,35,107,252,8
     LTEXT           "Versión de descarga xx.xx.xx.xx",IDC_VERSION_DOWNLOAD,35,119,252,8
@@ -291,6 +293,7 @@ BEGIN
     LTEXT           "Versión de Sysinfo xx.xx.xx.xx",IDC_VERSION_SYSINFO,35,143,252,8
     LTEXT           "Versión de WMI xx.xx.xx.xx",IDC_VERSION_WMI,35,155,252,8
     LTEXT           "Versión de ComProvider xx.xx.xx.xx",IDC_VERSION_COM_PROVIDER,35,167,252,8
+    LTEXT           "Versión de Notification Provider xx.xx.xx.xx",IDC_VERSION_NOTIFICATION,35,179,252,8
 END
 
 IDD_SHOW_INVENTORY_DIALOG DIALOGEX 0, 0, 600, 400
@@ -393,18 +396,18 @@ LANGUAGE LANG_FRENCH, SUBLANG_NEUTRAL
 // Dialog
 //
 
-IDD_OCSSYSTRAY_DIALOG DIALOGEX 0, 0, 301, 212
+IDD_OCSSYSTRAY_DIALOG DIALOGEX 0, 0, 301, 232
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "OCS Inventory NG Agent for Windows"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDCANCEL,111,185,80,20
+    DEFPUSHBUTTON   "OK",IDCANCEL,111,205,80,20
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
     LTEXT           "OCS Inventory NG Agent for Windows",IDC_STATIC,42,7,218,8
     LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
     GROUPBOX        "Etat du service OCS Inventory NG",IDC_STATIC,7,41,287,30
     LTEXT           "Le Service est démarré...",IDC_SERVICE_STATUS,35,55,252,8
-    GROUPBOX        "Composants OCS Inventory NG",IDC_STATIC,7,75,287,105
+    GROUPBOX        "Composants OCS Inventory NG",IDC_STATIC,7,75,287,124
     LTEXT           "Service Version xx.xx.xx.xx",IDC_VERSION_SERVICE,35,95,252,8
     LTEXT           "Agent Version xx.xx.xx.xx",IDC_VERSION_AGENT,35,107,252,8
     LTEXT           "Download Version xx.xx.xx.xx",IDC_VERSION_DOWNLOAD,35,119,252,8
@@ -412,6 +415,7 @@ BEGIN
     LTEXT           "Sysinfo Version xx.xx.xx.xx",IDC_VERSION_SYSINFO,35,143,252,8
     LTEXT           "WMI Version xx.xx.xx.xx",IDC_VERSION_WMI,35,155,252,8
     LTEXT           "ComProvider Version xx.xx.xx.xx",IDC_VERSION_COM_PROVIDER,35,167,252,8
+    LTEXT           "Notification Provider Version xx.xx.xx.xx",IDC_VERSION_NOTIFICATION,35,179,252,8
 END
 
 IDD_SHOW_INVENTORY_DIALOG DIALOGEX 0, 0, 600, 400

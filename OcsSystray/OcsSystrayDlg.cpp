@@ -92,7 +92,7 @@ BOOL COcsSystrayDlg::OnInitDialog()
 		fileVer.Close();
 	}
 	else
-		csMessage = _T( "Download and Setup Tool version unknown");
+		csMessage = _T( "Package Download and Setup Tool version unknown");
 	SetDlgItemText( IDC_VERSION_DOWNLOAD, csMessage);
 	// Framework version
 	csMessage.Format( _T( "%s\\OCSInventory Front.dll"), getInstallFolder());
@@ -102,7 +102,7 @@ BOOL COcsSystrayDlg::OnInitDialog()
 		fileVer.Close();
 	}
 	else
-		csMessage = _T( "Framework Functions version unknown");
+		csMessage = _T( "Framework Provider version unknown");
 	SetDlgItemText( IDC_VERSION_FRAMEWORK, csMessage);
 	// Sysinfo version
 	csMessage.Format( _T( "%s\\sysinfo.dll"), getInstallFolder());
@@ -112,7 +112,7 @@ BOOL COcsSystrayDlg::OnInitDialog()
 		fileVer.Close();
 	}
 	else
-		csMessage = _T( "System Functions version unknown");
+		csMessage = _T( "System Provider version unknown");
 	SetDlgItemText( IDC_VERSION_SYSINFO, csMessage);
 	// WMI version
 	csMessage.Format( _T( "%s\\ocswmi.dll"), getInstallFolder());
@@ -122,7 +122,7 @@ BOOL COcsSystrayDlg::OnInitDialog()
 		fileVer.Close();
 	}
 	else
-		csMessage = _T( "WMI Functions version unknown");
+		csMessage = _T( "WMI Provider version unknown");
 	SetDlgItemText( IDC_VERSION_WMI, csMessage);
 	// Com Provider version
 	csMessage.Format( _T( "%s\\%s"), getInstallFolder(), OCS_DEFAULT_PROVIDER);
@@ -132,8 +132,18 @@ BOOL COcsSystrayDlg::OnInitDialog()
 		fileVer.Close();
 	}
 	else
-		csMessage = _T( "Communication Functions version unknown");
+		csMessage = _T( "Communication Provider version unknown");
 	SetDlgItemText( IDC_VERSION_COM_PROVIDER, csMessage);
+	// Notification Provider version
+	csMessage.Format( _T( "%s\\OcsNotifyUser.exe"), getInstallFolder());
+	if (fileVer.Open( csMessage))
+	{
+		csMessage.Format( _T( "%s version %s"), fileVer.GetFileDescription(), fileVer.GetFixedFileVersion());
+		fileVer.Close();
+	}
+	else
+		csMessage = _T( "User Notification Provider version unknown");
+	SetDlgItemText( IDC_VERSION_NOTIFICATION, csMessage);
 	// Get service status
 	IsServiceRunning( csMessage);
 	SetDlgItemText( IDC_SERVICE_STATUS, csMessage);
