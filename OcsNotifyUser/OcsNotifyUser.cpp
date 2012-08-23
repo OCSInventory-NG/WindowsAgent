@@ -1,3 +1,13 @@
+//====================================================================================
+// Open Computer and Software Inventory Next Generation
+// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Web: http://www.ocsinventory-ng.org
+
+// This code is open source and may be copied and modified as long as the source
+// code is always made freely available.
+// Please refer to the General Public Licence V2 http://www.gnu.org/ or Licence.txt
+//====================================================================================
+
 
 // OcsNotifyUser.cpp : Defines the class behaviors for the application.
 //
@@ -27,6 +37,7 @@ COcsNotifyUserApp::COcsNotifyUserApp()
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
 	m_nExitCode = OCS_NOTIFY_APP_GENERIC_ERROR;
+	m_pLogger = NULL;
 }
 
 
@@ -55,13 +66,25 @@ BOOL COcsNotifyUserApp::InitInstance()
 
 		if (!CWinApp::InitInstance())
 		{
-#ifdef _DEBUG
-			AfxMessageBox( _T( "Failed to initialize!"), MB_OK|MB_ICONSTOP);
-#else
-			_tprintf( _T( "Failed to initialize!")); 
-#endif 
 			return FALSE; // terminates the application
 		}
+
+		// Logger
+		CTime	cStartTime;		// Start time of the inventory check
+		cStartTime = CTime::GetCurrentTime();
+		m_pLogger			= getOcsLogger();
+		m_pLogger->setApplication( AfxGetAppName());
+
+		/*****
+		*
+		* Parse command line
+		*
+		****/
+		if (!parseCommandLine())
+			return FALSE;
+
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "=============================================================================="));
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "Starting OCS Inventory NG User Notification Tool on %s."), cStartTime.Format( _T( "%#c")));
 
 		/*****
 		 *
@@ -74,13 +97,23 @@ BOOL COcsNotifyUserApp::InitInstance()
 		if ( GetLastError() == ERROR_ALREADY_EXISTS )
 		{
 			m_nExitCode = OCS_NOTIFY_APP_ALREADY_RUNNING_ERROR;
-#ifdef _DEBUG
-			AfxMessageBox( _T( "Already running!"), MB_OK|MB_ICONSTOP);
-#else
-			_tprintf( _T( "Already running!")); 
-#endif 
+			m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => already running"));
 			return FALSE; // terminates the application
 		}
+
+		/*****
+		 *
+		 *	Gets Download version
+		 *
+		 ****/
+		CString csMessage = getVersion();
+		if (csMessage == _T( ""))
+		{
+			m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => Failed to retrieve Notification Tool version from file. Version 0.0.0.1 assumed"));
+			csMessage=_T( "0.0.0.1");
+		}
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => Running OCS Inventory NG Notification Tool Version %s"), csMessage);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => Using OCS Inventory NG FrameWork Version %s"), getFrameworkVersion());
 
 		/*****
 		 *
@@ -89,114 +122,28 @@ BOOL COcsNotifyUserApp::InitInstance()
 		 ****/		
 		AfxEnableControlContainer();
 
-		CDownloadDlg cDlg;
-
-		/*****
-		*
-		* Parse command line
-		*
-		****/
-		if (!parseCommandLine())
-		{
-#ifdef _DEBUG
-			AfxMessageBox( _T( "Failed to parse command line!\n\nUsage: OcsNotifyUser.exe /MSG=\"my message to display\" [/PREINSTALL] [/NOCANCEL] [/DELAY] [/TIMEOUT=n seconds]"), MB_OK|MB_ICONSTOP);
-#else
-			_tprintf( _T( "Failed to parse command line!\n\nUsage: OcsNotifyUser.exe /MSG=\"my message to display\" [/PREINSTALL] [/NOCANCEL] [/DELAY] [/TIMEOUT=n seconds]")); 
-#endif 
-			goto CLEAN_AND_EXIT;
-		}
-
 		switch (m_uNotifcation)
 		{
 		case NOTIFY_TYPE_PREINSTALL:
 			// Display preinstallation dialogbox
-			cDlg.setAbortAllowed( m_bCancel);
-			cDlg.setDelayAllowed( m_bDelay);
-			cDlg.setTimeOut( m_uTimeOut);
-			cDlg.setNotification( m_csMessage);
-			switch (cDlg.DoModal())
-			{
-			case IDCANCEL:
-				// Canceled by user
-				m_nExitCode = OCS_NOTIFY_APP_CANCEL;
-				break;
-			case IDOK:
-				if (cDlg.isDelayed())
-					m_nExitCode = OCS_NOTIFY_APP_DELAY;
-				else
-					m_nExitCode = OCS_NOTIFY_APP_OK;
-				break;
-			default:
-#ifdef _DEBUG
-				AfxMessageBox( _T( "Failed to display preinstall DialogBox!"), MB_OK|MB_ICONSTOP);
-#else
-				_tprintf( _T( "Failed to display preinstall DialogBox!")); 
-#endif 
-				return FALSE;
-			}
+			if (!displayPreinstallDialogBox())
+				m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => failed to display preinstall DialogBox")); 
 			break;
 		case NOTIFY_TYPE_MSGBOX:
 			// Display standard messagebox
-			if (m_bCancel)
-			{
-				// Cancel is allowed
-				switch (AfxMessageBox( m_csMessage, MB_OKCANCEL|MB_ICONQUESTION|MB_SYSTEMMODAL))
-				{
-				case IDOK:
-					m_nExitCode = OCS_NOTIFY_APP_OK;
-					break;
-				case IDCANCEL:
-					m_nExitCode = OCS_NOTIFY_APP_CANCEL;
-					break;
-				default:
-#ifdef _DEBUG
-					AfxMessageBox( _T( "Failed to display standard MessageBox!"), MB_OK|MB_ICONSTOP);
-#else
-					_tprintf( _T( "Failed to display standard MessageBox!")); 
-#endif 
-					break;
-				}
-			}
-			else
-			{
-				// Cancel not allowed
-				if (AfxMessageBox( m_csMessage, MB_OK|MB_ICONINFORMATION|MB_SYSTEMMODAL) == IDOK)
-					m_nExitCode = OCS_NOTIFY_APP_OK;
-				else
-				{
-#ifdef _DEBUG
-					AfxMessageBox( _T( "Failed to display standard MessageBox!"), MB_OK|MB_ICONSTOP);
-#else
-					_tprintf( _T( "Failed to display standard MessageBox!")); 
-#endif 
-				}
-			}
+			if (!displayMessageBox())
+				m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => failed to display standard MessageBox!")); 
 			break;
 		default:
-#ifdef _DEBUG
-				AfxMessageBox( _T( "Wrong notification type!"), MB_OK|MB_ICONSTOP);
-#else
-				_tprintf( _T( "Wrong notification type!")); 
-#endif 
-			goto CLEAN_AND_EXIT;
+			m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => wrong notification type!")); 
+			break;
 		}
 
-CLEAN_AND_EXIT:
-		m_csMessage.Format( _T( "Exit code is %d"), m_nExitCode);
-#ifdef _DEBUG
-		AfxMessageBox( m_csMessage, MB_OK|MB_ICONSTOP);
-#else
-		_tprintf( m_csMessage); 
-#endif 
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "Notification Tool => Exit code is %d"), m_nExitCode);
 	}
 	catch( CException *pEx)
 	{
-		m_nExitCode = OCS_NOTIFY_APP_GENERIC_ERROR;
-#ifdef _DEBUG
-		AfxMessageBox( LookupError( pEx), MB_OK|MB_ICONSTOP);
-#else
-		_tprintf( LookupError( pEx)); 
-#endif 
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "Notification Tool => %s"), LookupError( pEx)); 
 		pEx->Delete();
 	}	
 	
@@ -221,10 +168,35 @@ int COcsNotifyUserApp::ExitInstance()
 	return m_nExitCode;
 }
 
+CString COcsNotifyUserApp::getVersion()
+{
+	CFileVersion fileVer;
+	CString myVer;
+
+	// Get application path	
+	if (GetModuleFileName( AfxGetInstanceHandle(), myVer.GetBuffer( 4*_MAX_PATH+1), 4*_MAX_PATH) == 0)
+		return _T( "");
+	myVer.ReleaseBuffer();
+	// Open application file to get version from file
+	if (fileVer.Open( myVer))
+	{
+		myVer = fileVer.GetProductVersion();
+		myVer.Remove( ' ');
+		myVer.Replace( _T( ","), _T( "."));
+		fileVer.Close();
+	}
+	else
+		myVer.Empty();
+	return myVer;
+}
+
 BOOL COcsNotifyUserApp::parseCommandLine()
 {
 	CString csTimeOut;
 
+	// /DEBUG 
+	if (isRequired( m_lpCmdLine, _T( "debug")))
+		m_pLogger->setLogLevel( LOG_PRIORITY_DEBUG);
 	// /PREINSTALL
 	if (isRequired( m_lpCmdLine, _T( "preinstall")))
 		// Show preinstall dialog box
@@ -233,9 +205,10 @@ BOOL COcsNotifyUserApp::parseCommandLine()
 		// Show default messagebox
 		m_uNotifcation = NOTIFY_TYPE_MSGBOX;
 	// /MSG=message (mandatory)
-	if (!isRequired(  m_lpCmdLine, _T( "msg")))
+	if (isRequired(  m_lpCmdLine, _T( "msg")))
+		m_csMessage = getParamValue( m_lpCmdLine, _T( "msg"));
+	else
 		return FALSE;
-	m_csMessage = getParamValue( m_lpCmdLine, _T( "msg"));
 	// /NOCANCEL 
 	if (isRequired( m_lpCmdLine, _T( "nocancel")))
 		m_bCancel = FALSE;
@@ -255,5 +228,59 @@ BOOL COcsNotifyUserApp::parseCommandLine()
 		m_uTimeOut = 0;
 	else
 		m_uTimeOut = _ttol( csTimeOut);
+	return TRUE;
+}
+
+BOOL COcsNotifyUserApp::displayPreinstallDialogBox()
+{
+	CDownloadDlg cDlg;
+
+	cDlg.setAbortAllowed( m_bCancel);
+	cDlg.setDelayAllowed( m_bDelay);
+	cDlg.setTimeOut( m_uTimeOut);
+	cDlg.setNotification( m_csMessage);
+	switch (cDlg.DoModal())
+	{
+	case IDCANCEL:
+		// Canceled by user
+		m_nExitCode = OCS_NOTIFY_APP_CANCEL;
+		break;
+	case IDOK:
+		if (cDlg.isDelayed())
+			m_nExitCode = OCS_NOTIFY_APP_DELAY;
+		else
+			m_nExitCode = OCS_NOTIFY_APP_OK;
+		break;
+	default:
+		return FALSE;
+	}
+	return TRUE;
+}
+
+BOOL COcsNotifyUserApp::displayMessageBox()
+{
+	if (m_bCancel)
+	{
+		// Cancel is allowed, so asking question
+		switch (AfxMessageBox( m_csMessage, MB_OKCANCEL|MB_ICONQUESTION|MB_SYSTEMMODAL))
+		{
+		case IDOK:
+			m_nExitCode = OCS_NOTIFY_APP_OK;
+			break;
+		case IDCANCEL:
+			m_nExitCode = OCS_NOTIFY_APP_CANCEL;
+			break;
+		default:
+			return FALSE;
+		}
+	}
+	else
+	{
+		// Cancel not allowed, only display information message
+		if (AfxMessageBox( m_csMessage, MB_OK|MB_ICONINFORMATION|MB_SYSTEMMODAL) == IDOK)
+			m_nExitCode = OCS_NOTIFY_APP_OK;
+		else
+			return FALSE;
+	}
 	return TRUE;
 }
