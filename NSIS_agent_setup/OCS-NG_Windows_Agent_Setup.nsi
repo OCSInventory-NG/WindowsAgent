@@ -1813,16 +1813,16 @@ Section "OCS Inventory Agent" SEC03
 	; Configure Windows Firewall is needed
 	Call ConfigureFirewall
 	; Launch inventory now only if not /UPGRADE
-	StrCmp "$OcsUpgrade" "TRUE" WriteServiceIni_Skip_Now
+	StrCmp "$OcsUpgrade" "TRUE" installAgent_Skip_Now
 	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 9" "State"
-	StrCmp $R0 "1" 0 WriteServiceIni_Skip_Now
+	StrCmp $R0 "1" 0 installAgent_Skip_Now
 	StrCpy $logBuffer '[/NOW] used, so launching "$INSTDIR\ocsinventory.exe"...'
 	Call Write_Log
 	nsExec::ExecToLog "$INSTDIR\ocsinventory.exe"
 	Pop $R0
 	StrCpy $logBuffer "Result: $R0$\r$\n"
 	Call Write_Log
-WriteServiceIni_Skip_Now:
+installAgent_Skip_Now:
 SectionEnd
 
 
@@ -1843,7 +1843,9 @@ Section "Network inventory (server reachable)" SEC04
 	    StrCpy $logBuffer 'Creating startup menu shortCut <$SMSTARTUP\OCS Inventory NG Systray.lnk> to start Systray applet...$\r$\n'
 	    Call Write_Log
 	    CreateShortCut "$SMSTARTUP\OCS Inventory NG Systray.lnk" "$INSTDIR\OcsSystray.exe"
-	    Exec "$INSTDIR\OcsSystray.exe"
+; DO NOT LAUNCH SYSTRAY AUTOMATICALLY, to avoid it running under system account
+; when agent is upgraded using agent itself and package deployment
+;	    Exec "$INSTDIR\OcsSystray.exe"
 	${EndIf}
 	; Install service if needed
 	Call InstallService
