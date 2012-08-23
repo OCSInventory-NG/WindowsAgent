@@ -11,6 +11,7 @@
 #include "NotifyUser.h"
 #include <WtsApi32.h>
 #include <Userenv.h>
+#include "Config.h"
 #include "Log.h"
 
 #ifdef _DEBUG
@@ -252,6 +253,9 @@ UINT CNotifyUser::AskQuestion( LPCTSTR lpstrText)
 
 	// Generate command
 	csCommand.Format( _T( "\"%s\\%s\" /MSG=\"%s\""), getInstallFolder(), OCS_NOTIFY_USER_COMMAND, lpstrText);
+	if (getAgentConfig()->isDebugRequired() >= OCS_DEBUG_MODE_TRACE)
+		// Enable debugging
+		csCommand.Append( _T( " /DEBUG"));
 	return display( csCommand);
 }
 
@@ -261,6 +265,9 @@ UINT CNotifyUser::ShowInformation( LPCTSTR lpstrText)
 
 	// Generate command
 	csCommand.Format( _T( "\"%s\\%s\" /NOCANCEL /MSG=\"%s\""), getInstallFolder(), OCS_NOTIFY_USER_COMMAND, lpstrText);
+	if (getAgentConfig()->isDebugRequired() >= OCS_DEBUG_MODE_TRACE)
+		// Enable debugging
+		csCommand.Append( _T( " /DEBUG"));
 	return display( csCommand);
 }
 
@@ -270,6 +277,9 @@ UINT CNotifyUser::ShowPreInstall( LPCTSTR lpstrText, BOOL bCancelAllowed, BOOL b
 
 	// Generate command
 	csCommand.Format( _T( "\"%s\\%s\" /PREINSTALL"), getInstallFolder(), OCS_NOTIFY_USER_COMMAND);
+	if (getAgentConfig()->isDebugRequired() >= OCS_DEBUG_MODE_TRACE)
+		// Enable debugging
+		csCommand.Append( _T( " /DEBUG"));
 	// Is cancel denied
 	if (!bCancelAllowed)
 		csCommand.Append( _T( " /NOCANCEL"));
@@ -280,7 +290,7 @@ UINT CNotifyUser::ShowPreInstall( LPCTSTR lpstrText, BOOL bCancelAllowed, BOOL b
 	if (uTimeOut > 0)
 		csCommand.AppendFormat( _T( " /TIMEOUT=%u"), uTimeOut);
 	// Message to display
-	csCommand.AppendFormat( _T( "/MSG=\"%s\""), lpstrText);
+	csCommand.AppendFormat( _T( " /MSG=\"%s\""), lpstrText);
 	return display( csCommand);
 }
 
