@@ -27,7 +27,10 @@
 #define OCSINVENTORY_API_EXPORTED _declspec(dllexport)
 #endif
 
+// Plugin hook return code if bo error
+// Other return code are specified by plugin, and means error
 #define PLUGIN_OK 0
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,11 +43,18 @@ typedef int (*HOOK_PROLOG_WRITE)(CPrologRequest*);
 typedef int (*HOOK_PROLOG_RESP)(CPrologResponse*);
 typedef int (*HOOK_INVENTORY)(CInventoryRequest*);
 
-OCSINVENTORY_API_EXPORTED int OCS_CALL_INVENTORY_EXPORTED(CInventoryRequest*);
-OCSINVENTORY_API_EXPORTED int OCS_CALL_PROLOGWRITE_EXPORTED(CPrologRequest*);
-OCSINVENTORY_API_EXPORTED int OCS_CALL_PROLOGRESP_EXPORTED(CPrologResponse*);
-OCSINVENTORY_API_EXPORTED int OCS_CALL_END_EXPORTED();
+// Hook called when agent loads, typicaly used to initialize plugin
 OCSINVENTORY_API_EXPORTED int OCS_CALL_START_EXPORTED();
+// Hook called before sending prolog to server, typically used to add/modify information to prolog request
+OCSINVENTORY_API_EXPORTED int OCS_CALL_PROLOGWRITE_EXPORTED(CPrologRequest*);
+// Hook called after receiving prolog response from server, typically usd to parse additional data sent by server
+OCSINVENTORY_API_EXPORTED int OCS_CALL_PROLOGRESP_EXPORTED(CPrologResponse*);
+// Hook called before sending inventory to server, typically used to add/modify inventory information sent to server
+OCSINVENTORY_API_EXPORTED int OCS_CALL_INVENTORY_EXPORTED(CInventoryRequest*);
+// Hook called after receiving inventory response from server, typically usd to parse additional data sent by server
+OCSINVENTORY_API_EXPORTED int OCS_CALL_END_EXPORTED();
+// Hook called when agent exits, typically used to free plugin resources
+OCSINVENTORY_API_EXPORTED int OCS_CALL_CLEAN_EXPORTED();
 
 #ifdef __cplusplus
 };

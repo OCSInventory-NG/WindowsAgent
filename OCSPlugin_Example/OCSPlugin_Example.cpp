@@ -47,3 +47,9 @@ OCSINVENTORY_API_EXPORTED int OCS_CALL_END_EXPORTED(){
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => End hook executed"));
 	return PLUGIN_OK;
 }
+
+OCSINVENTORY_API_EXPORTED int OCS_CALL_CLEAN_EXPORTED(){
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => Clean hook executed"));
+	return PLUGIN_OK;
+}
+
