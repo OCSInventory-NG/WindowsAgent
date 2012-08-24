@@ -1,3 +1,4 @@
+  * Fix bug in ACER display's serial number retrieval
   * Do not launch OcsSystray at the end of setup, to avoid it running under system account when agent is upgraded using agent itself and package deployment
   * Display user notification tool version into Systray status window
   * Add NotifyUser debugging log support, and fix small typo generating error code 3 calling OcsNotifyUser tool

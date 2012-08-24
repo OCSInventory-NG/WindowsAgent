@@ -3098,7 +3098,9 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	DWORD		dwValue;
 	ULONG		ulPhysicalMemory, ulSwapSize;
 	CSoftware	cSoftOS;
-	CSysInfo    mySysInfo( TRUE, _T( "c:\\"));
+	TCHAR		szTempPath[ _MAX_PATH+1];
+	GetTempPath( _MAX_PATH, szTempPath);
+	CSysInfo    mySysInfo( TRUE, szTempPath);
 
 	// Get logged on user
 	if (!mySysInfo.getUserName( cs1))

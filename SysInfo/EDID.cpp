@@ -450,7 +450,7 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 LPCSTR CEdid::GetEdidText(BYTE lpByte[18])
 {
 	char	szResult[15];
-	int		i;
+	size_t	i;
 
 	for (i=0; i<18;i++)
 	{
@@ -459,7 +459,9 @@ LPCSTR CEdid::GetEdidText(BYTE lpByte[18])
 	}
 	memset( szResult, 0, 15);
 	strncpy( szResult, (LPCSTR) (lpByte+DESCRIPTOR_DATA_OFFSET), 14);
-	m_csBuffer.Format( "%s", szResult);
+	// Ignore space characters at begining
+	for (i=0; i<strlen( szResult) && szResult[i]==' '; i++);
+	m_csBuffer.Format( "%s", szResult+i);
 	return m_csBuffer;
 }
 
@@ -539,7 +541,7 @@ BOOL CEdid::AcerHack( CStringA &csSerial, Standard_EDID *myRecord)
 			// Heuristic confirm for
 			// AL1916 (0xAD49), AL1923 (0x0783) B223W (0x0018 et 0x0020)
 			// P243W  (0xADAF), X233H  (0x00A8)
-			sprintf( szBuf2, "%08x", myRecord->Serial_Number);
+			sprintf( szBuf2, "%08X", myRecord->Serial_Number);
 			strncpy( szBuffer, szBuf1, 9);
 			strncpy( szBuffer+8, szBuf2, 9);
 			strncpy( szBuffer+16, szBuf1+8, 5);
@@ -585,6 +587,9 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 		while (lpfnSetupDiEnumDeviceInfo( hDeviceInfoSet, dwIndex, &spDeviceInfo))
 		{
 			myMonitor.Clear();
+			csCaption.Empty();
+			csDescription.Empty();
+			csSerial.Empty();
 			if (GetDisplayEDID( hDeviceInfoSet, &spDeviceInfo, myRecord))
 			{
 				myMonitor.SetManufacturer( CA2T( GetManufacturerName( myRecord.Manufacturer_ID)));
@@ -629,12 +634,13 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 					break;
 				}
 				myMonitor.SetType( CA2T( DecodeDPMSFlag( myRecord.DPMS_Flags)));
-				AddLog( _T( "\tEDID : Monitor %s.%04X.%8X (%s)\n"), 
-					myRecord.Manufacturer_ID, (DWORD)myRecord.EDID_ID_Code, (DWORD)myRecord.Serial_Number,
-					csSerial);
+				AddLog( _T( "\tEDID : Monitor %s, Serial "), CA2T( csDescription));
+				AddLog( _T( "<%s>"), CA2T( csSerial));
 				// Acer monitors have bogus serial
 				if (AcerHack( csSerial, &myRecord))
-					AddLog( _T( "\tEDID Acer Fix: Change Serial Number to %s\n"), csSerial);
+					AddLog( _T( ", Acer Fix: Change Serial Number to <%s>\n"), CA2T( csSerial));
+				else
+					AddLog( _T( "\n"), CA2T( csSerial));
 				myMonitor.SetCaption( CA2T( csCaption));
 				myMonitor.SetDescription( CA2T( csDescription));
 				if (myMonitor.IsValidSerial( CA2T( csSerial)))
@@ -671,6 +677,9 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 		while (lpfnSetupDiEnumDeviceInfo( hDeviceInfoSet, dwIndex, &spDeviceInfo))
 		{
 			myMonitor.Clear();
+			csCaption.Empty();
+			csDescription.Empty();
+			csSerial.Empty();
 			if (GetDisplayEDID( hDeviceInfoSet, &spDeviceInfo, myRecord))
 			{
 				myMonitor.SetManufacturer( CA2T( GetManufacturerName( myRecord.Manufacturer_ID)));
@@ -715,12 +724,13 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 					break;
 				}
 				myMonitor.SetType( CA2T( DecodeDPMSFlag( myRecord.DPMS_Flags)));
-				AddLog( _T( "\tEDID : Monitor %s.%04X.%8X (%s)\n"), 
-					myRecord.Manufacturer_ID, (DWORD)myRecord.EDID_ID_Code, (DWORD)myRecord.Serial_Number,
-					csSerial);
+				AddLog( _T( "\tEDID : Monitor %s, Serial "), CA2T( csDescription));
+				AddLog( _T( "<%s>"), CA2T( csSerial));
 				// Acer monitors have bogus serial
 				if (AcerHack( csSerial, &myRecord))
-					AddLog( _T( "\tEDID Acer Fix: Change Serial Number to %s\n"), csSerial);
+					AddLog( _T( ", Acer Fix: Change Serial Number to <%s>\n"), CA2T( csSerial));
+				else
+					AddLog( _T( "\n"), CA2T( csSerial));
 				myMonitor.SetCaption( CA2T( csCaption));
 				myMonitor.SetDescription( CA2T( csDescription));
 				myMonitor.SetSerial( CA2T( csSerial));
