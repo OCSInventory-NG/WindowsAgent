@@ -39,19 +39,32 @@ CNotifyUser::CNotifyUser(void)
 		// Assuming it is a recent OS
 		m_bIsVistaOrHigher = TRUE;
 	// There is no session console
-	m_dwSessionID = OCS_NO_WTS_SESSION_ID;
+	m_hUserToken = NULL;
+	// Default user notification timeout is infinite
+	m_dwTimeOut = INFINITE;
 }
 
 CNotifyUser::~CNotifyUser(void)
 {
+	if (m_hUserToken != NULL)
+	{
+		CloseHandle( m_hUserToken);
+		m_hUserToken = NULL;
+	}
 }
 
 BOOL CNotifyUser::getActiveConsoleSessionID()
 {
 	PWTS_SESSION_INFO pSessionInfo = NULL;
-	DWORD dwCount;
+	DWORD dwCount,
+		  dwSessionID;
 
-	m_dwSessionID = OCS_NO_WTS_SESSION_ID;
+	dwSessionID = OCS_NO_WTS_SESSION_ID;
+	if (m_hUserToken != NULL)
+	{
+		CloseHandle( m_hUserToken);
+		m_hUserToken = NULL;
+	}
 	// Get list of session opened on server
 	if (!WTSEnumerateSessions(	WTS_CURRENT_SERVER_HANDLE, // Server handle
 								0,				// Reserved
@@ -60,17 +73,27 @@ BOOL CNotifyUser::getActiveConsoleSessionID()
 								&dwCount)		// Number of WTS_SESSION_INFO returned 
 		|| (dwCount < 1))
 	{
-		getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => Failed to enumerate WTS sessions (%s)"), LookupError( GetLastError()));
+		getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "LOG_PRIORITY_ERROR => Failed to enumerate WTS sessions (%s) ?"), LookupError( GetLastError()));
 		return FALSE;
 	}
 	// Search for active console session
-	for (DWORD dwIndex=0; (dwIndex<dwCount) && (m_dwSessionID == OCS_NO_WTS_SESSION_ID); dwIndex++)
+	for (DWORD dwIndex=0; (dwIndex<dwCount) && (dwSessionID == OCS_NO_WTS_SESSION_ID); dwIndex++)
 	{
 		if (pSessionInfo[dwIndex].State == WTSActive)
 			// This is the first active session, probably the console one, so save it
-			m_dwSessionID = pSessionInfo[dwIndex].SessionId;
+			dwSessionID = pSessionInfo[dwIndex].SessionId;
 	}					
 	WTSFreeMemory( pSessionInfo);
+	// Retrieve the active session ID user token. This is the token that
+	// will be used for creating the interactive UI process. 
+	if (!WTSQueryUserToken( dwSessionID, &m_hUserToken))
+	{
+		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to call WTSQueryUserToken (%s)"), LookupError( GetLastError()));
+		if (m_hUserToken != NULL)
+			CloseHandle( m_hUserToken);
+		m_hUserToken = NULL;
+		return FALSE;
+	}
 	return TRUE;
 }
 
@@ -78,43 +101,31 @@ UINT CNotifyUser::displayAsConnectedUser( CString &csCommand)
 {
 	STARTUPINFO			si = {0};
 	PROCESS_INFORMATION pi = {0};
-	HANDLE				hToken = NULL,
-						hDuplicatedToken = NULL;
+	HANDLE				hDuplicatedToken = NULL;
 	LPVOID				lpEnvironment = NULL;
-	DWORD				dwExitCode;
+	DWORD				dwExitCode,
+						dwResult;
+
+	ASSERT( m_hUserToken);
 
 	si.cb = sizeof(si);
-	// Retrieve the active session ID user token. This is the token that
-	// will be used for creating the interactive UI process. 
-	if (!WTSQueryUserToken( m_dwSessionID, &hToken))
-	{
-		getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => Failed to call WTSQueryUserToken (%s)"), LookupError( GetLastError()));
-		if (hToken != NULL)
-			CloseHandle( hToken);
-		m_uResult = OCS_NOTIFY_APP_GENERIC_ERROR;
-		return m_uResult;
-	}
 	// Duplicate the token so that it can be used to create a process
-	if (!DuplicateTokenEx( hToken, MAXIMUM_ALLOWED, NULL, SecurityIdentification, TokenPrimary, &hDuplicatedToken))
+	if (!DuplicateTokenEx( m_hUserToken, MAXIMUM_ALLOWED, NULL, SecurityIdentification, TokenPrimary, &hDuplicatedToken))
 	{
-		getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => Failed to call DuplicateTokenEx (%s)"), LookupError( GetLastError()));
+		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to call DuplicateTokenEx (%s)"), LookupError( GetLastError()));
 		if (hDuplicatedToken != NULL)
 			CloseHandle( hDuplicatedToken);
-		if (hToken != NULL)
-			CloseHandle( hToken);
 		m_uResult = OCS_NOTIFY_APP_GENERIC_ERROR;
 		return m_uResult;
 	}
 	// Create an environment block for the interactive process
 	if (!CreateEnvironmentBlock( &lpEnvironment, hDuplicatedToken, FALSE))
 	{
-		getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => Failed to call CreateEnvironmentBlock (%s)"), LookupError( GetLastError()));
+		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to call CreateEnvironmentBlock (%s)"), LookupError( GetLastError()));
 		if (lpEnvironment != NULL)
 			DestroyEnvironmentBlock( lpEnvironment);
 		if (hDuplicatedToken != NULL)
 			CloseHandle( hDuplicatedToken);
-		if (hToken != NULL)
-			CloseHandle( hToken);
 		m_uResult = OCS_NOTIFY_APP_GENERIC_ERROR;
 		return m_uResult;
 	}
@@ -125,30 +136,29 @@ UINT CNotifyUser::displayAsConnectedUser( CString &csCommand)
 							CREATE_UNICODE_ENVIRONMENT, lpEnvironment, 
 							getInstallFolder(), &si, &pi))
 	{
-		getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => Failed to call CreateProcessAsUser (%s)"), LookupError( GetLastError()));
+		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to call CreateProcessAsUser (%s)"), LookupError( GetLastError()));
 		csCommand.ReleaseBuffer();
 		if (lpEnvironment != NULL)
 			DestroyEnvironmentBlock( lpEnvironment);
 		if (hDuplicatedToken != NULL)
 			CloseHandle( hDuplicatedToken);
-		if (hToken != NULL)
-			CloseHandle( hToken);
 		m_uResult = OCS_NOTIFY_APP_GENERIC_ERROR;
 		return m_uResult;
 	}
 	csCommand.ReleaseBuffer();
 	CloseHandle( pi.hThread);
 	// Wait for process to terminate
-	if (WaitForSingleObject( pi.hProcess, INFINITE) == WAIT_FAILED)
+	if ((dwResult = WaitForSingleObject( pi.hProcess, m_dwTimeOut)) != WAIT_OBJECT_0)
 	{
-		getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => Failed to call WaitForSingleObject (%s)"), LookupError( GetLastError()));
+		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to call WaitForSingleObject (%s)"), LookupError( GetLastError()));
+		if (dwResult == WAIT_TIMEOUT)
+			// Kill process
+			TerminateProcess(  pi.hProcess, WAIT_TIMEOUT);
 		CloseHandle( pi.hProcess);
 		if (lpEnvironment != NULL)
 			DestroyEnvironmentBlock( lpEnvironment);
 		if (hDuplicatedToken != NULL)
 			CloseHandle( hDuplicatedToken);
-		if (hToken != NULL)
-			CloseHandle( hToken);
 		m_uResult = OCS_NOTIFY_APP_ALREADY_RUNNING_ERROR;
 		return m_uResult;
 	}
@@ -157,14 +167,12 @@ UINT CNotifyUser::displayAsConnectedUser( CString &csCommand)
 		m_uResult = dwExitCode;
 	else
 	{
-		getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => Failed to call GetExitCodeProcess (%s)"), LookupError( GetLastError()));
+		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to call GetExitCodeProcess (%s)"), LookupError( GetLastError()));
 		CloseHandle( pi.hProcess);
 		if (lpEnvironment != NULL)
 			DestroyEnvironmentBlock( lpEnvironment);
 		if (hDuplicatedToken != NULL)
 			CloseHandle( hDuplicatedToken);
-		if (hToken != NULL)
-			CloseHandle( hToken);
 		m_uResult = OCS_NOTIFY_APP_GENERIC_ERROR;
 		return m_uResult;
 	}
@@ -173,8 +181,6 @@ UINT CNotifyUser::displayAsConnectedUser( CString &csCommand)
 		DestroyEnvironmentBlock( lpEnvironment);
 	if (hDuplicatedToken != NULL)
 		CloseHandle( hDuplicatedToken);
-	if (hToken != NULL)
-		CloseHandle( hToken);
 	getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => OcsNotifyUser exit code is %u"), m_uResult);
 	return m_uResult;
 }
@@ -183,7 +189,8 @@ UINT CNotifyUser::displayAsDefaultUser( CString &csCommand)
 {
 	STARTUPINFO			si = {0};
 	PROCESS_INFORMATION pi = {0};
-	DWORD				dwExitCode;
+	DWORD				dwExitCode,
+						dwResult;
 
 	si.cb = sizeof(si);
 	// Create the process using the current user’s context
@@ -191,7 +198,7 @@ UINT CNotifyUser::displayAsDefaultUser( CString &csCommand)
 						NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS | CREATE_NEW_CONSOLE,
 						NULL, getInstallFolder(), &si, &pi) == FALSE)
 	{
-		getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => Failed to call CreateProcess (%s)"), LookupError( GetLastError()));
+		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to call CreateProcess (%s)"), LookupError( GetLastError()));
 		csCommand.ReleaseBuffer();
 		m_uResult = OCS_NOTIFY_APP_GENERIC_ERROR;
 		return m_uResult;
@@ -199,9 +206,12 @@ UINT CNotifyUser::displayAsDefaultUser( CString &csCommand)
 	csCommand.ReleaseBuffer();
 	CloseHandle( pi.hThread);
 	// Wait for process to terminate
-	if (WaitForSingleObject( pi.hProcess, INFINITE) == WAIT_FAILED)
+	if ((dwResult = WaitForSingleObject( pi.hProcess, m_dwTimeOut)) != WAIT_OBJECT_0)
 	{
-		getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => Failed to call WaitForSingleObject (%s)"), LookupError( GetLastError()));
+		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to call WaitForSingleObject (%s)"), LookupError( GetLastError()));
+		if (dwResult == WAIT_TIMEOUT)
+			// Kill process
+			TerminateProcess(  pi.hProcess, WAIT_TIMEOUT);
 		CloseHandle( pi.hProcess);
 		m_uResult = OCS_NOTIFY_APP_ALREADY_RUNNING_ERROR;
 		return m_uResult;
@@ -211,7 +221,7 @@ UINT CNotifyUser::displayAsDefaultUser( CString &csCommand)
 		m_uResult = dwExitCode;
 	else
 	{
-		getOcsLogger()->log(  LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => Failed to call GetExitCodeProcess (%s)"), LookupError( GetLastError()));
+		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to call GetExitCodeProcess (%s)"), LookupError( GetLastError()));
 		CloseHandle( pi.hProcess);
 		m_uResult = OCS_NOTIFY_APP_GENERIC_ERROR;
 		return m_uResult;
@@ -227,20 +237,18 @@ UINT CNotifyUser::display( CString &csCommand)
 	if (!getActiveConsoleSessionID())
 	{
 		// Error enumerating sessions
-		m_uResult = OCS_NOTIFY_APP_GENERIC_ERROR;
-		return m_uResult;
-	}
-	if (m_dwSessionID == OCS_NO_WTS_SESSION_ID)
-	{
-		// No active console session
-		if (m_bIsVistaOrHigher)
+		getOcsLogger()->log(  LOG_PRIORITY_NOTICE, _T( "NOTIFY_USER => Assuming not running under System service account, but under connected user account, and setting user answer timeout to <%u> minutes"), USER_ANSWER_TIME_OUT);
+		m_dwTimeOut = USER_ANSWER_TIME_OUT * 60 * 1000;
+		if (m_hUserToken != NULL)
 		{
-			// Vista or hgher, service cannot display without user connected,
-			// assuming OK
-			m_uResult = OCS_NOTIFY_APP_OK;
-			return m_uResult;
+			CloseHandle( m_hUserToken);
+			m_hUserToken = NULL;
 		}
+	}
+	if (m_hUserToken == NULL)
+	{
 		// No session console, but service can display even if nobody logged on
+		// Or running under user account
 		return displayAsDefaultUser( csCommand);
 	}
 	// User connected on session console
@@ -250,6 +258,8 @@ UINT CNotifyUser::display( CString &csCommand)
 UINT CNotifyUser::AskQuestion( LPCTSTR lpstrText)
 {
 	CString csCommand;
+
+	ASSERT( lpstrText);
 
 	// Generate command
 	csCommand.Format( _T( "\"%s\\%s\" /MSG=\"%s\""), getInstallFolder(), OCS_NOTIFY_USER_COMMAND, lpstrText);
@@ -263,8 +273,10 @@ UINT CNotifyUser::ShowInformation( LPCTSTR lpstrText)
 {
 	CString csCommand;
 
+	ASSERT( lpstrText);
+
 	// Generate command
-	csCommand.Format( _T( "\"%s\\%s\" /NOCANCEL /MSG=\"%s\""), getInstallFolder(), OCS_NOTIFY_USER_COMMAND, lpstrText);
+	csCommand.Format( _T( "\"%s\\%s\" /MSGBOX /NOCANCEL /MSG=\"%s\""), getInstallFolder(), OCS_NOTIFY_USER_COMMAND, lpstrText);
 	if (getAgentConfig()->isDebugRequired() >= OCS_DEBUG_MODE_TRACE)
 		// Enable debugging
 		csCommand.Append( _T( " /DEBUG"));
@@ -274,6 +286,8 @@ UINT CNotifyUser::ShowInformation( LPCTSTR lpstrText)
 UINT CNotifyUser::ShowPreInstall( LPCTSTR lpstrText, BOOL bCancelAllowed, BOOL bDelayAllowed, UINT uTimeOut)
 {
 	CString csCommand;
+
+	ASSERT( lpstrText);
 
 	// Generate command
 	csCommand.Format( _T( "\"%s\\%s\" /PREINSTALL"), getInstallFolder(), OCS_NOTIFY_USER_COMMAND);
@@ -292,5 +306,41 @@ UINT CNotifyUser::ShowPreInstall( LPCTSTR lpstrText, BOOL bCancelAllowed, BOOL b
 	// Message to display
 	csCommand.AppendFormat( _T( " /MSG=\"%s\""), lpstrText);
 	return display( csCommand);
+}
+
+UINT CNotifyUser::AskTag( LPCTSTR lpstrText, CString &csTag)
+{
+	CString		csCommand, csFile;
+	TCHAR		szPath[ _MAX_PATH+1];
+	CStdioFile	cFile;
+
+	ASSERT( lpstrText);
+
+	if (!GetTempPath( _MAX_PATH, szPath))
+	{
+		m_uResult = OCS_NOTIFY_APP_GENERIC_ERROR;
+		return m_uResult;
+	}
+	csFile.Format( _T( "%s\\OCS_ASK_TAG_TO_USER.txt"), szPath);
+	// Generate command
+	csCommand.Format( _T( "\"%s\\%s\" /ASKTAG /MSG=\"%s\" /FILE=\"%s\""), getInstallFolder(), OCS_NOTIFY_USER_COMMAND, lpstrText, csFile);
+	if (getAgentConfig()->isDebugRequired() >= OCS_DEBUG_MODE_TRACE)
+		// Enable debugging
+		csCommand.Append( _T( " /DEBUG"));
+	if (display( csCommand))
+		// Cancel, delay or error
+		return m_uResult;
+	// Read file result content
+	if (!cFile.Open( csFile, CFile::modeRead | CFile::typeText))
+	{
+		getOcsLogger()->log( LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to read Tag value from file <%s>: %s"), csTag, LookupError( GetLastError())); 
+		m_uResult = OCS_NOTIFY_APP_GENERIC_ERROR;
+		return m_uResult;
+	}
+	cFile.ReadString( csTag);
+	cFile.Close();
+	cFile.Remove( csFile);
+	getOcsLogger()->log( LOG_PRIORITY_DEBUG, _T( "NOTIFY_USER => Read Tag value <%s> from file <%s>"), csTag, csFile); 
+	return m_uResult;
 }
 

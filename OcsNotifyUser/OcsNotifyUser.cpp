@@ -17,6 +17,7 @@
 #include "OCSInventory Front.h"
 #include "NotifyUser.h"
 #include "DownloadDlg.h"
+#include "TagInputDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -65,9 +66,7 @@ BOOL COcsNotifyUserApp::InitInstance()
 		InitCommonControlsEx(&InitCtrls);
 
 		if (!CWinApp::InitInstance())
-		{
 			return FALSE; // terminates the application
-		}
 
 		// Logger
 		CTime	cStartTime;		// Start time of the inventory check
@@ -134,12 +133,15 @@ BOOL COcsNotifyUserApp::InitInstance()
 			if (!displayMessageBox())
 				m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => failed to display standard MessageBox!")); 
 			break;
+		case NOTIFY_TYPE_ASKTAG:
+			// Display standard messagebox
+			if (!askTagDialogBox())
+				m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => failed to display AskTag DialogBox!")); 
+			break;
 		default:
 			m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => wrong notification type!")); 
 			break;
 		}
-
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "Notification Tool => Exit code is %d"), m_nExitCode);
 	}
 	catch( CException *pEx)
 	{
@@ -163,8 +165,8 @@ BOOL COcsNotifyUserApp::InitInstance()
 
 int COcsNotifyUserApp::ExitInstance() 
 {
-	if (CWinApp::ExitInstance() != 0)
-		m_nExitCode = OCS_NOTIFY_APP_GENERIC_ERROR;
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "Notification Tool => Exit code is %d"), m_nExitCode);
+	CWinApp::ExitInstance();
 	return m_nExitCode;
 }
 
@@ -197,15 +199,29 @@ BOOL COcsNotifyUserApp::parseCommandLine()
 	// /DEBUG 
 	if (isRequired( m_lpCmdLine, _T( "debug")))
 		m_pLogger->setLogLevel( LOG_PRIORITY_DEBUG);
-	// /PREINSTALL
+	// Notification type
 	if (isRequired( m_lpCmdLine, _T( "preinstall")))
-		// Show preinstall dialog box
+	{
+		// Show preinstall dialog box /PREINSTALL
 		m_uNotifcation = NOTIFY_TYPE_PREINSTALL;
+	}
+	else if (isRequired( m_lpCmdLine, _T( "asktag")))
+	{
+		// Show askTag dialog box /ASKTAG
+		m_uNotifcation = NOTIFY_TYPE_ASKTAG;
+		// Ensure /FILE is provided
+		if (isRequired( m_lpCmdLine, _T( "file")))
+			m_csFile = getParamValue( m_lpCmdLine, _T( "file"));
+		else
+			return FALSE;
+	}
 	else
-		// Show default messagebox
+	{
+		// Show default messagebox /MSGBOX
 		m_uNotifcation = NOTIFY_TYPE_MSGBOX;
+	}
 	// /MSG=message (mandatory)
-	if (isRequired(  m_lpCmdLine, _T( "msg")))
+	if (isRequired( m_lpCmdLine, _T( "msg")))
 		m_csMessage = getParamValue( m_lpCmdLine, _T( "msg"));
 	else
 		return FALSE;
@@ -282,5 +298,25 @@ BOOL COcsNotifyUserApp::displayMessageBox()
 		else
 			return FALSE;
 	}
+	return TRUE;
+}
+
+
+BOOL COcsNotifyUserApp::askTagDialogBox()
+{
+	CTagInputDlg cDlg;
+	CStdioFile	 cFile;
+
+	cDlg.setLabelText( m_csMessage);
+	if (cDlg.DoModal() == IDOK)
+		m_nExitCode = OCS_NOTIFY_APP_OK;
+	else
+		return FALSE;
+	// Store result into file
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "Notification Tool => Writing Tag value <%s> to file <%s>"), cDlg.getTagValue(), m_csFile); 
+	if (!cFile.Open( m_csFile, CFile::modeCreate | CFile::modeWrite | CFile::typeText))
+		return FALSE;
+	cFile.WriteString( cDlg.getTagValue());
+	cFile.Close();
 	return TRUE;
 }

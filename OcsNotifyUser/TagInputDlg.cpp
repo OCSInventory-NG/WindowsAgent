@@ -12,7 +12,7 @@
 //
 
 #include "stdafx.h"
-#include "ocsinventory.h"
+#include "OcsNotifyUser.h"
 #include "TagInputDlg.h"
 
 #ifdef _DEBUG

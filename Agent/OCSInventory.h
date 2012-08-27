@@ -34,7 +34,7 @@
 #include "CapIpdiscover.h"
 #include "CapDownload.h"
 #include "CapExecute.h"
-#include "TagInputDlg.h"
+#include "NotifyUser.h"
 
 // Application exit codes
 #define OCS_APP_NO_ERROR				0

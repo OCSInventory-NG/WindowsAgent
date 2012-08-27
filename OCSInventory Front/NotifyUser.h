@@ -28,6 +28,7 @@
 #define OCS_NOTIFY_APP_GENERIC_ERROR			3
 #define OCS_NOTIFY_APP_ALREADY_RUNNING_ERROR	4
 
+#define USER_ANSWER_TIME_OUT					120 // 120 minutes
 
 class OCSINVENTORYFRONT_API CNotifyUser
 {
@@ -47,15 +48,20 @@ public:
 	// Return must be 0 = OK, 1 = Cancel, 2 = Delay, otherwise error
 	UINT ShowPreInstall( LPCTSTR lpstrText, BOOL bCancelAllowed = FALSE, BOOL bDelayAllowed = FALSE, UINT uTimeOut = 0);
 
+	// Ask TAG to user and store result into csTag
+	// Return must be 0 = OK, otherwise error
+	UINT AskTag( LPCTSTR lpstrText, CString &csTag);
+
 private:
 	BOOL getActiveConsoleSessionID();
 	UINT display( CString &csCommand);
 	UINT displayAsDefaultUser( CString &csCommand); 
 	UINT displayAsConnectedUser( CString &csCommand);
 
-	DWORD m_dwSessionID;		// Active console session ID
+	HANDLE m_hUserToken;		// Active console session user token or NULL
 	BOOL  m_bIsVistaOrHigher;	// Is Vista or higher
 	UINT  m_uResult;
+	DWORD m_dwTimeOut;
 };
 
 #endif // _OCS_NOTIFY_USER_H_INCLUDED_

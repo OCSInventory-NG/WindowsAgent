@@ -313,12 +313,12 @@ BOOL COCSInventoryApp::InitInstance()
 				m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "AGENT => Prompting user for TAG value")); 
 				if (csLabelText.IsEmpty())
 					csLabelText = _T( "Please, enter TAG value");
-				CTagInputDlg tagDlg;
-				tagDlg.setLabelText( csLabelText);
-				if (tagDlg.DoModal() == IDOK)
+				CNotifyUser cDlg;
+				CString csTag;
+				if (cDlg.AskTag( csLabelText, csTag) == OCS_NOTIFY_APP_OK)
 				{
 					// Write tag
-					if (!m_pConfig->writeAccountInfos( _T( "TAG"), tagDlg.getTagValue()))
+					if (!m_pConfig->writeAccountInfos( _T( "TAG"), csTag))
 					{
 						m_pLogger->log(LOG_PRIORITY_ERROR, _T( "AGENT => Cannot write TAG <%s>"), LookupError( GetLastError()));
 					}

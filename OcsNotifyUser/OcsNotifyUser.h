@@ -24,6 +24,7 @@
 // Dialog box type
 #define NOTIFY_TYPE_PREINSTALL	1			// Notification before package installation
 #define NOTIFY_TYPE_MSGBOX		2			// Default messagebox notification
+#define NOTIFY_TYPE_ASKTAG		3			// Ask TAG to user
 
 // COcsNotifyUserApp:
 // See OcsNotifyUser.cpp for the implementation of this class
@@ -51,6 +52,8 @@ protected: //Attributes
 	BOOL displayPreinstallDialogBox();
 	// Display standard MessageBox
 	BOOL displayMessageBox();
+	// Display ask tag DialogBox
+	BOOL askTagDialogBox();
 
 protected: //Attributes
 	CLog	*m_pLogger;
@@ -59,6 +62,7 @@ protected: //Attributes
 	BOOL	m_bCancel;			// Is cancel allowed or not
 	BOOL	m_bDelay;			// Is delaying action allowed or not
 	UINT	m_uTimeOut;			// Timeout for displaying message to user (OK assumed)
+	CString m_csFile;			// File to store data
 	int		m_nExitCode;		// Application exit code
 };
 
