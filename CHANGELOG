@@ -1,3 +1,5 @@
+  * Prompt user for TAG using OcsNotifyUser tool and optimze User notification code
+  * Fix bug #104079: Try to check if part of memory is used by video, either less than 32 MB or less than 10%
   * Fix bug in ACER display's serial number retrieval
   * Do not launch OcsSystray at the end of setup, to avoid it running under system account when agent is upgraded using agent itself and package deployment
   * Display user notification tool version into Systray status window

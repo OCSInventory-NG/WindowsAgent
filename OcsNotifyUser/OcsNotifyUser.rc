@@ -67,11 +67,6 @@ BEGIN
     PUSHBUTTON      "Abbrechen",IDCANCEL,242,162,50,14
 END
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
 IDD_CU DIALOGEX 0, 0, 283, 142
 STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | DS_CENTERMOUSE | WS_POPUP | WS_VISIBLE | WS_CAPTION
 CAPTION "OCS Inventory NG"
@@ -94,13 +89,6 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO 
 BEGIN
-    IDD_CU, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 276
-        TOPMARGIN, 2
-        BOTTOMMARGIN, 135
-    END
     IDD_WAIT_SETUP_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -115,6 +103,14 @@ BEGIN
         RIGHTMARGIN, 292
         TOPMARGIN, 7
         BOTTOMMARGIN, 176
+    END
+
+    IDD_CU, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 276
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 135
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -134,6 +130,10 @@ STRINGTABLE
 BEGIN
     IDS_AUTO_VALIDATE_STRING "Wird automatisch in %s Sekunden gestartet!"
     IDS_WAIT_SETUP_STRING   "Ihre Maus und Tastatur sind gesperrt, solange die Installation ausgeführt wird.\n\nBitte warten... "
+END
+
+STRINGTABLE 
+BEGIN
     IDS_CANCEL_STRING       "Abbrechen"
     IDS_DELAY_STRING        "Später ausführen!"
 END
@@ -199,11 +199,6 @@ BEGIN
     CTEXT           "Your keyboard and mouse are locked while Setup is running.\n\nPlease, wait... ",IDC_STATUS,7,59,304,53
 END
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
 IDD_CU DIALOGEX 0, 0, 283, 142
 STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | DS_CENTERMOUSE | WS_POPUP | WS_VISIBLE | WS_CAPTION
 CAPTION "OCS Inventory NG"
@@ -226,13 +221,6 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO 
 BEGIN
-    IDD_CU, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 276
-        TOPMARGIN, 2
-        BOTTOMMARGIN, 135
-    END
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -256,6 +244,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 112
     END
+
+    IDD_CU, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 276
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 135
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -274,6 +270,10 @@ STRINGTABLE
 BEGIN
     IDS_AUTO_VALIDATE_STRING "AUTOMATICALLY VALIDATING IN %s SECONDS"
     IDS_WAIT_SETUP_STRING   "Your keyboard and mouse are locked while Setup is running.\n\nPlease wait... "
+END
+
+STRINGTABLE 
+BEGIN
     IDS_CANCEL_STRING       "Cancel"
     IDS_DELAY_STRING        "Later..."
 END
@@ -361,13 +361,6 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO 
 BEGIN
-    IDD_CU, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 276
-        TOPMARGIN, 2
-        BOTTOMMARGIN, 135
-    END
     IDD_DOWNLOAD_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -382,6 +375,14 @@ BEGIN
         RIGHTMARGIN, 311
         TOPMARGIN, 7
         BOTTOMMARGIN, 112
+    END
+
+    IDD_CU, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 276
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 135
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -401,6 +402,10 @@ STRINGTABLE
 BEGIN
     IDS_AUTO_VALIDATE_STRING "VALIDACIÓN AUTOMÁTICA EN %s SEGUNDOS"
     IDS_WAIT_SETUP_STRING   "Su teclado y ratón están bloqueados durante la instalación.\n\nPor favor, espere... "
+END
+
+STRINGTABLE 
+BEGIN
     IDS_CANCEL_STRING       "Cancelar"
     IDS_DELAY_STRING        "Más tarde..."
 END
@@ -488,13 +493,6 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO 
 BEGIN
-    IDD_CU, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 276
-        TOPMARGIN, 2
-        BOTTOMMARGIN, 135
-    END
     IDD_WAIT_SETUP_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -518,6 +516,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 55
     END
+
+    IDD_CU, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 276
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 135
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -536,6 +542,10 @@ STRINGTABLE
 BEGIN
     IDS_AUTO_VALIDATE_STRING "VALIDATION AUTOMATIQUE DANS %s SECONDES"
     IDS_WAIT_SETUP_STRING   "Votre clavier et votre souris sont bloqués durant l'installation.\n\nVeuillez patienter... "
+END
+
+STRINGTABLE 
+BEGIN
     IDS_CANCEL_STRING       "Annuler"
     IDS_DELAY_STRING        "Plus tard..."
 END
@@ -573,8 +583,8 @@ IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ic
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,4,7
- PRODUCTVERSION 2,0,4,7
+ FILEVERSION 2,0,5,0
+ PRODUCTVERSION 2,0,5,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -592,13 +602,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory NG User Notification Provider"
             VALUE "CompanyName", "OCS Inventory NG"
             VALUE "FileDescription", "OCS Inventory NG User Notification Provider"
-            VALUE "FileVersion", "2, 0, 4, 7"
+            VALUE "FileVersion", "2, 0, 5, 0"
             VALUE "InternalName", "OcsNotifyUser.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OcsNotifyUser.exe"
             VALUE "ProductName", "OCS Inventory NG Windows Agent"
-            VALUE "ProductVersion", "2, 0, 4, 7"
+            VALUE "ProductVersion", "2, 0, 5, 0"
         END
     END
     BLOCK "VarFileInfo"
