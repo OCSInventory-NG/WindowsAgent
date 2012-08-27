@@ -495,7 +495,8 @@ BOOL CMarkup::SetDoc( LPCSTR szDoc)
 
 		if (pDoc)
 		{
-			pDoc->Parse( szDoc);
+			if (!pDoc->Parse( szDoc))
+				return FALSE;
 			if (m_pDoc)
 				freeXmlNode( m_pDoc);
 			m_pDoc = pDoc;
