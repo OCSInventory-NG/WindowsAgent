@@ -623,7 +623,8 @@ BOOL CInventoryRequest::runInventory()
 		ULONG ulMemToSet = ulMemStart;
 		ULONG ulDiff = abs( (long)(ulMemTotal - ulMemStart));
 
-		if( ulDiff < 16 )
+		// Try to check if part of memory is used by video, either less than 32 MB or less than 10%
+		if ((ulDiff < 32 ) || ((ulDiff*100/ulMemTotal) < 10)) 
 		{			
 			m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => System Memory set to %lu (instead of %lu)"), ulMemTotal, ulMemStart);
 			ulMemToSet = ulMemTotal;
