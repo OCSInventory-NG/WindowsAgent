@@ -55,6 +55,8 @@ Page custom AskLocalInventory ValidateLocalInventory ""
 ; View before start page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finshed page
+!define MUI_FINISHPAGE_RUN_TEXT "Start OCS inventory NG Systray Applet"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\OcsSystray.exe"
 !insertmacro MUI_PAGE_FINISH
 ; Confirl before uninstall
 !insertmacro MUI_UNPAGE_INSTFILES
