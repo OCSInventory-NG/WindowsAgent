@@ -24,16 +24,17 @@
 
 #define PLUGIN_OK 0
 
-class CInventoryRequest;
 class CPrologRequest;
 class CPrologResponse;
+class CInventoryRequest;
+class CInventoryResponse;
 
 typedef int (*HOOK_START)(void);
-typedef int (*HOOK_END)(void);
-typedef int (*HOOK_CLEAN)(void);
 typedef int (*HOOK_PROLOG_WRITE)(CPrologRequest*);
 typedef int (*HOOK_PROLOG_RESP)(CPrologResponse*);
 typedef int (*HOOK_INVENTORY)(CInventoryRequest*);
+typedef int (*HOOK_END)(CInventoryResponse*);
+typedef int (*HOOK_CLEAN)(void);
 
 #define MAX_PLUGINS 64
 
@@ -41,19 +42,28 @@ class CPlugins
 {
 
 public:
-	void inventoryHook(CInventoryRequest*);
-	void prologWriteHook(CPrologRequest*);
-	void prologRespHook(CPrologResponse*);
-	void endHook();
-	void startHook();
-
 	CPlugins();
 	virtual ~CPlugins();
 
+	// Call plugin Hook when agent loads, typicaly used to initialize plugin
+	void startHook();
+	// Call plugin Hook before sending prolog to server, typically used to add/modify information to prolog request
+	void prologWriteHook(CPrologRequest*);
+	// Call plugin Hook after receiving prolog response from server, typically usd to parse additional data sent by server
+	void prologRespHook(CPrologResponse*);
+	// Call plugin Hook before sending inventory to server, typically used to add/modify inventory information sent to server
+	void inventoryHook(CInventoryRequest*);
+	// Call plugin Hook after receiving inventory response from server, typically usd to parse additional data sent by server
+	void endHook(CInventoryResponse*);
+	// Call plugin Hook when agent exits, typically used to free plugin resources
+	void cleanHook();
+
 private:
 	CLog *m_pLogger;
-	BOOL m_bAlreadyLoaded;
+
 	int Load( LPCTSTR lpstrPath = NULL);
+	void Unload();
+
 	struct _Plugin {
 		CString csName;
 		HINSTANCE hDll;

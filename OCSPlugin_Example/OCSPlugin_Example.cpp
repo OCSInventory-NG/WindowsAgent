@@ -24,32 +24,32 @@ static char THIS_FILE[] = __FILE__;
 CLog* m_pLogger = getOcsLogger();
 
 OCSINVENTORY_API_EXPORTED int OCS_CALL_START_EXPORTED(){
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => Start hook executed"));
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE DLL PLUGIN => Start hook executed to initialize plugin"));
 	return PLUGIN_OK;
 }
 
 OCSINVENTORY_API_EXPORTED int OCS_CALL_PROLOGWRITE_EXPORTED(CPrologRequest* pPrologReq){
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => PrologRead hook executed"));
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE DLL PLUGIN => PrologWrite hook executed before sending prolog to server"));
 	return PLUGIN_OK;
 }
 
 OCSINVENTORY_API_EXPORTED int OCS_CALL_PROLOGRESP_EXPORTED(CPrologResponse* pPrologResp){
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => PrologResp hook executed"));
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE DLL PLUGIN => PrologResp hook executed to parse prolog response from server"));
 	return PLUGIN_OK;
 }
 
 OCSINVENTORY_API_EXPORTED int OCS_CALL_INVENTORY_EXPORTED(CInventoryRequest* pInventory){
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => Inventory hook executed"));
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE DLL PLUGIN => Inventory hook executed before sending inventory to server"));
 	return PLUGIN_OK;
 }
 
-OCSINVENTORY_API_EXPORTED int OCS_CALL_END_EXPORTED(){
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => End hook executed"));
+OCSINVENTORY_API_EXPORTED int OCS_CALL_END_EXPORTED(CInventoryResponse* pInventoryResp){
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE DLL PLUGIN => End hook executed to parse inventory response from server"));
 	return PLUGIN_OK;
 }
 
 OCSINVENTORY_API_EXPORTED int OCS_CALL_CLEAN_EXPORTED(){
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE plugin => Clean hook executed"));
+	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "SAMPLE DLL PLUGIN => Clean hook executed to free plugin resources"));
 	return PLUGIN_OK;
 }
 

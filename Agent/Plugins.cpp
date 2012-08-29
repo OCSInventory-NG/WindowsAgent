@@ -27,41 +27,22 @@ static char THIS_FILE[] = __FILE__;
 
 CPlugins::CPlugins()
 {
-	int nPlugins;
-
-	m_bAlreadyLoaded=FALSE;
 	m_pLogger = getOcsLogger();
-	
-	if(!m_bAlreadyLoaded)
-	{
-		if ((nPlugins = Load()) >= 0)
-		{
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => %d Plug-in(s) succesfully loaded"), nPlugins);
-			m_bAlreadyLoaded = TRUE;
-		}
-		else
-		{
-			m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "PLUGIN => Failed to load Plug-in(s)"));
-		}
-	}
+	Load();
 }
 
 CPlugins::~CPlugins()
 {
-	int pluginNumber;
-	for( pluginNumber=0; pluginNumber<MAX_PLUGINS; pluginNumber++ ){
-		if( m_plugin[pluginNumber].hDll ){
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Freeing Plug-in DLL <%s>"), m_plugin[pluginNumber].csName);
-			FreeLibrary( m_plugin[pluginNumber].hDll );
-		}
-	}
+	Unload();
 }
 
 int CPlugins::Load( LPCTSTR lpstrPath)
 {
-	CString				csPath;
-	int					pluginNumber = 0;
-	BOOL				bFoundPlugins = FALSE;
+	CString	csPath;
+	int		nPlugin = 0,
+			nCount = 0;
+	BOOL	bFoundPlugins = FALSE,
+			bValidPlugin;
 
 	try
 	{
@@ -85,145 +66,180 @@ int CPlugins::Load( LPCTSTR lpstrPath)
 			// Use provided path to search for plugins
 			csPath = lpstrPath;
 		// Search for DLL into path
-		m_pLogger->log( LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Searching for Plug-in DLL(s) in folder <%s>"), csPath);
+		m_pLogger->log( LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Searching for Plug-in DLL(s) in folder <%s>"), csPath);
 		csPath +=  _T( "\\*.dll");
 		bFoundPlugins = cFinder.FindFile( csPath);
 		while (bFoundPlugins)
 		{
+			bValidPlugin = FALSE;
 			// One DLL found, try to load it
 			bFoundPlugins = cFinder.FindNextFile();
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Found Plug-in DLL <%s>"), cFinder.GetFileName());
-			if( (m_plugin[pluginNumber].hDll = LoadLibrary( cFinder.GetFilePath())) == NULL )
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Trying to validate DLL <%s> as a Plug-in"), cFinder.GetFileName());
+			if( (m_plugin[nPlugin].hDll = LoadLibrary( cFinder.GetFilePath())) == NULL )
 			{
-				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "PLUGIN => Failed loading Plug-in DLL <%s>, %s"), cFinder.GetFileName(), LookupError( GetLastError()));
+				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "DLL PLUGIN => Failed loading Plug-in DLL <%s>, %s"), cFinder.GetFileName(), LookupError( GetLastError()));
 				continue;
 			}
 			// Get name
-			m_plugin[pluginNumber].csName = cFinder.GetFileTitle();
+			m_plugin[nPlugin].csName = cFinder.GetFileTitle();
 			// Try to load each API entry
-			if( (m_plugin[pluginNumber].pEnd = (HOOK_END)GetProcAddress( m_plugin[pluginNumber].hDll, "OCS_CALL_END_EXPORTED")) == NULL)
+			if( (m_plugin[nPlugin].pEnd = (HOOK_END)GetProcAddress( m_plugin[nPlugin].hDll, "OCS_CALL_END_EXPORTED")) == NULL)
 			{
-				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "PLUGIN => No End hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
+				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "DLL PLUGIN => No End hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
 			}
-
-			if( (m_plugin[pluginNumber].pStart = (HOOK_START)GetProcAddress( m_plugin[pluginNumber].hDll, "OCS_CALL_START_EXPORTED")) == NULL)
+			else
+				// Hook available, so valid plugin
+				bValidPlugin = TRUE;
+			if( (m_plugin[nPlugin].pStart = (HOOK_START)GetProcAddress( m_plugin[nPlugin].hDll, "OCS_CALL_START_EXPORTED")) == NULL)
 			{
-				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "PLUGIN => No Start hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
+				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "DLL PLUGIN => No Start hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
 			}
-
-			if( (m_plugin[pluginNumber].pClean = (HOOK_CLEAN)GetProcAddress( m_plugin[pluginNumber].hDll, "OCS_CALL_CLEAN_EXPORTED")) == NULL)
+			else
+				// Hook available, so valid plugin
+				bValidPlugin = TRUE;
+			if( (m_plugin[nPlugin].pClean = (HOOK_CLEAN)GetProcAddress( m_plugin[nPlugin].hDll, "OCS_CALL_CLEAN_EXPORTED")) == NULL)
 			{
-				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "PLUGIN => No Clean hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
+				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "DLL PLUGIN => No Clean hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
 			}
-
-			if( (m_plugin[pluginNumber].pInventory = (HOOK_INVENTORY)GetProcAddress( m_plugin[pluginNumber].hDll, "OCS_CALL_INVENTORY_EXPORTED")) == NULL)
+			else
+				// Hook available, so valid plugin
+				bValidPlugin = TRUE;
+			if( (m_plugin[nPlugin].pInventory = (HOOK_INVENTORY)GetProcAddress( m_plugin[nPlugin].hDll, "OCS_CALL_INVENTORY_EXPORTED")) == NULL)
 			{
-				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "PLUGIN => No Inventory hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
+				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "DLL PLUGIN => No Inventory hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
 			}
-
-			if( (m_plugin[pluginNumber].pPrologWrite = (HOOK_PROLOG_WRITE)GetProcAddress( m_plugin[pluginNumber].hDll, "OCS_CALL_PROLOGWRITE_EXPORTED")) == NULL)
+			else
+				// Hook available, so valid plugin
+				bValidPlugin = TRUE;
+			if( (m_plugin[nPlugin].pPrologWrite = (HOOK_PROLOG_WRITE)GetProcAddress( m_plugin[nPlugin].hDll, "OCS_CALL_PROLOGWRITE_EXPORTED")) == NULL)
 			{
-				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "PLUGIN => No Prolog Read hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
+				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "DLL PLUGIN => No Prolog Read hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
 			}
-
-			if( (m_plugin[pluginNumber].pPrologResp = (HOOK_PROLOG_RESP)GetProcAddress( m_plugin[pluginNumber].hDll, "OCS_CALL_PROLOGRESP_EXPORTED")) == NULL)
+			else
+				// Hook available, so valid plugin
+				bValidPlugin = TRUE;
+			if( (m_plugin[nPlugin].pPrologResp = (HOOK_PROLOG_RESP)GetProcAddress( m_plugin[nPlugin].hDll, "OCS_CALL_PROLOGRESP_EXPORTED")) == NULL)
 			{
-				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "PLUGIN => No Prolog response hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
+				m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "DLL PLUGIN => No Prolog response hook for Plug-in <%s>, %s"), cFinder.GetFileTitle(), LookupError( GetLastError()));
 			}
-			// Increase plugin number
-			pluginNumber++;
+			else
+				// Hook available, so valid plugin
+				bValidPlugin = TRUE;
+			if (bValidPlugin)
+			{
+				// At least one hook available and plugin valid
+				m_pLogger->log( LOG_PRIORITY_NOTICE,  _T( "DLL PLUGIN => Plug-in <%s> loaded"), m_plugin[nPlugin].csName);
+				// Store and increase plugin number
+				nPlugin++;
+			}
+			else
+			{
+				// Do not store DLL as a plugin
+				m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => DLL <%s> is not a valid Plug-in"), cFinder.GetFileName());
+				FreeLibrary( m_plugin[nPlugin].hDll );
+			}
+			nCount++;
 		}
 		cFinder.Close();
-		return pluginNumber;
+		m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => %d DLL Plug-in(s) succesfully loaded on %d DLL(s) found"), nPlugin, nCount);
+		return nPlugin;
 	}
 	catch (CException *pEx)
 	{
-		m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "PLUGIN => Error while parsing Plug-in directory <%s>"), LookupError( pEx));
+		m_pLogger->log( LOG_PRIORITY_WARNING,  _T( "DLL PLUGIN => Error while parsing Plug-in directory <%s>"), LookupError( pEx));
 		pEx->Delete();
 		return -1;
 	}
 }
 
-
-
-void CPlugins::startHook()
+void CPlugins::Unload()
 {
-	for( int pluginNumber=0; pluginNumber<MAX_PLUGINS; pluginNumber++ ){
-		
-		if(!m_plugin[pluginNumber].hDll)
-			break;
-
-		if(m_plugin[pluginNumber].pStart){
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Launching start hook for Plug-in <%s>"), m_plugin[pluginNumber].csName);
-			try{
-				if( (*m_plugin[pluginNumber].pStart)() != PLUGIN_OK ){
-					m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "PLUGIN => Hook:start failed for Plug-in <%s>"),m_plugin[pluginNumber].csName);
-				}
-				else{
-					m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Hook:start successful for Plug-in <%s>"),m_plugin[pluginNumber].csName);		
-				}
-			}
-			catch(...){
-				m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "PLUGIN => Hook:start for Plug-in <%s> raised an exception!!"),m_plugin[pluginNumber].csName);
-			}
-		}
-		else{
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => No start hook for Plug-in <%s>"), m_plugin[pluginNumber].csName);
+	int nPlugin;
+	for( nPlugin=0; nPlugin<MAX_PLUGINS; nPlugin++ ){
+		if( m_plugin[nPlugin].hDll ){
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Freeing Plug-in DLL <%s>"), m_plugin[nPlugin].csName);
+			FreeLibrary( m_plugin[nPlugin].hDll );
 		}
 	}
 }
 
-void CPlugins::endHook()
+void CPlugins::startHook()
 {
-	for( int pluginNumber=0; pluginNumber<MAX_PLUGINS; pluginNumber++ ){
-
-		if(!m_plugin[pluginNumber].hDll)
+	for( int nPlugin=0; nPlugin<MAX_PLUGINS; nPlugin++ ){
+		
+		if(!m_plugin[nPlugin].hDll)
 			break;
 
-		if(m_plugin[pluginNumber].pEnd){
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Launching end hook for Plug-in <%s>"), m_plugin[pluginNumber].csName);
+		if(m_plugin[nPlugin].pStart){
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Launching start hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
 			try{
-				if( (*m_plugin[pluginNumber].pEnd)() != PLUGIN_OK ){
-					m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "PLUGIN => Hook:end failed for Plug-in <%s>"),m_plugin[pluginNumber].csName);
+				if( (*m_plugin[nPlugin].pStart)() != PLUGIN_OK ){
+					m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:start failed for Plug-in <%s>"),m_plugin[nPlugin].csName);
 				}
 				else{
-					m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Hook:end successful for Plug-in <%s>"),m_plugin[pluginNumber].csName);		
+					m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Hook:start successful for Plug-in <%s>"),m_plugin[nPlugin].csName);		
 				}
 			}
 			catch(...){
-				m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "PLUGIN => Hook:end for Plug-in <%s> raised an exception!!"),m_plugin[pluginNumber].csName);
+				m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:start for Plug-in <%s> raised an exception!!"),m_plugin[nPlugin].csName);
 			}
 		}
 		else{
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => No end hook for Plug-in <%s>"), m_plugin[pluginNumber].csName);
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => No start hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
 		}
 	}
+}
 
+void CPlugins::endHook(CInventoryResponse *pInventoryResp)
+{
+	for( int nPlugin=0; nPlugin<MAX_PLUGINS; nPlugin++ ){
+
+		if(!m_plugin[nPlugin].hDll)
+			break;
+
+		if(m_plugin[nPlugin].pEnd){
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Launching end hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
+			try{
+				if( (*m_plugin[nPlugin].pEnd)(pInventoryResp) != PLUGIN_OK ){
+					m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:end failed for Plug-in <%s>"),m_plugin[nPlugin].csName);
+				}
+				else{
+					m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Hook:end successful for Plug-in <%s>"),m_plugin[nPlugin].csName);		
+				}
+			}
+			catch(...){
+				m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:end for Plug-in <%s> raised an exception!!"),m_plugin[nPlugin].csName);
+			}
+		}
+		else{
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => No end hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
+		}
+	}
 }
 
 void CPlugins::prologRespHook(CPrologResponse* pPrologResp)
 {
-	for( int pluginNumber=0; pluginNumber<MAX_PLUGINS; pluginNumber++ ){
+	for( int nPlugin=0; nPlugin<MAX_PLUGINS; nPlugin++ ){
 
-		if(!m_plugin[pluginNumber].hDll)
+		if(!m_plugin[nPlugin].hDll)
 			break;
 
-		if(m_plugin[pluginNumber].pPrologResp){
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Launching prolog_resp hook for Plug-in <%s>"), m_plugin[pluginNumber].csName);
+		if(m_plugin[nPlugin].pPrologResp){
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Launching prolog_resp hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
 			try{
-				if( (*m_plugin[pluginNumber].pPrologResp)(pPrologResp) != PLUGIN_OK ){
-					m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "PLUGIN => Hook:prolog_resp failed for Plug-in <%s>"),m_plugin[pluginNumber].csName);
+				if( (*m_plugin[nPlugin].pPrologResp)(pPrologResp) != PLUGIN_OK ){
+					m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:prolog_resp failed for Plug-in <%s>"),m_plugin[nPlugin].csName);
 				}
 				else{
-					m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Hook:prolog_resp successful for Plug-in <%s>"),m_plugin[pluginNumber].csName);		
+					m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Hook:prolog_resp successful for Plug-in <%s>"),m_plugin[nPlugin].csName);		
 				}
 			}
 			catch(...){
-				m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "PLUGIN => Hook:inventory for Plug-in <%s> raised an exception!!"),m_plugin[pluginNumber].csName);
+				m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:inventory for Plug-in <%s> raised an exception!!"),m_plugin[nPlugin].csName);
 			}
 		}
 		else{
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => No prolog_resp hook for Plug-in <%s>"), m_plugin[pluginNumber].csName);
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => No prolog_resp hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
 		}
 	}
 
@@ -231,57 +247,82 @@ void CPlugins::prologRespHook(CPrologResponse* pPrologResp)
 
 void CPlugins::prologWriteHook(CPrologRequest *pProlog)
 {
-	for( int pluginNumber=0; pluginNumber<MAX_PLUGINS; pluginNumber++ ){
+	for( int nPlugin=0; nPlugin<MAX_PLUGINS; nPlugin++ ){
 
-		if(!m_plugin[pluginNumber].hDll)
+		if(!m_plugin[nPlugin].hDll)
 			break;
 
-		if(m_plugin[pluginNumber].pPrologWrite){
+		if(m_plugin[nPlugin].pPrologWrite){
 			try{
-				m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Launching prolog_write hook for Plug-in <%s>"), m_plugin[pluginNumber].csName);
-				if( m_plugin[pluginNumber].pPrologWrite(pProlog) != PLUGIN_OK ){
-					m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "PLUGIN => Hook:prolog_write failed for Plug-in <%s>"),m_plugin[pluginNumber].csName);
+				m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Launching prolog_write hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
+				if( m_plugin[nPlugin].pPrologWrite(pProlog) != PLUGIN_OK ){
+					m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:prolog_write failed for Plug-in <%s>"),m_plugin[nPlugin].csName);
 				}
 				else{
-					m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Hook:prolog_write successful for Plug-in <%s>"),m_plugin[pluginNumber].csName);		
+					m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Hook:prolog_write successful for Plug-in <%s>"),m_plugin[nPlugin].csName);		
 				}
 			}
 			catch(...){
-				m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "PLUGIN => Hook:prolog_write for Plug-in <%s> raised an exception!!"),m_plugin[pluginNumber].csName);
+				m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:prolog_write for Plug-in <%s> raised an exception!!"),m_plugin[nPlugin].csName);
 			}
 		}
 		else{
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => No prolog_write hook for Plug-in <%s>"), m_plugin[pluginNumber].csName);
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => No prolog_write hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
 		}
 	}
-
 }
 
 void CPlugins::inventoryHook(CInventoryRequest *pInventory)
 {
-	for( int pluginNumber=0; pluginNumber<MAX_PLUGINS; pluginNumber++ ){
+	for( int nPlugin=0; nPlugin<MAX_PLUGINS; nPlugin++ ){
 
-		if(!m_plugin[pluginNumber].hDll)
+		if(!m_plugin[nPlugin].hDll)
 			break;
 
-		if(m_plugin[pluginNumber].pInventory){
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Launching inventory hook for Plug-in <%s>"), m_plugin[pluginNumber].csName);
+		if(m_plugin[nPlugin].pInventory){
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Launching inventory hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
 
 			try{
-				if( (*m_plugin[pluginNumber].pInventory)(pInventory) != PLUGIN_OK ){
-					m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "PLUGIN => Hook:inventory failed for Plug-in <%s>"),m_plugin[pluginNumber].csName);
+				if( (*m_plugin[nPlugin].pInventory)(pInventory) != PLUGIN_OK ){
+					m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:inventory failed for Plug-in <%s>"),m_plugin[nPlugin].csName);
 				}
 				else{
-					m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => Hook:inventory successful for Plug-in <%s>"),m_plugin[pluginNumber].csName);		
+					m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Hook:inventory successful for Plug-in <%s>"),m_plugin[nPlugin].csName);		
 				}
 			}
 			catch(...){
-				m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "PLUGIN => Hook:inventory for Plug-in <%s> raised an exception!!"),m_plugin[pluginNumber].csName);
+				m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:inventory for Plug-in <%s> raised an exception!!"),m_plugin[nPlugin].csName);
 			}
 		}
 		else{
-			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "PLUGIN => No inventory hook for Plug-in <%s>"), m_plugin[pluginNumber].csName);
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => No inventory hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
 		}
 	}
+}
 
+void CPlugins::cleanHook()
+{
+	for( int nPlugin=0; nPlugin<MAX_PLUGINS; nPlugin++ ){
+
+		if(!m_plugin[nPlugin].hDll)
+			break;
+
+		if(m_plugin[nPlugin].pClean){
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Launching clean hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
+			try{
+				if( (*m_plugin[nPlugin].pClean)() != PLUGIN_OK ){
+					m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:clean failed for Plug-in <%s>"),m_plugin[nPlugin].csName);
+				}
+				else{
+					m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => Hook:clean successful for Plug-in <%s>"),m_plugin[nPlugin].csName);		
+				}
+			}
+			catch(...){
+				m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DLL PLUGIN => Hook:clean for Plug-in <%s> raised an exception!!"),m_plugin[nPlugin].csName);
+			}
+		}
+		else{
+			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => No clean hook for Plug-in <%s>"), m_plugin[nPlugin].csName);
+		}
+	}
 }

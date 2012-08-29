@@ -1,3 +1,4 @@
+  * Enhanced dynamic DLL plugin API
   * Allow to start Systray applet in the finish page of installer, as it is no more automatically lauched
   * Prompt user for TAG using OcsNotifyUser tool and optimze User notification code
   * Fix bug #104079: Try to check if part of memory is used by video, either less than 32 MB or less than 10%

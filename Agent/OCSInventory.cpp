@@ -446,12 +446,6 @@ BOOL COCSInventoryApp::InitInstance()
 				cCapDownload.setInventory( pInventory);
 				cCapExec.setInventory( pInventory);
 			}
-			/*****
-			 *
-			 *	Inventory hooks from Plugins
-			 *
-			 ****/
-			m_pPlugins->inventoryHook( pInventory );
 
 			/*****
 			 *
@@ -487,6 +481,13 @@ BOOL COCSInventoryApp::InitInstance()
 			if (!m_pConfig->isNotifyRequired())
 				cCapExec.executePlugins();
 			
+			/*****
+			 *
+			 *	Inventory hooks from Plugins
+			 *
+			 ****/
+			m_pPlugins->inventoryHook( pInventory );
+
 			/*****
 			 *
 			 *	Send inventory
@@ -534,6 +535,13 @@ BOOL COCSInventoryApp::InitInstance()
 			
 			/*****
 			 *
+			 *	End hooks from Plugins
+			 *
+			 ****/
+			m_pPlugins->endHook( pInventoryResponse);
+
+			/*****
+			 *
 			 * Free inventory sent to server and inventory response received from server
 			 *
 			 ****/
@@ -562,14 +570,15 @@ BOOL COCSInventoryApp::InitInstance()
 			// Start download tool for already existing packages and new ones
 			cCapDownload.launch();
 		}
-		/*****
-		 *
-		 *	End hooks from Plugins
-		 *
-		 ****/
-		m_pPlugins->endHook();
 
 CLEAN_AND_EXIT:
+		/*****
+		 *
+		 *	Clean hooks from Plugins
+		 *
+		 ****/
+		m_pPlugins->cleanHook();
+
 		/*****
 		 *
 		 * Free prolog sent to server
