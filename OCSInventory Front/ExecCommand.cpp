@@ -418,16 +418,12 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 		if ((m_dwTimeout != INFINITE) && (dwTime >= m_dwTimeout))
 			// Timeout reached
 			bWait = FALSE;
-		if (bCapture)
+		if (bCapture && (_fstat( m_fdStdOut, &fsOut) == 0) && (fsOut.st_size > 0))
 		{
-			// Read console output
-			if ((_fstat( m_fdStdOut, &fsOut) == 0 ) && (fsOut.st_size > 0))
-			{
-				// There is something to read
-				nLength = _read( m_fdStdOut, bBuffer, 1023);
-				bBuffer[nLength] = 0;
-				m_csOutput.AppendFormat( "%s", bBuffer);
-			}
+			// We are capturing ouput and there is something to read
+			nLength = _read( m_fdStdOut, bBuffer, 1023);
+			bBuffer[nLength] = 0;
+			m_csOutput.AppendFormat( "%s", bBuffer);
 		}
 		// Check if process still active
 		if (!GetExitCodeProcess( m_hProcessHandle, &dwExitCode) || (dwExitCode != STILL_ACTIVE))
@@ -436,8 +432,16 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 			bWait = FALSE;
 			break;
 		}
-	}  
-	// Wait for process ending (not capturing output or error capturing output)
+	}
+	// Process ended => Capture last console output if needed
+	if (bCapture && (_fstat( m_fdStdOut, &fsOut) == 0) && (fsOut.st_size > 0))
+	{
+		// We are capturing ouput and there is still something to read
+		nLength = _read( m_fdStdOut, bBuffer, 1023);
+		bBuffer[nLength] = 0;
+		m_csOutput.AppendFormat( "%s", bBuffer);
+	}
+	// Get process exit code
 	if (GetExitCodeProcess( m_hProcessHandle, &dwExitCode)) 
 	{
 		nResult = dwExitCode;
