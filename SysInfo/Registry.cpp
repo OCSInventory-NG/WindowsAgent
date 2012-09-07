@@ -5992,7 +5992,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 	char KeyChars[24] = {'B','C','D','F','G','H','J','K','M','P','Q','R','T','V','W','X','Y','2','3','4','6','7','8','9'};
 	char Result[30];
 
-	CString csKeyPath, csValueName;
+	CString csKeyPath, csValueName, csValue4Name;
 
 	// Registry access variables
 	HKEY InfoKey = NULL;
@@ -6059,6 +6059,10 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 
 			Result[29]='\0';
 			csProductKey = Result;
+
+			// Check Volume License Key
+			if (csProductKey.CompareNoCase( _T( "BBBBB-BBBBB-BBBBB-BBBBB-BBBBB")) == 0)
+				csProductKey = _T( "MAK or VLK key unavailable"); 
 
 			AddLog( _T( "OK (%s).\n"), csProductKey);
 

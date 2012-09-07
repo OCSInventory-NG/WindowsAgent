@@ -2975,6 +2975,8 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 	SysInfoLog( str);
 	str.Format( _T( "OS Product ID : %s"), m_Device.GetWindowsProductID());
 	SysInfoLog( str);
+	str.Format( _T( "OS Product Key : %s"), m_Device.GetWindowsProductKey());
+	SysInfoLog( str);
 	str.Format( _T( "64 bits OS: %s"), (m_Device.Is64bitsOS() ? _T( "TRUE") : _T( "FALSE")));
 	SysInfoLog( str);
 	SysInfoLog( _T( ""));
