@@ -759,7 +759,7 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 	if (uTry > MAX_ERROR_COUNT)
 	{
 		pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Max error count (%u) reached while executing Package <%s>"), uTry, m_csID);
-		setDone( ERR_EXECUTE_PACK);
+		setDone( ERR_EXECUTE_TOO_MANY_ERRORS);
 		return FALSE;
 	}
 	else
@@ -793,11 +793,11 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 			return FALSE;
 		case EXEC_ERROR_WAIT_COMMAND:
 			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Failed to get command <%s> result code for package <%s> (%s)"), m_csCommand, m_csID, cmProcess.getOutput());
-			csBuffer = ERR_EXECUTE_PACK;
+			csBuffer = ERR_EXECUTE_NO_EXIT_CODE;
 			break;
 		case EXEC_ERROR_TIMEOUT_COMMAND:
 			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Command <%s> execution reached timeout (%s)"), m_csCommand, cmProcess.getOutput());
-			csBuffer = ERR_TIMEOUT;
+			csBuffer = ERR_EXECUTE_TIMEOUT;
 			break;
 		default:
 			pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Package <%s> successfully launched. Command exit code is <%d>"), m_csID, cmProcess.getExitValue());
@@ -839,11 +839,11 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 			return FALSE;
 		case EXEC_ERROR_WAIT_COMMAND:
 			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Failed to get command <%s> result code for package <%s> (%s)"), m_csCommand, m_csID, cmProcess.getOutput());
-			csBuffer = ERR_EXECUTE_PACK;
+			csBuffer = ERR_EXECUTE_NO_EXIT_CODE;
 			break;
 		case EXEC_ERROR_TIMEOUT_COMMAND:
 			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Command <%s> execution reached timeout (%s)"), m_csCommand, cmProcess.getOutput());
-			csBuffer = ERR_TIMEOUT;
+			csBuffer = ERR_EXECUTE_TIMEOUT;
 			break;
 		default:
 			pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Package <%s> successfully executed. Command exit code is <%d>"), m_csID, cmProcess.getExitValue());

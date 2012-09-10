@@ -155,7 +155,7 @@ BOOL CCapDownload::retrievePackages()
 		{
 			// Package ID found in history, do not download
 			m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Will not download package <%s>, already in the package history"), csId);
-			sendMessage( csId, ERR_ALREADY_SETUP);
+			sendMessage( csId, SUCCESS_ALREADY_SETUP);
 			// Delete already download directory if needed 
 			pOptDownloadPackage->clean();
 			delete pOptDownloadPackage;
