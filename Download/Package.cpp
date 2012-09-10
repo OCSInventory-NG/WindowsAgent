@@ -758,8 +758,8 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 	uTry++;
 	if (uTry > MAX_ERROR_COUNT)
 	{
-		pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Max error count (%u) reached while executing Package <%s>"), uTry, m_csID);
-		setDone( ERR_EXECUTE_TOO_MANY_ERRORS);
+		pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Max try count (%u) reached while executing Package <%s>"), uTry, m_csID);
+		setDone( ERR_EXECUTE_TOO_MANY_TRY);
 		return FALSE;
 	}
 	else
