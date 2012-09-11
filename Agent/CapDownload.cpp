@@ -545,7 +545,14 @@ BOOL COptDownloadPackage::isExpired( LPCTSTR csTimeOut)
 {
 	time_t	tTimeNow;
 	UINT	uTimeOut = _ttol( csTimeOut);
+	CString csFile;
 
+	// Check if timestamp exist first
+	csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csId, OCS_DOWNLOAD_TIMESTAMP);
+	if (!fileExists( csFile))
+		// Timestamp does not exist, so not expired
+		return FALSE;
+	// Timestamp exists, verify expiration
 	tTimeNow = time( NULL);
 	return (((tTimeNow - getTimeStamp())/86400) >  uTimeOut);
 }

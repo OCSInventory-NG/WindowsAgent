@@ -208,7 +208,14 @@ BOOL CPackage::clean( LPCTSTR lpstrID)
 BOOL CPackage::isExpired( UINT uTimeOut)
 {
 	time_t	tTimeNow;
+	CString csFile;
 
+	// Check if timestamp exist first
+	csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_TIMESTAMP);
+	if (!fileExists( csFile))
+		// Timestamp does not exist, so not expired
+		return FALSE;
+	// Timestamp exists, verify expiration
 	tTimeNow = time( NULL);
 	return (((tTimeNow - getTimeStamp())/86400) >  uTimeOut);
 }
