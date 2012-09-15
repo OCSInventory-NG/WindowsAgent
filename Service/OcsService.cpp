@@ -342,6 +342,10 @@ BOOL COcsService::protectCommonFiles()
 		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <OcsSystray.exe>"));
 	else
 		m_tCommonHandles.Add( pFile);
+	if ((pFile = protectFile( getInstallFolder(), _T( "OcsNotifyUser.exe"))) == NULL)
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <OcsNotifyUser.exe>"));
+	else
+		m_tCommonHandles.Add( pFile);
 	if ((pFile = protectFile( getDataFolder(), _T( "last_state"))) == NULL)
 		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, _T( "Unable to set write protection on file <last_state>"));
 	else
