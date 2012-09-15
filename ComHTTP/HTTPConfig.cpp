@@ -217,6 +217,9 @@ BOOL CHTTPConfig::load( LPCTSTR lpstrFile, LPCTSTR lpstrSection)
 			GetPrivateProfileString( lpstrSection, _T( "User"), _T( ""), csBuffer.GetBuffer( 1024), 1024, csConfigFile);
 			csBuffer.ReleaseBuffer();
 			myCrypt.getData( csBuffer, m_csHttpUser);
+			if (m_csHttpUser.IsEmpty())
+				// No user provided
+				m_bAuthRequired = FALSE;
 			GetPrivateProfileString( lpstrSection, _T( "Pwd"), _T( ""), csBuffer.GetBuffer( 1024), 1024, csConfigFile);
 			csBuffer.ReleaseBuffer();
 			myCrypt.getData( csBuffer, m_csHttpPwd);
@@ -239,6 +242,9 @@ BOOL CHTTPConfig::load( LPCTSTR lpstrFile, LPCTSTR lpstrSection)
 				GetPrivateProfileString( lpstrSection, _T( "ProxyUser"), _T( ""), csBuffer.GetBuffer( 1024), 1024, csConfigFile);
 				csBuffer.ReleaseBuffer();
 				myCrypt.getData( csBuffer, m_csProxyUser);
+				if (m_csProxyUser.IsEmpty())
+					// No user provided
+					m_bAuthRequired = FALSE;
 				GetPrivateProfileString( lpstrSection, _T( "ProxyPwd"), _T( ""), csBuffer.GetBuffer( 1024), 1024, csConfigFile);
 				csBuffer.ReleaseBuffer();
 				myCrypt.getData( csBuffer, m_csProxyPwd);
@@ -288,6 +294,12 @@ BOOL CHTTPConfig::save( LPCTSTR lpstrFile, LPCTSTR lpstrSection)
 			m_bAuthRequired = FALSE;
 		csBuffer.Format( _T( "%u"), m_bAuthRequired ? 1 : 0);
 		bResult = bResult && WritePrivateProfileString( lpstrSection, _T( "AuthRequired"), csBuffer, csConfigFile);
+		// Clear user and password is not used
+		if (!m_bAuthRequired)
+		{
+			m_csHttpUser.Empty();
+			m_csHttpPwd.Empty();
+		}
 		bResult = bResult && myCrypt.setData( m_csHttpUser, csBuffer);
 		bResult = bResult && WritePrivateProfileString( lpstrSection, _T( "User"), csBuffer, csConfigFile);
 		bResult = bResult && myCrypt.setData( m_csHttpPwd, csBuffer);
@@ -303,6 +315,12 @@ BOOL CHTTPConfig::save( LPCTSTR lpstrFile, LPCTSTR lpstrSection)
 			m_bProxyAuthRequired = FALSE;
 		csBuffer.Format( _T( "%u"), m_bProxyAuthRequired ? 1 : 0);
 		bResult = bResult && WritePrivateProfileString( lpstrSection, _T( "ProxyAuthRequired"), csBuffer, csConfigFile);
+		// Clear user and password is not used
+		if (!m_bAuthRequired)
+		{
+			m_csProxyUser.Empty();
+			m_csProxyPwd.Empty();
+		}
 		bResult = bResult && myCrypt.setData( m_csProxyUser, csBuffer);
 		bResult = bResult && WritePrivateProfileString( lpstrSection, _T( "ProxyUser"), csBuffer, csConfigFile);
 		bResult = bResult && myCrypt.setData( m_csProxyPwd, csBuffer);
@@ -320,61 +338,69 @@ BOOL CHTTPConfig::parseCommandLine(LPCTSTR lpstrCommand)
 {
 	try
 	{
-		// /SERVER:address
+		// /SERVER=address
 		if (isRequired( lpstrCommand, _T( "server"))) 
 			// get network address
 			setServer( getParamValue( lpstrCommand, _T( "server")));
-		// /SSL:level
+		// /SSL=level
 		if (isRequired( lpstrCommand, _T( "ssl"))) 
 			// get SSL level
 			setServerSSL( _ttol( getParamValue( lpstrCommand, _T( "ssl"))));
-		// /SERVER:address
+		// /CA=path to cacert.pem
 		if (isRequired( lpstrCommand, _T( "ca"))) 
-			// get network address
+			// get path
 			setServerCA( getParamValue( lpstrCommand, _T( "ca")));
-		// By default, server authentication not required, unless user or pwd option specified
-		m_bAuthRequired = FALSE;
-		// /USER:username
+		// By default, server authentication is not required, unless user option specified and not null
+		// /USER=username
 		if (isRequired( lpstrCommand, _T( "user"))) 
 		{
 			// get username
 			setServerAuthUser( getParamValue( lpstrCommand, _T( "user")));
 			m_bAuthRequired = TRUE;
 		}
-		// /PWD:userpwd
+		else
+		{
+			// This code is needed to set authRequired to FALSE, when saving new configuration
+			if (isRequired( lpstrCommand, _T( "save_conf")))
+				m_bAuthRequired = FALSE;
+		}
+		// /PWD=userpwd
 		if (isRequired( lpstrCommand, _T( "pwd"))) 
 		{
 			// get password
 			setServerAuthPasswd( getParamValue( lpstrCommand, _T( "pwd")));
-			m_bAuthRequired = TRUE;
 		}
-		// /PROXY_TYPE:type
+		// /PROXY_TYPE=type
 		if (isRequired( lpstrCommand, _T( "proxy_type"))) 
 			// get proxy type
 			setProxyType( _ttol( getParamValue( lpstrCommand, _T( "proxy_type"))));
-		// /PROXY:address
+		// /PROXY=address
 		if (isRequired( lpstrCommand, _T( "proxy"))) 
 			// get network address
 			setProxy( getParamValue( lpstrCommand, _T( "proxy")));
-		// /PROXY_PORT:port
+		// /PROXY_PORT=port
 		if (isRequired( lpstrCommand, _T( "proxy_port"))) 
 			// get network port
 			setProxyPort( _ttol( getParamValue( lpstrCommand, _T( "proxy_port"))));
-		// By default, proxy authentication not required, unless proxy_user or proxy_pwd option specified
-		m_bProxyAuthRequired = FALSE;
-		// /PROXY_USER:username
+		// By default, proxy authentication not required, unless proxy_user option specified and not null
+		// /PROXY_USER=username
 		if (isRequired( lpstrCommand, _T( "proxy_user"))) 
 		{
 			// get username
 			setProxyAuthUser( getParamValue( lpstrCommand, _T( "proxy_user")));
 			m_bProxyAuthRequired = TRUE;
 		}
+		else
+		{
+			// This code is needed to set authRequired to FALSE, when saving new configuration
+			if (isRequired( lpstrCommand, _T( "save_conf")))
+				m_bProxyAuthRequired = FALSE;
+		}
 		// /PROXY_PWD:userpwd
 		if (isRequired( lpstrCommand, _T( "proxy_pwd")))
 		{
 			// get password
 			setProxyAuthPasswd( getParamValue( lpstrCommand, _T( "proxy_pwd")));
-			m_bProxyAuthRequired = TRUE;
 		}
 		return TRUE;
 	}
