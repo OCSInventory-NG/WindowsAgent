@@ -89,10 +89,16 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 			}
 			// Now get output and ensure XML well formed
 			m_pLogger->log( LOG_PRIORITY_TRACE, _T( "%s"), CA2T( cmProcess.getOutput()));
+			// First, assume plugin XML output is XML UTF-8 well formed
 			if (!myXml.SetDoc( cmProcess.getOutput()))
 			{
-				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output is not an XML document"), cFinder.GetFilePath());
-				continue;
+				// Not XML well formed, or not UTF-8 encoded, try to UTF-8 encode
+				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Unable to parse executable plugin <%s> XML output, perhaps not UTF-8 encoded. Trying to UTF-8 encode"), cFinder.GetFilePath());
+				if (!myXml.SetDoc( CA2CA( cmProcess.getOutput(), CP_UTF8)))
+				{
+					m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output is not an XML document"), cFinder.GetFilePath());
+					continue;
+				}
 			}
 			// Copy XML content to inventory, node <content>
 			if (! m_pInventory->getXmlPointerContent()->AddXml( &myXml))
