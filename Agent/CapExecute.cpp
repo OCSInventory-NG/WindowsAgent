@@ -78,10 +78,10 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 			switch (cmProcess.execWait( csCommand, csPath))
 			{
 			case EXEC_ERROR_START_COMMAND:
-				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Failed to start executable plugin <%s> (%s)"), cFinder.GetFilePath(), cmProcess.getOutput());
+				m_pLogger->log( LOG_PRIORITY_ERROR, _T( "EXECUTABLE PLUGIN => Failed to start executable plugin <%s> (%s)"), cFinder.GetFilePath(), cmProcess.getOutput());
 				continue;
 			case EXEC_ERROR_WAIT_COMMAND:
-				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Failed to get executable plugin <%s> output"), cFinder.GetFilePath());
+				m_pLogger->log( LOG_PRIORITY_ERROR, _T( "EXECUTABLE PLUGIN => Failed to get executable plugin <%s> output"), cFinder.GetFilePath());
 				continue;
 			default:
 				// Success
@@ -89,21 +89,28 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 			}
 			// Now get output and ensure XML well formed
 			m_pLogger->log( LOG_PRIORITY_TRACE, _T( "%s"), CA2T( cmProcess.getOutput()));
-			// First, assume plugin XML output is XML UTF-8 well formed
+			// First, ensure output is not empty
+			if (strlen( cmProcess.getOutput()) == 0)
+			{
+				// No output
+				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Plugin <%s> does not produce any output"), cFinder.GetFilePath());
+				continue;
+			}
+			// Then, try to assume plugin XML output is XML UTF-8 well formed
 			if (!myXml.SetDoc( cmProcess.getOutput()))
 			{
-				// Not XML well formed, or not UTF-8 encoded, try to UTF-8 encode
-				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Unable to parse executable plugin <%s> XML output, perhaps not UTF-8 encoded. Trying to UTF-8 encode"), cFinder.GetFilePath());
+				// Not XML well formed, or not UTF-8 encoded, try to UTF-8 encode output before parsing it
+				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Unable to parse executable plugin <%s> XML output, perhaps not UTF-8 encoded. Trying to UTF-8 encode ouput before parsing XML"), cFinder.GetFilePath());
 				if (!myXml.SetDoc( CA2CA( cmProcess.getOutput(), CP_UTF8)))
 				{
-					m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output is not an XML document"), cFinder.GetFilePath());
+					m_pLogger->log( LOG_PRIORITY_ERROR, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output is not an XML document"), cFinder.GetFilePath());
 					continue;
 				}
 			}
 			// Copy XML content to inventory, node <content>
 			if (! m_pInventory->getXmlPointerContent()->AddXml( &myXml))
 			{
-				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Failed adding plugin <%s> output to inventory"), cFinder.GetFilePath());
+				m_pLogger->log( LOG_PRIORITY_ERROR, _T( "EXECUTABLE PLUGIN => Failed adding plugin <%s> output to inventory"), cFinder.GetFilePath());
 				continue;
 			}
 			m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "EXECUTABLE PLUGIN => Plugin <%s> executed successfully"), cFinder.GetFileName());
