@@ -135,15 +135,15 @@ BOOL CInventoryRequest::final()
 			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "INVENTORY => No change since last inventory"));
 
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Generating XML document with Device properties"));
-		// Update Memory slots
-		bSuccess = m_pTheDB->UpdateMemorySlots( m_MemoryList);
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Logical Drive(s)"), m_MemoryList.GetCount());
-		// Update Hardware 
-		bSuccess = bSuccess && m_pTheDB->UpdateDeviceProperties( m_Device);
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update common Device properties"));
 		// Update BIOS file
 		bSuccess = bSuccess && m_pTheDB->UpdateBIOS( m_BIOS);
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update BIOS"));
+		// Update CPUs
+		bSuccess = m_pTheDB->UpdateCPUs( m_CpuList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u CPU(s)"), m_CpuList.GetCount());
+		// Update Memory slots
+		bSuccess = m_pTheDB->UpdateMemorySlots( m_MemoryList);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Logical Drive(s)"), m_MemoryList.GetCount());
 		// Update Input Devices
 		bSuccess = bSuccess && m_pTheDB->UpdateInputDevices( m_InputList);
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Input Device(s)"), m_InputList.GetCount());
@@ -193,6 +193,9 @@ BOOL CInventoryRequest::final()
 		csFilename.Format( _T("%s\\%s"), getDataFolder(), OCS_ACCOUNTINFO_FILENAME);
 		bSuccess = bSuccess && m_pTheDB->UpdateAccountInfo( csFilename);
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update Administrative Information(s)"));
+		// Update Hardware 
+		bSuccess = bSuccess && m_pTheDB->UpdateDeviceProperties( m_Device);
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update common Device properties"));
 	}
 
 	if (!bSuccess)
@@ -486,7 +489,7 @@ BOOL CInventoryRequest::runInventory()
 					  m_BIOS.GetSystemManufacturer(), m_BIOS.GetSystemModel(), m_BIOS.GetSystemSerialNumber(),
 					  m_BIOS.GetBiosManufacturer(), m_BIOS.GetBiosDate(), m_BIOS.GetBiosVersion());
 	// Get Processor infos (0 means error)
-	if (!(dwValue = m_pSysInfo->getProcessors( cs1, cs2)))
+	if (!(dwValue = m_pSysInfo->getProcessors( cs1, cs2, &m_CpuList)))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve processor(s)"));
 	else
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %lu processor(s) %s at %s MHz"),

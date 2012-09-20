@@ -123,7 +123,7 @@ public: // Methods
 	BOOL getNetworkAdapters( CNetworkAdapterList *pMyList);
 	BOOL getSystemPorts( CSystemPortList *pMyList);
 	BOOL getPrinters( CPrinterList *pMyList);
-	DWORD getProcessors( CString &csProcType, CString &csProcSpeed);
+	DWORD getProcessors( CString &csProcType, CString &csProcSpeed, CCpuList *pMyList);
 	DWORD getCPU( CCpuList *pMyList);
 	BOOL getSoundDevices( CSoundDeviceList *pMyList);
 	BOOL getStoragePeripherals( CStoragePeripheralList *pMyList);

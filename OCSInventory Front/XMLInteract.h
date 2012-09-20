@@ -41,6 +41,9 @@ public: // Methods
 	// Write BIOS in XML document
 	// Return TRUE if they are successfully updated
 	BOOL UpdateBIOS( CBios &myBios);
+	// Write CPU in the XML document
+	// Return TRUE if they are successfully updated
+	BOOL UpdateCPUs( CCpuList &myCpuList);
 	// Write logical drives in the XML document
 	// Return TRUE if they are successfully updated
 	BOOL UpdateDrives( CLogicalDriveList &myDriveList);

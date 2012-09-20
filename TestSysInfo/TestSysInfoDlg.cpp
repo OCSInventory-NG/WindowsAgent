@@ -2468,7 +2468,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		SysInfoLog( str);
 		str.Format( _T( "Max Clock Speed: %u MHz"), myCpu.GetMaxClockSpeed());
 		SysInfoLog( str);
-		str.Format( _T( "LEvel 2 Cache Size: %u KB"), myCpu.GetL2CacheSize());
+		str.Format( _T( "Level 2 Cache Size: %u KB"), myCpu.GetL2CacheSize());
 		SysInfoLog( str);
 		str.Format( _T( "Address Width: %u"), myCpu.GetAddressWidth());
 		SysInfoLog( str);
@@ -3134,7 +3134,7 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	if (!mySysInfo.getBiosInfo( &m_BIOS))
 		AfxMessageBox( _T( "Failed to get BIOS informations !"));
 	// Get Processor infos (0 means error)
-	if ((dwValue = mySysInfo.getProcessors( cs1, cs2)) == 0)
+	if ((dwValue = mySysInfo.getProcessors( cs1, cs2, &m_CpuList)) == 0)
 		AfxMessageBox( _T( "Failed to get Processors informations !"));
 	m_Device.SetProcessor( cs1, cs2, dwValue);
 	// Get memory informations

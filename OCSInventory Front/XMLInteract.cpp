@@ -49,6 +49,48 @@ BOOL CXMLInteract::UpdateBIOS( CBios &myBios)
 	return TRUE;
 }
 
+BOOL CXMLInteract::UpdateCPUs( CCpuList &myCpuList)
+{
+	CCpu			cObject;
+	POSITION		pos;
+	BOOL			bContinue;
+
+	try
+	{
+		pos = myCpuList.GetHeadPosition();
+		bContinue = (pos != NULL);
+		if (bContinue)
+			// There is one record => get the first
+			cObject = myCpuList.GetNext( pos);
+		while (bContinue)
+		{
+			bContinue = (pos != NULL);
+			m_pXml->AddElem( _T( "CPU"));
+				m_pXml->AddChildElem( _T( "MANUFACTURER"), cObject.GetManufacturer());
+				m_pXml->AddChildElem( _T( "SPEED"), cObject.GetMaxClockSpeed());
+				m_pXml->AddChildElem( _T( "TYPE"), cObject.GetName());
+				m_pXml->AddChildElem( _T( "CORES"), cObject.GetNumberOfCores());
+				m_pXml->AddChildElem( _T( "L2CACHESIZE"), cObject.GetL2CacheSize());
+				m_pXml->AddChildElem( _T( "CPUARCH"), cObject.GetArchitecture());
+				m_pXml->AddChildElem( _T( "DATA_WIDTH"), cObject.GetDataWidth());
+				m_pXml->AddChildElem( _T( "CURRENT_ADDRESS_WIDTH"), cObject.GetAddressWidth());
+				m_pXml->AddChildElem( _T( "LOGICAL_CPUS"), cObject.GetNumberOfLogicalProcessors());
+				m_pXml->AddChildElem( _T( "VOLTAGE"), cObject.GetVoltage());
+				m_pXml->AddChildElem( _T( "CURRENT_SPEED"), cObject.GetCurrentClockSpeed());
+			m_pXml->OutOfElem();		
+			if (pos != NULL)
+				cObject = myCpuList.GetNext( pos);
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
+	}
+	return TRUE;
+}
+
 BOOL CXMLInteract::UpdateDrives( CLogicalDriveList &myDriveList)
 {
 	CLogicalDrive	cObject;

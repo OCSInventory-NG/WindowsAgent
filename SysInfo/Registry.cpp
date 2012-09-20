@@ -111,6 +111,7 @@ static char THIS_FILE[] = __FILE__;
 
 // Defines for retrieving processors from NT registry
 #define NT_PROCESSOR_KEY						_T( "HARDWARE\\Description\\System\\CentralProcessor")
+#define NT_PROCESSOR_MANUFACTURER_VALUE			_T( "VendorIdentifier")
 #define NT_PROCESSOR_NAME_VALUE					_T( "Identifier")
 #define NT_PROCESSOR_NAME_STRING_VALUE			_T( "ProcessorNameString")
 #define NT_PROCESSOR_SPEED_VALUE				_T( "~MHz")
@@ -1344,6 +1345,125 @@ DWORD CRegistry::GetProcessorsNT(CString &csProcType, CString &csProcSpeed)
 		AddLog( _T( "Registry NT GetProcessors: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 				NT_PROCESSOR_KEY);
 	AddLog( _T( "Registry NT GetProcessors: %lu processor(s) found.\n"), dwIndex);
+	return dwIndex;
+}
+
+DWORD CRegistry::GetCPU( CCpuList *pMyList)
+{
+	HKEY			hKeyEnum,
+					hKeyObject;
+	CString			csSubKey, csManufacturer, csType, csSpeed;
+	TCHAR			szDeviceName[256];
+	DWORD			dwLength,
+					dwIndexEnum = 0,
+					dwIndex = 0;
+	LONG			lResult;
+	FILETIME		MyFileTime;
+	BOOL			bHaveToStore;
+	CCpu            myObject;
+
+	AddLog( _T( "Registry NT GetCPU...\n"));
+	// Windows NT => Open the processor key
+	if (RegOpenKeyEx( m_hKey, NT_PROCESSOR_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
+	{
+		// Enum the devices subkeys to find devices
+		dwLength = 255;
+		while ((lResult = RegEnumKeyEx( hKeyEnum, dwIndexEnum, szDeviceName, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
+		{
+			// For each object, Try to open the device key
+			szDeviceName[dwLength] = 0;
+			bHaveToStore = FALSE;
+			csSubKey.Format( _T( "%s\\%s"), NT_PROCESSOR_KEY, szDeviceName);
+			if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
+			{
+				csManufacturer = NOT_AVAILABLE; 
+				csType = NOT_AVAILABLE; 
+				csSpeed = NOT_AVAILABLE;
+				// Read the manufacturer
+				if (GetValue( hKeyObject, NT_PROCESSOR_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
+				{
+					bHaveToStore = TRUE;
+				}
+				else
+				{
+					AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+									   csSubKey, NT_PROCESSOR_SPEED_VALUE);
+					csManufacturer = NOT_AVAILABLE;
+				}
+				// Read the processor name
+				if (GetValue( hKeyObject, NT_PROCESSOR_NAME_STRING_VALUE, csType) == ERROR_SUCCESS)
+				{
+					bHaveToStore = TRUE;
+				}
+				else
+				{
+					AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+									   csSubKey, NT_PROCESSOR_NAME_STRING_VALUE);
+					dwLength = 255;
+					if (GetValue( hKeyObject, NT_PROCESSOR_NAME_VALUE, csType) == ERROR_SUCCESS)
+					{
+						bHaveToStore = TRUE;
+					}
+					else
+					{
+						AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+										   csSubKey, NT_PROCESSOR_NAME_VALUE);
+						csType = NOT_AVAILABLE;
+					}
+				}
+				// Read the speed in MHz
+				if (GetValue( hKeyObject, NT_PROCESSOR_SPEED_VALUE, csSpeed) == ERROR_SUCCESS)
+				{
+					bHaveToStore = TRUE;
+				}
+				else
+				{
+					AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+									   csSubKey, NT_PROCESSOR_SPEED_VALUE);
+					csSpeed = NOT_AVAILABLE;
+				}
+				RegCloseKey( hKeyObject);
+				// Add the device to the adapter list
+				if (bHaveToStore)
+				{
+					myObject.Clear();
+					StrForSQL( csManufacturer);
+					myObject.SetManufacturer( csManufacturer);
+					StrForSQL( csType);
+					myObject.SetName( csType);
+					StrForSQL( csSpeed);
+					myObject.SetMaxSpeed( _ttoi( csSpeed));
+					// Assume current speed to max speed
+					myObject.SetCurrentSpeed( _ttoi( csSpeed));
+					// Assume x86 architecture
+					myObject.SetArchitecture( _T( "x86"));
+					// Assume 1 core and 1 logical CPU
+					myObject.SetNumberOfCores( 1);
+					myObject.SetNumberOfLogicalProcessors( 1);
+					// Assume 32 bits OS and processor
+					myObject.SetAddressWith( 32);
+					myObject.SetDataWidth( 32);
+					pMyList->AddTail( myObject);
+					dwIndex ++;
+				}
+			}
+			else
+				AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+								   csSubKey);
+			// Enum the next device
+			dwLength = 255;
+			dwIndexEnum++;
+		}
+		RegCloseKey( hKeyEnum);
+		if (dwIndexEnum == 0)
+			// No key found
+			AddLog( _T( "Registry NT GetCPU: Failed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+					NT_PROCESSOR_KEY);
+	}
+	else
+		AddLog( _T( "Registry NT GetCPU: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+				NT_PROCESSOR_KEY);
+	AddLog( _T( "Registry NT GetCPU: %lu processor(s) found.\n"), dwIndex);
 	return dwIndex;
 }
 

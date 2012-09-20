@@ -334,29 +334,33 @@ LPCTSTR CSysInfo::getLocalIP()
 	return m_Sock.GetIPAddress();
 }
 
-DWORD CSysInfo::getProcessors( CString &csProcType, CString &csProcSpeed)
+DWORD CSysInfo::getProcessors( CString &csProcType, CString &csProcSpeed, CCpuList *pMyList)
 {
-	CString csRegType = NOT_AVAILABLE,
-			csRegSpeed = NOT_AVAILABLE,
-			csWmiType = NOT_AVAILABLE,
-			csWmiSpeed = NOT_AVAILABLE;
 	static DWORD	dwRegNumber = 0,
 					dwWmiNumber = 0;
-	CCpuList		myList;
 	CCpu			myCpu;
 
 	// First, check WMI combined to registry for bogus WMI CPU name
-	if ((dwWmiNumber = m_wmiInfo.GetCPU( &myList, &m_registryInfo)) > 0)	
+	if ((dwWmiNumber = m_wmiInfo.GetCPU( pMyList, &m_registryInfo)) > 0)	
 	{
-		myCpu = myList.GetHead();
+		myCpu = pMyList->GetHead();
 		csProcType.Format( _T( "%s [%u core(s) %s]"), myCpu.GetName(), myCpu.GetNumberOfCores(), myCpu.GetArchitecture());
 		csProcSpeed.Format( _T( "%u"), myCpu.GetMaxClockSpeed());
 		return dwWmiNumber;
 	}
 	// Last, check only registry
-	dwRegNumber = m_registryInfo.GetProcessors( csRegType, csRegSpeed);
-	csProcType = csRegType;
-	csProcSpeed = csRegSpeed;
+	pMyList->RemoveAll();
+	if ((dwRegNumber = m_registryInfo.GetCPU( pMyList)) > 0)
+	{
+		myCpu = pMyList->GetHead();
+		csProcType.Format( _T( "%s [%u core(s) %s]"), myCpu.GetName(), myCpu.GetNumberOfCores(), myCpu.GetArchitecture());
+		csProcSpeed.Format( _T( "%u"), myCpu.GetMaxClockSpeed());
+	}
+	else
+	{
+		csProcType = NOT_AVAILABLE;
+		csProcSpeed = NOT_AVAILABLE;
+	}
 	return dwRegNumber;
 }
 

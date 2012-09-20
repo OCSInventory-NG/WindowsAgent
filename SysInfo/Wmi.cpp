@@ -120,7 +120,7 @@ LPCTSTR CWmi::GetArchitecture( DWORD dwArch)
 	case 0x6:
 		return _T( "IA64");
 	case 0x9:
-		return _T( "x64");
+		return _T( "x86_64");
 	default:
 		return NOT_AVAILABLE;
 	}

@@ -47,6 +47,8 @@ public: //Attributes
 	CDeviceProperties m_Device;
 	// BIOS informations
 	CBios		 m_BIOS;
+	// List of CPU infos
+	CCpuList m_CpuList;
 	// List of Input devices infos
 	CInputDeviceList m_InputList;
 	// List of Logical Drives (Volum name, File system, Total size, Free space...)
