@@ -1,3 +1,11 @@
+  * Try to utf-8 encode VBS or EXE plugin output if XML parsing fails, then try again to parse
+  * Fix bug #1049864: When agent load configuration, it now really uses authRequired and proxyauthRequired values, and not set them to FALSE by default
+  * Fix bug #1045784: Ensure timestamp exists before verify expiration
+  * Add download error to differenciate full download timeout ERR_TIMEOUT, execute error crashing agent and entering in loop (ERR_EXECUTE_TOO_MANY_TRY) or execute timeout (ERR_EXECUTE_TIMEOUT).
+  * Rename ERR_ALREADY_SETUP en SUCCESS_ALREADY_SETUP 
+  * Bug #1031935: Windows MAK or VLK activation key are not stored on computer, so unable to retreive and set explicit message
+  * Fix bug #980740: As we only read process output each 200ms, we have to read output even after process exited, to capture last outputed data by process
+2.0.5.0
   * Enhanced dynamic DLL plugin API
   * Allow to start Systray applet in the finish page of installer, as it is no more automatically lauched
   * Prompt user for TAG using OcsNotifyUser tool and optimze User notification code
