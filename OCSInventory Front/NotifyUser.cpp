@@ -59,6 +59,13 @@ BOOL CNotifyUser::getActiveConsoleSessionID()
 	DWORD dwCount,
 		  dwSessionID;
 
+	// WTSQueryUserToken function, from Wtsapi32.dll
+	typedef BOOL(WINAPI * pWTSQueryUserToken) (
+        IN ULONG SessionId,
+        OUT PHANDLE phToken);
+    HINSTANCE			hDll = NULL;
+    pWTSQueryUserToken	functionWTSQueryUserToken = NULL;
+
 	dwSessionID = OCS_NO_WTS_SESSION_ID;
 	if (m_hUserToken != NULL)
 	{
@@ -86,14 +93,29 @@ BOOL CNotifyUser::getActiveConsoleSessionID()
 	WTSFreeMemory( pSessionInfo);
 	// Retrieve the active session ID user token. This is the token that
 	// will be used for creating the interactive UI process. 
-	if (!WTSQueryUserToken( dwSessionID, &m_hUserToken))
+    if ((hDll = LoadLibrary( _T( "Wtsapi32.dll"))) < (HINSTANCE) HINSTANCE_ERROR) 
+	{
+		// Cannot load WTS API => Windows 2000 ?
+		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to load Wtsapi32.dll (%s)"), LookupError( GetLastError()));
+        return FALSE;
+    }
+    if ((functionWTSQueryUserToken = (pWTSQueryUserToken) GetProcAddress(hDll, "WTSQueryUserToken")) == NULL)
+	{
+		// Cannot load WTSQueryUserToken function => Windows 2000 ?
+		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to load WTSQueryUserToken function (%s)"), LookupError( GetLastError()));
+		FreeLibrary( hDll);
+        return FALSE;
+    }
+	if (!functionWTSQueryUserToken( dwSessionID, &m_hUserToken))
 	{
 		getOcsLogger()->log(  LOG_PRIORITY_ERROR, _T( "NOTIFY_USER => Failed to call WTSQueryUserToken (%s)"), LookupError( GetLastError()));
 		if (m_hUserToken != NULL)
 			CloseHandle( m_hUserToken);
 		m_hUserToken = NULL;
+		FreeLibrary( hDll);
 		return FALSE;
 	}
+	FreeLibrary( hDll);
 	return TRUE;
 }
 
