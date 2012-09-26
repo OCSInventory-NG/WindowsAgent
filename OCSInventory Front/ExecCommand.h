@@ -88,6 +88,12 @@ public:
   LPCSTR getOutput();
 
   /**
+   * Configure to save command output to provided file, or disable if NULL this feature to 
+   * store in memory output (stdout and strerr are stored into file)
+   */
+  void setOutputFile( LPCTSTR lpstrFile = NULL);
+
+  /**
    * Get the return value of the process. If the process is still
    * running, the return value is -1.
    */
@@ -144,6 +150,8 @@ protected:
   
   int m_nExitValue;
   int m_fdStdOut;
+  int m_fdFileStdOut;
 
-  CStringA m_csOutput;
+  CStringA m_csOutputA;		// CString to store in memory output
+  CStringA m_csOutputFileA;	// Output directly stored into file
 };

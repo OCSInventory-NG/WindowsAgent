@@ -17,6 +17,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <share.h>
 #include <Tlhelp32.h>
 
 #ifdef _DEBUG
@@ -122,9 +123,10 @@ void CExecCommand::initialize()
 	m_hChildStdoutWr = NULL;
 	m_hChildStdinWrDup = NULL;
 	m_hChildStdoutRdDup = NULL;
+	m_fdFileStdOut = NULL;
 	m_fdStdOut = NULL;
     m_nExitValue = -1;
-	m_csOutput.Empty();
+	m_csOutputA.Empty();
 }
 
 void CExecCommand::setTimeout( DWORD dwTimeout)
@@ -140,9 +142,17 @@ void CExecCommand::useComspec( BOOL bUse)
 	m_bComspec = bUse;
 }
 
+void CExecCommand::setOutputFile( LPCTSTR lpstrFile)
+{
+	if (lpstrFile)
+		m_csOutputFileA = CT2CA( lpstrFile);
+	else
+		m_csOutputFileA.Empty();
+}
+
 LPCSTR CExecCommand::getOutput()
 {
-	return m_csOutput;
+	return m_csOutputA;
 }
 
 int CExecCommand::getExitValue()
@@ -154,6 +164,11 @@ BOOL CExecCommand::closeHandles()
 {
 	BOOL bRet = TRUE;
 
+	if (m_fdFileStdOut > 0)
+	{
+		_close( m_fdFileStdOut);
+		m_fdFileStdOut = NULL;
+	}
 	if (m_fdStdOut > 0)
 	{
 		_close( m_fdStdOut);
@@ -206,7 +221,7 @@ DWORD CExecCommand::realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, B
     //  function call if compiled for Windows XP or higher.
     if (!Wow64DisableWow64FsRedirection( &pOldWow64Value)) 
 	{
-		m_csOutput.Format( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+		m_csOutputA.Format( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 		return 0;
 	}
 #endif
@@ -218,7 +233,7 @@ DWORD CExecCommand::realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, B
 			/*
 			* Oh gag, we're on Win9x or using COMMAND.COM. Not supported
 			*/
-			m_csOutput.Format( "Get COMSPEC Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+			m_csOutputA.Format( "Get COMSPEC Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 #if _WIN32_WINNT >= 0x0501
 			Wow64RevertWow64FsRedirection( pOldWow64Value);
 #endif
@@ -249,7 +264,7 @@ DWORD CExecCommand::realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, B
 					0, //CREATE_NEW_CONSOLE,
 					NULL, lpstrPath, &siStartInfo, &piProcInfo)) 
 	{
-		m_csOutput.Format( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+		m_csOutputA.Format( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 #if _WIN32_WINNT >= 0x0501
 		Wow64RevertWow64FsRedirection( pOldWow64Value);
 #endif
@@ -281,7 +296,7 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	// Capture stdin
 	if (!CreatePipe(&m_hChildStdinRd, &m_hChildStdinWr, &saAttr, 0))
 	{
-		m_csOutput.Format( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+		m_csOutputA.Format( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 		return FALSE;
 	}
 	/* Create new output read handle and the input write handle. Set
@@ -291,7 +306,7 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	if (!DuplicateHandle( GetCurrentProcess(), m_hChildStdinWr, GetCurrentProcess(), &m_hChildStdinWrDup, 0,
 		 FALSE, DUPLICATE_SAME_ACCESS))
 	{
-		m_csOutput.Format( "DuplicateHandle Error");
+		m_csOutputA.Format( "DuplicateHandle Error");
 		return FALSE;
 	}
 
@@ -303,13 +318,13 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	// Capture stdout and stderr
 	if (!CreatePipe(&m_hChildStdoutRd, &m_hChildStdoutWr, &saAttr, 0))
 	{
-		m_csOutput.Format( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+		m_csOutputA.Format( "CreatePipe Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 		return FALSE;
 	}
 	if (!DuplicateHandle( GetCurrentProcess(), m_hChildStdoutRd, GetCurrentProcess(), &m_hChildStdoutRdDup, 0,
 		 FALSE, DUPLICATE_SAME_ACCESS))
 	{
-		m_csOutput.Format( "DuplicateHandle Error");
+		m_csOutputA.Format( "DuplicateHandle Error");
 		return FALSE;
 	}
 
@@ -321,10 +336,19 @@ BOOL CExecCommand::startProcessCapture(LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	// It's easier to use for the console
 	if ((m_fdStdOut = _open_osfhandle(TO_INTPTR(m_hChildStdoutRdDup), _O_RDONLY|_O_TEXT)) == -1)
 	{
-		m_csOutput.Format( "_open_osfhandle Error");
+		m_csOutputA.Format( "_open_osfhandle Error");
 		return FALSE;
 	}
 
+	// Open file to store command output if needed 
+	if (!m_csOutputFileA.IsEmpty())
+	{
+		if (_sopen_s( &m_fdFileStdOut, m_csOutputFileA, _O_CREAT|_O_TRUNC|_O_WRONLY|_O_BINARY, _SH_DENYNO, _S_IREAD | _S_IWRITE))
+		{
+			m_csOutputA.Format( "Can't open file <%s> for writing command output", m_csOutputFileA);
+			return FALSE;
+		}
+	}
 	return TRUE;
 }
 
@@ -362,7 +386,7 @@ int CExecCommand::execWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath, BOOL bCaptu
 	{
 		pEx->Delete();
 		closeHandles();
-		m_csOutput = "Unhandled exception Error";
+		m_csOutputA = "Unhandled exception Error";
 		return EXEC_ERROR_START_COMMAND;
 	}
 }
@@ -387,7 +411,7 @@ int CExecCommand::execNoWait( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	{
 		pEx->Delete();
 		closeHandles();
-		m_csOutput = "Unhandled exception Error";
+		m_csOutputA = "Unhandled exception Error";
 		return EXEC_ERROR_START_COMMAND;
 	}
 }
@@ -402,7 +426,7 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 	struct _stat fsOut;
 	BOOL	bWait = TRUE;
 
-	m_csOutput = "";
+	m_csOutputA = "";
 
 	// While timeout is not reached
 	while (bWait)
@@ -410,7 +434,7 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 		// Each 200 millisecond, store stdout and stderr
 		if (WaitForSingleObject( m_hProcessHandle, 200) == WAIT_FAILED)
 		{
-			m_csOutput.Format( "WaitForSingleObject Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+			m_csOutputA.Format( "WaitForSingleObject Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			m_nExitValue = -1;
 			return FALSE; 
 		}
@@ -423,7 +447,17 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 			// We are capturing ouput and there is something to read
 			nLength = _read( m_fdStdOut, bBuffer, 1023);
 			bBuffer[nLength] = 0;
-			m_csOutput.AppendFormat( "%s", bBuffer);
+			if (m_fdFileStdOut == NULL)
+				// In memory output store
+				m_csOutputA.AppendFormat( "%s", bBuffer);
+			else
+			{
+				// Store output to file
+				if (_write( m_fdFileStdOut, bBuffer, nLength) != nLength)
+				{
+					m_csOutputA.AppendFormat( "Failed to write output to file <%s>", m_csOutputFileA);
+				}
+			}
 		}
 		// Check if process still active
 		if (!GetExitCodeProcess( m_hProcessHandle, &dwExitCode) || (dwExitCode != STILL_ACTIVE))
@@ -434,23 +468,38 @@ BOOL  CExecCommand::wait( BOOL bCapture)
 		}
 	}
 	// Process ended => Capture last console output if needed
-	if (bCapture && (_fstat( m_fdStdOut, &fsOut) == 0) && (fsOut.st_size > 0))
+	while (bCapture && (_fstat( m_fdStdOut, &fsOut) == 0) && (fsOut.st_size > 0))
 	{
 		// We are capturing ouput and there is still something to read
 		nLength = _read( m_fdStdOut, bBuffer, 1023);
 		bBuffer[nLength] = 0;
-		m_csOutput.AppendFormat( "%s", bBuffer);
+		if (m_fdFileStdOut == NULL)
+			// In memory output store
+			m_csOutputA.AppendFormat( "%s", bBuffer);
+		else
+		{
+			// Store output to file
+			if (_write( m_fdFileStdOut, bBuffer, nLength) != nLength)
+			{
+				m_csOutputA.AppendFormat( "Failed to write output to file <%s>", m_csOutputFileA);
+			}
+		}
+	}
+	if (m_fdFileStdOut != NULL)
+	{
+		_close( m_fdFileStdOut);
+		m_fdFileStdOut = NULL;
 	}
 	// Get process exit code
 	if (GetExitCodeProcess( m_hProcessHandle, &dwExitCode)) 
 	{
 		nResult = dwExitCode;
 		if (dwExitCode == STILL_ACTIVE)
-			m_csOutput.Format( "Command execution timeout of %lu milliseconds reached", m_dwTimeout);
+			m_csOutputA.Format( "Command execution timeout of %lu milliseconds reached", m_dwTimeout);
 	} 
 	else 
 	{
-		m_csOutput.Format( "GetExitCode Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+		m_csOutputA.Format( "GetExitCode Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 		nResult = -1;
 	}
 	m_nExitValue = nResult;
@@ -489,7 +538,7 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 			if (!parseRunningProcesses( &myProcessList))
 			{
 				SetPriorityClass( GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
-				m_csOutput.Format( "Parse running processes Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+				m_csOutputA.Format( "Parse running processes Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 				freeProcessList( &myProcessList);
 				closeHandles();
 				return EXEC_ERROR_WAIT_COMMAND;
@@ -505,7 +554,7 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		{
 			// Time out reached
 			m_nExitValue = STILL_ACTIVE;
-			m_csOutput.Format( "Command execution timeout of %lu milliseconds reached", m_dwTimeout);
+			m_csOutputA.Format( "Command execution timeout of %lu milliseconds reached", m_dwTimeout);
 			closeHandles();
 			return EXEC_ERROR_TIMEOUT_COMMAND;
 		}
@@ -517,7 +566,7 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 		else
 		{
 			m_nExitValue = -1;
-			m_csOutput.Format( "GetExitCode Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
+			m_csOutputA.Format( "GetExitCode Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
 			closeHandles();
 			return EXEC_ERROR_WAIT_COMMAND;
 		}
@@ -528,7 +577,7 @@ int CExecCommand::execWaitForAllChilds( LPCTSTR lpstrCommand, LPCTSTR lpstrPath)
 	{
 		pEx->Delete();
 		closeHandles();
-		m_csOutput = "Unhandled exception Error";
+		m_csOutputA = "Unhandled exception Error";
 		return EXEC_ERROR_START_COMMAND;
 	}
 }
