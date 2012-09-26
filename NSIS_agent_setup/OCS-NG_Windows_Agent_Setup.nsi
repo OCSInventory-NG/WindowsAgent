@@ -385,49 +385,48 @@ Function ParseCmd
 	Pop $R0
 	WriteINIStr "$PLUGINSDIR\server.ini" "Field 7" "State" "$R0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/SERVER=$R0" "" "+" $R1
+	${WordReplace} '$9' '/SERVER=$R0' "" "+" $R1
 	StrCpy $9 $R1
 	; Server credentials
-	Push "/USER="          ; push the search string onto the stack
-	Push ""               ; No user by default
-	Call GetParameterValue
-	Pop $R0
+    ${GetOptions} '$9' '/USER=' $R0
+    IfErrors 0 +2
+    ; No switch in command line, no user by default
+    StrCpy $R0 ""
 	WriteINIStr "$PLUGINSDIR\server.ini" "Field 8" "State" "$R0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/USER=$R0" "" "+" $R1
+	${WordReplace} '$9' '/USER=$R0' "" "+" $R1
 	StrCpy $9 $R1
-	Push "/PWD="          ; push the search string onto the stack
-	Push ""              ; No password by default
-	Call GetParameterValue
-	Pop $R0
+    ${GetOptions} '$9' '/PWD=' $R0
+    IfErrors 0 +2
+    ; No switch in command line, no password by default
+    StrCpy $R0 ""
 	WriteINIStr "$PLUGINSDIR\server.ini" "Field 9" "State" "$R0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/PWD=$R0" "" "+" $R1
+	${WordReplace} '$9' '/PWD=$R0' "" "+" $R1
 	StrCpy $9 $R1
 	; Certificate validation
-	Push "/SSL="          ; push the search string onto the stack
-	Push "1"             ; Certificate validation is required
-	Call GetParameterValue
-	Pop $R0
+    ${GetOptions} '$9' '/SSL=' $R0
+    IfErrors 0 +2
+    ; No switch in command line, Certificate validation is required by default
+    StrCpy $R0 "1"
 	WriteINIStr "$PLUGINSDIR\server.ini" "Field 10" "State" "$R0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/SSL=$R0" "" "+" $R1
+	${WordReplace} '$9' '/SSL=$R0' "" "+" $R1
 	StrCpy $9 $R1
-	Push "/CA="          ; push the search string onto the stack
-	Push "cacert.pem"   ; Use CA Certificate vinto agent's folder by default
-	Call GetParameterValue
-	Pop $R0
+    ${GetOptions} '$9' '/CA=' $R0
+    IfErrors 0 +2
+    StrCpy $R0 "cacert.pem"
 	WriteINIStr "$PLUGINSDIR\server.ini" "Field 11" "State" "$R0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/CA=$R0" "" "+" $R1
+	${WordReplace} '$9' '/CA=$R0' "" "+" $R1
 	StrCpy $9 $R1
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; PROXY PROPERTIES
 	; Proxy type
-	Push "/PROXY_TYPE="      ; push the search string onto the stack
-	Push "0"                 ; No proxy by default
-	Call GetParameterValue
-	Pop $R0
+    ${GetOptions} '$9' '/PROXY_TYPE=' $R0
+    ; No switch in command line, No proxy by default
+    IfErrors 0 +2
+    StrCpy $R0 "0"
 	${If} "$R0" == "1"
     	; HTTP proxy
 	    StrCpy $0 "HTTP"
@@ -443,134 +442,126 @@ Function ParseCmd
     ${EndIf}
 	WriteINIStr "$PLUGINSDIR\proxy.ini" "Field 7" "State" "$0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/PROXY_TYPE=$R0" "" "+" $R1
+	${WordReplace} '$9' '/PROXY_TYPE=$R0' "" "+" $R1
 	StrCpy $9 $R1
 	; Proxy address
-	Push "/PROXY="          ; push the search string onto the stack
-	Push ""                 ; No proxy address by default
-	Call GetParameterValue
-	Pop $R0
+    ${GetOptions} '$9' '/PROXY=' $R0
+    ; No switch in command line, No proxy address by default
+    IfErrors 0 +2
+    StrCpy $R0 ""
 	WriteINIStr "$PLUGINSDIR\proxy.ini" "Field 8" "State" "$R0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/PROXY=$R0" "" "+" $R1
+	${WordReplace} '$9' '/PROXY=$R0' "" "+" $R1
 	StrCpy $9 $R1
 	; Proxy port
-	Push "/PROXY_PORT="     ; push the search string onto the stack
-	Push ""                 ; No proxy address by default
-	Call GetParameterValue
-	Pop $R0
+    ${GetOptions} '$9' '/PROXY_PORT=' $R0
+    ; No switch in command line, No proxy port by default
+    IfErrors 0 +2
+    StrCpy $R0 ""
 	WriteINIStr "$PLUGINSDIR\proxy.ini" "Field 9" "State" "$R0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/PROXY_PORT=$R0" "" "+" $R1
+	${WordReplace} '$9' '/PROXY_PORT=$R0' "" "+" $R1
 	StrCpy $9 $R1
 	; Proxy credentials
-	Push "/PROXY_USER="          ; push the search string onto the stack
-	Push ""               ; No user by default
-	Call GetParameterValue
-	Pop $R0
+    ${GetOptions} '$9' '/PROXY_USER=' $R0
+    ; No switch in command line, No proxy user by default
+    IfErrors 0 +2
+    StrCpy $R0 ""
 	WriteINIStr "$PLUGINSDIR\proxy.ini" "Field 10" "State" "$R0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/PROXY_USER=$R0" "" "+" $R1
+	${WordReplace} '$9' '/PROXY_USER=$R0' "" "+" $R1
 	StrCpy $9 $R1
-	Push "/PROXY_PWD="          ; push the search string onto the stack
-	Push ""              ; No password by default
-	Call GetParameterValue
-	Pop $R0
+    ${GetOptions} '$9' '/PROXY_PWD=' $R0
+    ; No switch in command line, No proxy password by default
+    IfErrors 0 +2
+    StrCpy $R0 ""
 	WriteINIStr "$PLUGINSDIR\proxy.ini" "Field 11" "State" "$R0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/PROXY_PWD=$R0" "" "+" $R1
+	${WordReplace} '$9' '/PROXY_PWD=$R0' "" "+" $R1
 	StrCpy $9 $R1
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; AGENT AND SETUP PROPERTIES
 	; Verbose log
-	Push "/DEBUG="            ; push the search string onto the stack
-	Push "0"                  ; No verbose by default
-	Call GetParameterValue
-	Pop $R0
+    ${GetOptions} '$9' '/DEBUG=' $R0
+    ; No switch in command line, No verbose log by default
+    IfErrors 0 +2
+    StrCpy $R0 "0"
 	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 4" "State" "$R0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/DEBUG=$R0" "" "+" $R1
+	${WordReplace} '$9' '/DEBUG=$R0' "" "+" $R1
 	StrCpy $9 $R1
 	; No Software
-	Push "/NOSOFTWARE" ; push the search string onto the stack
-	Push "1"      ; No Software by default
-	Call GetParameterValue
-	Pop $R0
-	${If} "$R0" == "1"
-	    ; Scan for Software allowed
-        WriteINIStr "$PLUGINSDIR\agent.ini" "Field 10" "State" "0"
-    ${Else}
-        ; Never scan for Software
-	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 10" "State" "1"
-	${EndIf}
+    ${GetOptions} '$9' '/NOSOFTWARE' $R0
+    ; No switch in command line, Software inventory by default
+    IfErrors 0 ParseCmd_NoSoft
+    ; Scan for Software allowed
+    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 10" "State" "0"
+    goto ParseCmd_NoSoft_End
+ParseCmd_NoSoft:
+   ; Never scan for Software
+    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 10" "State" "1"
+ParseCmd_NoSoft_End:
 	; No TAG
 	Push "/NOTAG" ; push the search string onto the stack
 	Push "1"      ; No TAG by default
-	Call GetParameterValue
-	Pop $R0
-	${If} "$R0" == "1"
-	    ; TAG allowed
-        WriteINIStr "$PLUGINSDIR\agent.ini" "Field 5" "State" "0"
-    ${Else}
-        ; Never ask for TAG
-	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 5" "State" "1"
-	${EndIf}
+    ${GetOptions} '$9' '/NOTAG' $R0
+    IfErrors 0 ParseCmd_NoTag
+    ; No switch in command line, NOTAG disabled by default
+    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 5" "State" "0"
+    goto ParseCmd_NoTag_End
+ParseCmd_NoTag:
+    ; Never ask for TAG
+    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 5" "State" "1"
+ParseCmd_NoTag_End:
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/NOTAG" "" "+" $R1
+	${WordReplace} '$9' '/NOTAG' "" "+" $R1
 	StrCpy $9 $R1
 	; /TAG="value"
-	Push "/TAG=" ; push the search string onto the stack
-	Push ""      ; No verbose by default
-	Call GetParameterValue
-	Pop $R0
+    ${GetOptions} '$9' '/TAG=' $R0
+    IfErrors 0 +2
+    StrCpy $R0 ""
 	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 6" "State" "$R0"
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/TAG=$R0" "" "+" $R1
+	${WordReplace} '$9' '/TAG=$R0' "" "+" $R1
 	StrCpy $9 $R1
 	; No service
-	Push "/NO_SERVICE" ; push the search string onto the stack
-	Push "1"      ; No verbose by default
-	Call GetParameterValue
-	Pop $R0
-	${If} "$R0" == "1"
-        ; Register service autostart
-	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 7" "State" "0"
-    ${Else}
-        ; Do not register service
-	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 7" "State" "1"
-	${EndIf}
+    ${GetOptions} '$9' '/NO_SERVICE' $R0
+    IfErrors 0 ParseCmd_NoService
+    ; Register service autostart
+    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 7" "State" "0"
+    goto ParseCmd_NoService_End
+ParseCmd_NoService:
+    ; Do not register service
+	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 7" "State" "1"
+ParseCmd_NoService_End:
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/NO_SERVICE" "" "+" $R1
+	${WordReplace} "$9" '/NO_SERVICE' "" "+" $R1
 	StrCpy $9 $R1
 	; No systray
-	Push "/NO_SYSTRAY" ; push the search string onto the stack
-	Push "1"      ; No verbose by default
-	Call GetParameterValue
-	Pop $R0
-	${If} "$R0" == "1"
-        ; Autostart systray applet
-	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 8" "State" "0"
-    ${Else}
-        ; Do do use systray
-	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 8" "State" "1"
-	${EndIf}
+    ${GetOptions} '$9' '/NO_SYSTRAY' $R0
+    IfErrors 0 ParseCmd_NoSystray
+    ; Register systray applet autostart
+    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 8" "State" "0"
+    goto ParseCmd_NoSystray_End
+ParseCmd_NoSystray:
+    ; Do not register systray applet
+	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 8" "State" "1"
+ParseCmd_NoSystray_End:
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/NO_SYSTRAY" "" "+" $R1
+	${WordReplace} '$9' '/NO_SYSTRAY' "" "+" $R1
 	StrCpy $9 $R1
 	; Launch immediate inventory
-	Push "/NOW"             ; push the search string onto the stack
-	Push "1"                ; Do not launch by default
-	Call GetParameterValue
-	Pop $R0
-	${If} "$R0" == "1"
-	    ; Launch now
-	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 9" "State" "0"
-	${Else}
-        ; Do not launch
-	    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 9" "State" "1"
-	${EndIf}
+    ${GetOptions} '$9' '/NOW' $R0
+    IfErrors 0 ParseCmd_Now
+    ; Do not launch inventory now
+    WriteINIStr "$PLUGINSDIR\agent.ini" "Field 9" "State" "0"
+    goto ParseCmd_Now_End
+ParseCmd_Now:
+    ; Immediately maunch inventory
+	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 9" "State" "1"
+ParseCmd_Now_End:
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/NOW" "" "+" $R1
+	${WordReplace} '$9' '/NOW' "" "+" $R1
 	StrCpy $9 $R1
 	; Silent install option
 	Push "$9"
@@ -587,55 +578,49 @@ ParseCmd_Silent:
 	; Use silent setup
 	SetSilent silent
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/S" "" "+" $R1
+	${WordReplace} '$9' '/S' "" "+" $R1
 	StrCpy $9 $R1
 ParseCmd_Silent_end:
 	; No splash option
-	Push "/NOSPLASH"        ; push the search string onto the stack
-	Push "1"                ; push a default value onto the stack
-	Call GetParameterValue
-	Pop $R0
-	${If} "$R0" == "1"
-	    ; Display spash screen
-	    StrCpy $OcsNoSplash "FALSE"
-	${Else}
-        ; Do not display spash screen
-	    StrCpy $OcsNoSplash "TRUE"
-	${EndIf}
+    ${GetOptions} '$9' '/NOSPLASH' $R0
+    IfErrors 0 ParseCmd_NoSplash
+	; Display spash screen
+	StrCpy $OcsNoSplash "FALSE"
+    goto ParseCmd_NoSplash_End
+ParseCmd_NoSplash:
+    ; Do not display spash screen
+    StrCpy $OcsNoSplash "TRUE"
+ParseCmd_NoSplash_End:
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/NOSPLASH" "" "+" $R1
+	${WordReplace} '$9' '/NOSPLASH' "" "+" $R1
 	StrCpy $9 $R1
 	; /UPGRADE switch to set deployment status
-	Push "/UPGRADE"         ; push the search string onto the stack
-	Push "1"                ; push a default value onto the stack
-	Call GetParameterValue
-	Pop $R0
-	${If} "$R0" == "1"
-	    ; Do not write deployement status file
-	    StrCpy $OcsUpgrade "FALSE"
-    ${Else}
-	    ; Write deployement status file
-	    StrCpy $OcsUpgrade "TRUE"
-	${EndIf}
+    ${GetOptions} '$9' '/UPGRADE' $R0
+    IfErrors 0 ParseCmd_Upgrade
+	; Do not write deployement status file
+	StrCpy $OcsUpgrade "FALSE"
+    goto ParseCmd_Upgrade_End
+ParseCmd_Upgrade:
+	; Write deployement status file
+	StrCpy $OcsUpgrade "TRUE"
+ParseCmd_Upgrade_End:
 	; Remove parsed arg from command line
-	${WordReplace} "$9" "/UPGRADE" "" "+" $R1
+	${WordReplace} '$9' '/UPGRADE' "" "+" $R1
 	StrCpy $9 $R1
 	; Parse /LOCAL=
-	Push "/LOCAL="         ; push the search string onto the stack
-	Push "1"              ; push a default value onto the stack
-	Call GetParameterValue
-	Pop $R0
-	${If} "$R0" == "1"
- 	    ; Network enabled inventory
- 	    SetCurInstType 0
-	${Else}
-	    ; Local inventory asked
-	    SetCurInstType 1
-        SetShellVarContext Current
-	    StrCpy $INSTDIR "$TEMP\OCS Inventory Agent"
-	    StrCpy $OcsLocal "$R0"
-	    WriteINIStr "$PLUGINSDIR\local.ini" "Field 6" "State" "$R0"
-    ${EndIf}
+    ${GetOptions} '$9' '/LOCAL=' $R0
+    IfErrors 0 ParseCmd_Local
+    ; Network enabled inventory
+    SetCurInstType 0
+    goto ParseCmd_Local_End
+ParseCmd_Local:
+	; Local inventory asked
+	SetCurInstType 1
+    SetShellVarContext Current
+	StrCpy $INSTDIR "$TEMP\OCS Inventory Agent"
+	StrCpy $OcsLocal "$R0"
+	WriteINIStr "$PLUGINSDIR\local.ini" "Field 6" "State" "$R0"
+ParseCmd_Local_End:
 	; Restore used registers
 	Pop $R1
 	Pop $R0
@@ -984,7 +969,7 @@ Function WriteServiceIni
 	StrCpy $R1 "$R2 /SSL=$R0"
 	StrCpy $R2 $R1
 	ReadINIStr $R0 "$PLUGINSDIR\server.ini" "Field 11" "State"
-	StrCpy $R1 "$R2 /CA=$R0"
+	StrCpy $R1 '$R2 /CA="$R0"'
 	StrCpy $R2 $R1
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; PROXY PROPERTIES
@@ -1045,7 +1030,7 @@ WriteServiceIni_Skip_NoSoftware:
 WriteServiceIni_Skip_NoTag:
 	; TAG
 	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 6" "State"
-	StrCpy $R1 "$R2 /TAG=$R0"
+	StrCpy $R1 '$R2 /TAG="$R0"'
 	StrCpy $R2 $R1
 	; No Service
 	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 7" "State"
