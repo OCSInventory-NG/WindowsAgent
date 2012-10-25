@@ -16,138 +16,6 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// German (Neutral) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
-#ifdef _WIN32
-LANGUAGE LANG_GERMAN, SUBLANG_NEUTRAL
-#pragma code_page(1252)
-#endif //_WIN32
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_WAIT_SETUP_DIALOG DIALOGEX 0, 0, 318, 119
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
-EXSTYLE WS_EX_NOACTIVATE
-CAPTION "OCS Inventory NG for Windows Notification"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "OCS Inventory NG: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
-    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
-    CTEXT           "Ihre Maus und Tastatur sind gesperrt, solange die Installation ausgeführt wird.\n\nBitte warten... ",IDC_STATUS,7,59,304,53
-END
-
-IDD_ABOUTBOX DIALOGEX 0, 0, 217, 62
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Ãœber..."
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
-    LTEXT           "OCS Inventory NG: Softwareverteilung",IDC_STATIC,42,14,168,8,SS_NOPREFIX
-    LTEXT           "Internetseite: http://www.ocsinventory-ng.org",IDC_STATIC,42,26,168,8
-    DEFPUSHBUTTON   "OK",IDOK,160,41,50,14,WS_GROUP
-END
-
-IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 299, 180
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
-EXSTYLE WS_EX_APPWINDOW
-CAPTION "OCS Inventory NG for Windows Notification"
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    LTEXT           "OCS Inventory NG: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,33,7,259,25
-    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
-    GROUPBOX        "Nachricht von OCS Inventory NG: Softwareverteilung...",IDC_STATIC,7,46,285,110
-    EDITTEXT        IDC_EDIT1,13,63,273,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
-    LTEXT           "",IDC_STATUS,13,136,273,12
-    PUSHBUTTON      "OK",IDOK,7,162,50,14
-    PUSHBUTTON      "Später ausführen!",IDC_DELAY,113,162,73,14
-    PUSHBUTTON      "Abbrechen",IDCANCEL,242,162,50,14
-END
-
-IDD_CU DIALOGEX 0, 0, 283, 142
-STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | DS_CENTERMOUSE | WS_POPUP | WS_VISIBLE | WS_CAPTION
-CAPTION "OCS Inventory NG"
-FONT 8, "MS Sans Serif", 0, 0, 0x0
-BEGIN
-    EDITTEXT        IDC_VAL,13,73,257,28,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,101,115,80,20
-    LTEXT           "Bitte tragen Sie eine TAG-Bezeichnung ein.",IDC_LABEL_TEXT,13,47,257,19,SS_CENTERIMAGE
-    ICON            IDR_MAINFRAME,IDC_STATIC,7,5,20,20
-    LTEXT           "OCS Inventory NG\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
-    GROUPBOX        "",IDC_STATIC,7,33,269,76
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
-BEGIN
-    IDD_WAIT_SETUP_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 311
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 112
-    END
-
-    IDD_DOWNLOAD_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 292
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 176
-    END
-
-    IDD_CU, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 276
-        TOPMARGIN, 2
-        BOTTOMMARGIN, 135
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table
-//
-
-STRINGTABLE 
-BEGIN
-    IDS_ABOUTBOX            "&Ãœber..."
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_AUTO_VALIDATE_STRING "Wird automatisch in %s Sekunden gestartet!"
-    IDS_WAIT_SETUP_STRING   "Ihre Maus und Tastatur sind gesperrt, solange die Installation ausgefÃ¼hrt wird.\n\nBitte warten... "
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_CANCEL_STRING       "Abbrechen"
-    IDS_DELAY_STRING        "SpÃ¤ter ausfÃ¼hren!"
-END
-
-STRINGTABLE 
-BEGIN
-    AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
-END
-
-#endif    // German (Neutral) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
 // English (Neutral) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
@@ -618,6 +486,138 @@ BEGIN
 END
 
 #endif    // Neutral (Default) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// German (Germany) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_WAIT_SETUP_DIALOG DIALOGEX 0, 0, 318, 119
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
+EXSTYLE WS_EX_NOACTIVATE
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "OCS Inventory NG: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    CTEXT           "Ihre Maus und Tastatur sind gesperrt, solange die Installation ausgeführt wird.\n\nBitte warten... ",IDC_STATUS,7,59,304,53
+END
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 217, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Ãœber..."
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "OCS Inventory NG: Softwareverteilung",IDC_STATIC,42,14,168,8,SS_NOPREFIX
+    LTEXT           "Internetseite: http://www.ocsinventory-ng.org",IDC_STATIC,42,26,168,8
+    DEFPUSHBUTTON   "OK",IDOK,160,41,50,14,WS_GROUP
+END
+
+IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 299, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "OCS Inventory NG: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,33,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    GROUPBOX        "Nachricht von OCS Inventory NG: Softwareverteilung...",IDC_STATIC,7,46,285,110
+    EDITTEXT        IDC_EDIT1,13,63,273,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    LTEXT           "",IDC_STATUS,13,136,273,12
+    PUSHBUTTON      "OK",IDOK,7,162,50,14
+    PUSHBUTTON      "Später ausführen!",IDC_DELAY,113,162,73,14
+    PUSHBUTTON      "Abbrechen",IDCANCEL,242,162,50,14
+END
+
+IDD_CU DIALOGEX 0, 0, 283, 142
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | DS_CENTERMOUSE | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "OCS Inventory NG"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    EDITTEXT        IDC_VAL,13,73,257,28,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,101,115,80,20
+    LTEXT           "Bitte tragen Sie eine TAG-Bezeichnung ein.",IDC_LABEL_TEXT,13,47,257,19,SS_CENTERIMAGE
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,5,20,20
+    LTEXT           "OCS Inventory NG\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
+    GROUPBOX        "",IDC_STATIC,7,33,269,76
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_WAIT_SETUP_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 311
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 112
+    END
+
+    IDD_DOWNLOAD_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
+
+    IDD_CU, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 276
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 135
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "&Ãœber..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_AUTO_VALIDATE_STRING "Wird automatisch in %s Sekunden gestartet!"
+    IDS_WAIT_SETUP_STRING   "Ihre Maus und Tastatur sind gesperrt, solange die Installation ausgefÃ¼hrt wird.\n\nBitte warten... "
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CANCEL_STRING       "Abbrechen"
+    IDS_DELAY_STRING        "SpÃ¤ter ausfÃ¼hren!"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
+END
+
+#endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

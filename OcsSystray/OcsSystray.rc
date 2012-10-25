@@ -16,129 +16,6 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// German (Neutral) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
-#ifdef _WIN32
-LANGUAGE LANG_GERMAN, SUBLANG_NEUTRAL
-#pragma code_page(1252)
-#endif //_WIN32
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_OCSSYSTRAY_DIALOG DIALOGEX 0, 0, 301, 232
-STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "OCS Inventory NG Agent für Windows"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "OK",IDCANCEL,111,205,80,20
-    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
-    LTEXT           "OCS Inventory NG Agent für Windows",IDC_STATIC,42,7,218,8
-    LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
-    GROUPBOX        "OCS Inventory NG Dienst Status",IDC_STATIC,7,41,287,30
-    LTEXT           "Dienst ist gestartet...",IDC_SERVICE_STATUS,35,55,252,8
-    GROUPBOX        "OCS Inventory NG Komponenten",IDC_STATIC,7,75,287,124
-    LTEXT           "Dienst Version xx.xx.xx.xx",IDC_VERSION_SERVICE,35,95,252,8
-    LTEXT           "Agent Version xx.xx.xx.xx",IDC_VERSION_AGENT,35,107,252,8
-    LTEXT           "Download Version xx.xx.xx.xx",IDC_VERSION_DOWNLOAD,35,119,252,8
-    LTEXT           "Framework Version xx.xx.xx.xx",IDC_VERSION_FRAMEWORK,35,131,252,8
-    LTEXT           "Sysinfo Version xx.xx.xx.xx",IDC_VERSION_SYSINFO,35,143,252,8
-    LTEXT           "WMI Version xx.xx.xx.xx",IDC_VERSION_WMI,35,155,252,8
-    LTEXT           "ComProvider Version xx.xx.xx.xx",IDC_VERSION_COM_PROVIDER,35,167,252,8
-    LTEXT           "Notification Provider Version xx.xx.xx.xx",IDC_VERSION_NOTIFICATION,35,179,252,8
-END
-
-IDD_SHOW_INVENTORY_DIALOG DIALOGEX 0, 0, 600, 400
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "OCS Inventory NG Agent für Windows"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "&OK",IDCANCEL,274,380,50,14
-    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
-    LTEXT           "OCS Inventory NG Agent für Windows",IDC_STATIC,42,7,218,8
-    LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
-    CTEXT           "<Browser location>",IDC_BROWSER,13,55,572,316,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_STATICEDGE
-    GROUPBOX        "Inventarisierungs-Informationen für Computer...",IDC_STATIC,7,41,584,335
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
-BEGIN
-    IDD_OCSSYSTRAY_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 294
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 205
-    END
-
-    IDD_SHOW_INVENTORY_DIALOG, DIALOG
-    BEGIN
-        RIGHTMARGIN, 503
-        BOTTOMMARGIN, 350
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDR_MAINFRAME MENU 
-BEGIN
-    POPUP "OCS Inventory NG"
-    BEGIN
-        MENUITEM "OCS Inventory NG Agent für Windows", IDC_SYSTRAY_DISPLAY, GRAYED
-        MENUITEM SEPARATOR
-        MENUITEM "&Jetzt OCS Inventory NG Agent starten", IDC_SYSTRAY_RUN_AGENT
-        MENUITEM "&Zeige Inventarisierungs-Informationen", IDC_SYSTRAY_SHOW_INVENTORY
-        MENUITEM SEPARATOR
-        MENUITEM "&Ende",                       IDOK
-    END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table
-//
-
-STRINGTABLE 
-BEGIN
-    AFX_IDS_APP_TITLE       "OCS Inventory NG Agent für Windows"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_FAILED_CONNECT_SERVICE 
-                            "Konnte keine Verbindung herstellen zu %s...\n%s"
-    IDS_FAILED_SEND_MESSAGE "Nachricht konnte nicht gesendet werden an %s...\n%s"
-    IDS_SERVICE_STARTING    "%s wird gestartet..."
-    IDS_SERVICE_STARTED     "%s wurde gestartet..."
-    IDS_SERVICE_STOPPING    "%s wird gestoppt..."
-    IDS_SERVICE_STOPPED     "%s wurde gestoppt..."
-    IDS_START_INVENTORY_SUCCESSFULL 
-                            "Die Inventarisierungsaufforderung wurde erfolgreich an den Dienst OCS Inventory NG gesendet"
-    IDS_SHOW_INVENTORY_FAILED 
-                            "Die Inventarisierungsinformationen können nicht angezeigt werden! Der Grund ist: %s"
-END
-
-#endif    // German (Neutral) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
 // English (Neutral) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
@@ -563,6 +440,129 @@ END
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ico"
 #endif    // Neutral (Default) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// German (Germany) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_OCSSYSTRAY_DIALOG DIALOGEX 0, 0, 301, 232
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "OCS Inventory NG Agent für Windows"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDCANCEL,111,205,80,20
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    LTEXT           "OCS Inventory NG Agent für Windows",IDC_STATIC,42,7,218,8
+    LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
+    GROUPBOX        "OCS Inventory NG Dienst Status",IDC_STATIC,7,41,287,30
+    LTEXT           "Dienst ist gestartet...",IDC_SERVICE_STATUS,35,55,252,8
+    GROUPBOX        "OCS Inventory NG Komponenten",IDC_STATIC,7,75,287,124
+    LTEXT           "Dienst Version xx.xx.xx.xx",IDC_VERSION_SERVICE,35,95,252,8
+    LTEXT           "Agent Version xx.xx.xx.xx",IDC_VERSION_AGENT,35,107,252,8
+    LTEXT           "Download Version xx.xx.xx.xx",IDC_VERSION_DOWNLOAD,35,119,252,8
+    LTEXT           "Framework Version xx.xx.xx.xx",IDC_VERSION_FRAMEWORK,35,131,252,8
+    LTEXT           "Sysinfo Version xx.xx.xx.xx",IDC_VERSION_SYSINFO,35,143,252,8
+    LTEXT           "WMI Version xx.xx.xx.xx",IDC_VERSION_WMI,35,155,252,8
+    LTEXT           "ComProvider Version xx.xx.xx.xx",IDC_VERSION_COM_PROVIDER,35,167,252,8
+    LTEXT           "Notification Provider Version xx.xx.xx.xx",IDC_VERSION_NOTIFICATION,35,179,252,8
+END
+
+IDD_SHOW_INVENTORY_DIALOG DIALOGEX 0, 0, 600, 400
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "OCS Inventory NG Agent für Windows"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "&OK",IDCANCEL,274,380,50,14
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    LTEXT           "OCS Inventory NG Agent für Windows",IDC_STATIC,42,7,218,8
+    LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
+    CTEXT           "<Browser location>",IDC_BROWSER,13,55,572,316,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_STATICEDGE
+    GROUPBOX        "Inventarisierungs-Informationen für Computer...",IDC_STATIC,7,41,584,335
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_OCSSYSTRAY_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 294
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 205
+    END
+
+    IDD_SHOW_INVENTORY_DIALOG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 503
+        BOTTOMMARGIN, 350
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "OCS Inventory NG"
+    BEGIN
+        MENUITEM "OCS Inventory NG Agent für Windows", IDC_SYSTRAY_DISPLAY, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Jetzt OCS Inventory NG Agent starten", IDC_SYSTRAY_RUN_AGENT
+        MENUITEM "&Zeige Inventarisierungs-Informationen", IDC_SYSTRAY_SHOW_INVENTORY
+        MENUITEM SEPARATOR
+        MENUITEM "&Ende",                       IDOK
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "OCS Inventory NG Agent für Windows"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_FAILED_CONNECT_SERVICE 
+                            "Konnte keine Verbindung herstellen zu %s...\n%s"
+    IDS_FAILED_SEND_MESSAGE "Nachricht konnte nicht gesendet werden an %s...\n%s"
+    IDS_SERVICE_STARTING    "%s wird gestartet..."
+    IDS_SERVICE_STARTED     "%s wurde gestartet..."
+    IDS_SERVICE_STOPPING    "%s wird gestoppt..."
+    IDS_SERVICE_STOPPED     "%s wurde gestoppt..."
+    IDS_START_INVENTORY_SUCCESSFULL 
+                            "Die Inventarisierungsaufforderung wurde erfolgreich an den Dienst OCS Inventory NG gesendet"
+    IDS_SHOW_INVENTORY_FAILED 
+                            "Die Inventarisierungsinformationen können nicht angezeigt werden! Der Grund ist: %s"
+END
+
+#endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
