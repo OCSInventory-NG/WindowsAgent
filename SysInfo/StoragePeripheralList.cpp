@@ -29,9 +29,11 @@ static char THIS_FILE[] = __FILE__;
 CStoragePeripheralList::CStoragePeripheralList()
 {
 }
+
 CStoragePeripheralList::~CStoragePeripheralList()
 {
 }
+
 LPCTSTR CStoragePeripheralList::GetHash()
 {
 	COcsCrypto	myHash;
@@ -39,6 +41,9 @@ LPCTSTR CStoragePeripheralList::GetHash()
 	POSITION	pos;
 	BOOL		bContinue;
 	CString		csToHash;
+
+	if (GetCount() == 0)
+		return NULL;
 	if (!myHash.HashInit())
 		return NULL;
 	pos = GetHeadPosition();

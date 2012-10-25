@@ -231,6 +231,11 @@ LPCTSTR CBios::GetHash()
 	COcsCrypto	myHash;
 	static CString		csToHash;
 
+	if (m_csSystemManufacturer.IsEmpty() && m_csSystemModel.IsEmpty() &&
+		m_csSystemSerialNumber.IsEmpty() && m_csMachineType.IsEmpty() &&
+		m_csBiosManufacturer.IsEmpty() && m_csBiosVersion.IsEmpty() &&
+		m_csBiosDate.IsEmpty() && m_csAssetTag.IsEmpty())
+		return NULL;
 	if (!myHash.HashInit())
 		return NULL;
 	csToHash.Format( _T( "%s%s%s%s%s%s%s%s"), m_csSystemManufacturer, m_csSystemModel,

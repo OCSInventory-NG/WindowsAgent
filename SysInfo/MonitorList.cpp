@@ -41,6 +41,8 @@ LPCTSTR CMonitorList::GetHash()
 	BOOL		bContinue;
 	CString		csToHash;
 
+	if (GetCount() == 0)
+		return NULL;
 	if (!myHash.HashInit())
 		return NULL;
 	pos = GetHeadPosition();
