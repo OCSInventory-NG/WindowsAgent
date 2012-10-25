@@ -80,10 +80,8 @@ public:
 	// Get attribute value of current working XML node
 	LPCTSTR GetAttrib( LPCTSTR szName);
 
-protected:
-	// Free all allocated nodes under an XML node, and including this XML node
-	// BECAUSE THIS IS NOT HANDLED BY TinyXML lib
-	void freeXmlNode( TiXmlNode *pNode);
+	// Delete all allocated nodes under an XML node, and including this XML node
+	void DeleteElem( TiXmlNode *pNode);
 
 protected:
 	TiXmlDocument *m_pDoc;			// XML document
