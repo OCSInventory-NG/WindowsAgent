@@ -1,3 +1,4 @@
+  * Fix bug #1034821: Also compute checksum for plugin output, to allow detecting changes when plugin update standard inventory informations like software
   * Try to utf-8 encode VBS or EXE plugin output if XML parsing fails, then try again to parse
   * Fix bug #1049864: When agent load configuration, it now really uses authRequired and proxyauthRequired values, and not set them to FALSE by default
   * Fix bug #1045784: Ensure timestamp exists before verify expiration

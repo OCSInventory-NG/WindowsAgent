@@ -85,6 +85,7 @@ private: // Attributes
 	CSysInfo	*m_pSysInfo;
 	// Inventory state for detecting changes
 	COCSInventoryState	*m_pState;			
+	COCSInventoryState	*m_pPluginState;
 	// Device TAG
 	CString m_csTag;
 	// Is /NOTIFY enabled, to force notifying mode because service detects inventory changes
