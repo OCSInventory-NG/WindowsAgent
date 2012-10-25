@@ -55,6 +55,8 @@ void COCSInventoryState::Clear()
 	m_csSounds.Empty();
 	m_csVideos.Empty();
 	m_csSoftwares.Empty();
+	m_csVirtualMachines.Empty();
+	m_csCPUs.Empty();
 }
 
 LPCTSTR COCSInventoryState::GetHardware()
@@ -142,13 +144,24 @@ LPCTSTR COCSInventoryState::GetSoftwares()
 	return m_csSoftwares;
 }
 
-BOOL COCSInventoryState::ParseFromXML( CMarkup* pXml)
+LPCTSTR COCSInventoryState::GetVirtualMachines()
+{
+	return m_csVirtualMachines;
+}
+
+LPCTSTR COCSInventoryState::GetCPUs()
+{
+	return m_csCPUs;
+}
+
+BOOL COCSInventoryState::ParseFromXML( CMarkup* pXml, LPCTSTR lpstrSection)
 {
 	try
 	{
 		TiXmlElement *pState, *pNode;
 
-		pState = pXml->FindFirstElem( _T( "LAST_STATE"));
+		pXml->ResetPos();
+		pState = pXml->FindFirstElem( lpstrSection);
 
 		pXml->ResetPos( pState);
 		pNode = pXml->FindFirstElem( _T( "HARDWARE"));		
@@ -218,6 +231,14 @@ BOOL COCSInventoryState::ParseFromXML( CMarkup* pXml)
 		pNode = pXml->FindFirstElem( _T( "SOFTWARES"));
 		m_csSoftwares = pXml->GetData( pNode);
 
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "VIRTUALMACHINES"));
+		m_csVirtualMachines = pXml->GetData( pNode);
+
+		pXml->ResetPos( pState);
+		pNode = pXml->FindFirstElem( _T( "CPUS"));
+		m_csCPUs = pXml->GetData( pNode);
+
 		return TRUE;
 	}
 	catch (CException *pEx)
@@ -227,9 +248,9 @@ BOOL COCSInventoryState::ParseFromXML( CMarkup* pXml)
 	}
 }
 
-BOOL COCSInventoryState::FormatXML(CMarkup* pXml)
+BOOL COCSInventoryState::FormatXML(CMarkup* pXml, LPCTSTR lpstrSection)
 {
-	pXml->AddElem( _T( "LAST_STATE"));
+	pXml->AddElem( lpstrSection);
 		pXml->AddChildElem( _T( "HARDWARE"),m_csHardware);
 		pXml->AddChildElem( _T( "BIOS"), m_csBios);
 		pXml->AddChildElem( _T( "MEMORIES"),m_csMemories);
@@ -247,6 +268,8 @@ BOOL COCSInventoryState::FormatXML(CMarkup* pXml)
 		pXml->AddChildElem( _T( "SOUNDS"),m_csSounds);
 		pXml->AddChildElem( _T( "VIDEOS"),m_csVideos);
 		pXml->AddChildElem( _T( "SOFTWARES"),m_csSoftwares);
+		pXml->AddChildElem( _T( "VIRTUALMACHINES"),m_csVirtualMachines);
+		pXml->AddChildElem( _T( "CPUS"),m_csCPUs);
 	pXml->OutOfElem();
 	return TRUE;
 }
@@ -336,24 +359,51 @@ void COCSInventoryState::SetSoftwares( LPCTSTR lpstrValue)
 	m_csSoftwares = lpstrValue;
 }
 
-BOOL COCSInventoryState::ReadFromFile(LPCTSTR lpstrFilename)
+void COCSInventoryState::SetVirtualMachines( LPCTSTR lpstrValue)
+{
+	m_csVirtualMachines = lpstrValue;
+}
+
+void COCSInventoryState::SetCPUs( LPCTSTR lpstrValue)
+{
+	m_csCPUs = lpstrValue;
+}
+
+BOOL COCSInventoryState::ReadFromFile(LPCTSTR lpstrFilename, LPCTSTR lpstrSection)
 {
 	CMarkup	myXml;
 
 	// Fill Device hardware properties from string
 	if (!myXml.LoadFile( lpstrFilename))
 		return FALSE;
-	if (!ParseFromXML( &myXml))
+	if (!ParseFromXML( &myXml, lpstrSection))
 		return FALSE;
 	return TRUE;
 }
 
-BOOL COCSInventoryState::WriteToFile(LPCTSTR lpstrFilename)
+BOOL COCSInventoryState::WriteToFile(LPCTSTR lpstrFilename, LPCTSTR lpstrSection)
 {
 	CMarkup	myXml;
+	TiXmlElement *pNode, *pTemp;
 
-	if (!FormatXML( &myXml))
+	// Load current state file
+	if (myXml.LoadFile( lpstrFilename))
+	{
+		// File already exists, so remove existing section from XML 
+		myXml.ResetPos();
+		pNode = myXml.FindFirstElem( lpstrSection);
+		while (pNode)
+		{
+			pTemp = pNode;
+			pNode = myXml.FindNextElem( lpstrSection, pTemp);
+			myXml.DeleteElem( pTemp);
+		}
+	}
+	// Add new section
+	myXml.ResetPos();
+	if (!FormatXML( &myXml, lpstrSection))
 		return FALSE;
+	// Save state file
 	if (!myXml.SaveFile( lpstrFilename))
 		return FALSE;
 	return TRUE;

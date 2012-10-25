@@ -20,8 +20,13 @@
 #include "OCSInventory Front.h"
 #include "Markup.h"
 
-// To apply to checksum with an OR
+// State file
 #define OCS_LAST_STATE_FILE			_T( "last_state")
+// State sections
+#define OCS_STATE_STANDARD_SECTION	_T( "LAST_STATE")
+#define OCS_STATE_PLUGIN_SECTION	_T( "PLUGIN_STATE")
+
+// To apply to checksum with an OR
 #define OCS_CHECKSUM_HARDWARE		1
 #define OCS_CHECKSUM_BIOS			2
 #define OCS_CHECKSUM_MEMORIES		4
@@ -39,7 +44,8 @@
 #define OCS_CHECKSUM_SOUNDS			16384
 #define OCS_CHECKSUM_VIDEOS			32768
 #define OCS_CHECKSUM_SOFTWARES		65536
-#define OCS_CHECKSUM_ALL_CHANGED	131071
+#define OCS_CHECKSUM_VIRTUALMACHINES 131072
+#define OCS_CHECKSUM_CPUS			262144
 
 class OCSINVENTORYFRONT_API COCSInventoryState  
 {
@@ -70,6 +76,8 @@ public: // Methods
 	LPCTSTR GetSounds();
 	LPCTSTR GetVideos();
 	LPCTSTR GetSoftwares();
+	LPCTSTR GetVirtualMachines();
+	LPCTSTR GetCPUs();
 
 	//////////////////////////////////
 	// Set attributes values
@@ -95,19 +103,21 @@ public: // Methods
 	void SetSounds( LPCTSTR lpstrValue);
 	void SetVideos( LPCTSTR lpstrValue);
 	void SetSoftwares( LPCTSTR lpstrValue);
+	void SetVirtualMachines( LPCTSTR lpstrValue);
+	void SetCPUs( LPCTSTR lpstrValue);
 
 	//////////////////////////////////
 	// File last_state functions
 	//////////////////////////////////
 
-	BOOL ReadFromFile(LPCTSTR lpstrFilename);
-	BOOL WriteToFile( LPCTSTR lpstrFilename);
+	BOOL ReadFromFile(LPCTSTR lpstrFilename, LPCTSTR lpstrSection = OCS_STATE_STANDARD_SECTION);
+	BOOL WriteToFile( LPCTSTR lpstrFilename, LPCTSTR lpstrSection = OCS_STATE_STANDARD_SECTION);
 
 protected: // Methods
 	// Format informations in a XML string
-	BOOL FormatXML( CMarkup* pXml);
+	BOOL FormatXML( CMarkup* pXml, LPCTSTR lpstrSection = OCS_STATE_STANDARD_SECTION);
 	// Read informations in a XML string
-	BOOL ParseFromXML( CMarkup* pXml);
+	BOOL ParseFromXML( CMarkup* pXml, LPCTSTR lpstrSection = OCS_STATE_STANDARD_SECTION);
 
 protected: // Attributes
 	CString m_csHardware;
@@ -127,6 +137,8 @@ protected: // Attributes
 	CString m_csSounds;
 	CString m_csVideos;
 	CString m_csSoftwares;
+	CString m_csVirtualMachines;
+	CString m_csCPUs;
 };
 
 #endif // !defined(AFX_OCSINVENTORYSTATE_H__6E5FC8FF_1785_4745_A1A0_D2BEC9248343__INCLUDED_)
