@@ -29,18 +29,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 217, 62
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About..."
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
-    LTEXT           "OCS Inventory NG for Windows Notification",IDC_STATIC,42,14,168,8,SS_NOPREFIX
-    LTEXT           "Web site: http://www.ocsinventory-ng.org",IDC_STATIC,42,26,168,8
-    DEFPUSHBUTTON   "OK",IDOK,160,41,50,14,WS_GROUP
-END
-
-IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 299, 180
+IDD_DOWNLOAD_REBOOT_DIALOG DIALOGEX 0, 0, 299, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "OCS Inventory NG for Windows Notification"
@@ -80,6 +69,22 @@ BEGIN
     GROUPBOX        "",IDC_STATIC,7,33,269,76
 END
 
+IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 299, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "OCS Inventory NG for Windows Notification\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,33,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    GROUPBOX        "Message from OCS Inventory NG Agent Package Setup...",IDC_STATIC,7,46,285,110
+    EDITTEXT        IDC_EDIT1,13,63,273,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    LTEXT           "",IDC_STATUS,13,136,273,12
+    PUSHBUTTON      "OK",IDOK,7,162,50,14
+    PUSHBUTTON      "Later...",IDC_DELAY,124,162,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,242,162,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -89,15 +94,7 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO 
 BEGIN
-    IDD_ABOUTBOX, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 210
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 55
-    END
-
-    IDD_DOWNLOAD_DIALOG, DIALOG
+    IDD_DOWNLOAD_REBOOT_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 292
@@ -120,6 +117,14 @@ BEGIN
         TOPMARGIN, 2
         BOTTOMMARGIN, 135
     END
+
+    IDD_DOWNLOAD_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -131,11 +136,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ABOUTBOX            "&About..."
-END
-
-STRINGTABLE 
-BEGIN
     IDS_AUTO_VALIDATE_STRING "AUTOMATICALLY VALIDATING IN %s SECONDS"
     IDS_WAIT_SETUP_STRING   "Your keyboard and mouse are locked while Setup is running.\n\nPlease wait... "
 END
@@ -144,6 +144,7 @@ STRINGTABLE
 BEGIN
     IDS_CANCEL_STRING       "Cancel"
     IDS_DELAY_STRING        "Later..."
+    IDS_AUTO_REBOOT_STRING  "AUTOMATICALLY REBOOTING COMPUTER IN %s SECONDS"
 END
 
 STRINGTABLE 
@@ -168,17 +169,6 @@ LANGUAGE LANG_SPANISH, SUBLANG_NEUTRAL
 //
 // Dialog
 //
-
-IDD_ABOUTBOX DIALOGEX 0, 0, 217, 62
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Acerca de..."
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
-    LTEXT           "OCS Inventory NG: Paquete de instalaciÛn",IDC_STATIC,42,14,168,8,SS_NOPREFIX
-    LTEXT           "Web site: http://www.ocsinventory-ng.org",IDC_STATIC,42,26,168,8
-    DEFPUSHBUTTON   "OK",IDOK,160,41,50,14,WS_GROUP
-END
 
 IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 299, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
@@ -220,6 +210,22 @@ BEGIN
     GROUPBOX        "",IDC_STATIC,7,33,269,76
 END
 
+IDD_DOWNLOAD_REBOOT_DIALOG DIALOGEX 0, 0, 299, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "OCS Inventory NG: Paquete de instalaciÛn\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,33,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    GROUPBOX        "Mensaje desde el paquete de instalaciÛn del Agente OCS...",IDC_STATIC,7,46,285,110
+    EDITTEXT        IDC_EDIT1,13,63,273,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    LTEXT           "",IDC_STATUS,13,136,273,12
+    PUSHBUTTON      "OK",IDOK,7,162,50,14
+    PUSHBUTTON      "M·s tarde...",IDC_DELAY,124,162,50,14
+    PUSHBUTTON      "Cancelar",IDCANCEL,242,162,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -252,6 +258,14 @@ BEGIN
         TOPMARGIN, 2
         BOTTOMMARGIN, 135
     END
+
+    IDD_DOWNLOAD_REBOOT_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -263,19 +277,15 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ABOUTBOX            "&Acerca de la descarga..."
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_AUTO_VALIDATE_STRING "VALIDACI√ìN AUTOM√ÅTICA EN %s SEGUNDOS"
-    IDS_WAIT_SETUP_STRING   "Su teclado y rat√≥n est√°n bloqueados durante la instalaci√≥n.\n\nPor favor, espere... "
+    IDS_AUTO_VALIDATE_STRING "ValidaciÛn autom·tica en %s segundos"
+    IDS_WAIT_SETUP_STRING   "Su teclado y ratÛn est·n bloqueados durante la instalaciÛn.\n\nPor favor, espere... "
 END
 
 STRINGTABLE 
 BEGIN
     IDS_CANCEL_STRING       "Cancelar"
-    IDS_DELAY_STRING        "M√°s tarde..."
+    IDS_DELAY_STRING        "M·s tarde..."
+    IDS_AUTO_REBOOT_STRING  "Reinicio autom·tico en %s segundos"
 END
 
 STRINGTABLE 
@@ -328,17 +338,6 @@ BEGIN
     PUSHBUTTON      "Annuler",IDCANCEL,242,162,50,14
 END
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 217, 62
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "A propos de..."
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
-    LTEXT           "OCS Inventory NG for Windows Notification",IDC_STATIC,42,14,168,8,SS_NOPREFIX
-    LTEXT           "Web site: http://www.ocsinventory-ng.org",IDC_STATIC,42,26,168,8
-    DEFPUSHBUTTON   "OK",IDOK,160,41,50,14,WS_GROUP
-END
-
 IDD_CU DIALOGEX 0, 0, 283, 142
 STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | DS_CENTERMOUSE | WS_POPUP | WS_VISIBLE | WS_CAPTION
 CAPTION "OCS Inventory NG"
@@ -350,6 +349,22 @@ BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,7,5,20,20
     LTEXT           "OCS Inventory NG\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
     GROUPBOX        "",IDC_STATIC,7,33,269,76
+END
+
+IDD_DOWNLOAD_REBOOT_DIALOG DIALOGEX 0, 0, 299, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "OCS Inventory NG for Windows Notification\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,33,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    GROUPBOX        "Message d'information d'OCS Inventory NG Agent Package Setup...",IDC_STATIC,7,46,285,110
+    EDITTEXT        IDC_EDIT1,13,63,273,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    LTEXT           "",IDC_STATUS,13,136,273,12
+    PUSHBUTTON      "OK",IDOK,7,162,50,14
+    PUSHBUTTON      "Annuler",IDCANCEL,242,162,50,14
+    PUSHBUTTON      "Plus tard...",IDC_DELAY,124,162,50,14
 END
 
 
@@ -377,20 +392,20 @@ BEGIN
         BOTTOMMARGIN, 176
     END
 
-    IDD_ABOUTBOX, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 210
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 55
-    END
-
     IDD_CU, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 276
         TOPMARGIN, 2
         BOTTOMMARGIN, 135
+    END
+
+    IDD_DOWNLOAD_REBOOT_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -403,11 +418,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ABOUTBOX            "&A propos..."
-END
-
-STRINGTABLE 
-BEGIN
     IDS_AUTO_VALIDATE_STRING "VALIDATION AUTOMATIQUE DANS %s SECONDES"
     IDS_WAIT_SETUP_STRING   "Votre clavier et votre souris sont bloqu√©s durant l'installation.\n\nVeuillez patienter... "
 END
@@ -416,6 +426,7 @@ STRINGTABLE
 BEGIN
     IDS_CANCEL_STRING       "Annuler"
     IDS_DELAY_STRING        "Plus tard..."
+    IDS_AUTO_REBOOT_STRING  "REDEMARRAGE AUTOMATIQUE DANS %s SECONDES"
 END
 
 STRINGTABLE 
@@ -514,17 +525,6 @@ BEGIN
     CTEXT           "Ihre Maus und Tastatur sind gesperrt, solange die Installation ausgef¸hrt wird.\n\nBitte warten... ",IDC_STATUS,7,59,304,53
 END
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 217, 62
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "√úber..."
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
-    LTEXT           "OCS Inventory NG: Softwareverteilung",IDC_STATIC,42,14,168,8,SS_NOPREFIX
-    LTEXT           "Internetseite: http://www.ocsinventory-ng.org",IDC_STATIC,42,26,168,8
-    DEFPUSHBUTTON   "OK",IDOK,160,41,50,14,WS_GROUP
-END
-
 IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 299, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
 EXSTYLE WS_EX_APPWINDOW
@@ -552,6 +552,22 @@ BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,7,5,20,20
     LTEXT           "OCS Inventory NG\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
     GROUPBOX        "",IDC_STATIC,7,33,269,76
+END
+
+IDD_DOWNLOAD_REBOOT_DIALOG DIALOGEX 0, 0, 299, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "OCS Inventory NG for Windows Notification"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "OCS Inventory NG: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,33,7,259,25
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    GROUPBOX        "Nachricht von OCS Inventory NG: Softwareverteilung...",IDC_STATIC,7,46,285,110
+    EDITTEXT        IDC_EDIT1,13,63,273,64,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    LTEXT           "",IDC_STATUS,13,136,273,12
+    PUSHBUTTON      "OK",IDOK,7,162,50,14
+    PUSHBUTTON      "Sp‰ter ausf¸hren!",IDC_DELAY,113,162,73,14
+    PUSHBUTTON      "Abbrechen",IDCANCEL,242,162,50,14
 END
 
 
@@ -586,6 +602,14 @@ BEGIN
         TOPMARGIN, 2
         BOTTOMMARGIN, 135
     END
+
+    IDD_DOWNLOAD_REBOOT_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 292
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -597,11 +621,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_ABOUTBOX            "&√úber..."
-END
-
-STRINGTABLE 
-BEGIN
     IDS_AUTO_VALIDATE_STRING "Wird automatisch in %s Sekunden gestartet!"
     IDS_WAIT_SETUP_STRING   "Ihre Maus und Tastatur sind gesperrt, solange die Installation ausgef√ºhrt wird.\n\nBitte warten... "
 END
@@ -609,7 +628,8 @@ END
 STRINGTABLE 
 BEGIN
     IDS_CANCEL_STRING       "Abbrechen"
-    IDS_DELAY_STRING        "Sp√§ter ausf√ºhren!"
+    IDS_DELAY_STRING        "Sp‰ter ausf√ºhren!"
+    IDS_AUTO_REBOOT_STRING  "Automatischer neustart in %s Sekunden gestartet!"
 END
 
 STRINGTABLE 

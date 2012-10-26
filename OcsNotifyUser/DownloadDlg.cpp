@@ -22,43 +22,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-////////////////////////////////////////////////////////////////////
-// CAboutDlg dialog used for App About
-
-class CAboutDlg : public CDialog
-{
-public:
-	CAboutDlg();
-
-// Dialog Data
-	enum { IDD = IDD_ABOUTBOX };
-
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-// Implementation
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
-CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
-{
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
-END_MESSAGE_MAP()
-
 
 ////////////////////////////////////////////////////////////////////
 // CDownloadDlg dialog
-
-
-
 
 CDownloadDlg::CDownloadDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CDownloadDlg::IDD, pParent)
@@ -76,8 +42,6 @@ void CDownloadDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDOK, m_buttonOK);
 	DDX_Control(pDX, IDCANCEL, m_buttonCancel);
 	DDX_Control(pDX, IDC_DELAY, m_buttonWait);
-//	DDX_Control(pDX, IDC_EDIT1, m_editText);
-//	DDX_Text( pDX, IDC_EDIT1, m_csEdit);
 }
 
 BEGIN_MESSAGE_MAP(CDownloadDlg, CDialog)
@@ -86,7 +50,6 @@ BEGIN_MESSAGE_MAP(CDownloadDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_DELAY, OnDelay)
-	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 
@@ -95,24 +58,6 @@ END_MESSAGE_MAP()
 BOOL CDownloadDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-
-	// Add "About..." menu item to system menu.
-
-	// IDM_ABOUTBOX must be in the system command range.
-	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
-	ASSERT(IDM_ABOUTBOX < 0xF000);
-
-	CMenu* pSysMenu = GetSystemMenu(FALSE);
-	if (pSysMenu != NULL)
-	{
-		CString strAboutMenu;
-		strAboutMenu.LoadString(IDS_ABOUTBOX);
-		if (!strAboutMenu.IsEmpty())
-		{
-			pSysMenu->AppendMenu(MF_SEPARATOR);
-			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
-		}
-	}
 
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog
@@ -123,22 +68,7 @@ BOOL CDownloadDlg::OnInitDialog()
 		SetTimer( WM_TIMER, 1000, NULL );	
 	m_bDelayed = FALSE;
 	m_uWaited = 0;	
-/*
-	CRect cr, win;
-	int nbl = m_editText.GetLineCount();
-	if( nbl > MAX_LINES ) nbl = MAX_LINES;
-	if( nbl < MIN_LINES ) nbl = MIN_LINES;
 
-	m_editText.GetWindowRect(&cr);
-
-	GetWindowRect(&win);
-
-	long double ldTemp = nbl*cr.Height() / 3;
-	int newHeight = int( ceil( ldTemp));
-	m_editText.SetWindowPos( &CWnd::wndTop, 0, 0, cr.Width() , newHeight, SWP_NOMOVE );
-
-	SetWindowPos( &CWnd::wndTopMost, 0, 0, win.Width() , newHeight + win.Height() - cr.Height() + 10, SWP_NOMOVE );
-*/
 	OSVERSIONINFO osvi;
     ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
@@ -164,19 +94,6 @@ BOOL CDownloadDlg::OnInitDialog()
 	// Bring window to front
 	BringWindowToTop();
 	return TRUE;  // return TRUE  unless you set the focus to a control
-}
-
-void CDownloadDlg::OnSysCommand(UINT nID, LPARAM lParam)
-{
-	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
-	{
-		CAboutDlg dlgAbout;
-		dlgAbout.DoModal();
-	}
-	else
-	{
-		CDialog::OnSysCommand(nID, lParam);
-	}
 }
 
 // If you add a minimize button to your dialog, you will need the code below
@@ -208,16 +125,9 @@ void CDownloadDlg::OnPaint()
 	{
 		// Enable and/or center button
 		m_buttonOK.SetFocus();
-//		m_editText.SetSel(-1);
 		CRect fen, ok, cancel, wait;
 		CRect v_fen, v_ok, v_cancel, v_wait;
 		int xok,xcancel,xwait,y;	
-		// Load language dependant button message
-/*		csMessage.LoadString( IDS_CANCEL_STRING);
-		m_buttonCancel.SetWindowText( csMessage);
-		csMessage.LoadString( IDS_DELAY_STRING);
-		m_buttonWait.SetWindowText( csMessage);
-*/
 		GetClientRect(&fen);
 		m_buttonOK.GetClientRect(&ok);
 		m_buttonCancel.GetClientRect(&cancel);

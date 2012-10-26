@@ -40,13 +40,17 @@ public:
 	// Return must be 0 = OK, 1 = Cancel, otherwise error
 	UINT AskQuestion( LPCTSTR lpstrText);
 
-	// Display an information to user
+	// Display an information to userusing MessageBox
 	// Return must be 0 = OK, otherwise error
 	UINT ShowInformation( LPCTSTR lpstrText);
 
 	// Display pre-installation status message
 	// Return must be 0 = OK, 1 = Cancel, 2 = Delay, otherwise error
 	UINT ShowPreInstall( LPCTSTR lpstrText, BOOL bCancelAllowed = FALSE, BOOL bDelayAllowed = FALSE, UINT uTimeOut = 0);
+
+	// Display post-installation status message
+	// Return must be 0 = OK, 1 = Cancel, 2 = Delay, otherwise error
+	UINT ShowPostInstall( LPCTSTR lpstrText, BOOL bRebootRequired = FALSE, BOOL bCancelAllowed = FALSE, BOOL bDelayAllowed = FALSE, UINT uTimeOut = 0);
 
 	// Ask TAG to user and store result into csTag
 	// Return must be 0 = OK, otherwise error

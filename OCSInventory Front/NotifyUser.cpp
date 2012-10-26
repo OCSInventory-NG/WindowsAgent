@@ -330,6 +330,34 @@ UINT CNotifyUser::ShowPreInstall( LPCTSTR lpstrText, BOOL bCancelAllowed, BOOL b
 	return display( csCommand);
 }
 
+UINT CNotifyUser::ShowPostInstall( LPCTSTR lpstrText, BOOL bRebootRequired, BOOL bCancelAllowed, BOOL bDelayAllowed, UINT uTimeOut)
+{
+	CString csCommand;
+
+	ASSERT( lpstrText);
+
+	// Generate command
+	csCommand.Format( _T( "\"%s\\%s\" /POSTINSTALL"), getInstallFolder(), OCS_NOTIFY_USER_COMMAND);
+	if (getAgentConfig()->isDebugRequired() >= OCS_DEBUG_MODE_TRACE)
+		// Enable debugging
+		csCommand.Append( _T( " /DEBUG"));
+	// Is reboot required
+	if (bRebootRequired)
+		csCommand.Append( _T( " /REBOOT"));
+	// Is cancel denied
+	if (!bCancelAllowed)
+		csCommand.Append( _T( " /NOCANCEL"));
+	// Is delay allowed
+	if (bDelayAllowed)
+		csCommand.Append( _T( " /DELAY"));
+	// Is timeout set
+	if (uTimeOut > 0)
+		csCommand.AppendFormat( _T( " /TIMEOUT=%u"), uTimeOut);
+	// Message to display
+	csCommand.AppendFormat( _T( " /MSG=\"%s\""), lpstrText);
+	return display( csCommand);
+}
+
 UINT CNotifyUser::AskTag( LPCTSTR lpstrText, CString &csTag)
 {
 	CString		csCommand, csFile;

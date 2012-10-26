@@ -16,9 +16,6 @@
 
 #include "SimpleBrowser.h"
 
-#define MAX_LINES 15
-#define MIN_LINES 3
-
 // CDownloadDlg dialog
 class CDownloadDlg : public CDialog
 {
@@ -36,8 +33,17 @@ public:
 
 // Dialog Data
 	enum { IDD = IDD_DOWNLOAD_DIALOG };
-	protected:
+
+protected:
+	virtual BOOL OnInitDialog();
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
+	// Generated message map functions
+	afx_msg void OnPaint();
+	afx_msg HCURSOR OnQueryDragIcon();
+	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnCancel();
+	afx_msg void OnDelay();
+	DECLARE_MESSAGE_MAP()
 
 // Implementation
 protected:
@@ -52,16 +58,5 @@ protected:
 	CButton	m_buttonOK;
 	CButton	m_buttonCancel;
 	CButton	m_buttonWait;
-//	CEdit	m_editText;
 	SimpleBrowser m_Browser;
-
-	// Generated message map functions
-	virtual BOOL OnInitDialog();
-	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
-	afx_msg void OnPaint();
-	afx_msg HCURSOR OnQueryDragIcon();
-	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnCancel();
-	afx_msg void OnDelay();
-	DECLARE_MESSAGE_MAP()
 };

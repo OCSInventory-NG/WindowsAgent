@@ -17,6 +17,7 @@
 #include "OCSInventory Front.h"
 #include "NotifyUser.h"
 #include "DownloadDlg.h"
+#include "DownloadEndDlg.h"
 #include "TagInputDlg.h"
 
 #ifdef _DEBUG
@@ -128,6 +129,11 @@ BOOL COcsNotifyUserApp::InitInstance()
 			if (!displayPreinstallDialogBox())
 				m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => failed to display preinstall DialogBox")); 
 			break;
+		case NOTIFY_TYPE_POSTINSTALL:
+			// Display postinstallation dialogbox
+			if (!displayPostinstallDialogBox())
+				m_pLogger->log( LOG_PRIORITY_DEBUG, _T("Notification Tool => failed to display postinstall DialogBox")); 
+			break;
 		case NOTIFY_TYPE_MSGBOX:
 			// Display standard messagebox
 			if (!displayMessageBox())
@@ -215,6 +221,11 @@ BOOL COcsNotifyUserApp::parseCommandLine()
 		else
 			return FALSE;
 	}
+	else if (isRequired( m_lpCmdLine, _T( "postinstall")))
+	{
+		// Show postinstall dialog box /POSTINSTALL
+		m_uNotifcation = NOTIFY_TYPE_POSTINSTALL;
+	}
 	else
 	{
 		// Show default messagebox /MSGBOX
@@ -235,6 +246,11 @@ BOOL COcsNotifyUserApp::parseCommandLine()
 		m_bDelay = TRUE;
 	else
 		m_bDelay = FALSE;
+	// /REBOOT
+	if (isRequired( m_lpCmdLine, _T( "reboot")))
+		m_bReboot = TRUE;
+	else
+		m_bReboot = FALSE;
 	// /TIMEOUT[=seconds]
 	if (isRequired( m_lpCmdLine, _T( "timeout")))
 		csTimeOut = getParamValue( m_lpCmdLine, _T( "timeout"));
@@ -253,6 +269,34 @@ BOOL COcsNotifyUserApp::displayPreinstallDialogBox()
 
 	cDlg.setAbortAllowed( m_bCancel);
 	cDlg.setDelayAllowed( m_bDelay);
+	cDlg.setTimeOut( m_uTimeOut);
+	cDlg.setNotification( m_csMessage);
+	switch (cDlg.DoModal())
+	{
+	case IDCANCEL:
+		// Canceled by user
+		m_nExitCode = OCS_NOTIFY_APP_CANCEL;
+		break;
+	case IDOK:
+		if (cDlg.isDelayed())
+			m_nExitCode = OCS_NOTIFY_APP_DELAY;
+		else
+			m_nExitCode = OCS_NOTIFY_APP_OK;
+		break;
+	default:
+		return FALSE;
+	}
+	return TRUE;
+}
+
+
+BOOL COcsNotifyUserApp::displayPostinstallDialogBox()
+{
+	CDownloadEndDlg cDlg;
+
+	cDlg.setAbortAllowed( m_bCancel);
+	cDlg.setDelayAllowed( m_bDelay);
+	cDlg.setRebootRequired( m_bReboot);
 	cDlg.setTimeOut( m_uTimeOut);
 	cDlg.setNotification( m_csMessage);
 	switch (cDlg.DoModal())
