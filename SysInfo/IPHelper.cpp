@@ -139,36 +139,10 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		AddLog( _T( "Failed because unknown error !\n" ));
 		return FALSE;
 	}
-/*
-	// Dump IfTable
-	AddLog("\n=== DEBUG : dump IfTable ===\n");
-	for (dwIndex = 0; dwIndex < pIfTable->dwNumEntries; dwIndex ++)
-	{
-//		char wszName[MAX_INTERFACE_NAME_LEN];
-//		WideCharToMultiByte(CP_ACP, 0, pIfTable->table[dwIndex].wszName, -1, wszName, MAX_INTERFACE_NAME_LEN, NULL, NULL);
-
-		AddLog("+ Interface #%d\n", dwIndex);
-//		AddLog("\twszName       = %s\n", wszName);
-		AddLog("\tdwIndex       = %d\n", pIfTable->table[dwIndex].dwIndex);
-		AddLog("\tdwType        = %d\n", pIfTable->table[dwIndex].dwType);
-		AddLog("\tdwMtu         = %d\n", pIfTable->table[dwIndex].dwMtu);
-		AddLog("\tdwSpeed       = %d\n", pIfTable->table[dwIndex].dwSpeed);
-		AddLog("\tdwPhysAddrLen = %d\n", pIfTable->table[dwIndex].dwPhysAddrLen);
-		AddLog("\tbPhysAddr     =");
-		for (DWORD i=0 ; i<pIfTable->table[dwIndex].dwPhysAddrLen ; i++)
-			AddLog(" %02x", pIfTable->table[dwIndex].bPhysAddr[i]);
-		AddLog("\n");
-		AddLog("\tbPhysAddr     = %d\n", pIfTable->table[dwIndex].dwPhysAddrLen);
-		AddLog("\tdwAdminStatus = %d\n", pIfTable->table[dwIndex].dwAdminStatus);
-
-		AddLog("\tdwOperStatus  = %d\n", pIfTable->table[dwIndex].dwOperStatus);
-		AddLog("\tdwLastChange  = %d\n", pIfTable->table[dwIndex].dwLastChange);
-		AddLog("\tbDescr        = %s\n", pIfTable->table[dwIndex].bDescr);
-	}
-*/
 	// Call GetAdptersInfo with length to 0 to get size of required buffer
 	AddLog( _T( "OK\nIpHlpAPI GetNetworkAdapters: Calling GetAdapterInfo to determine IP Infos..."));
 	pAdapterTable = NULL;
+	ulLength = 0;
 	switch( lpfnGetAdaptersInfo( pAdapterTable, &ulLength))
 	{
 	case NO_ERROR: // No error => no adapters
@@ -227,27 +201,6 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		AddLog( _T( "Failed because unknown error !\n" ));
 		return FALSE;
 	}
-/*
-	// Dump IfTable
-	AddLog("\n=== DEBUG : dump AdaptersInfo ===\n");
-	for (dwIndex=0, pAdapterInfo=pAdapterTable ; pAdapterInfo != NULL ; pAdapterInfo = pAdapterInfo->Next, dwIndex++)
-	{
-		AddLog("+ Adaptater #%d\n", dwIndex);
-		AddLog("\tAdapterName   = %s\n", pAdapterInfo->AdapterName); 
-		AddLog("\tDescription   = %s\n", pAdapterInfo->Description); 
-		AddLog("\tAddressLength = %d\n", pAdapterInfo->AddressLength); 
-		AddLog("\tAddress       =");
-		for (DWORD i=0 ; i<pAdapterInfo->AddressLength ; i++)
-			AddLog(" %02x", pAdapterInfo->Address[i]);
-		AddLog("\n");
-		AddLog("\tIndex         = %d\n", pAdapterInfo->Index); 
-		AddLog("\tType          = %d\n", pAdapterInfo->Type); 
-		AddLog("\tDhcpEnabled   = %d\n", pAdapterInfo->DhcpEnabled); 
-	
-	}
-	AddLog("=== DEBUG : fin===\n");
-
-*/
 	// Call GetIfEntry for each interface
 	for (dwIndex = 0; dwIndex < pIfTable->dwNumEntries; dwIndex ++)
 		if (!IsLoopback( pIfTable->table[dwIndex].dwType))
