@@ -17,7 +17,6 @@
 #include "OCSInventory Front.h"
 #include "NotifyUser.h"
 #include "DownloadDlg.h"
-#include "DownloadEndDlg.h"
 #include "TagInputDlg.h"
 
 #ifdef _DEBUG
@@ -292,7 +291,7 @@ BOOL COcsNotifyUserApp::displayPreinstallDialogBox()
 
 BOOL COcsNotifyUserApp::displayPostinstallDialogBox()
 {
-	CDownloadEndDlg cDlg;
+	CDownloadDlg cDlg;
 
 	cDlg.setAbortAllowed( m_bCancel);
 	cDlg.setDelayAllowed( m_bDelay);

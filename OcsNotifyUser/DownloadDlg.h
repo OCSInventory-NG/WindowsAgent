@@ -24,11 +24,17 @@ public:
 	CDownloadDlg(CWnd* pParent = NULL);	// standard constructor
 
 	// Set package informations
+	// Is user allowed to abort action
 	void setAbortAllowed( BOOL bAbort = FALSE);
+	// Is user allowed to delay action
 	void setDelayAllowed( BOOL bDelay = FALSE);
+	// Is reboot action required after package setup (will display automatically rebooting instead of validating)
+	void setRebootRequired( BOOL bReboot = FALSE);
+	// Timeout before validating default action OK
 	void setTimeOut( UINT uTimeOut = 0);
+	// Notification text to display to user
 	void setNotification( LPCTSTR lpstrText);
-	// Allow to check if user press "delay" button
+	// Return user choice if delaying action is allowed (if user press "delay" button or not)
 	BOOL isDelayed();
 
 // Dialog Data
@@ -48,15 +54,16 @@ protected:
 // Implementation
 protected:
 	HICON m_hIcon;
-	BOOL m_bAbortAllowed;
-	BOOL m_bDelayAllowed;
-	BOOL m_bDelayed;
-	UINT m_uNotifyCountdown;
-	UINT m_uWaited;
+	BOOL m_bAbortAllowed;	// Is user allowed to abort action
+	BOOL m_bDelayAllowed;	// Is user allowed to delay action
+	BOOL m_bReboot;			// Is reboot action required
+	BOOL m_bDelayed;		// User choose to delay action or not (if allowed)
+	UINT m_uNotifyCountdown;// Timeout before validating default action OK
+	UINT m_uWaited;			// Current cowntdown
 	CString	m_csEdit;
 
 	CButton	m_buttonOK;
 	CButton	m_buttonCancel;
 	CButton	m_buttonWait;
-	SimpleBrowser m_Browser;
+	SimpleBrowser m_Browser;// HTML display
 };

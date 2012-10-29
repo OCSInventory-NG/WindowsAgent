@@ -192,10 +192,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DownloadEndDlg.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\OcsNotifyUser.cpp"
 				>
 			</File>
@@ -235,10 +231,6 @@
 			>
 			<File
 				RelativePath=".\DownloadDlg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DownloadEndDlg.h"
 				>
 			</File>
 			<File

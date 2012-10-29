@@ -33,6 +33,7 @@ CDownloadDlg::CDownloadDlg(CWnd* pParent /*=NULL*/)
 	m_csEdit.Empty();
 	m_bAbortAllowed = FALSE;
 	m_bDelayAllowed = FALSE;
+	m_bReboot = FALSE;
 	m_uNotifyCountdown = 0;
 }
 
@@ -58,6 +59,7 @@ END_MESSAGE_MAP()
 BOOL CDownloadDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
+	CString csMessage;
 
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog
@@ -85,11 +87,17 @@ BOOL CDownloadDlg::OnInitDialog()
 		// Windows XP/2003/Vista/2008/Seven or + => Display HTML message using SimpleBrowser
 		if (m_Browser.CreateFromControl( this, IDC_EDIT1))
 		{
-			CString csMessage;
 			csMessage.Format( _T( "<HTML><BODY><HEAD><TITLE>OCS Inventory NG Deployment Status text</TITLE></HEAD><P>%s</P></BODY></HTML>"),
 								m_csEdit);
 			m_Browser.Write( csMessage);
 		}
+	}
+	// Set window title if reboot required
+	if (m_bReboot)
+	{
+		csMessage.Format( IDS_REBOOT_REQUIRED_STRING);
+		SetWindowText( csMessage);
+		SetDlgItemText( IDC_STATUS, csMessage);
 	}
 	// Bring window to front
 	BringWindowToTop();
@@ -192,7 +200,10 @@ void CDownloadDlg::OnTimer(UINT nIDEvent)
 	
 	TCHAR szUseless[255];
 	_itot_s( m_uNotifyCountdown - m_uWaited , szUseless, 255, 10);
-	csMessage.Format( IDS_AUTO_VALIDATE_STRING, szUseless);
+	if (m_bReboot)
+		csMessage.Format( IDS_AUTO_REBOOT_STRING, szUseless);
+	else
+		csMessage.Format( IDS_AUTO_VALIDATE_STRING, szUseless);
 	SetWindowText( csMessage);
 	SetDlgItemText( IDC_STATUS, csMessage);
 	BringWindowToTop();
@@ -221,6 +232,11 @@ void CDownloadDlg::setDelayAllowed( BOOL bDelay)
 {
 	m_bDelayAllowed = bDelay;
 	m_bDelayed = FALSE;
+}
+
+void CDownloadDlg::setRebootRequired( BOOL bReboot)
+{
+	m_bReboot = bReboot;
 }
 
 void CDownloadDlg::setTimeOut( UINT uTimeOut)
