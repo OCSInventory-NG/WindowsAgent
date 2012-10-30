@@ -2259,7 +2259,7 @@ char *tabPNPID[] = {
 LPCSTR ISA_PNPID_search( LPCSTR lpstrID)
 {
 	BOOL		bFound = FALSE;
-	CStringA	csBuffer;
+	static CStringA	csBuffer;
 
 	for (UINT i=0; !bFound; i+=2)
 	{
