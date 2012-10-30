@@ -1,3 +1,4 @@
+  * Include lastest list of PNPID vendors, for EDID monitors (see http://www.vesa.org/vesa-standards/standards-faq/))
   * Allow using HTML formating for deployement notification, pre and post package execution
   * Workaround bug #1048955: Restrict german language to German/Germany locale
   * Fix bug #1034821: Also compute checksum for plugin output, to allow detecting changes when plugin update standard inventory informations like software
