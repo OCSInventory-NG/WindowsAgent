@@ -16,6 +16,7 @@
 
 #include "SysInfo.h"
 #include "DebugLog.h"
+#include "ISA_PNPID.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -293,157 +294,90 @@ LPCSTR CEdid::GetManufacturerID(BYTE ID[2])
 
 LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 {
-	if (_strnicmp( lpstrID, "ACR", 3) == 0)
-		return "Acer, Inc.";
-	else if (_strnicmp( lpstrID, "ACT", 3) == 0)
+	if (_strnicmp( lpstrID, "ACT", 3) == 0)
 		return "Targa";
 	else if (_strnicmp( lpstrID, "ACI", 3) == 0)
 		return "Asus Computer Inc.";
-	else if (_strnicmp( lpstrID, "ADI", 3) == 0)
-		return "ADI Corporation http://www.adi.com.tw";
+	else if (_strnicmp( lpstrID, "AUO", 3) == 0)
+		return "Asus Computer Inc.";
 	else if (_strnicmp( lpstrID, "AOC", 3) == 0)
 		return "AOC International (USA) Ltd.";
 	else if (_strnicmp( lpstrID, "API", 3) == 0)
 		return "Acer America Corp.";
-	else if (_strnicmp( lpstrID, "APP", 3) == 0)
-		return "Apple Computer, Inc.";
 	else if (_strnicmp( lpstrID, "ART", 3) == 0)
 		return "ArtMedia";
-	else if (_strnicmp( lpstrID, "AST", 3) == 0)
-		return "AST Research";
 	else if (_strnicmp( lpstrID, "BNQ", 3) == 0)
 		return "BenQ Corporation";
-	else if (_strnicmp( lpstrID, "CPL", 3) == 0)
-		return "Compal Electronics, Inc. / ALFA";
-	else if (_strnicmp( lpstrID, "CPQ", 3) == 0)
-		return "COMPAQ Computer Corp.";
 	else if (_strnicmp( lpstrID, "CPT", 3) == 0)
 		return "Chunghwa Picture Tubes, Ltd.";
 	else if (_strnicmp( lpstrID, "CTX", 3) == 0)
 		return "CTX - Chuntex Electronic Co.";
-	else if (_strnicmp( lpstrID, "DEC", 3) == 0)
-		return "Digital Equipment Corporation";
-	else if (_strnicmp( lpstrID, "DEL", 3) == 0)
-		return "Dell Computer Corp.";
-	else if (_strnicmp( lpstrID, "DPC", 3) == 0)
-		return "Delta Electronics, Inc.";
-	else if (_strnicmp( lpstrID, "DWE", 3) == 0)
-		return "Daewoo Telecom Ltd";
-	else if (_strnicmp( lpstrID, "ECS", 3) == 0)
-		return "ELITEGROUP Computer Systems";
 	else if (_strnicmp( lpstrID, "EIZ", 3) == 0)
-		return "EIZO";
-	else if (_strnicmp( lpstrID, "ENC", 3) == 0)
-		return "EIZO";
+		return "Eizo";
 	else if (_strnicmp( lpstrID, "FCM", 3) == 0)
 		return "Funai Electric Company of Taiwan";
-	else if (_strnicmp( lpstrID, "FUS", 3) == 0)
-		return "Fujitsu Siemens";
-	else if (_strnicmp( lpstrID, "FUJ", 3) == 0)
-		return "Fujitsu Siemens";
 	else if (_strnicmp( lpstrID, "GSM", 3) == 0)
 		return "LG Electronics Inc. (GoldStar Technology, Inc.)";
-	else if (_strnicmp( lpstrID, "GWY", 3) == 0)
-		return "Gateway 2000";
 	else if (_strnicmp( lpstrID, "HEI", 3) == 0)
 		return "Hyundai Electronics Industries Co., Ltd.";
-	else if (_strnicmp( lpstrID, "HIT", 3) == 0)
-		return "Hitachi";
-	else if (_strnicmp( lpstrID, "HSD", 3) == 0)
-		return "Hannspree Inc";
 	else if (_strnicmp( lpstrID, "HSL", 3) == 0)
 		return "Hansol Electronics";
-	else if (_strnicmp( lpstrID, "HTC", 3) == 0)
-		return "Hitachi Ltd. / Nissei Sangyo America Ltd.";
-	else if (_strnicmp( lpstrID, "HWP", 3) == 0)
-		return "Hewlett Packard";
 	else if (_strnicmp( lpstrID, "IBM", 3) == 0)
 		return "IBM PC Company";
 	else if (_strnicmp( lpstrID, "ICL", 3) == 0)
 		return "Fujitsu ICL";
-	else if (_strnicmp( lpstrID, "IVM", 3) == 0)
-		return "Idek Iiyama North America, Inc.";
 	else if (_strnicmp( lpstrID, "KFC", 3) == 0)
 		return "KFC Computek";
-	else if (_strnicmp( lpstrID, "LEN", 3) == 0)
-		return "Lenovo";
 	else if (_strnicmp( lpstrID, "LGD", 3) == 0)
 		return "Asus Computer Inc.";
 	else if (_strnicmp( lpstrID, "LKM", 3) == 0)
 		return "ADLAS / AZALEA";
-	else if (_strnicmp( lpstrID, "LNK", 3) == 0)
-		return "LINK Technologies, Inc.";
+	else if (_strnicmp( lpstrID, "LPL", 3) == 0)
+		return "Fujitsu Siemens";
 	else if (_strnicmp( lpstrID, "LTN", 3) == 0)
-		return "Lite-On";
-	else if (_strnicmp( lpstrID, "MAG", 3) == 0)
-		return "MAG InnoVision";
+		return "Lite-On Inc.";
 	else if (_strnicmp( lpstrID, "MAX", 3) == 0)
 		return "Maxdata Computer GmbH";
-	else if (_strnicmp( lpstrID, "MEI", 3) == 0)
-		return "Panasonic Comm. & Systems Co.";
-	else if (_strnicmp( lpstrID, "MEL", 3) == 0)
-		return "Mitsubishi Electronics";
-	else if (_strnicmp( lpstrID, "MIR", 3) == 0)
-		return "miro Computer Products AG";
 	else if (_strnicmp( lpstrID, "MTC", 3) == 0)
 		return "MITAC";
 	else if (_strnicmp( lpstrID, "MS_", 3) == 0)
-		return "Panasonic Comm. & Systems Co.";
+		return "Panasonic Industry Company";
 	else if (_strnicmp( lpstrID, "NAN", 3) == 0)
-		return "NANAO";
-	else if (_strnicmp( lpstrID, "NEC", 3) == 0)
-		return "NEC Technologies, Inc.";
-	else if (_strnicmp( lpstrID, "NOK", 3) == 0)
-		return "Nokia";
+		return "Eizo Nanao Corp.";
 	else if (_strnicmp( lpstrID, "NVD", 3) == 0)
 		return "Fujitsu Siemens";
 	else if (_strnicmp( lpstrID, "OQI", 3) == 0)
-		return "OPTIQUEST";
-	else if (_strnicmp( lpstrID, "PBN", 3) == 0)
-		return "Packard Bell";
-	else if (_strnicmp( lpstrID, "PGS", 3) == 0)
-		return "Princeton Graphic Systems";
-	else if (_strnicmp( lpstrID, "PHL", 3) == 0)
-		return "Philips Consumer Electronics Co.";
+		return "Viewsonic Optiquest";
 	else if (_strnicmp( lpstrID, "REL", 3) == 0)
 		return "Relisys";
 	else if (_strnicmp( lpstrID, "SAM", 3) == 0)
 		return "Samsung";
-	else if (_strnicmp( lpstrID, "SDI", 3) == 0)
-		return "Samtron";
 	else if (_strnicmp( lpstrID, "SEC", 3) == 0)
 		return "Fujitsu Siemens";
 	else if (_strnicmp( lpstrID, "SMI", 3) == 0)
 		return "Smile";
 	else if (_strnicmp( lpstrID, "SNI", 3) == 0)
 		return "Siemens Nixdorf";
-	else if (_strnicmp( lpstrID, "SNY", 3) == 0)
-		return "Sony Corporation";
-	else if (_strnicmp( lpstrID, "SPT", 3) == 0)
-		return "Sceptre";
 	else if (_strnicmp( lpstrID, "SRC", 3) == 0)
 		return "Shamrock Technology";
 	else if (_strnicmp( lpstrID, "STN", 3) == 0)
 		return "Samtron";
 	else if (_strnicmp( lpstrID, "STP", 3) == 0)
-		return "Sceptre";
+		return "Sceptre Tech Inc";
 	else if (_strnicmp( lpstrID, "TAT", 3) == 0)
 		return "Tatung Co. of America, Inc.";
-	else if (_strnicmp( lpstrID, "TRL", 3) == 0)
-		return "Royal Information Company";
-	else if (_strnicmp( lpstrID, "TSB", 3) == 0)
-		return "Toshiba, Inc.";
-	else if (_strnicmp( lpstrID, "UNM", 3) == 0)
-		return "Unisys Corporation";
-	else if (_strnicmp( lpstrID, "VSC", 3) == 0)
-		return "ViewSonic Corporation";
 	else if (_strnicmp( lpstrID, "WTC", 3) == 0)
 		return "Wen Technology";
 	else if (_strnicmp( lpstrID, "ZCM", 3) == 0)
 		return "Zenith Data Systems";
+	else if (_strnicmp( lpstrID, "_YV", 3) == 0)
+		return "Fujitsu Siemens";
 	else if (_strnicmp( lpstrID, "___", 3) == 0)
 		return "Targa";
-	m_csBuffer.Format( "Unknown manufacturer code %s", lpstrID);
+	// Last, search in default ISA PNPID list maintained by Microsoft
+	m_csBuffer = ISA_PNPID_search( lpstrID);
+	if (m_csBuffer.IsEmpty())
+		m_csBuffer.Format( "Unknown manufacturer code %s", lpstrID);
 	return m_csBuffer;
 }
 
