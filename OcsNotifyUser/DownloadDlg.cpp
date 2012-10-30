@@ -96,8 +96,9 @@ BOOL CDownloadDlg::OnInitDialog()
 	if (m_bReboot)
 	{
 		csMessage.Format( IDS_REBOOT_REQUIRED_STRING);
-		SetWindowText( csMessage);
 		SetDlgItemText( IDC_STATUS, csMessage);
+		csMessage.Insert( 0, _T( "OCS Inventory NG - "));
+		SetWindowText( csMessage);
 	}
 	// Bring window to front
 	BringWindowToTop();
@@ -204,8 +205,9 @@ void CDownloadDlg::OnTimer(UINT nIDEvent)
 		csMessage.Format( IDS_AUTO_REBOOT_STRING, szUseless);
 	else
 		csMessage.Format( IDS_AUTO_VALIDATE_STRING, szUseless);
-	SetWindowText( csMessage);
 	SetDlgItemText( IDC_STATUS, csMessage);
+	csMessage.Insert( 0, _T( "OCS Inventory NG - "));
+	SetWindowText( csMessage);
 	BringWindowToTop();
 	SetWindowPos( &wndTopMost, 0,0,0,0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_SHOWWINDOW);
 	CDialog::OnTimer( nIDEvent);
