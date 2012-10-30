@@ -293,7 +293,7 @@ BOOL COcsNotifyUserApp::displayPostinstallDialogBox()
 {
 	CDownloadDlg cDlg;
 
-	cDlg.setAbortAllowed( m_bCancel);
+	cDlg.setAbortAllowed( FALSE);
 	cDlg.setDelayAllowed( m_bDelay);
 	cDlg.setRebootRequired( m_bReboot);
 	cDlg.setTimeOut( m_uTimeOut);

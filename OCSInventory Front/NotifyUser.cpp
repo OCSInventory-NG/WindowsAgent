@@ -330,7 +330,7 @@ UINT CNotifyUser::ShowPreInstall( LPCTSTR lpstrText, BOOL bCancelAllowed, BOOL b
 	return display( csCommand);
 }
 
-UINT CNotifyUser::ShowPostInstall( LPCTSTR lpstrText, BOOL bRebootRequired, BOOL bCancelAllowed, BOOL bDelayAllowed, UINT uTimeOut)
+UINT CNotifyUser::ShowPostInstall( LPCTSTR lpstrText, BOOL bRebootRequired, BOOL bDelayAllowed, UINT uTimeOut)
 {
 	CString csCommand;
 
@@ -344,9 +344,8 @@ UINT CNotifyUser::ShowPostInstall( LPCTSTR lpstrText, BOOL bRebootRequired, BOOL
 	// Is reboot required
 	if (bRebootRequired)
 		csCommand.Append( _T( " /REBOOT"));
-	// Is cancel denied
-	if (!bCancelAllowed)
-		csCommand.Append( _T( " /NOCANCEL"));
+	// Cancel is always denied for end notification
+	csCommand.Append( _T( " /NOCANCEL"));
 	// Is delay allowed
 	if (bDelayAllowed)
 		csCommand.Append( _T( " /DELAY"));
