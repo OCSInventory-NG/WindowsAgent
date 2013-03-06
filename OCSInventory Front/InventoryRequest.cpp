@@ -140,10 +140,10 @@ BOOL CInventoryRequest::final()
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Generating XML document with Device properties"));
 		getXmlPointerContent();
 		// Update BIOS file
-		bSuccess = bSuccess && m_pTheDB->UpdateBIOS( m_BIOS);
+		bSuccess = m_pTheDB->UpdateBIOS( m_BIOS);
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update BIOS"));
 		// Update CPUs
-		bSuccess = m_pTheDB->UpdateCPUs( m_CpuList);
+		bSuccess = bSuccess && m_pTheDB->UpdateCPUs( m_CpuList);
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u CPU(s)"), m_CpuList.GetCount());
 		// Update Memory slots
 		bSuccess = m_pTheDB->UpdateMemorySlots( m_MemoryList);
