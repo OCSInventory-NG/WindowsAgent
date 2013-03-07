@@ -132,16 +132,28 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 		
 		/* User notification */
 		csBuffer = myXml.GetAttrib( _T( "NOTIFY_USER"));
-		m_bNotifyUser = (_ttoi( csBuffer) != 0);
+		// Ensure non empty value
+		if (!csBuffer.IsEmpty())
+			m_bNotifyUser = (_ttoi( csBuffer) != 0);
+		else
+			m_bNotifyUser = FALSE;
 		if (m_bNotifyUser)
 		{
-			m_uNotifyCountdown = _ttoi( myXml.GetAttrib( _T( "NOTIFY_COUNTDOWN")));
+			csBuffer = myXml.GetAttrib( _T( "NOTIFY_COUNTDOWN"));
+			// Ensure non empty value
+			if (csBuffer.IsEmpty())
+				csBuffer = COMMAND_TIMEOUT_DEFAULT;
+			m_uNotifyCountdown = _ttoi( csBuffer);
 			m_csNotifyText = myXml.GetAttrib( _T( "NOTIFY_TEXT"));
 			m_bNotifyCanAbort = ( _ttoi( myXml.GetAttrib( _T( "NOTIFY_CAN_ABORT"))) != 0);
 			m_bNotifyCanDelay = ( _ttoi( myXml.GetAttrib( _T( "NOTIFY_CAN_DELAY"))) != 0);
 		}
 		csBuffer = myXml.GetAttrib( _T( "NEED_DONE_ACTION"));
-		m_bNeedDoneAction = (_ttoi( csBuffer) != 0);
+		// Ensure non empty value
+		if (!csBuffer.IsEmpty())
+			m_bNeedDoneAction = (_ttoi( csBuffer) != 0);
+		else
+			m_bNeedDoneAction = FALSE;
 		if (m_bNeedDoneAction)
 		{
 			m_csNeedDoneActionText = myXml.GetAttrib( _T( "NEED_DONE_ACTION_TEXT"));
