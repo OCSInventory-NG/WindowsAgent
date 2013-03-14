@@ -127,14 +127,14 @@ BOOL CCapDownload::retrievePackages()
 		pMap->Lookup( _T( "ID"), csId);
 		// Try to find if package was not previously downloaded, parsing package history file
 		CString csHistBuf;
-		BOOL	bFound = FALSE;
+		BOOL	bAlreadySetup = FALSE;
 		cFileHistory.SeekToBegin();
 		while (cFileHistory.ReadPackage( csHistBuf))
 		{
 			if( csHistBuf.Find( csId) != -1 )
 			{
 				// Package ID found in history
-				bFound = TRUE;
+				bAlreadySetup = TRUE;
 				break;
 			}
 		}
@@ -151,7 +151,13 @@ BOOL CCapDownload::retrievePackages()
 		// Set URL where to download fragment
 		pMap->Lookup( _T( "PACK_LOC"), csValue);
 		pOptDownloadPackage->setPackLocation( csValue);
-		if (bFound)				
+		// Set if we have to force package setup, even if already installed
+		pMap->Lookup( _T( "FORCE"), csValue);
+		pOptDownloadPackage->setForce( csValue);
+		// Set if we have to schedule package setup at specified date
+		pMap->Lookup( _T( "SCHEDULE"), csValue);
+		pOptDownloadPackage->setSchedule( csValue);
+		if (bAlreadySetup && !pOptDownloadPackage->isForced())				
 		{
 			// Package ID found in history, do not download
 			m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Will not download package <%s>, already in the package history"), csId);
@@ -161,8 +167,12 @@ BOOL CCapDownload::retrievePackages()
 			delete pOptDownloadPackage;
 		}
 		else
-			// Package not already downloaded, put it in the download queue
+		{
+			// Package not already downloaded, or setup forced, put it in the download queue
+			if (pOptDownloadPackage->isForced())
+				m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Package <%s> forced, ignoring package history check"), csId);
 			m_tPackages.Add(pOptDownloadPackage);
+		}
 	}	
 	cFileHistory.Close();
 	delete pMapArray;
@@ -396,6 +406,19 @@ void COptDownloadPackage::setPackLocation( LPCTSTR lpstrPackLoc)
 	m_csLocalPackLoc.Format( _T( "%s\\%s\\%s"), getDataFolder(), OCS_DOWNLOAD_FOLDER, m_csId);
 }
 
+void COptDownloadPackage::setForce(LPCTSTR lpstrForce)
+{
+	if (lpstrForce)
+		m_bForce = (_ttoi( lpstrForce) == 1);
+	else
+		m_bForce = FALSE;
+}
+
+void COptDownloadPackage::setSchedule(LPCTSTR lpstrSchedule)
+{
+	m_csSchedule = lpstrSchedule;
+}
+
 BOOL COptDownloadPackage::makeDirectory()
 {
 	if (!directoryCreate( m_csLocalPackLoc))
@@ -429,6 +452,16 @@ LPCTSTR COptDownloadPackage::getLocalPackFolder()
 LPCTSTR COptDownloadPackage::getRemotePackURL()
 {
 	return m_csRemotePackLoc;
+}
+
+BOOL COptDownloadPackage::isForced()
+{
+	return m_bForce;
+}
+
+LPCTSTR COptDownloadPackage::getSchedule()
+{
+	return m_csSchedule;
 }
 
 int COptDownloadPackage::downloadInfoFile()
@@ -475,6 +508,8 @@ int COptDownloadPackage::downloadInfoFile()
 	// Add fragment location to meta data
 	xml.FindFirstElem( _T( "DOWNLOAD"));
 	xml.SetAttrib( _T( "LOC"), m_csRemotePackLoc);
+	// Add package schedule to meta data
+	xml.SetAttrib( _T( "SCHEDULE"), m_csSchedule);
 	// Write meta data file
 	if (!xml.SaveFile( getLocalMetadataFilename()))
 	{

@@ -75,6 +75,10 @@ public: // Methods
 	void setInfoLocation(LPCTSTR lpstrInfoLoc);
 	// Set URL of remote fragment files on server
 	void setPackLocation(LPCTSTR lpstrPackLoc);
+	// Set if we have to force package setup, even if already installed
+	void setForce(LPCTSTR lpstrForce);
+	// Set if we have to schedule package setup at specified date
+	void setSchedule(LPCTSTR lpstrSchedule);
 	// Get package ID
 	CString getId();
 	// Create loca directory to receive downloaded metadata and fragments
@@ -87,6 +91,10 @@ public: // Methods
 	LPCTSTR getLocalPackFolder();
 	// Get URL of remote fragment files on server
 	LPCTSTR getRemotePackURL();
+	// Get if we have to force package setup, even if already installed
+	BOOL isForced();
+	// Get if we have to schedule package setup at specified date
+	LPCTSTR getSchedule();
 	// Download metadata from remote server to local
 	BOOL downloadInfoFile();
 	// Get package timestamp
@@ -112,6 +120,8 @@ protected: // Attributes
 	CString		m_csLocalInfoLoc;	// Local directory where to store/find metadata file
 	CString		m_csRemotePackLoc;	// Remote directory on server where to find fragments
 	CString		m_csLocalPackLoc;	// Local directory where to store/find fragments
+	BOOL		m_bForce;			// Force redeploying package, even if already installed
+	CString		m_csSchedule;		// Download fragment, but schedule setup at specified date and time
 	time_t		m_tTimePack;
 	CCapDownload *pM;
 	CLog		*m_pLogger;

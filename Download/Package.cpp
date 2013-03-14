@@ -158,6 +158,7 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 		{
 			m_csNeedDoneActionText = myXml.GetAttrib( _T( "NEED_DONE_ACTION_TEXT"));
 		}
+		m_csSchedule = myXml.GetAttrib( _T( "SCHEDULE"));
 	}
 	catch( CException *pEx)
 	{

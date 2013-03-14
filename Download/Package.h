@@ -31,6 +31,8 @@ public:
 	UINT getPriority();
 	// Get Action
 	LPCTSTR getAction();
+	// Get if we have to schedule package setup at specified date
+	LPCTSTR getSchedule();
 	// Get package timestamp
 	time_t getTimeStamp();
 	// Check if package timestamp is older than now - tTimeOut hours
@@ -102,6 +104,7 @@ protected:
 	CString m_csAction;
 	CString m_csName;
 	CString m_csDigest;
+	CString	m_csSchedule;		// Download fragment, but schedule setup at specified date and time
 	CString m_csLocation;
 	CString m_csProtocol;
 	UINT m_uFrags;
