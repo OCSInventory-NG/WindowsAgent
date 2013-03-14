@@ -147,7 +147,7 @@ BOOL CInventoryRequest::final()
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u CPU(s)"), m_CpuList.GetCount());
 		// Update Memory slots
 		bSuccess = m_pTheDB->UpdateMemorySlots( m_MemoryList);
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Logical Drive(s)"), m_MemoryList.GetCount());
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Memory Slot(s)"), m_MemoryList.GetCount());
 		// Update Input Devices
 		bSuccess = bSuccess && m_pTheDB->UpdateInputDevices( m_InputList);
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Input Device(s)"), m_InputList.GetCount());
