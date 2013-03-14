@@ -141,6 +141,30 @@ LPCTSTR CWmi::GetVoltage( DWORD dwVolts)
 	}
 }
 
+LPCTSTR CWmi::GetCpuStatus( DWORD dwStatus)
+{
+	switch (dwStatus)
+	{
+	case 0:
+		return _T( "Unknown");
+	case 1:
+		return _T( "CPU Enabled");
+	case 2:
+		return _T( "CPU Disabled by User via BIOS Setup");
+	case 3:
+		return _T( "CPU Disabled by BIOS (POST Error)");
+	case 4:
+		return _T( "CPU Is Idle");
+	case 5:
+	case 6:
+		return _T( "Reserved");
+	case 7:
+		return _T( "Other");
+	default:
+		return NOT_AVAILABLE;
+	}
+}
+
 BOOL CWmi::IsNotebook()
 {
 	CString csBuffer;
@@ -1455,6 +1479,8 @@ DWORD CWmi::GetCPU( CCpuList *pMyList, CRegistry *pReg)
 			while (m_dllWMI.MoveNextEnumClassObject())
 			{
 				myObject.Clear();
+				csValue = m_dllWMI.GetClassObjectStringValue( _T( "SocketDesignation"));
+				myObject.SetSocket( csValue);
 				csValue = m_dllWMI.GetClassObjectStringValue( _T( "Manufacturer"));
 				myObject.SetManufacturer( csValue);
 				csValue = m_dllWMI.GetClassObjectStringValue( _T( "Name"));
@@ -1488,6 +1514,8 @@ DWORD CWmi::GetCPU( CCpuList *pMyList, CRegistry *pReg)
 				myObject.SetDataWidth( dwValue);
 				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "VoltageCaps"));
 				myObject.SetVoltage( GetVoltage( dwValue));
+				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "CpuStatus"));
+				myObject.SetStatus( GetCpuStatus( dwValue));
 				// Device is OK
 				pMyList->AddTail( myObject);
 				dwNumber ++;

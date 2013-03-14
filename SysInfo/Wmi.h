@@ -74,6 +74,7 @@ protected: // Methods
 	BOOL IsDeviceReallyConnected( DWORD dwStatus);
 	LPCTSTR GetArchitecture( DWORD dwArch);
 	LPCTSTR GetVoltage( DWORD dwVolts);
+	LPCTSTR GetCpuStatus( DWORD dwStatus);
 
 protected: // Attributes
 	COcsWmi m_dllWMI;	// Class to access WMI

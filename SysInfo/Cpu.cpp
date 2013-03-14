@@ -35,6 +35,11 @@ CCpu::~CCpu()
 	Clear();
 }
 
+LPCTSTR CCpu::GetSocket()
+{
+	return m_csSocket;
+}
+
 LPCTSTR CCpu::GetManufacturer()
 {
 	return m_csManufacturer;
@@ -88,6 +93,17 @@ UINT CCpu::GetDataWidth()
 LPCTSTR CCpu::GetVoltage()
 {
 	return m_csVoltage;
+}
+
+LPCTSTR CCpu::GetStatus()
+{
+	return m_csStatus;
+}
+
+void CCpu::SetSocket( LPCTSTR lpstrSocket)
+{
+	m_csSocket = lpstrSocket;
+	StrForSQL( m_csSocket);
 }
 
 void CCpu::SetManufacturer(LPCTSTR lpstrManufacturer)
@@ -149,8 +165,15 @@ void CCpu::SetVoltage( LPCTSTR lpstrVoltage)
 	StrForSQL( m_csVoltage);
 }
 
+void CCpu::SetStatus( LPCTSTR lpstrSatus)
+{
+	m_csStatus = lpstrSatus;
+	StrForSQL( m_csStatus);
+}
+
 void CCpu::Clear()
 {
+	m_csSocket.Empty();
 	m_csManufacturer.Empty();
 	m_csName.Empty();
 	m_csArchitecture.Empty();
@@ -162,11 +185,13 @@ void CCpu::Clear()
 	m_uAddressWidth = 0;
 	m_uDataWidth = 0;
 	m_csVoltage.Empty();
+	m_csStatus.Empty();
 }
 
 int CCpu::operator==(CCpu cObject) const
 {
-	return ((m_csManufacturer == cObject.GetManufacturer()) &&
+	return ((m_csSocket == cObject.GetSocket()) &&
+		(m_csManufacturer == cObject.GetManufacturer()) &&
 		(m_csName == cObject.GetName()) &&		
 		(m_csArchitecture == cObject.GetArchitecture()) &&
 		(m_uNumberOfCores == cObject.GetNumberOfCores()) &&
@@ -176,5 +201,6 @@ int CCpu::operator==(CCpu cObject) const
 		(m_uL2CacheSize == cObject.GetL2CacheSize()) &&
 		(m_uAddressWidth == cObject.GetAddressWidth()) &&
 		(m_uDataWidth == cObject.GetDataWidth()) &&
-		(m_csVoltage == cObject.GetVoltage()));
+		(m_csVoltage == cObject.GetVoltage()) &&
+		(m_csStatus == cObject.GetStatus()));
 }

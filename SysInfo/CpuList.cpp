@@ -52,11 +52,11 @@ LPCTSTR CCpuList::GetHash()
 		myObject = GetNext( pos);
 	while (bContinue)
 	{
-		csToHash.Format( _T( "%s%s%s%u%u%u%u%u%u%s"), myObject.GetManufacturer(), myObject.GetName(),
-						 myObject.GetArchitecture(), myObject.GetNumberOfCores(),
+		csToHash.Format( _T( "%s%s%s%s%u%u%u%u%u%u%s%s"), myObject.GetSocket(), myObject.GetManufacturer(),
+						 myObject.GetName(), myObject.GetArchitecture(), myObject.GetNumberOfCores(),
 						 myObject.GetNumberOfLogicalProcessors(), myObject.GetMaxClockSpeed(),
-						 myObject.GetL2CacheSize(), myObject.GetAddressWidth(),
-						 myObject.GetDataWidth(), myObject.GetVoltage());
+						 myObject.GetL2CacheSize(), myObject.GetAddressWidth(), myObject.GetDataWidth(),
+						 myObject.GetVoltage(), myObject.GetStatus());
 		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)

@@ -35,6 +35,7 @@ public: // Methods
 	// Get attributes values
 	//////////////////////////////////
 
+	LPCTSTR GetSocket();			
 	LPCTSTR GetManufacturer();		
 	LPCTSTR GetName();			
 	LPCTSTR GetArchitecture();		
@@ -46,11 +47,13 @@ public: // Methods
 	UINT GetAddressWidth();	
 	UINT GetDataWidth();		
 	LPCTSTR GetVoltage();		
+	LPCTSTR GetStatus();		
 
 	//////////////////////////////////
 	// Set attributes values
 	//////////////////////////////////
 
+	void SetSocket( LPCTSTR lpstrSocket);				
 	void SetManufacturer( LPCTSTR lpstrManufacturer);		
 	void SetName( LPCTSTR lpstrName);				
 	void SetArchitecture( LPCTSTR lpstrArchitecture);		
@@ -62,6 +65,7 @@ public: // Methods
 	void SetAddressWith( UINT uAddressWidth);	
 	void SetDataWidth( UINT uDataWidth);		
 	void SetVoltage( LPCTSTR lpstrVoltage);		
+	void SetStatus( LPCTSTR lpstrSatus);				
 
 	//////////////////////////////////
 	// Comparison operators
@@ -70,6 +74,7 @@ public: // Methods
 	int operator==( const CCpu cObject) const;
 
 protected: // Attributes
+	CString m_csSocket;				// Socket
 	CString m_csManufacturer;		// CPU type
 	CString m_csName;				// CPU name
 	CString m_csArchitecture;		// CPU Architecture (x86, x64, Itanium...)
@@ -84,6 +89,7 @@ protected: // Attributes
 	UINT m_uAddressWidth;			// Processor address width, in bits
 	UINT m_uDataWidth;				// Processor data width, in bits
 	CString m_csVoltage;			// Voltage capabilities of the processor (5, 3.3 or 2.9 volts)
+	CString m_csStatus;				// CPU status (Enabled, disabled...)
 };
 #endif // !defined(AFX_CPU_H__13BBD121_3DC4_4C39_8023_2409A47F8704__INCLUDED_)
 

@@ -95,6 +95,7 @@ BOOL CXMLInteract::UpdateCPUs( CCpuList &myCpuList)
 		{
 			bContinue = (pos != NULL);
 			m_pXml->AddElem( _T( "CPU"));
+				m_pXml->AddChildElem( _T( "SOCKET"), cObject.GetSocket());
 				m_pXml->AddChildElem( _T( "MANUFACTURER"), cObject.GetManufacturer());
 				m_pXml->AddChildElem( _T( "SPEED"), cObject.GetMaxClockSpeed());
 				m_pXml->AddChildElem( _T( "TYPE"), cObject.GetName());
@@ -106,6 +107,7 @@ BOOL CXMLInteract::UpdateCPUs( CCpuList &myCpuList)
 				m_pXml->AddChildElem( _T( "LOGICAL_CPUS"), cObject.GetNumberOfLogicalProcessors());
 				m_pXml->AddChildElem( _T( "VOLTAGE"), cObject.GetVoltage());
 				m_pXml->AddChildElem( _T( "CURRENT_SPEED"), cObject.GetCurrentClockSpeed());
+				m_pXml->AddChildElem( _T( "CPUSTATUS"), cObject.GetStatus());
 			m_pXml->OutOfElem();		
 			if (pos != NULL)
 				cObject = myCpuList.GetNext( pos);
@@ -131,6 +133,8 @@ BOOL CXMLInteract::ReadCPUs( CCpuList &myCpuList)
 	while (pXml)
 	{
 		cObject.Clear();
+		pXmlElement = m_pXml->FindFirstElem( _T( "SOCKET"), pXml);
+		cObject.SetSocket( m_pXml->GetData( pXmlElement));
 		pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
 		cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
 		pXmlElement = m_pXml->FindFirstElem( _T( "SPEED"), pXml);
@@ -153,6 +157,8 @@ BOOL CXMLInteract::ReadCPUs( CCpuList &myCpuList)
 		cObject.SetVoltage( m_pXml->GetData( pXmlElement));
 		pXmlElement = m_pXml->FindFirstElem( _T( "CURRENT_SPEED"), pXml);
 		cObject.SetCurrentSpeed( _ttoi( m_pXml->GetData( pXmlElement)));
+		pXmlElement = m_pXml->FindFirstElem( _T( "CPUSTATUS"), pXml);
+		cObject.SetStatus( m_pXml->GetData( pXmlElement));
 		myCpuList.AddTail( cObject);
 		pXml = m_pXml->FindNextElem( _T( "CPU"));
 	}

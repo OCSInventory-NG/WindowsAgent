@@ -819,6 +819,10 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		{
 			CString str, res;
 
+			str = _T( "Socket = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "SocketDesignation"));
+			str += res;
+			m_List.AddString( str);
 			str = _T( "Processor Family = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "Manufacturer"));
 			str += res;
@@ -861,6 +865,10 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			m_List.AddString( str);
 			str = _T( "Voltage Caps = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "VoltageCaps"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "StatusInfo = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "CpuStatus"));
 			str += res;
 			m_List.AddString( str);
 			m_List.AddString( _T( ""));
@@ -2454,6 +2462,8 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 	while (bContinue)
 	{
 		bContinue = (pos != NULL);
+		str.Format( _T( "Socket: %s"), myCpu.GetSocket());
+		SysInfoLog( str);
 		str.Format( _T( "Manufacturer: %s"), myCpu.GetManufacturer());
 		SysInfoLog( str);
 		str.Format( _T( "Name: %s"), myCpu.GetName());
@@ -2475,6 +2485,8 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		str.Format( _T( "Data Width: %u"), myCpu.GetDataWidth());
 		SysInfoLog( str);
 		str.Format( _T( "Voltage: %s"), myCpu.GetVoltage());
+		SysInfoLog( str);
+		str.Format( _T( "Status: %s"), myCpu.GetStatus());
 		SysInfoLog( str);
 		if (pos != NULL)
 		{
