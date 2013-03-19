@@ -111,6 +111,7 @@ protected:
 	// Add and delete package digest to registry
 	BOOL regAddPackageDigest( LPCTSTR lpstrPackID, LPCTSTR lpstrDigest);
 	static BOOL regDeletePackageDigest( LPCTSTR lpstrPackID);
+	static BOOL deletePackageScheduler( LPCTSTR lpstrPackID);
 
 protected: // Attributes
 	CString		m_csId;				// Download package ID

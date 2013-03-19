@@ -46,6 +46,8 @@
 #define OCS_DOWNLOAD_BUILD		_T( "build.zip")
 // HKLM registry key to store package ID and digest
 #define OCS_DOWNLOAD_REGISTRY	_T( "SOFTWARE\\OCS Inventory NG\\Agent\\Download")
+// HKLM registry key to store scheduled tasks
+#define OCS_SCHEDULE_REGISTRY	_T( "SOFTWARE\\OCS Inventory NG\\Agent\\Schedule")
 
 // Download tool default configuration parameter
 #define FRAG_LATENCY_DEFAULT	_T( "10")
@@ -60,6 +62,10 @@
 #define OCS_DOWNLOAD_ACTION_LAUNCH	_T( "LAUNCH")
 #define OCS_DOWNLOAD_ACTION_EXECUTE	_T( "EXECUTE")
 #define OCS_DOWNLOAD_ACTION_STORE	_T( "STORE")
+
+// Download post setup actions
+#define OCS_DOWNLOAD_POST_CMD_REBOOT _T( "REBOOT")
+#define OCS_DOWNLOAD_POST_CMD_SHUTDOWN _T( "SHUTDOWN")
 
 // Download tool error code
 #define CODE_SUCCESS			_T( "SUCCESS")

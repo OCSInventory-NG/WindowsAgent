@@ -576,6 +576,21 @@ BOOL COptDownloadPackage::regDeletePackageDigest( LPCTSTR lpstrPackID)
 	return TRUE;
 }
 
+BOOL COptDownloadPackage::deletePackageScheduler( LPCTSTR lpstrPackID)
+{
+	HKEY  hKey;
+
+	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_SCHEDULE_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+		return FALSE;
+	if (RegDeleteValue( hKey, lpstrPackID) != ERROR_SUCCESS)
+	{
+		RegCloseKey( hKey);
+		return FALSE;
+	}
+	RegCloseKey( hKey);
+	return TRUE;
+}
+
 BOOL COptDownloadPackage::isExpired( LPCTSTR csTimeOut)
 {
 	time_t	tTimeNow;
@@ -609,6 +624,8 @@ BOOL COptDownloadPackage::clean( LPCTSTR lpstrID)
 	csPath.ReleaseBuffer();
 	csPath.AppendFormat( _T( "\\%s.OCS"), lpstrID);
 	directoryDelete( csPath);
+	// Delete scheuler if needed
+	deletePackageScheduler( lpstrID);
 	// Now, really delete package directory and registry signature
 	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), lpstrID);
 	regDeletePackageDigest( lpstrID);

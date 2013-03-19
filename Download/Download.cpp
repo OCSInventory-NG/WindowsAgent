@@ -610,6 +610,15 @@ BOOL CDownloadApp::executePackage( CPackage *pPack)
 		}
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Package <%s> built successfully"), pPack->getID());
 	}
+	// Ensure package execution is not schedue in the future
+	if (!pPack->isTimeToSetup())
+	{
+		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Package <%s> execution is scheduled on <%s>. Scheduling package and skipping execution"), 
+						pPack->getID(), pPack->getSchedule());
+		if (!pPack->setScheduler())
+			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to schedule package <%s>"), pPack->getID());
+		return TRUE;
+	}
 	// Notify user if needed
 	if (pPack->isNotifyUserRequired())
 	{

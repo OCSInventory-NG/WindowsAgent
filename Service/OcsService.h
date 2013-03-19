@@ -76,6 +76,8 @@ protected:
 	BOOL showInventory();
 	// Rotate log files from data folder
 	BOOL rotateLogs();
+	// Check if there scheduled tasks and run it if needed
+	BOOL isTimeToRunScheduledTasks();
 
 protected:
 	int			m_iTToWait;				// Time to wait before next agent run (in seconds)

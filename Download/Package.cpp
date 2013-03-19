@@ -159,6 +159,7 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 			m_csNeedDoneActionText = myXml.GetAttrib( _T( "NEED_DONE_ACTION_TEXT"));
 		}
 		m_csSchedule = myXml.GetAttrib( _T( "SCHEDULE"));
+		m_csPostCmd = myXml.GetAttrib( _T( "POSTCMD"));
 	}
 	catch( CException *pEx)
 	{
@@ -202,6 +203,8 @@ BOOL CPackage::clean()
 	// Only delete unzip directory if is not a store action 
 	if ((m_csAction != OCS_DOWNLOAD_ACTION_STORE) && !m_csPath.IsEmpty() && fileExists( m_csPath))
 		directoryDelete( m_csPath);
+	// Delete scheduler if needed
+	deleteScheduler();
 	// Delete download package directory and registry key
 	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), m_csID);
 	return (regDeletePackageDigest() && directoryDelete( csPath));
@@ -247,6 +250,11 @@ UINT CPackage::getPriority()
 LPCTSTR CPackage::getAction()
 {
 	return m_csAction;
+}
+
+LPCTSTR CPackage::getSchedule()
+{
+	return m_csSchedule;
 }
 
 BOOL CPackage::isBase64()
@@ -964,6 +972,53 @@ BOOL CPackage::regDeletePackageDigest()
 	HKEY  hKey;
 
 	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+		return FALSE;
+	if (RegDeleteValue( hKey, m_csID) != ERROR_SUCCESS)
+	{
+		RegCloseKey( hKey);
+		return FALSE;
+	}
+	RegCloseKey( hKey);
+	return TRUE;
+}
+
+BOOL CPackage::isTimeToSetup()
+{
+	COleDateTime cPack;
+
+	// Get date/time of schedule
+	if ((!cPack.ParseDateTime( m_csSchedule)) || (cPack.GetStatus() != COleDateTime::valid))
+		// Scheduled date/time is invalid, assume this is time to setup
+		return TRUE;
+	// scheduled time is valid, so compare to current time
+	return (cPack <= COleDateTime::GetCurrentTime());
+}
+
+BOOL CPackage::setScheduler()
+{
+	HKEY  hKey;
+	DWORD dwType, dwSize;
+	LPBYTE pBuffer;
+
+	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_SCHEDULE_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+		return FALSE;
+	pBuffer = (LPBYTE) m_csSchedule.GetBuffer( _MAX_PATH+1);
+	dwSize = m_csSchedule.GetLength()*sizeof( TCHAR);
+	dwType = REG_SZ;
+	if (RegSetValueEx( hKey, m_csID, NULL, dwType, pBuffer, dwSize) != ERROR_SUCCESS)
+	{
+		RegCloseKey( hKey);
+		return FALSE;
+	}
+	RegCloseKey( hKey);
+	return TRUE;
+}
+
+BOOL CPackage::deleteScheduler()
+{
+	HKEY  hKey;
+
+	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_SCHEDULE_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
 		return FALSE;
 	if (RegDeleteValue( hKey, m_csID) != ERROR_SUCCESS)
 	{

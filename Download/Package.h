@@ -82,6 +82,11 @@ public:
 	BOOL isDoneNotifyUserRequired();
 	LPCTSTR getDoneNotifyText();
 
+	// Scheduler
+	BOOL isTimeToSetup();
+	BOOL setScheduler();
+	BOOL deleteScheduler();
+
 protected:
 	// Verify package signature. Return
 	BOOL checkSignature();
@@ -99,30 +104,31 @@ protected:
 	BOOL regDeletePackageDigest();
 
 protected:
-	CString m_csID;
-	UINT m_uPriority;
-	CString m_csAction;
-	CString m_csName;
-	CString m_csDigest;
+	CString m_csID;				// Package ID
+	UINT m_uPriority;			// Package priority
+	CString m_csAction;			// Action to perform (STORE, LAUNCH, EXECUTE)
+	CString m_csName;			// Package name
+	CString m_csDigest;			// Package digest
+	CString m_csLocation;		// Where to download package fragments
+	CString m_csProtocol;		// Protocol to use for fragment downloading
+	UINT m_uFrags;				// Number of fragments
+	CString m_csDigestAlgo;		// Digest algorithm
+	CString m_csDigestEncode;	// Digest encoding algorithm
+	CString m_csPath;			// Path for local package storage
+	CString m_csGardeFou;		// Command to validate package before install		
+	CString m_csCommand;		// Command to execute when LAUNCH or EXECUTE action
 	CString	m_csSchedule;		// Download fragment, but schedule setup at specified date and time
-	CString m_csLocation;
-	CString m_csProtocol;
-	UINT m_uFrags;
-	CString m_csDigestAlgo;
-	CString m_csDigestEncode;
-	CString m_csPath;
-	CString m_csCommand;
-	CString m_csGardeFou;
-	time_t	m_tTimePack;
+	CString	m_csPostCmd;		// Command to execute after package success
+	time_t	m_tTimePack;		// Timestamp of package processing start
 
 	/* User notification */
-	BOOL m_bNotifyUser;
-	UINT m_uNotifyCountdown;
-	CString m_csNotifyText;
-	BOOL m_bNotifyCanAbort;
-	BOOL m_bNotifyCanDelay;
-	BOOL m_bNeedDoneAction;
-	CString m_csNeedDoneActionText;
+	BOOL m_bNotifyUser;			// Do we have to notify user before laucnhing action (but after downloading fragments)
+	UINT m_uNotifyCountdown;	// Number of seconds before auto validation of user notification 
+	CString m_csNotifyText;		// Before package action user notification text
+	BOOL m_bNotifyCanAbort;		// Is user able to abort package setup
+	BOOL m_bNotifyCanDelay;		// Is user able to report package setup at next agent execution
+	BOOL m_bNeedDoneAction;		// Do we have to notify user after package successfull execution
+	CString m_csNeedDoneActionText; // After package success notification text
 };
 
 #endif // _PACKAGE_H_INCLUDED_

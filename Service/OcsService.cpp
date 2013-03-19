@@ -23,6 +23,7 @@
 #include "ServerConfig.h"
 #include "ComProvider.h"
 #include "InventoryRequest.h"
+#include "commonDownload.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -431,7 +432,9 @@ void COcsService::Run()
 	// Check if system starting (system uptime < 2 min)
 	if (GetTickCount() < SYSTEM_START_MAX_UPTIME)
 	{
-		// Start download for package to be installed at boot time
+		// Run package scheduled tasks at boot time
+		if (isTimeToRunScheduledTasks())
+			runAgent();
 	}
 
 #ifdef _DEBUG
@@ -446,7 +449,7 @@ void COcsService::Run()
 		{
 			// Write time to wait before next run
 			writeConfig( FALSE);
-			// Check inventory state for changes, and launch agent if needed
+			// Check inventory state for changes, to launch agent if needed
 			if (m_iTToWait > m_iWriteIniLatency)
 			{
 				if (!bNotifyInventory && isInventoryStateChanged())
@@ -456,6 +459,9 @@ void COcsService::Run()
 					bNotifyInventory = TRUE;
 				}
 			}
+			// Check if we have to run scheduled tasks, to launch agent if needed
+			if (isTimeToRunScheduledTasks())
+				m_iTToWait = 0;
 		}
 		if( m_iTToWait <= 0 )
 		{
@@ -721,4 +727,53 @@ BOOL COcsService::rotateLogs()
 		return FALSE;
 	}
 	return TRUE;
+}
+
+
+BOOL COcsService::isTimeToRunScheduledTasks()
+{
+	BOOL	bReturn = FALSE;
+	CString csMessage;
+	HKEY	hKey;
+	DWORD	dwIndex, dwIdSize, dwType, dwScheduleSize;
+	TCHAR	lpstrID[_MAX_PATH+1];
+	BYTE	pSchedule[_MAX_PATH+1];
+	COleDateTime cPack;
+
+	// Check registry for scheduled tasks
+	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_SCHEDULE_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+		return FALSE;
+	dwIndex = 0;
+	dwIdSize = _MAX_PATH;
+	dwScheduleSize = _MAX_PATH;
+	while (RegEnumValue( hKey, dwIndex, lpstrID, &dwIdSize, NULL, &dwType, pSchedule, &dwScheduleSize) == ERROR_SUCCESS)
+	{
+		lpstrID[dwIdSize] = 0;
+		lpstrID[dwIdSize+1] = 0;
+		pSchedule[dwScheduleSize] = 0;
+		pSchedule[dwScheduleSize+1] = 0;
+		// Get date/time of schedule
+		if ((!cPack.ParseDateTime( (LPTSTR)pSchedule)) || (cPack.GetStatus() != COleDateTime::valid))
+		{
+			// Scheduled date/time is invalid, assume this is time to setup
+			csMessage.Format( _T( "Unable to parse package <%s> schedule"), lpstrID);
+			LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
+		}
+		else
+		{
+			// Scheduled time is valid, so compare to current time
+			if (cPack <= COleDateTime::GetCurrentTime())
+			{
+				// It time to start this package
+				csMessage.Format( _T( "Package <%s> was scheduled on <%s>, so launching OCS Inventory NG Agent"), lpstrID, (LPTSTR)pSchedule);
+				LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
+				bReturn = TRUE;
+			}
+		}
+		dwIndex++;
+		dwIdSize = _MAX_PATH;
+		dwScheduleSize = _MAX_PATH;
+	}
+	RegCloseKey( hKey);
+	return bReturn;
 }
