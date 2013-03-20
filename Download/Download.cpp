@@ -675,6 +675,8 @@ BOOL CDownloadApp::executePackage( CPackage *pPack)
 				pPack->getID());
 		}
 	}
+	// Excute post command if needed
+	pPack->executePostCmd( m_uCommandTimeout);
 	// Execution finished
 	return TRUE;
 }

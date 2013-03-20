@@ -910,6 +910,77 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 	return FALSE;
 }
 
+UINT CPackage::executePostCmd( UINT uCommandTimeOut)
+{
+	CLog *pLog = getOcsLogger();
+	CExecCommand cmProcess;
+	CString csBuffer;
+
+	// check if there is post command to execute
+	if (m_csPostCmd.IsEmpty())
+	{
+		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => No post execution command provided for package <%s>"), m_csID);
+		return TRUE;
+	}
+	// Check if post command is REBOOT
+	if (m_csPostCmd == OCS_DOWNLOAD_POST_CMD_REBOOT)
+	{
+		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Executing post execution command <%s> for package <%s>"), m_csPostCmd, m_csID);
+		// Initiate a planned restart to perform application installation.
+		if (!InitiateSystemShutdownEx( NULL, _T( "OCS Inventory NG must REBOOT your system after package setup"), 
+										uCommandTimeOut, TRUE, TRUE,
+										SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_INSTALLATION | SHTDN_REASON_FLAG_PLANNED))
+		{
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to initiate System Reboot after package <%s> execution"), m_csID);
+			return FALSE;
+		}
+		return TRUE;
+	}
+	// Check if post command is SHUTDOWN
+	if (m_csPostCmd == OCS_DOWNLOAD_POST_CMD_SHUTDOWN)
+	{
+		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Executing post execution command <%s> for package <%s>"), m_csPostCmd, m_csID);
+		// Initiate a planned shutdown to perform application installation.
+		if (!InitiateSystemShutdownEx( NULL, _T( "OCS Inventory NG must SHUTDOWN your system after package setup"),
+										uCommandTimeOut, TRUE, FALSE,
+										SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_INSTALLATION | SHTDN_REASON_FLAG_PLANNED))
+		{
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to initiate System Shutdown after package <%s> execution"), m_csID);
+			return FALSE;
+		}
+		return TRUE;
+	}
+	// Execute default post command
+	pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Executing post execution command <%s> for package <%s>"), m_csPostCmd, m_csID);
+	// Set command time out in milliseconds
+	cmProcess.setTimeout( uCommandTimeOut * 60 * 1000);
+	// Execute command and wait only for main process to terminate
+	switch (cmProcess.execWait( m_csPostCmd, m_csPath))
+	{
+	case EXEC_ERROR_START_COMMAND:
+		pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Failed to execute post execution command <%s> for package <%s> (%s)"), m_csPostCmd, m_csID, cmProcess.getOutput());
+		setDone( ERR_EXECUTE);
+		return FALSE;
+	case EXEC_ERROR_WAIT_COMMAND:
+		pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Failed to get post execution command <%s> result code for package <%s> (%s)"), m_csPostCmd, m_csID, cmProcess.getOutput());
+		csBuffer = ERR_EXECUTE_NO_EXIT_CODE;
+		return FALSE;
+	case EXEC_ERROR_TIMEOUT_COMMAND:
+		pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Post execution command <%s> execution reached timeout (%s)"), m_csPostCmd, cmProcess.getOutput());
+		csBuffer = ERR_EXECUTE_TIMEOUT;
+		return FALSE;
+	default:
+		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Package <%s> post execution command successfully executed. Command exit code is <%d>"), m_csID, cmProcess.getExitValue());
+		if (cmProcess.getExitValue() != 0)
+			// Command result code is not a success
+			csBuffer.Format( _T( "%s%d"), ERR_EXIT_CODE, cmProcess.getExitValue());
+		else
+			csBuffer = CODE_SUCCESS;
+		break;
+	}
+	return TRUE;
+}
+
 // User notification
 BOOL CPackage::isNotifyUserRequired()
 {

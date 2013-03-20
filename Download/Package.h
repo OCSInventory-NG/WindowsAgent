@@ -72,6 +72,8 @@ public:
 	BOOL build();
 	// Execute package using provided time out in minutes
 	UINT execute( UINT uCommandTimeOut);
+	// Execute post package execution command using provided time out in minutes
+	UINT executePostCmd( UINT uCommandTimeOut);
 
 	// User notification
 	BOOL isNotifyUserRequired();
