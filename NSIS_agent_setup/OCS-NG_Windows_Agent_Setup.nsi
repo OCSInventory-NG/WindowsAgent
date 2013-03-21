@@ -1379,6 +1379,9 @@ Section "Upgrade from 1.X Agent" SEC02
 	StrCpy $OcsService "TRUE"
 	Push "OCS INVENTORY"
 	Call StopService
+	StrCpy $logBuffer "Unregistering old service from Windows Service Manager...$\r$\n"
+	Call Write_Log
+	ExecWait "$INSTDIR\ocsservice.exe -uninstall" $R0
     ; Copy ocsinventory.dat file to new folder, continue on error
     SetShellVarContext All
 	StrCpy $logBuffer "Copying ocsinventory.dat file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
