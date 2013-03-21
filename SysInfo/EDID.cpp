@@ -298,6 +298,8 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "Targa";
 	else if (_strnicmp( lpstrID, "ACI", 3) == 0)
 		return "Asus Computer Inc.";
+	else if (_strnicmp( lpstrID, "AMW", 3) == 0)
+		return "AMW";
 	else if (_strnicmp( lpstrID, "AUO", 3) == 0)
 		return "Asus Computer Inc.";
 	else if (_strnicmp( lpstrID, "AOC", 3) == 0)
@@ -308,6 +310,10 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "ArtMedia";
 	else if (_strnicmp( lpstrID, "BNQ", 3) == 0)
 		return "BenQ Corporation";
+	else if (_strnicmp( lpstrID, "BMM", 3) == 0)
+		return "BMM";
+	else if (_strnicmp( lpstrID, "BOE", 3) == 0)
+		return "BOE Display Technology";
 	else if (_strnicmp( lpstrID, "CPT", 3) == 0)
 		return "Chunghwa Picture Tubes, Ltd.";
 	else if (_strnicmp( lpstrID, "CTX", 3) == 0)
@@ -320,12 +326,20 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "LG Electronics Inc. (GoldStar Technology, Inc.)";
 	else if (_strnicmp( lpstrID, "HEI", 3) == 0)
 		return "Hyundai Electronics Industries Co., Ltd.";
+	else if (_strnicmp( lpstrID, "HIQ", 3) == 0)
+		return "Hyundai ImageQuest";
 	else if (_strnicmp( lpstrID, "HSL", 3) == 0)
 		return "Hansol Electronics";
+	else if (_strnicmp( lpstrID, "HSD", 3) == 0)
+		return "Hannspree Inc";
 	else if (_strnicmp( lpstrID, "IBM", 3) == 0)
 		return "IBM PC Company";
 	else if (_strnicmp( lpstrID, "ICL", 3) == 0)
 		return "Fujitsu ICL";
+	else if (_strnicmp( lpstrID, "IFS", 3) == 0)
+		return "InFocus";
+	else if (_strnicmp( lpstrID, "IQT", 3) == 0)
+		return "Hyundai";
 	else if (_strnicmp( lpstrID, "KFC", 3) == 0)
 		return "KFC Computek";
 	else if (_strnicmp( lpstrID, "LGD", 3) == 0)
@@ -348,6 +362,12 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "Fujitsu Siemens";
 	else if (_strnicmp( lpstrID, "OQI", 3) == 0)
 		return "Viewsonic Optiquest";
+	else if (_strnicmp( lpstrID, "PCK", 3) == 0)
+		return "Daewoo";
+	else if (_strnicmp( lpstrID, "PDC", 3) == 0)
+		return "Polaroid";
+	else if (_strnicmp( lpstrID, "PRT", 3) == 0)
+		return "Princeton";
 	else if (_strnicmp( lpstrID, "REL", 3) == 0)
 		return "Relisys";
 	else if (_strnicmp( lpstrID, "SAM", 3) == 0)
