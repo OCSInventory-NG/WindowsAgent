@@ -441,9 +441,20 @@ BOOL CSysInfo::getLogicalDrives( CLogicalDriveList *pMyList)
 
 BOOL CSysInfo::getMemorySlots( CMemorySlotList *pMyList)
 {
+	CMemory		memoryInfo;
+	ULONGLONG	ulTotalSlot, ulTotalRAM, ulDiff;
+
 	// First, try SMBios/DMI
 	if (m_dmiInfo.GetMemorySlots( pMyList))
-		return TRUE;
+	{
+		ulTotalSlot = pMyList->GetTotalMemory();
+		ulTotalRAM = memoryInfo.getTotalRAM() / ONE_MEGABYTE;
+
+		// Try to check if part of memory is used by video, either less than 32 MB or less than 10%
+		if (((ulTotalSlot - ulTotalRAM) < 32) || ((ulTotalSlot - ulTotalRAM) < (ulTotalRAM/10)))
+			// DMI query seems OK
+			return TRUE;
+	}
 	// Last try WMI
 	return m_wmiInfo.GetMemorySlots( pMyList);
 }
