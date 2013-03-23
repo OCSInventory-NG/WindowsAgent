@@ -1,3 +1,13 @@
+2.1.0.1
+  * Update icons ans banners for new graphical identity
+  * Add new EDID manufacturer codes
+  * Fix bug #1104071: use WMI to query memory bank if DMI fails
+  * Fix bug #1079151: unregister old agent 1.X service (instead of only stopping it) before installling new agent 2.X service.
+  * Add ability to run command after package execution, like REBOOT, SHUTDOWN...
+  * Add CPU Socket and CPU status informations
+  * Add agent ability to force package reinstall, and support for package setup schedule
+  * Fix bug #1086324: download.exe crashes when NOTIFY_TIMEOUT is not set. So ensure value is provided
+  * Fix bug #1086972: Windows Agent 2.0.5.3 does not inventory any BIOS information - 2.0.5.2 does
   * Include lastest list of PNPID vendors, for EDID monitors (see http://www.vesa.org/vesa-standards/standards-faq/))
   * Allow using HTML formating for deployement notification, pre and post package execution
   * Workaround bug #1048955: Restrict german language to German/Germany locale
