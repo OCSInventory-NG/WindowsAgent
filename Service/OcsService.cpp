@@ -211,6 +211,8 @@ BOOL COcsService::writeConfig( BOOL bFull)
 
 BOOL COcsService::OnInit()
 {
+	CString csMessage;
+
 	/*****
 	 *
 	 *	Checks wether another instance of ocsservice.exe is 
@@ -233,8 +235,18 @@ BOOL COcsService::OnInit()
 		m_iOldPrologFreq = m_iPrologFreq;
 		writeConfig();
 	}
+	// Log service start
+	csMessage.Format( _T( "Service start parameters FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i"), m_iPrologFreq, m_iOldPrologFreq, m_iTToWait);
+	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
 	// Rotate log files
 	rotateLogs();
+	// Remove download lock file if there is
+	csMessage.Format( _T( "%s\\%s\\%s"), getDataFolder(), OCS_DOWNLOAD_FOLDER, OCS_DOWNLOAD_LOCK);
+	if (!DeleteFile( csMessage))
+	{
+		csMessage.Format( _T( "Unable to remove Download lock file <%s\\%s\\%s>"), getDataFolder(), OCS_DOWNLOAD_FOLDER, OCS_DOWNLOAD_LOCK);
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
+	}
 	// Portect OCS files to prevent delete
 	protectCommonFiles();
 	protectConfigFiles();
@@ -416,6 +428,8 @@ void COcsService::OnStop()
 	// Unprotect all files
 	unProtectCommonFiles();
 	unProtectConfigFiles();
+	// Report to the event log that the service has stopped successfully
+	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_STOPPED, m_csServiceName);
 }
 
 void COcsService::Run()
@@ -426,16 +440,9 @@ void COcsService::Run()
 	// Latency for launching agent when agent launch fails
 	int nLatencyAgentLaunch = m_iWriteIniLatency ? m_iWriteIniLatency : WRITE_TTOWAIT_EACH;
 
-	csStatus.Format( _T( "Service start parameters FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i"), m_iPrologFreq, m_iOldPrologFreq, m_iTToWait);
-	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csStatus);
-
-	// Check if system starting (system uptime < 2 min)
-	if (GetTickCount() < SYSTEM_START_MAX_UPTIME)
-	{
-		// Run package scheduled tasks at boot time
-		if (isTimeToRunScheduledTasks())
-			runAgent();
-	}
+	// Run package scheduled tasks at boot time
+	if (isTimeToRunScheduledTasks())
+		runAgent();
 
 #ifdef _DEBUG
 	showInventory();
@@ -502,8 +509,6 @@ void COcsService::Run()
 		Sleep(1000);
 		m_iTToWait--;
 	}
-	// Report to the event log that the service has stopped successfully
-	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_STOPPED, m_csServiceName);
 }
 
 
