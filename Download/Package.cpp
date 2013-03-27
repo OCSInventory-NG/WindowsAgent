@@ -1071,7 +1071,8 @@ BOOL CPackage::setScheduler()
 	DWORD dwType, dwSize;
 	LPBYTE pBuffer;
 
-	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_SCHEDULE_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+	if (RegCreateKeyEx( HKEY_LOCAL_MACHINE, OCS_SCHEDULE_REGISTRY, 0, NULL, REG_OPTION_NON_VOLATILE,
+						KEY_WRITE, NULL, &hKey, &dwType) != ERROR_SUCCESS) 
 		return FALSE;
 	pBuffer = (LPBYTE) m_csSchedule.GetBuffer( _MAX_PATH+1);
 	dwSize = m_csSchedule.GetLength()*sizeof( TCHAR);
