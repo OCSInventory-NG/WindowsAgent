@@ -448,6 +448,13 @@ UINT CDownloadApp::findPackages()
 			delete pPack;
 			continue;
 		}
+		// Verify if package already downloaded, but scheduled later
+		if (pPack->isBuilt() && !pPack->isTimeToSetup())
+		{
+			m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Package <%s> already downloaded, but execution scheduled on <%s>, skipping"), pPack->getID(), pPack->getSchedule());
+			delete pPack;
+			continue;
+		}
 		m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Package <%s> verified and added to process queue"), pPack->getID());
 		m_listPack.Add( pPack);
 		if (pPack->getPriority() == 0)
