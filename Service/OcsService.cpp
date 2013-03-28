@@ -746,7 +746,7 @@ BOOL COcsService::isTimeToRunScheduledTasks()
 	COleDateTime cPack;
 
 	// Check registry for scheduled tasks
-	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_SCHEDULE_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_SCHEDULE_REGISTRY, 0, KEY_READ, &hKey) != ERROR_SUCCESS)
 		return FALSE;
 	dwIndex = 0;
 	dwIdSize = _MAX_PATH;
