@@ -136,7 +136,7 @@ BOOL CPrologResponse::isDownloadRequired()
 
 CMapStringToStringArray* CPrologResponse::getDownloadPackages()
 {
-	return getOptionAttributes( _T( "DOWNLOAD"), _T( "ID"), _T( "CERT_FILE"), _T( "CERT_PATH"), _T( "PACK_LOC"), _T( "INFO_LOC"), _T( "SCHEDULE"), _T( "FORCE"), _T( ""));
+	return getOptionAttributes( _T( "DOWNLOAD"), _T( "ID"), _T( "CERT_FILE"), _T( "CERT_PATH"), _T( "PACK_LOC"), _T( "INFO_LOC"), _T( "SCHEDULE"), _T( "POSTCMD"), _T( "FORCE"), _T( ""));
 }
 
 CMapStringToStringArray* CPrologResponse::getDownloadParameters()

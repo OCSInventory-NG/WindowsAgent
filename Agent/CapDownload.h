@@ -79,6 +79,8 @@ public: // Methods
 	void setForce(LPCTSTR lpstrForce);
 	// Set if we have to schedule package setup at specified date
 	void setSchedule(LPCTSTR lpstrSchedule);
+	// Set command to execute after package success
+	void setPostCmd( LPCTSTR lpstrCmd);
 	// Get package ID
 	CString getId();
 	// Create loca directory to receive downloaded metadata and fragments
@@ -95,6 +97,8 @@ public: // Methods
 	BOOL isForced();
 	// Get if we have to schedule package setup at specified date
 	LPCTSTR getSchedule();
+	// Get command to execute after package success
+	LPCTSTR getPostCmd();
 	// Download metadata from remote server to local
 	BOOL downloadInfoFile();
 	// Get package timestamp
@@ -123,6 +127,7 @@ protected: // Attributes
 	CString		m_csLocalPackLoc;	// Local directory where to store/find fragments
 	BOOL		m_bForce;			// Force redeploying package, even if already installed
 	CString		m_csSchedule;		// Download fragment, but schedule setup at specified date and time
+	CString		m_csPostCmd;		// Command to execute after package success
 	time_t		m_tTimePack;
 	CCapDownload *pM;
 	CLog		*m_pLogger;

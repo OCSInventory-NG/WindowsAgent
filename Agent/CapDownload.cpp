@@ -157,6 +157,9 @@ BOOL CCapDownload::retrievePackages()
 		// Set if we have to schedule package setup at specified date
 		pMap->Lookup( _T( "SCHEDULE"), csValue);
 		pOptDownloadPackage->setSchedule( csValue);
+		// Set post execution command if package action succeeded
+		pMap->Lookup( _T( "POSTCMD"), csValue);
+		pOptDownloadPackage->setPostCmd( csValue);
 		if (bAlreadySetup && !pOptDownloadPackage->isForced())				
 		{
 			// Package ID found in history, do not download
@@ -420,6 +423,11 @@ void COptDownloadPackage::setSchedule(LPCTSTR lpstrSchedule)
 	m_csSchedule = lpstrSchedule;
 }
 
+void COptDownloadPackage::setPostCmd( LPCTSTR lpstrCmd)
+{
+	m_csPostCmd = lpstrCmd;
+}
+
 BOOL COptDownloadPackage::makeDirectory()
 {
 	if (!directoryCreate( m_csLocalPackLoc))
@@ -463,6 +471,11 @@ BOOL COptDownloadPackage::isForced()
 LPCTSTR COptDownloadPackage::getSchedule()
 {
 	return m_csSchedule;
+}
+
+LPCTSTR COptDownloadPackage::getPostCmd()
+{
+	return m_csPostCmd;
 }
 
 int COptDownloadPackage::downloadInfoFile()
@@ -511,6 +524,8 @@ int COptDownloadPackage::downloadInfoFile()
 	xml.SetAttrib( _T( "LOC"), m_csRemotePackLoc);
 	// Add package schedule to meta data
 	xml.SetAttrib( _T( "SCHEDULE"), m_csSchedule);
+	// Add post execution command to meta data
+	xml.SetAttrib( _T( "POSTCMD"), m_csPostCmd);
 	// Write meta data file
 	if (!xml.SaveFile( getLocalMetadataFilename()))
 	{
