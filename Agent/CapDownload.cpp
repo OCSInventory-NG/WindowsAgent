@@ -141,23 +141,30 @@ BOOL CCapDownload::retrievePackages()
 		pOptDownloadPackage = new COptDownloadPackage( this);
 		pOptDownloadPackage->setId( csId);
 		// If CERT_PATH or CERT_FILE option is provided
+		csValue.Empty();
 		pMap->Lookup( _T( "CERT_PATH"), csValue);
 		pOptDownloadPackage->setCertPath( csValue);
+		csValue.Empty();
 		pMap->Lookup( _T( "CERT_FILE"), csValue);
 		pOptDownloadPackage->setCertFile( csValue);
 		// Set URL where to download INFO metadata
+		csValue.Empty();
 		pMap->Lookup( _T( "INFO_LOC"), csValue);
 		pOptDownloadPackage->setInfoLocation( csValue);
 		// Set URL where to download fragment
+		csValue.Empty();
 		pMap->Lookup( _T( "PACK_LOC"), csValue);
 		pOptDownloadPackage->setPackLocation( csValue);
 		// Set if we have to force package setup, even if already installed
+		csValue.Empty();
 		pMap->Lookup( _T( "FORCE"), csValue);
 		pOptDownloadPackage->setForce( csValue);
 		// Set if we have to schedule package setup at specified date
+		csValue.Empty();
 		pMap->Lookup( _T( "SCHEDULE"), csValue);
 		pOptDownloadPackage->setSchedule( csValue);
 		// Set post execution command if package action succeeded
+		csValue.Empty();
 		pMap->Lookup( _T( "POSTCMD"), csValue);
 		pOptDownloadPackage->setPostCmd( csValue);
 		if (bAlreadySetup && !pOptDownloadPackage->isForced())				
