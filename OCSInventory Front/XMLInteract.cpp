@@ -94,7 +94,7 @@ BOOL CXMLInteract::UpdateCPUs( CCpuList &myCpuList)
 		while (bContinue)
 		{
 			bContinue = (pos != NULL);
-			m_pXml->AddElem( _T( "CPU"));
+			m_pXml->AddElem( _T( "CPUS"));
 				m_pXml->AddChildElem( _T( "SOCKET"), cObject.GetSocket());
 				m_pXml->AddChildElem( _T( "MANUFACTURER"), cObject.GetManufacturer());
 				m_pXml->AddChildElem( _T( "SPEED"), cObject.GetMaxClockSpeed());
