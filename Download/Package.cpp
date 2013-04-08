@@ -915,6 +915,8 @@ UINT CPackage::executePostCmd( UINT uCommandTimeOut)
 	CLog *pLog = getOcsLogger();
 	CExecCommand cmProcess;
 	CString csBuffer;
+	HANDLE hToken; 
+	TOKEN_PRIVILEGES tkp; 
 
 	// check if there is post command to execute
 	if (m_csPostCmd.IsEmpty())
@@ -926,12 +928,30 @@ UINT CPackage::executePostCmd( UINT uCommandTimeOut)
 	if (m_csPostCmd == OCS_DOWNLOAD_POST_CMD_REBOOT)
 	{
 		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Executing post execution command <%s> for package <%s>"), m_csPostCmd, m_csID);
+		// Request ability to restart computer
+		if (!OpenProcessToken( GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) 
+		{
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to request Reboot privilege for package <%s>: %s"), m_csID, LookupError( GetLastError()));
+			return FALSE;
+		}
+		if (!LookupPrivilegeValue( NULL, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid)) 
+		{
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to request Reboot privilege for package <%s>: %s"), m_csID, LookupError( GetLastError()));
+			return FALSE;
+		}
+		tkp.PrivilegeCount = 1; 
+        tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; 
+		if (!AdjustTokenPrivileges( hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0))
+		{
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to request Reboot privilege for package <%s>: %s"), m_csID, LookupError( GetLastError()));
+			return FALSE;
+		}
 		// Initiate a planned restart to perform application installation.
 		if (!InitiateSystemShutdownEx( NULL, _T( "OCS Inventory NG must REBOOT your system after package setup"), 
 										uCommandTimeOut, TRUE, TRUE,
 										SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_INSTALLATION | SHTDN_REASON_FLAG_PLANNED))
 		{
-			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to initiate System Reboot after package <%s> execution"), m_csID);
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to initiate System Reboot after package <%s> execution: %s"), m_csID, LookupError( GetLastError()));
 			return FALSE;
 		}
 		return TRUE;
@@ -940,12 +960,30 @@ UINT CPackage::executePostCmd( UINT uCommandTimeOut)
 	if (m_csPostCmd == OCS_DOWNLOAD_POST_CMD_SHUTDOWN)
 	{
 		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Executing post execution command <%s> for package <%s>"), m_csPostCmd, m_csID);
+		// Request ability to shutdown computer
+		if (!OpenProcessToken( GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) 
+		{
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to request Shutdown privilege for package <%s>: %s"), m_csID, LookupError( GetLastError()));
+			return FALSE;
+		}
+		if (!LookupPrivilegeValue( NULL, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid)) 
+		{
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to request Shutdown privilege for package <%s>: %s"), m_csID, LookupError( GetLastError()));
+			return FALSE;
+		}
+		tkp.PrivilegeCount = 1; 
+        tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; 
+		if (!AdjustTokenPrivileges( hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0))
+		{
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to request Shutdown privilege for package <%s>: %s"), m_csID, LookupError( GetLastError()));
+			return FALSE;
+		}
 		// Initiate a planned shutdown to perform application installation.
 		if (!InitiateSystemShutdownEx( NULL, _T( "OCS Inventory NG must SHUTDOWN your system after package setup"),
 										uCommandTimeOut, TRUE, FALSE,
 										SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_INSTALLATION | SHTDN_REASON_FLAG_PLANNED))
 		{
-			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to initiate System Shutdown after package <%s> execution"), m_csID);
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Unable to initiate System Shutdown after package <%s> execution: %s"), m_csID, LookupError( GetLastError()));
 			return FALSE;
 		}
 		return TRUE;
