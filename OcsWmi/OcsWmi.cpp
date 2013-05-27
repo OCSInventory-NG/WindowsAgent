@@ -446,7 +446,7 @@ LPCTSTR COcsWmi::GetRefElementClassObjectStringValue(LPCTSTR lpstrRefElement, LP
 												NULL);
 		if (FAILED( m_hResult))
 		{
-			pClassObject->Release();
+//			pClassObject->Release();
 			return NULL;
 		}
 		VariantClear(&pVal);
@@ -501,7 +501,7 @@ DWORD COcsWmi::GetRefElementClassObjectDwordValue(LPCTSTR lpstrRefElement, LPCTS
 												NULL);
 		if (FAILED( m_hResult))
 		{
-			pClassObject->Release();
+//			pClassObject->Release();
 			return 0;
 		}
 		VariantClear(&pVal);
@@ -551,7 +551,7 @@ __int64 COcsWmi::GetRefElementClassObjectI64Value(LPCTSTR lpstrRefElement, LPCTS
 												NULL);
 		if (FAILED( m_hResult))
 		{
-			pClassObject->Release();
+//			pClassObject->Release();
 			return 0;
 		}
 		VariantClear(&pVal);
@@ -601,7 +601,7 @@ unsigned __int64 COcsWmi::GetRefElementClassObjectU64Value(LPCTSTR lpstrRefEleme
 												NULL);
 		if (FAILED( m_hResult))
 		{
-			pClassObject->Release();
+//			pClassObject->Release();
 			return 0;
 		}
 		VariantClear(&pVal);
