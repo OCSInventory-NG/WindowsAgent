@@ -49,6 +49,8 @@ public: // Methods
 	BOOL GetOS( CString &csName, CString &csVersion, CString &csComment, CString &csDescription, CString &csInstallDate);
 	DWORD GetAddressWidthOS();
 	BOOL GetDomainOrWorkgroup(CString &csDomain);
+	BOOL GetLoggedOnUser( CString &csUser);
+	BOOL GetUserDomain(CString &csDomain);
 	BOOL GetInputDevices( CInputDeviceList *pMyList);
 	BOOL GetSystemPorts( CSystemPortList *pMyList);
 	BOOL GetPrinters( CPrinterList *pMyList);

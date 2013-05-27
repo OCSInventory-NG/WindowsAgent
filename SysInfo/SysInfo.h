@@ -135,6 +135,7 @@ public: // Methods
 
 	// User informations
 	BOOL getUserName( CString &csUserName);
+	BOOL getUserNameFromExplorerProcess( CString &csUserName); 
 
 	// Last user logged in the system
 	BOOL getLastLoggedUser( CString &csLastLoggedUser);

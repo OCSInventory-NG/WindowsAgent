@@ -1731,6 +1731,83 @@ BOOL CWmi::GetDomainOrWorkgroup( CString &csDomain)
 	return bResult;
 }
 
+
+BOOL CWmi::GetLoggedOnUser( CString &csUser)
+{
+	BOOL	bResult = FALSE;
+
+	// If not WMI connected => cannot do this
+	if (!m_bConnected)
+		return bResult;
+
+	// Try to use win32 logon session system object to get interactive session
+	AddLog( _T( "WMI GetLoggedOnUser: Trying to find Win32_LoggedOnUser WMI objects..."));
+	try
+	{
+		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_LoggedOnUser")))
+		{
+			while (m_dllWMI.MoveNextEnumClassObject())
+			{
+				if (m_dllWMI.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "LogonType")) == 2)
+				{
+					// This is an interactive session
+					bResult = TRUE;
+					csUser = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Name"));
+				}
+			}
+			m_dllWMI.CloseEnumClassObject();
+		}
+		if (bResult)
+			AddLog( _T( "OK (%s)\n"), csUser);
+		else
+			AddLog( _T( "No interactive session found !\n"));
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		AddLog( _T( "Failed because unknown exception !\n"));
+	}
+	return bResult;
+}
+
+BOOL CWmi::GetUserDomain( CString &csDomain)
+{
+	BOOL	bResult = FALSE;
+
+	// If not WMI connected => cannot do this
+	if (!m_bConnected)
+		return bResult;
+
+	// Try to use win32 logon session system object to get interactive session
+	AddLog( _T( "WMI GetUserDomain: Trying to find Win32_LoggedOnUser WMI objects..."));
+	try
+	{
+		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_LoggedOnUser")))
+		{
+			while (m_dllWMI.MoveNextEnumClassObject())
+			{
+				if (m_dllWMI.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "LogonType")) == 2)
+				{
+					// This is an interactive session
+					bResult = TRUE;
+					csDomain = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Domain"));
+				}
+			}
+			m_dllWMI.CloseEnumClassObject();
+		}
+		if (bResult)
+			AddLog( _T( "OK (%s)\n"), csDomain);
+		else
+			AddLog( _T( "No interactive session found !\n"));
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		AddLog( _T( "Failed because unknown exception !\n"));
+	}
+	return bResult;
+}
+
 BOOL CWmi::GetSystemSlots(CSystemSlotList *pMyList)
 {
 	ASSERT( pMyList);
