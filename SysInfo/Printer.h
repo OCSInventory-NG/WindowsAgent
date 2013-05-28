@@ -41,6 +41,18 @@ public: // Methods
 	LPCTSTR GetDriver();
 	// Return the printer port
 	LPCTSTR GetPort();
+	// Return the Print server name
+	LPCTSTR GetServerName();
+	// Return the Share name on print server
+	LPCTSTR GetShareName();
+	// Return the printer Resolution
+	LPCTSTR GetResolution();
+	// Return the printer comment
+	LPCTSTR GetComment();
+	// Return the printer port
+	BOOL IsShared();
+	// Return if printer is on network
+	BOOL IsNetworkPrinter();
 
 	//////////////////////////////////
 	// Set attributes values
@@ -49,6 +61,12 @@ public: // Methods
 	void SetName( LPCTSTR lpstrName);
 	void SetDriver( LPCTSTR lpstrDriver);
 	void SetPort( LPCTSTR lpstrPort);
+	void SetServerName( LPCTSTR lpstrServerName);
+	void SetShareName( LPCTSTR lpstrShareName);
+	void SetResolution( LPCTSTR lpstrResolution);
+	void SetComment( LPCTSTR lpstrComment);
+	void SetShared( BOOL bShared = FALSE);
+	void SetNetworkPrinter( BOOL bNetwork = FALSE);
 
 	//////////////////////////////////
 	// Comparison operators
@@ -60,6 +78,13 @@ protected: // Attributes
 	CString m_csName;		// Printer name
 	CString m_csDriver;		// Printer driver
 	CString m_csPort;		// Printer port
+	CString	m_csServerName;	// Print server name
+	CString m_csShareName;	// Share name on print server
+	CString m_csResolution; // Print resolution
+	CString m_csComment;	// Comment on print server
+	BOOL	m_bShared;		// Is printer shared
+	BOOL	m_bNetwork;		// Is network printer
+
 };
 #endif // !defined(AFX_PRINTER_H__EB59F013_89CE_11D5_B284_0040055338AF__INCLUDED_)
 

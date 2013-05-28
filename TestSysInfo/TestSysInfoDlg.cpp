@@ -2041,8 +2041,11 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			res = myWmiDll.GetClassObjectStringValue( _T( "ShareName"));
 			str += res;
 			m_List.AddString( str);
-			str = _T( "ExtendedDetectedErrorState = ");
-			res = myWmiDll.GetClassObjectStringValue( _T( "ExtendedDetectedErrorState"));
+			str = _T( "Resolution = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "HorizontalResolution"));
+			str += res;
+			str += _T( " x ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "VerticalResolution"));
 			str += res;
 			m_List.AddString( str);
 			m_List.AddString( _T( ""));
@@ -2944,6 +2947,18 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		str.Format( _T( "Driver: %s"), myPrinter.GetDriver());
 		SysInfoLog( str);
 		str.Format( _T( "Port: %s"), myPrinter.GetPort());
+		SysInfoLog( str);
+		str.Format( _T( "Server name: %s"), myPrinter.GetServerName());
+		SysInfoLog( str);
+		str.Format( _T( "Share name: %s"), myPrinter.GetShareName());
+		SysInfoLog( str);
+		str.Format( _T( "Resolution: %s"), myPrinter.GetResolution());
+		SysInfoLog( str);
+		str.Format( _T( "Comment: %s"), myPrinter.GetComment());
+		SysInfoLog( str);
+		str.Format( _T( "Is shared: %s"), myPrinter.IsShared() ? _T("Yes") : _T( "No"));
+		SysInfoLog( str);
+		str.Format( _T( "Is on network: %s"), myPrinter.IsNetworkPrinter() ? _T("Yes") : _T( "No"));
 		SysInfoLog( str);
 		if (pos != NULL)
 		{

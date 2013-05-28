@@ -54,8 +54,10 @@ LPCTSTR CPrinterList::GetHash()
 		myObject = GetNext( pos);
 	while (bContinue)
 	{
-		csToHash.Format( _T( "%s%s%s"), myObject.GetName(), myObject.GetDriver(),
-						 myObject.GetPort());
+		csToHash.Format( _T( "%s%s%s%s%s%s%s%u%u"), myObject.GetName(), myObject.GetDriver(),
+						 myObject.GetPort(), myObject.GetServerName(), myObject.GetShareName(),
+						 myObject.GetResolution(), myObject.GetComment(),
+						 myObject.IsShared(), myObject.IsNetworkPrinter());
 		myHash.HashUpdate( csToHash);
 		bContinue = (pos != NULL);
 		if (bContinue)

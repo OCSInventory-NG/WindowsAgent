@@ -1235,6 +1235,20 @@ BOOL CWmi::GetPrinters(CPrinterList *pMyList)
 				myObject.SetDriver( csBuffer);
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "PortName"));
 				myObject.SetPort( csBuffer);
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "ServerName"));
+				myObject.SetServerName( csBuffer);
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "ShareName"));
+				myObject.SetShareName( csBuffer);
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "HorizontalResolution"));
+				if (!csBuffer.IsEmpty())
+				{
+					csBuffer.AppendFormat( _T( " x %s"), m_dllWMI.GetClassObjectStringValue( _T( "VerticalResolution")));
+					myObject.SetResolution( csBuffer);
+				}
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Comment"));
+				myObject.SetComment( csBuffer);
+				myObject.SetShared( m_dllWMI.GetClassObjectDwordValue( _T( "Shared")));
+				myObject.SetNetworkPrinter( m_dllWMI.GetClassObjectDwordValue( _T( "Network")));
 				pMyList->AddTail( myObject);
 				uIndex ++;
 			}

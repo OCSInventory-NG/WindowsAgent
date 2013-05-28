@@ -745,6 +745,12 @@ BOOL CXMLInteract::UpdatePrinters( CPrinterList &myPrinterList)
 				m_pXml->AddChildElem( _T( "NAME"), cObject.GetName());
 				m_pXml->AddChildElem( _T( "DRIVER"), cObject.GetDriver());
 				m_pXml->AddChildElem( _T( "PORT"), cObject.GetPort());
+				m_pXml->AddChildElem( _T( "SERVERNAME"), cObject.GetServerName());
+				m_pXml->AddChildElem( _T( "SHARENAME"), cObject.GetShareName());
+				m_pXml->AddChildElem( _T( "RESOLUTION"), cObject.GetResolution());
+				m_pXml->AddChildElem( _T( "COMMENT"), cObject.GetComment());
+				m_pXml->AddChildElem( _T( "SHARED"), cObject.IsShared());
+				m_pXml->AddChildElem( _T( "NETWORK"), cObject.IsNetworkPrinter());
 			m_pXml->OutOfElem();
 			if (pos != NULL)
 				cObject = myPrinterList.GetNext( pos);
@@ -776,6 +782,18 @@ BOOL CXMLInteract::ReadPrinters( CPrinterList &myPrinterList)
 		cObject.SetDriver( m_pXml->GetData( pXmlElement));
 		pXmlElement = m_pXml->FindFirstElem( _T( "PORT"), pXml);
 		cObject.SetPort( m_pXml->GetData( pXmlElement));
+		pXmlElement = m_pXml->FindFirstElem( _T( "SERVERNAME"), pXml);
+		cObject.SetServerName( m_pXml->GetData( pXmlElement));
+		pXmlElement = m_pXml->FindFirstElem( _T( "SHARENAME"), pXml);
+		cObject.SetShareName( m_pXml->GetData( pXmlElement));
+		pXmlElement = m_pXml->FindFirstElem( _T( "RESOLUTION"), pXml);
+		cObject.SetResolution( m_pXml->GetData( pXmlElement));
+		pXmlElement = m_pXml->FindFirstElem( _T( "COMMENT"), pXml);
+		cObject.SetComment( m_pXml->GetData( pXmlElement));
+		pXmlElement = m_pXml->FindFirstElem( _T( "SHARED"), pXml);
+		cObject.SetShared( _ttoi( m_pXml->GetData( pXmlElement)));
+		pXmlElement = m_pXml->FindFirstElem( _T( "SHARED"), pXml);
+		cObject.SetNetworkPrinter( _ttoi( m_pXml->GetData( pXmlElement)));
 		myPrinterList.AddTail( cObject);
 		pXml = m_pXml->FindNextElem( _T( "PRINTERS"));
 	}
