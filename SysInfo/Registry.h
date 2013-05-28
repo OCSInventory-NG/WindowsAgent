@@ -73,43 +73,25 @@ public: // Methods
 	//////////////////////////////////
 
 protected: // Methods
-	BOOL GetBiosInfo9X( CBios *pMyBios);
 	BOOL GetBiosInfoNT( CBios *pMyBios);
-	BOOL GetDeviceDescription9X( CString &csDescription);
 	BOOL GetDeviceDescriptionNT( CString &csDescription);
-	BOOL GetDomainOrWorkgroup9X( CString &csDomain);
 	BOOL GetDomainOrWorkgroupNT( CString &csDomain);
-	BOOL GetInputDevices9X( CInputDeviceList *pList);
 	BOOL GetInputDevicesNT( CInputDeviceList *pList);
-	BOOL GetLoggedOnUser9X( CString &csUser);
 	BOOL GetLoggedOnUserNT( CString &csUser);
-	BOOL GetModems9X( CModemList *pMyList);
 	BOOL GetModemsNT( CModemList *pMyList);
-	BOOL GetMonitors9X( CMonitorList *pList);
 	BOOL GetMonitorsNT( CMonitorList *pList);
-	BOOL GetSystemPorts9X( CSystemPortList *pMyList);
 	BOOL GetSystemPortsNT( CSystemPortList *pMyList);
-	DWORD GetProcessors9X( CString &csProcType, CString &csProcSpeed);
 	DWORD GetProcessorsNT( CString &csProcType, CString &csProcSpeed);
-	BOOL GetRegistryApplications9X( CSoftwareList *pList, HKEY hHive);
 	BOOL GetRegistryApplicationsNT( CSoftwareList *pList, HKEY hHive, UINT uHiveType = HIVE_WOW32_32KEY);
-	BOOL GetSoundDevices9X( CSoundDeviceList *pList);
 	BOOL GetSoundDevicesNT( CSoundDeviceList *pList);
-	BOOL GetStoragePeripherals9X( CStoragePeripheralList *pMyList);
 	BOOL GetStoragePeripheralsNT( CStoragePeripheralList *pMyList);
-	BOOL GetSystemControllers9X( CSystemControllerList *pMyList);
 	BOOL GetSystemControllersNT( CSystemControllerList *pMyList);
-	BOOL GetVideoAdapters9X( CVideoAdapterList *pMyList);
 	BOOL GetVideoAdaptersNT_2K( CVideoAdapterList *pMyList);
 	BOOL GetVideoAdaptersXP( CVideoAdapterList *pMyList);
-	BOOL GetWindowsRegistration9X( CString &csCompany, CString &csOwner, CString &csProductID);
 	BOOL GetWindowsRegistrationNT( CString &csCompany, CString &csOwner, CString &csProductID);
-	BOOL IsNotebook9X();
 	BOOL IsNotebookNT();
 	// Get screen resolution
 	BOOL GetScreenResolution( CString &csResolution);
-	// Find status of a device component under HKRY_DYN_DATA\Config Manager\Enum
-	BOOL ValidateComponent9X( LPCTSTR lpstrComponentKey);
 	// Parse multi string registry value
 	LPCTSTR ParseMultiSZ( LPCTSTR lpstrCurrent = NULL);
 	// Get data from registry value (same return as RegQueryValueEx)
