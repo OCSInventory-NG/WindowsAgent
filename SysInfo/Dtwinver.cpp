@@ -218,8 +218,56 @@ History: PJN / 24-02-1997 A number of updates including support for NT 3.1,
                           10. Changed some of the names of the class methods for overall consistency
          PJN / 08-08-2010 1. The code now differentiates between having the Hyper-V tools installed and the actual Hyper-V OS. Thanks
                           to Scott Pawloski for reporting this issue.
+         PJN / 26-06-2011 1. Updated copyright details.
+                          2. Added support for the following Product types: PRODUCT_HOME_SERVER_PREMIUM, 
+                          PRODUCT_SMALLBUSINESS_SERVER_PREMIUM_CORE, PRODUCT_CLUSTER_SERVER_V, PRODUCT_SMALLBUSINESS_SERVER_PREMIUM_CORE,
+                          PRODUCT_STORAGE_ENTERPRISE_SERVER_CORE, PRODUCT_SB_SOLUTION_SERVER, PRODUCT_EMBEDDED, 
+                          PRODUCT_ESSENTIALBUSINESS_SERVER_MGMT, PRODUCT_SOLUTION_EMBEDDEDSERVER_CORE, PRODUCT_ESSENTIALBUSINESS_SERVER_ADDL,
+                          PRODUCT_ESSENTIALBUSINESS_SERVER_ADDLSVC, PRODUCT_STORAGE_EXPRESS_SERVER_CORE, PRODUCT_STORAGE_STANDARD_SERVER_CORE,
+                          PRODUCT_STORAGE_WORKGROUP_SERVER_CORE. Thanks to Petr Stejskal for prompting this update.
+                          3. Added a IsHomeServerPremiumEditionInstalled method.
+                          4. Fixed a bug handling PRODUCT_CLUSTER_SERVER_V ProductType
+                          5. Fixed a bug handling PRODUCT_CLUSTER_SERVER ProductType
+                          6. Fixed a typo in the name of IsSmallBusinessServerInstalled method
+                          7. Added a IsWindowsCENET method.
+                          8. Added a IsWindowsEmbeddedCompact method. 
+                          9. The sample app has been updated to differentiate between the various marketing names for CE i.e. Windows CE,
+                          Windows CE .NET and Windows Embedded Compact. The code has also been verified to operate correctly on Windows Embedded
+                          Compact using a OSDesign project on Visual Studio 2008 Professional, Windows Embedded Compact, a sub project which
+                          builds DtWinVer for x86 CEPC and a VMWare image of Compact 7 running the DtWinVer binaries. Thanks to Mike Ryan for 
+                          prompting this update.
+         PJN / 02-07-2011 1. Updated to support Windows 8 and Windows Server 2012. These are the names which DtWinVer currently uses to refer
+                          to the next client and server versions of Windows respectively. At the moment there is no official details from 
+                          Microsoft on what the product names will be, but DtWinVer will be updated following any announcements.
+         PJN / 17-09-2011 1. Updated the code to work correctly against the Windows 8 Developer Preview and Windows 8 Server Developer 
+                          Preview builds.
+                          2. Updated code to refer to Windows codename "8" and Windows codename Server "8" instead of Windows 8 and Windows 
+                          Server 2012.
+         PJN / 28-04-2012 1. Updated copyright details.
+                          2. My guess from last year was correct! Windows codename Server "8" will become Windows Server 2012. The code has been
+                          updated to reflect this announcement from http://www.microsoft.com/en-us/news/Press/2012/Apr12/04-17MMSDay1PR.aspx.
+                          3. Updated code to refer to Windows codename "8" as Windows 8 based on information from
+                          http://windowsteamblog.com/windows/b/bloggingwindows/archive/2012/04/16/announcing-the-windows-8-editions.aspx.
+                          4. Removed tests for Windows 8 (Home Basic), Windows 8 (Home Premium), Windows 8 (Ultimate) from code.
+                          5. Added support for the following Product types: PRODUCT_PRERELEASE, PRODUCT_PRERELEASE_N, PRODUCT_PRERELEASE_ARM,
+                          PRODUCT_PROFESSIONAL_PLUS, PRODUCT_ENTERPRISE_EVALUATION, PRODUCT_STANDARD_EVALUATION_SERVER, 
+                          PRODUCT_DATACENTER_EVALUATION_SERVER, PRODUCT_ENTERPRISE_N_EVALUATION, PRODUCT_STORAGE_WORKGROUP_EVALUATION_SERVER,
+                          PRODUCT_STORAGE_STANDARD_EVALUATION_SERVER, PRODUCT_MULTIPOINT_STANDARD_SERVER, PRODUCT_MULTIPOINT_PREMIUM_SERVER &
+                          PRODUCT_THINPC, PRODUCT_EMBEDDEDINDUSTRY, PRODUCT_EMBEDDEDA, PRODUCT_EMBEDDEDINDUSTRYA, PRODUCT_EMBEDDEDAUTOMOTIVE,
+                          PRODUCT_EMBEDDEDE, PRODUCT_EMBEDDEDINDUSTRYAE & PRODUCT_EMBEDDEDINDUSTRYE
+                          6. Added support for Windows RT based on information from 
+                          http://windowsteamblog.com/windows/b/bloggingwindows/archive/2012/04/16/announcing-the-windows-8-editions.aspx.
+         PJN / 29/12-2012 1. Added support for the following product types: PRODUCT_EMBEDDED_AUTOMOTIVE, PRODUCT_EMBEDDED_INDUSTRY_A,
+                          PRODUCT_EMBEDDED_A, PRODUCT_EMBEDDED_INDUSTRY, PRODUCT_EMBEDDED_E, PRODUCT_EMBEDDED_INDUSTRY_E,
+                          PRODUCT_EMBEDDED_INDUSTRY_E, PRODUCT_EMBEDDED_INDUSTRY_A_E, PRODUCT_CORE_ARM, PRODUCT_CORE_ARM, PRODUCT_CORE_N,
+                          PRODUCT_CORE_COUNTRYSPECIFIC, PRODUCT_CORE_SINGLELANGUAGE, PRODUCT_CORE & PRODUCT_PROFESSIONAL_WMC
+                          2. Fixed a bug with the handling of the PRODUCT_THINPC #define value
+                          3. Updated the code to compile cleanly on VC 2012
+         PJN / 26-05-2013 1. Updated copyright details.
+                          2. Now includes support for Windows 8.1 formerly known as Windows "Blue". I have also added code to support the
+                          server version of "Blue" which for the moment I am calling Windows Server codename "Blue".
 
-Copyright (c) 1997 - 2010 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
+Copyright (c) 1997 - 2013 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
 
 All rights reserved.
 
@@ -491,6 +539,10 @@ to maintain a single distribution point for the source code.
 #define PRODUCT_SERVER_FOUNDATION 0x00000021
 #endif
 
+#ifndef PRODUCT_HOME_PREMIUM_SERVER
+#define PRODUCT_HOME_PREMIUM_SERVER 0x00000022
+#endif
+
 #ifndef PRODUCT_SERVER_FOR_SMALLBUSINESS_V
 #define PRODUCT_SERVER_FOR_SMALLBUSINESS_V 0x00000023
 #endif
@@ -523,6 +575,22 @@ to maintain a single distribution point for the source code.
 #define PRODUCT_HYPERV 0x0000002A
 #endif
 
+#ifndef PRODUCT_STORAGE_EXPRESS_SERVER_CORE
+#define PRODUCT_STORAGE_EXPRESS_SERVER_CORE 0x0000002B
+#endif
+
+#ifndef PRODUCT_STORAGE_STANDARD_SERVER_CORE 
+#define PRODUCT_STORAGE_STANDARD_SERVER_CORE 0x0000002C
+#endif 
+
+#ifndef PRODUCT_STORAGE_WORKGROUP_SERVER_CORE
+#define PRODUCT_STORAGE_WORKGROUP_SERVER_CORE 0x0000002D
+#endif
+
+#ifndef PRODUCT_STORAGE_ENTERPRISE_SERVER_CORE
+#define PRODUCT_STORAGE_ENTERPRISE_SERVER_CORE 0x0000002E
+#endif
+
 #ifndef PRODUCT_STARTER_N
 #define PRODUCT_STARTER_N 0x0000002F
 #endif
@@ -535,8 +603,64 @@ to maintain a single distribution point for the source code.
 #define PRODUCT_PROFESSIONAL_N 0x00000031
 #endif
 
+#ifndef PRODUCT_SB_SOLUTION_SERVER
+#define PRODUCT_SB_SOLUTION_SERVER 0x00000032
+#endif
+
+#ifndef PRODUCT_SERVER_FOR_SB_SOLUTIONS
+#define PRODUCT_SERVER_FOR_SB_SOLUTIONS 0x00000033
+#endif
+
+#ifndef PRODUCT_STANDARD_SERVER_SOLUTIONS
+#define PRODUCT_STANDARD_SERVER_SOLUTIONS 0x00000034
+#endif
+
+#ifndef PRODUCT_STANDARD_SERVER_SOLUTIONS_CORE
+#define PRODUCT_STANDARD_SERVER_SOLUTIONS_CORE 0x00000035
+#endif 
+
+#ifndef PRODUCT_SB_SOLUTION_SERVER_EM
+#define PRODUCT_SB_SOLUTION_SERVER_EM 0x00000036
+#endif
+
+#ifndef PRODUCT_SERVER_FOR_SB_SOLUTIONS_EM
+#define PRODUCT_SERVER_FOR_SB_SOLUTIONS_EM 0x00000037
+#endif
+
 #ifndef PRODUCT_SOLUTION_EMBEDDEDSERVER
 #define PRODUCT_SOLUTION_EMBEDDEDSERVER 0x00000038
+#endif
+
+#ifndef PRODUCT_SOLUTION_EMBEDDEDSERVER_CORE
+#define PRODUCT_SOLUTION_EMBEDDEDSERVER_CORE 0x00000039
+#endif
+
+#ifndef PRODUCT_ESSENTIALBUSINESS_SERVER_MGMT
+#define PRODUCT_ESSENTIALBUSINESS_SERVER_MGMT 0x0000003B
+#endif
+
+#ifndef PRODUCT_ESSENTIALBUSINESS_SERVER_ADDL
+#define PRODUCT_ESSENTIALBUSINESS_SERVER_ADDL 0x0000003C
+#endif
+
+#ifndef PRODUCT_ESSENTIALBUSINESS_SERVER_MGMTSVC
+#define PRODUCT_ESSENTIALBUSINESS_SERVER_MGMTSVC 0x0000003D
+#endif
+
+#ifndef PRODUCT_ESSENTIALBUSINESS_SERVER_ADDLSVC
+#define PRODUCT_ESSENTIALBUSINESS_SERVER_ADDLSVC 0x0000003E
+#endif
+
+#ifndef PRODUCT_SMALLBUSINESS_SERVER_PREMIUM_CORE
+#define PRODUCT_SMALLBUSINESS_SERVER_PREMIUM_CORE 0x0000003F
+#endif
+
+#ifndef PRODUCT_CLUSTER_SERVER_V
+#define PRODUCT_CLUSTER_SERVER_V 0x00000040
+#endif
+
+#ifndef PRODUCT_EMBEDDED
+#define PRODUCT_EMBEDDED 0x00000041
 #endif
 
 #ifndef PRODUCT_STARTER_E
@@ -563,20 +687,123 @@ to maintain a single distribution point for the source code.
 #define PRODUCT_ULTIMATE_E 0x00000047
 #endif
 
-
-#if defined(_WIN32)
-
-//Taken from Windows CE winbase.h file
-#ifndef VER_PLATFORM_WIN32_CE
-  #define VER_PLATFORM_WIN32_CE         3
+#ifndef PRODUCT_ENTERPRISE_EVALUATION
+#define PRODUCT_ENTERPRISE_EVALUATION 0x00000048
 #endif
 
-#endif //defined(_WIN32) 
+#ifndef PRODUCT_PRERELEASE
+#define PRODUCT_PRERELEASE 0x0000004A
+#endif
+
+#ifndef PRODUCT_MULTIPOINT_STANDARD_SERVER
+#define PRODUCT_MULTIPOINT_STANDARD_SERVER 0x0000004C
+#endif
+
+#ifndef PRODUCT_MULTIPOINT_PREMIUM_SERVER
+#define PRODUCT_MULTIPOINT_PREMIUM_SERVER 0x0000004D
+#endif
+
+#ifndef PRODUCT_STANDARD_EVALUATION_SERVER
+#define PRODUCT_STANDARD_EVALUATION_SERVER 0x0000004F
+#endif
+
+#ifndef PRODUCT_DATACENTER_EVALUATION_SERVER
+#define PRODUCT_DATACENTER_EVALUATION_SERVER 0x00000050
+#endif
+
+#ifndef PRODUCT_PRERELEASE_ARM
+#define PRODUCT_PRERELEASE_ARM 0x00000051
+#endif
+
+#ifndef PRODUCT_PRERELEASE_N
+#define PRODUCT_PRERELEASE_N 0x00000052
+#endif
+
+#ifndef PRODUCT_ENTERPRISE_N_EVALUATION
+#define PRODUCT_ENTERPRISE_N_EVALUATION 0x00000054
+#endif
+
+#ifndef PRODUCT_EMBEDDED_AUTOMOTIVE
+#define PRODUCT_EMBEDDED_AUTOMOTIVE 0x00000055 
+#endif
+
+#ifndef PRODUCT_EMBEDDED_INDUSTRY_A
+#define PRODUCT_EMBEDDED_INDUSTRY_A 0x00000056 
+#endif
+
+#ifndef PRODUCT_THINPC
+#define PRODUCT_THINPC 0x00000057 
+#endif
+
+#ifndef PRODUCT_EMBEDDED_A
+#define PRODUCT_EMBEDDED_A 0x00000058
+#endif
+
+#ifndef PRODUCT_EMBEDDED_INDUSTRY
+#define PRODUCT_EMBEDDED_INDUSTRY 0x00000059
+#endif
+
+#ifndef PRODUCT_EMBEDDED_E
+#define PRODUCT_EMBEDDED_E 0x0000005A
+#endif
+
+#ifndef PRODUCT_EMBEDDED_INDUSTRY_E
+#define PRODUCT_EMBEDDED_INDUSTRY_E 0x0000005B 
+#endif
+
+#ifndef PRODUCT_EMBEDDED_INDUSTRY_A_E
+#define PRODUCT_EMBEDDED_INDUSTRY_A_E 0x0000005C
+#endif
+
+#ifndef PRODUCT_PROFESSIONAL_PLUS
+#define PRODUCT_PROFESSIONAL_PLUS 0x0000005D 
+#endif
+
+#ifndef PRODUCT_STORAGE_WORKGROUP_EVALUATION_SERVER
+#define PRODUCT_STORAGE_WORKGROUP_EVALUATION_SERVER 0x0000005F 
+#endif
+
+#ifndef PRODUCT_STORAGE_STANDARD_EVALUATION_SERVER
+#define PRODUCT_STORAGE_STANDARD_EVALUATION_SERVER 0x00000060 
+#endif
+
+#ifndef PRODUCT_CORE_ARM
+#define PRODUCT_CORE_ARM 0x00000061
+#endif
+
+#ifndef PRODUCT_CORE_N
+#define PRODUCT_CORE_N 0x00000062
+#endif
+
+#ifndef PRODUCT_CORE_COUNTRYSPECIFIC
+#define PRODUCT_CORE_COUNTRYSPECIFIC 0x00000063
+#endif
+
+#ifndef PRODUCT_CORE_SINGLELANGUAGE
+#define PRODUCT_CORE_SINGLELANGUAGE 0x00000064
+#endif
+
+#ifndef PRODUCT_CORE
+#define PRODUCT_CORE 0x00000065
+#endif
+
+#ifndef PRODUCT_PROFESSIONAL_WMC
+#define PRODUCT_PROFESSIONAL_WMC 0x00000067
+#endif
+
+
+#ifndef VER_PLATFORM_WIN32_CE
+#define VER_PLATFORM_WIN32_CE 3
+#endif
+
+#ifndef SPI_GETPLATFORMTYPE
+#define SPI_GETPLATFORMTYPE 257
+#endif
 
 #ifdef _DOS
   WORD WinVer;
   BYTE bRunningWindows;
-#endif //ifdef _DOS
+#endif //#ifdef _DOS
 
 
 ////////////////////////////////// Implementation /////////////////////////////
@@ -873,11 +1100,9 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
     _tcscpy(lpVersionInformation->szUnderlyingCSDVersion, osvi.szCSDVersion);
 
     //OEM Info
-    _tcscpy(lpVersionInformation->szOEMInfo, _T(""));
     SystemParametersInfo(SPI_GETOEMINFO, 256, lpVersionInformation->szOEMInfo, 0);
 
     //Platform Type
-    _tcscpy(lpVersionInformation->szPlatformType, _T(""));
     SystemParametersInfo(SPI_GETPLATFORMTYPE, 256, lpVersionInformation->szPlatformType, 0);
 
     //Always set the OSType to Workstation on CE. The variable itself does not make 
@@ -916,7 +1141,7 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
         if (!lpGetVersionEx(&osvi))
           return FALSE;
       }
-
+      
       if (bGotOSviEx)
       {
         lpVersionInformation->dwEmulatedMajorVersion = osviex.dwMajorVersion;
@@ -940,7 +1165,7 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
         if (osviex.wSuiteMask & VER_SUITE_BLADE)
           lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_WEBEDITION;
         if (osviex.wSuiteMask & VER_SUITE_EMBEDDEDNT)
-          lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_EMBEDDEDNT;
+          lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_EMBEDDED;
         if (osviex.wSuiteMask & VER_SUITE_SINGLEUSERTS)
           lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_REMOTEADMINMODE_TERMINAL;
         if (osviex.wSuiteMask & VER_SUITE_COMPUTE_SERVER)
@@ -1042,7 +1267,7 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
 
         //Determine the HAL details
         GetNTHALDetailsFromRegistry(lpVersionInformation);
-	    #endif
+      #endif
       }
       else
       {
@@ -1091,7 +1316,6 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
           lpVersionInformation->dwUnderlyingMinorVersion = 10; 
           lpVersionInformation->dwUnderlyingBuildNumber = 0;
           lpVersionInformation->UnderlyingPlatform = Windows3x;
-          _tcscpy(lpVersionInformation->szUnderlyingCSDVersion, _T(""));
         }
         else
         {
@@ -1360,7 +1584,7 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
           //Determine the OS Type
           GetNTOSTypeFromRegistry(lpVersionInformation, FALSE);
           
-		#ifndef UNDER_CE
+    #ifndef UNDER_CE
           //Determine if it is NT SP6a Vs SP6
           GetNTSP6aDetailsFromRegistry(lpVersionInformation, FALSE);
 
@@ -1369,7 +1593,7 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
 
           //Determine the HAL details
           GetNTHALDetailsFromRegistry(lpVersionInformation);
-		#endif
+    #endif
 
           //Get the Product Suites installed
           GetProductSuiteDetailsFromRegistry(lpVersionInformation);
@@ -1403,7 +1627,7 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
       }
                                              
       //Get the processor details                                       
-	    GetProcessorType(lpVersionInformation);
+      GetProcessorType(lpVersionInformation);
 
       if (!bFoundUnderlyingOS)
       {
@@ -1510,7 +1734,7 @@ void COSVersion::GetNTSP6aDetailsFromRegistry(LPOS_VERSION_INFO lpVersionInforma
 #if (defined(_WIN32) || defined(_WIN64))
     if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009"), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
 #else                                  
-	if (RegOpenKey(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009"), &hKey) == ERROR_SUCCESS)
+  if (RegOpenKey(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009"), &hKey) == ERROR_SUCCESS)
 #endif    
     {
       lpVersionInformation->wUnderlyingServicePackMinor = 1;
@@ -1535,7 +1759,7 @@ void COSVersion::GetXPSP1aDetailsFromRegistry(LPOS_VERSION_INFO lpVersionInforma
 #if (defined(_WIN32) || defined(_WIN64))
     if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
 #else                                  
-	if (RegOpenKey(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"), &hKey) == ERROR_SUCCESS)
+  if (RegOpenKey(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"), &hKey) == ERROR_SUCCESS)
 #endif    
     {
       TCHAR sTemp[1024];
@@ -1860,145 +2084,187 @@ BOOL COSVersion::IsWindowsCE(LPOS_VERSION_INFO lpVersionInformation)
   return (lpVersionInformation->UnderlyingPlatform == WindowsCE);
 }
 
+BOOL COSVersion::IsWindowsCENET(LPOS_VERSION_INFO lpVersionInformation)
+{
+  //Windows CE. NET is any version of CE 4.X where X > 0		
+  return ((lpVersionInformation->UnderlyingPlatform == WindowsCE) && 
+          (lpVersionInformation->dwUnderlyingMajorVersion == 4) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion > 0));
+}
+
+BOOL COSVersion::IsWindowsEmbeddedCompact(LPOS_VERSION_INFO lpVersionInformation)
+{
+  //Windows Embedded Compact is any version of CE 7.X
+  return ((lpVersionInformation->UnderlyingPlatform == WindowsCE) && 
+          (lpVersionInformation->dwUnderlyingMajorVersion >= 7));
+}
+
 BOOL COSVersion::IsWindows95(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == Windows9x &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 4 && 
-          lpVersionInformation->dwUnderlyingMinorVersion == 0 &&
-          lpVersionInformation->dwUnderlyingBuildNumber == 950);
+  return ((lpVersionInformation->UnderlyingPlatform == Windows9x) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 4) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion == 0) &&
+          (lpVersionInformation->dwUnderlyingBuildNumber == 950));
 }
 
 BOOL COSVersion::IsWindows95SP1(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == Windows9x &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 4 && 
-          lpVersionInformation->dwUnderlyingBuildNumber > 950 && 
-          lpVersionInformation->dwUnderlyingBuildNumber <= 1080);
+  return ((lpVersionInformation->UnderlyingPlatform == Windows9x) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 4) && 
+          (lpVersionInformation->dwUnderlyingBuildNumber > 950) && 
+          (lpVersionInformation->dwUnderlyingBuildNumber <= 1080));
 }
 
 BOOL COSVersion::IsWindows95B(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == Windows9x &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 4 && 
-          lpVersionInformation->dwUnderlyingMinorVersion < 10 &&
-          lpVersionInformation->dwUnderlyingBuildNumber > 1080 && 
-          lpVersionInformation->dwUnderlyingBuildNumber < 1214);
+  return ((lpVersionInformation->UnderlyingPlatform == Windows9x) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 4) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion < 10) &&
+          (lpVersionInformation->dwUnderlyingBuildNumber > 1080) && 
+          (lpVersionInformation->dwUnderlyingBuildNumber < 1214));
 }
 
 BOOL COSVersion::IsWindows95C(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == Windows9x &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 4 && 
-          lpVersionInformation->dwUnderlyingMinorVersion < 10 &&
-          lpVersionInformation->dwUnderlyingBuildNumber >= 1214);
+  return ((lpVersionInformation->UnderlyingPlatform == Windows9x) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 4) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion < 10) &&
+          (lpVersionInformation->dwUnderlyingBuildNumber >= 1214));
 }
-
 
 BOOL COSVersion::IsWindows98(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == Windows9x &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 4 && 
-          lpVersionInformation->dwUnderlyingMinorVersion == 10 &&
-          lpVersionInformation->dwUnderlyingBuildNumber == 1998);
+  return ((lpVersionInformation->UnderlyingPlatform == Windows9x) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 4) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion == 10) &&
+          (lpVersionInformation->dwUnderlyingBuildNumber == 1998));
 }
 
 BOOL COSVersion::IsWindows98SP1(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == Windows9x &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 4 && 
-          lpVersionInformation->dwUnderlyingMinorVersion == 10 &&
-          lpVersionInformation->dwUnderlyingBuildNumber > 1998 &&
-          lpVersionInformation->dwUnderlyingBuildNumber < 2183);
+  return ((lpVersionInformation->UnderlyingPlatform == Windows9x) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 4) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion == 10) &&
+          (lpVersionInformation->dwUnderlyingBuildNumber > 1998) &&
+          (lpVersionInformation->dwUnderlyingBuildNumber < 2183));
 }
 
 BOOL COSVersion::IsWindows98SE(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == Windows9x &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 4 && 
-          lpVersionInformation->dwUnderlyingMinorVersion == 10 &&
-          lpVersionInformation->dwUnderlyingBuildNumber >= 2183);
+  return ((lpVersionInformation->UnderlyingPlatform == Windows9x) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 4) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion == 10) &&
+          (lpVersionInformation->dwUnderlyingBuildNumber >= 2183));
 }
 
 BOOL COSVersion::IsWindowsME(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == Windows9x &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 4 &&
-          lpVersionInformation->dwUnderlyingMinorVersion == 90);
+  return ((lpVersionInformation->UnderlyingPlatform == Windows9x) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 4) &&
+          (lpVersionInformation->dwUnderlyingMinorVersion == 90));
 }
 
 BOOL COSVersion::IsWindowsNT31(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == WindowsNT &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 3 && 
-          lpVersionInformation->dwUnderlyingMinorVersion == 10);
+  return ((lpVersionInformation->UnderlyingPlatform == WindowsNT) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 3) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion == 10));
 }
 
 BOOL COSVersion::IsWindowsNT35(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == WindowsNT &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 3 && 
-          lpVersionInformation->dwUnderlyingMinorVersion == 50);
+  return ((lpVersionInformation->UnderlyingPlatform == WindowsNT) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 3) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion == 50));
 }
 
 BOOL COSVersion::IsWindowsNT351(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == WindowsNT &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 3 && 
-          lpVersionInformation->dwUnderlyingMinorVersion == 51);
+  return ((lpVersionInformation->UnderlyingPlatform == WindowsNT) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 3) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion == 51));
 }
 
 BOOL COSVersion::IsWindowsNT4(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == WindowsNT &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 4);
+  return ((lpVersionInformation->UnderlyingPlatform == WindowsNT) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 4));
 }
 
 BOOL COSVersion::IsWindows2000(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == WindowsNT &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 5 &&
-          lpVersionInformation->dwUnderlyingMinorVersion == 0);
+  return ((lpVersionInformation->UnderlyingPlatform == WindowsNT) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 5) &&
+          (lpVersionInformation->dwUnderlyingMinorVersion == 0));
 }
 
 BOOL COSVersion::IsWindowsXPOrWindowsServer2003(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == WindowsNT &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 5 &&
-          lpVersionInformation->dwUnderlyingMinorVersion != 0);
+  return ((lpVersionInformation->UnderlyingPlatform == WindowsNT) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 5) &&
+          (lpVersionInformation->dwUnderlyingMinorVersion != 0));
 }
 
 BOOL COSVersion::IsWindowsVistaOrWindowsServer2008(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == WindowsNT &&
-          lpVersionInformation->dwUnderlyingMajorVersion == 6 &&
-          lpVersionInformation->dwUnderlyingMinorVersion == 0);
+  return ((lpVersionInformation->UnderlyingPlatform == WindowsNT) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 6) &&
+          (lpVersionInformation->dwUnderlyingMinorVersion == 0));
 }
 
 BOOL COSVersion::IsWindowsVista(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == WindowsNT &&
-          (lpVersionInformation->OSType == Workstation) &&
-          (lpVersionInformation->dwUnderlyingMajorVersion == 6) && lpVersionInformation->dwUnderlyingMinorVersion == 0);
+  return IsWindowsVistaOrWindowsServer2008(lpVersionInformation) && (lpVersionInformation->OSType == Workstation);
 }
 
 BOOL COSVersion::IsWindows7OrWindowsServer2008R2(LPOS_VERSION_INFO lpVersionInformation)
 {
+  return ((lpVersionInformation->UnderlyingPlatform == WindowsNT) &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 6) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion == 1));
+}
+
+BOOL COSVersion::IsWindows8OrWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return (lpVersionInformation->UnderlyingPlatform == WindowsNT &&
+          (lpVersionInformation->dwUnderlyingMajorVersion == 6) && 
+          (lpVersionInformation->dwUnderlyingMinorVersion == 2));
+}
+
+BOOL COSVersion::IsWindows8Point1OrWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation)
+{
   return (lpVersionInformation->UnderlyingPlatform == WindowsNT &&
           ((lpVersionInformation->dwUnderlyingMajorVersion > 6) || 
-           ((lpVersionInformation->dwUnderlyingMajorVersion == 6) && lpVersionInformation->dwUnderlyingMinorVersion > 0)));
+           ((lpVersionInformation->dwUnderlyingMajorVersion == 6) && lpVersionInformation->dwUnderlyingMinorVersion >= 3)));
+}
+
+BOOL COSVersion::IsWindows8Point1(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8Point1OrWindowsServerBlue(lpVersionInformation) && (lpVersionInformation->OSType == Workstation);
+}
+
+BOOL COSVersion::IsWindows8(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8OrWindowsServer2012(lpVersionInformation) && (lpVersionInformation->OSType == Workstation);
 }
 
 BOOL COSVersion::IsWindows7(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return (lpVersionInformation->UnderlyingPlatform == WindowsNT &&
-          (lpVersionInformation->OSType == Workstation) &&
-          ((lpVersionInformation->dwUnderlyingMajorVersion > 6) || 
-           ((lpVersionInformation->dwUnderlyingMajorVersion == 6) && lpVersionInformation->dwUnderlyingMinorVersion > 0)));
+  return IsWindows7OrWindowsServer2008R2(lpVersionInformation) && (lpVersionInformation->OSType == Workstation);
 }
 
 BOOL COSVersion::IsWindowsXP(LPOS_VERSION_INFO lpVersionInformation)
 {
   return IsWindowsXPPersonal(lpVersionInformation) || IsWindowsXPProfessional(lpVersionInformation);
+}
+
+BOOL COSVersion::IsWindowsRT(LPOS_VERSION_INFO lpVersionInformation)
+{
+#ifndef UNDER_CE
+  return IsWindows8(lpVersionInformation) && (lpVersionInformation->UnderlyingProcessorType == ARM_PROCESSOR);
+#else
+  return FALSE;
+#endif
 }
 
 WORD COSVersion::GetNTServicePackFromCSDString(LPCTSTR pszCSDVersion)
@@ -2145,6 +2411,26 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
 
   switch (dwProductType)
   {
+    case PRODUCT_SB_SOLUTION_SERVER:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STORAGE_SERVER;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STORAGE_SERVER_ESSENTIALS;
+      break;
+    }
+    case PRODUCT_SB_SOLUTION_SERVER_EM:
+    {
+      //Note really sure what "PRODUCT_SB_SOLUTION_SERVER_EM", we just treat it as PRODUCT_SB_SOLUTION_SERVER
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STORAGE_SERVER;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STORAGE_SERVER_ESSENTIALS;
+      break;
+    }
+    case PRODUCT_HOME_PREMIUM_SERVER:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_HOME_SERVER;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_HOME_SERVER_PREMIUM;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PREMIUM;
+      break;
+    }
     case PRODUCT_STARTER:
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STARTER_EDITION;
@@ -2165,11 +2451,13 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_HOME_PREMIUM;
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_N;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PREMIUM;
       break;
     }
     case PRODUCT_HOME_PREMIUM:
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_HOME_PREMIUM;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PREMIUM;
       break;
     }
     case PRODUCT_BUSINESS_N:
@@ -2188,10 +2476,23 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ENTERPRISE;
       break;
     }
+    case PRODUCT_ENTERPRISE_EVALUATION:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ENTERPRISE;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_EVALUATION;
+      break;
+    }
     case PRODUCT_ENTERPRISE_N:
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ENTERPRISE;
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_N;
+      break;
+    }
+    case PRODUCT_ENTERPRISE_N_EVALUATION:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ENTERPRISE;
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_N;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_EVALUATION;
       break;
     }
     case PRODUCT_ULTIMATE:
@@ -2227,6 +2528,13 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_DATACENTER;
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_HYPERV_TOOLS;
+      break;
+    }
+    case PRODUCT_DATACENTER_EVALUATION_SERVER:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_DATACENTER;
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_HYPERV_TOOLS;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_EVALUATION;
       break;
     }
     case PRODUCT_ENTERPRISE_SERVER_CORE:
@@ -2280,6 +2588,13 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STANDARD;
       break;
     }
+    case PRODUCT_STANDARD_EVALUATION_SERVER:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_HYPERV_TOOLS;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STANDARD;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_EVALUATION;
+      break;
+    }
     case PRODUCT_STANDARD_SERVER_V:
     {
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STANDARD;
@@ -2306,6 +2621,37 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_HOME_SERVER;
       break;
     }
+    case PRODUCT_ESSENTIALBUSINESS_SERVER_MGMT:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MANAGEMENT;
+      break;
+    }
+    case PRODUCT_SERVER_FOR_SB_SOLUTIONS:
+    case PRODUCT_SERVER_FOR_SB_SOLUTIONS_EM:
+    case PRODUCT_STANDARD_SERVER_SOLUTIONS:
+    case PRODUCT_STANDARD_SERVER_SOLUTIONS_CORE:
+    {
+      //Could find no documentation on what these values actually represent
+      break;
+    }
+    case PRODUCT_ESSENTIALBUSINESS_SERVER_MGMTSVC:
+    {
+      //Note really sure what "PRODUCT_ESSENTIALBUSINESS_SERVER_MGMTSVC", we just treat it as PRODUCT_ESSENTIALBUSINESS_SERVER_MGMT 
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MANAGEMENT;
+      break;
+    }
+    case PRODUCT_ESSENTIALBUSINESS_SERVER_ADDL:
+    {
+      //Note really sure what "PRODUCT_ESSENTIALBUSINESS_SERVER_ADDL", we just treat it as COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MESSAGING. It probably refers to the cancelled EBS R2 release
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MESSAGING;
+      break;
+    }
+    case PRODUCT_ESSENTIALBUSINESS_SERVER_ADDLSVC:
+    {
+      //Note really sure what "PRODUCT_ESSENTIALBUSINESS_SERVER_ADDLSVC", we just treat it as COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MESSAGING. It probably refers to the cancelled EBS R2 release
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MESSAGING;
+      break;
+    }
     case PRODUCT_MEDIUMBUSINESS_SERVER_MANAGEMENT:
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MANAGEMENT;
@@ -2321,9 +2667,15 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_ESSENTIAL_BUSINESS_SERVER_SECURITY;
       break;
     }
+    case PRODUCT_CLUSTER_SERVER_V:
+    {
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_CLUSTER_SERVER;
+      break;
+    }
     case PRODUCT_CLUSTER_SERVER:
     {
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_CLUSTER_SERVER;
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_HYPERV_TOOLS;
       break;
     }
     case PRODUCT_SMALLBUSINESS_SERVER:
@@ -2335,6 +2687,22 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_SMALLBUSINESS;
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_SMALLBUSINESS_PREMIUM;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PREMIUM;
+      break;
+    }
+    case PRODUCT_SMALLBUSINESS_SERVER_PREMIUM_CORE:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_SMALLBUSINESS;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_SMALLBUSINESS_PREMIUM;
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_SERVER_CORE;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PREMIUM;
+      break;
+    }
+    case PRODUCT_STORAGE_ENTERPRISE_SERVER_CORE:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STORAGE_SERVER;
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ENTERPRISE;
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_SERVER_CORE;
       break;
     }
     case PRODUCT_STORAGE_ENTERPRISE_SERVER:
@@ -2343,10 +2711,32 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ENTERPRISE;
       break;
     }
+    case PRODUCT_STORAGE_EXPRESS_SERVER_CORE:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STORAGE_SERVER;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STORAGE_EXPRESS_SERVER;
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_SERVER_CORE;
+      break;
+    }
     case PRODUCT_STORAGE_EXPRESS_SERVER:
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STORAGE_SERVER;
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STORAGE_EXPRESS_SERVER;
+      break;
+    }
+    case PRODUCT_STORAGE_STANDARD_SERVER_CORE:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STORAGE_SERVER;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STANDARD;
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_SERVER_CORE;
+      break;
+    }
+    case PRODUCT_STORAGE_STANDARD_EVALUATION_SERVER:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STORAGE_SERVER;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STANDARD;
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_SERVER_CORE;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_EVALUATION;
       break;
     }
     case PRODUCT_STORAGE_STANDARD_SERVER:
@@ -2355,10 +2745,24 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STANDARD;
       break;
     }
+    case PRODUCT_STORAGE_WORKGROUP_SERVER_CORE: 
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STORAGE_SERVER;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STORAGE_WORKGROUP_SERVER;
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_SERVER_CORE;
+      break;
+    }
     case PRODUCT_STORAGE_WORKGROUP_SERVER: 
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STORAGE_SERVER;
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STORAGE_WORKGROUP_SERVER;
+      break;
+    }
+    case PRODUCT_STORAGE_WORKGROUP_EVALUATION_SERVER:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STORAGE_SERVER;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STORAGE_WORKGROUP_SERVER;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_EVALUATION;
       break;
     }
     case PRODUCT_ENTERPRISE_E:
@@ -2377,6 +2781,7 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_HOME_PREMIUM;
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_E;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PREMIUM;
       break;
     }
     case PRODUCT_PROFESSIONAL:
@@ -2417,6 +2822,25 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_MULTIPOINT;
       break;
     }
+    case PRODUCT_MULTIPOINT_STANDARD_SERVER:
+    {
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_MULTIPOINT;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STANDARD;
+      break;
+    }
+    case PRODUCT_MULTIPOINT_PREMIUM_SERVER:
+    {
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_MULTIPOINT;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PREMIUM;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_MULTIPOINT_SERVER_PREMIUM;
+      break;
+    }
+    case PRODUCT_SOLUTION_EMBEDDEDSERVER_CORE:
+    {
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_MULTIPOINT;
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_SERVER_CORE;
+      break;
+    }
     case PRODUCT_STARTER_E:
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STARTER_EDITION;
@@ -2433,6 +2857,83 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
     {
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ULTIMATE;
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_E;
+      break;
+    }
+    case PRODUCT_PRERELEASE:
+    {
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PRERELEASE;
+      break;
+    }
+    case PRODUCT_PRERELEASE_N:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_N;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PRERELEASE;
+      break;
+    }
+    case PRODUCT_PRERELEASE_ARM:
+    {
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PRERELEASE;
+      break;
+    }
+    case PRODUCT_PROFESSIONAL_PLUS:
+    {
+      //Currently we assume that the "Windows 8 Professional Plus" SKU refers to the "Windows 8 Pro" SKU
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PROFESSIONAL;
+      break;
+    }
+    case PRODUCT_THINPC:
+    {
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_THINPC;
+      break;
+    }
+    case PRODUCT_EMBEDDED_AUTOMOTIVE:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_EMBEDDED;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_AUTOMOTIVE;
+      break;
+    }    
+    case PRODUCT_EMBEDDED: //deliberate fallthrough
+    case PRODUCT_EMBEDDED_A: //deliberate fallthrough
+    case PRODUCT_EMBEDDED_E: //deliberate fallthrough
+    case PRODUCT_EMBEDDED_INDUSTRY: //deliberate fallthrough
+    case PRODUCT_EMBEDDED_INDUSTRY_A: //deliberate fallthrough
+    case PRODUCT_EMBEDDED_INDUSTRY_E: //deliberate fallthrough
+    case PRODUCT_EMBEDDED_INDUSTRY_A_E: 
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_EMBEDDED;
+      break;
+    }
+    case PRODUCT_CORE_ARM: 
+    {
+    #ifndef UNDER_CE
+      lpVersionInformation->UnderlyingProcessorType = ARM_PROCESSOR;
+    #endif  
+      break;
+    }
+    case PRODUCT_CORE:
+    {
+      //Nothing really useful to add to the suite mask for this product type
+      break;
+    }
+    case PRODUCT_CORE_COUNTRYSPECIFIC:
+    {
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_CHINA;
+      break;
+    }
+    case PRODUCT_CORE_SINGLELANGUAGE:
+    {
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_SINGLE_LANGUAGE;
+      break;
+    }
+    case PRODUCT_CORE_N:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_N;
+      break;
+    }
+    case PRODUCT_PROFESSIONAL_WMC:
+    {
+      lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_MEDIACENTER;
+      lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_PROFESSIONAL;
       break;
     }
     default:
@@ -2691,7 +3192,7 @@ BOOL COSVersion::IsTerminalServicesInstalled(LPOS_VERSION_INFO lpVersionInformat
 
 BOOL COSVersion::IsEmbedded(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_EMBEDDEDNT) != 0);
+  return ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_EMBEDDED) != 0);
 }
 
 BOOL COSVersion::IsTerminalServicesInRemoteAdminMode(LPOS_VERSION_INFO lpVersionInformation)
@@ -2699,9 +3200,14 @@ BOOL COSVersion::IsTerminalServicesInRemoteAdminMode(LPOS_VERSION_INFO lpVersion
   return ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_REMOTEADMINMODE_TERMINAL) != 0);
 }
 
-BOOL COSVersion::ISSmallBusinessServerInstalled(LPOS_VERSION_INFO lpVersionInformation)
+BOOL COSVersion::IsSmallBusinessServerInstalled(LPOS_VERSION_INFO lpVersionInformation)
 {
   return ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_SMALLBUSINESS) != 0);
+}
+
+BOOL COSVersion::IsSmallBusinessServerPremiumInstalled(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_SMALLBUSINESS_PREMIUM) != 0);
 }
 
 BOOL COSVersion::IsNTEnterpriseServer(LPOS_VERSION_INFO lpVersionInformation)
@@ -2869,6 +3375,66 @@ BOOL COSVersion::IsDomainControllerWindowsServer2008R2(LPOS_VERSION_INFO lpVersi
   return IsWindows7OrWindowsServer2008R2(lpVersionInformation) && (lpVersionInformation->OSType == DomainController); //Note there is no need to check the COSVERSION_SUITE_R2EDITION flag here
 }
 
+BOOL COSVersion::IsWebWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8OrWindowsServer2012(lpVersionInformation) && ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_WEBEDITION) != 0);
+}
+
+BOOL COSVersion::IsWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8OrWindowsServer2012(lpVersionInformation) && (lpVersionInformation->OSType == Server);
+}
+
+BOOL COSVersion::IsEnterpriseWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8OrWindowsServer2012(lpVersionInformation) && ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_ENTERPRISE) != 0);
+}
+
+BOOL COSVersion::IsStandardWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8OrWindowsServer2012(lpVersionInformation) && ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_STANDARD) != 0);
+}
+
+BOOL COSVersion::IsDatacenterWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8OrWindowsServer2012(lpVersionInformation) && ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_DATACENTER) != 0);
+}
+
+BOOL COSVersion::IsDomainControllerWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8OrWindowsServer2012(lpVersionInformation) && (lpVersionInformation->OSType == DomainController);
+}
+
+BOOL COSVersion::IsWebWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8Point1OrWindowsServerBlue(lpVersionInformation) && ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_WEBEDITION) != 0);
+}
+
+BOOL COSVersion::IsWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8Point1OrWindowsServerBlue(lpVersionInformation) && (lpVersionInformation->OSType == Server);
+}
+
+BOOL COSVersion::IsEnterpriseWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8Point1OrWindowsServerBlue(lpVersionInformation) && ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_ENTERPRISE) != 0);
+}
+
+BOOL COSVersion::IsStandardWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8Point1OrWindowsServerBlue(lpVersionInformation) && ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_STANDARD) != 0);
+}
+
+BOOL COSVersion::IsDatacenterWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8Point1OrWindowsServerBlue(lpVersionInformation) && ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_DATACENTER) != 0);
+}
+
+BOOL COSVersion::IsDomainControllerWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return IsWindows8Point1OrWindowsServerBlue(lpVersionInformation) && (lpVersionInformation->OSType == DomainController);
+}
+
 BOOL COSVersion::IsMediaCenterInstalled(LPOS_VERSION_INFO lpVersionInformation)
 {
   return ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_MEDIACENTER) != 0);
@@ -2892,6 +3458,11 @@ BOOL COSVersion::IsComputeClusterServerEditionInstalled(LPOS_VERSION_INFO lpVers
 BOOL COSVersion::IsHomeServerEditionInstalled(LPOS_VERSION_INFO lpVersionInformation)
 {
   return ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_HOME_SERVER) != 0);
+}
+
+BOOL COSVersion::IsHomeServerPremiumEditionInstalled(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_HOME_SERVER_PREMIUM) != 0);
 }
 
 BOOL COSVersion::IsSecurityApplianceInstalled(LPOS_VERSION_INFO lpVersionInformation)
@@ -3014,11 +3585,6 @@ BOOL COSVersion::IsClusterServerInstalled(LPOS_VERSION_INFO lpVersionInformation
   return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_CLUSTER_SERVER) != 0);
 }
 
-BOOL COSVersion::ISSmallBusinessServerPremiumInstalled(LPOS_VERSION_INFO lpVersionInformation)
-{
-  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_SMALLBUSINESS_PREMIUM) != 0);
-}
-
 BOOL COSVersion::IsStorageServerInstalled(LPOS_VERSION_INFO lpVersionInformation)
 {
   return ((lpVersionInformation->dwSuiteMask & COSVERSION_SUITE_STORAGE_SERVER) != 0);
@@ -3031,7 +3597,7 @@ BOOL COSVersion::IsEnterpriseStorageServerInstalled(LPOS_VERSION_INFO lpVersionI
 
 BOOL COSVersion::IsExpressStorageServerInstalled(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return IsStorageServerInstalled(lpVersionInformation) && ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_STORAGE_EXPRESS_SERVER) != 0);
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_STORAGE_EXPRESS_SERVER) != 0);
 }
 
 BOOL COSVersion::IsStandardStorageServerInstalled(LPOS_VERSION_INFO lpVersionInformation)
@@ -3041,7 +3607,52 @@ BOOL COSVersion::IsStandardStorageServerInstalled(LPOS_VERSION_INFO lpVersionInf
 
 BOOL COSVersion::IsWorkgroupStorageServerInstalled(LPOS_VERSION_INFO lpVersionInformation)
 {
-  return IsStorageServerInstalled(lpVersionInformation) && ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_STORAGE_WORKGROUP_SERVER) != 0);
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_STORAGE_WORKGROUP_SERVER) != 0);
+}
+
+BOOL COSVersion::IsEssentialsStorageServerInstalled(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_STORAGE_SERVER_ESSENTIALS) != 0);
+}
+
+BOOL COSVersion::IsPreRelease(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_PRERELEASE) != 0);
+}
+
+BOOL COSVersion::IsEvaluation(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_EVALUATION) != 0);
+}
+
+BOOL COSVersion::IsMultipointServerPremiumEditionInstalled(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_MULTIPOINT_SERVER_PREMIUM) != 0);
+}
+
+BOOL COSVersion::IsPremium(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_PREMIUM) != 0);
+}
+
+BOOL COSVersion::IsThinPC(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_THINPC) != 0);
+}
+
+BOOL COSVersion::IsAutomotive(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_AUTOMOTIVE) != 0);
+}
+
+BOOL COSVersion::IsChina(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_CHINA) != 0);
+}
+
+BOOL COSVersion::IsSingleLanguage(LPOS_VERSION_INFO lpVersionInformation)
+{
+  return ((lpVersionInformation->dwSuiteMask2 & COSVERSION_SUITE2_SINGLE_LANGUAGE) != 0);
 }
 
 BOOL COSVersion::IsEmulated64Bit(LPOS_VERSION_INFO /*lpVersionInformation*/)

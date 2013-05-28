@@ -237,6 +237,8 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 						csName += _T(" Home Premium Edition");                  
 					else if (os.IsBusinessInstalled(&osvi))
 						csName += _T(" Business Edition");                  
+					else if (os.IsProfessionalInstalled(&osvi))
+						csName += _T(" Professional Edition");                  
 					else if (os.IsEnterpriseInstalled(&osvi))
 						csName += _T(" Enterprise Edition");                  
 					else if (os.IsUltimateInstalled(&osvi))
@@ -266,6 +268,8 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 						csName += _T(" Home Premium Edition");                  
 					else if (os.IsBusinessInstalled(&osvi))
 						csName += _T(" Business Edition");                  
+					else if (os.IsProfessionalInstalled(&osvi))
+						csName += _T(" Professional Edition");                  
 					else if (os.IsEnterpriseInstalled(&osvi))
 						csName += _T(" Enterprise Edition");                  
 					else if (os.IsUltimateInstalled(&osvi))
@@ -285,10 +289,72 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 					else if (os.IsStandardWindowsServer2008R2(&osvi))
 						csName += _T(" Standard Edition");
 				}
+				else if (os.IsWindows8(&osvi))
+				{
+					csName = _T("Microsoft Windows 8");
+
+					if (os.IsHomeBasicInstalled(&osvi))
+						csName += _T(" Home Basic Edition");                  
+					else if (os.IsHomeBasicPremium(&osvi))
+						csName += _T(" Home Premium Edition");                  
+					else if (os.IsBusinessInstalled(&osvi))
+						csName += _T(" Business Edition");                  
+					else if (os.IsProfessionalInstalled(&osvi))
+						csName += _T(" Professional Edition");                  
+					else if (os.IsEnterpriseInstalled(&osvi))
+						csName += _T(" Enterprise Edition");                  
+					else if (os.IsUltimateInstalled(&osvi))
+						csName += _T(" Ultimate Edition");                  
+					csComment = osvi.szUnderlyingCSDVersion;
+				}
+				else if (os.IsWindowsServer2012(&osvi))
+				{
+					csName = _T("Microsoft Windows Server 2012");
+
+					if (os.IsDatacenterWindowsServer2012(&osvi))
+						csName += _T(" Datacenter Edition");
+					else if (os.IsEnterpriseWindowsServer2012(&osvi))
+						csName += _T(" Enterprise Edition");
+					else if (os.IsWebWindowsServer2012(&osvi))
+						csName += _T(" Web Edition");
+					else if (os.IsStandardWindowsServer2012(&osvi))
+						csName += _T(" Standard Edition");
+				}
+				else if (os.IsWindows8Point1(&osvi))
+				{
+					csName = _T("Microsoft Windows Blue");
+
+					if (os.IsHomeBasicInstalled(&osvi))
+						csName += _T(" Home Basic Edition");                  
+					else if (os.IsHomeBasicPremium(&osvi))
+						csName += _T(" Home Premium Edition");                  
+					else if (os.IsBusinessInstalled(&osvi))
+						csName += _T(" Business Edition");                  
+					else if (os.IsProfessionalInstalled(&osvi))
+						csName += _T(" Professional Edition");                  
+					else if (os.IsEnterpriseInstalled(&osvi))
+						csName += _T(" Enterprise Edition");                  
+					else if (os.IsUltimateInstalled(&osvi))
+						csName += _T(" Ultimate Edition");                  
+					csComment = osvi.szUnderlyingCSDVersion;
+				}
+				else if (os.IsWebWindowsServerBlue(&osvi))
+				{
+					csName = _T("Microsoft Windows Server Blue");
+
+					if (os.IsDatacenterWindowsServer2012(&osvi))
+						csName += _T(" Datacenter Edition");
+					else if (os.IsEnterpriseWindowsServer2012(&osvi))
+						csName += _T(" Enterprise Edition");
+					else if (os.IsWebWindowsServer2012(&osvi))
+						csName += _T(" Web Edition");
+					else if (os.IsStandardWindowsServer2012(&osvi))
+						csName += _T(" Standard Edition");
+				}
 /*				if (os.IsEmulated64Bit(&osvi))
 					csComment += _T(" (64 Bits)");
-				break;
-*/			}
+*/				break;
+			}
 			default:                         
 			{
 				csName = _T("Unknown OS");

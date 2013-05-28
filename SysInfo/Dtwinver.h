@@ -3,7 +3,7 @@ Module : DTWINVER.H
 Purpose: Declaration of a comprehensive class to perform OS version detection
 Created: PJN / 11-05-1996
 
-Copyright (c) 1997 - 2010 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
+Copyright (c) 1997 - 2013 by PJ Naughter (Web: www.naughter.com, Email: pjna@naughter.com)
 
 All rights reserved.
 
@@ -31,7 +31,7 @@ to maintain a single distribution point for the source code.
 #define COSVERSION_SUITE_DATACENTER                           0x00000020
 #define COSVERSION_SUITE_PERSONAL                             0x00000040
 #define COSVERSION_SUITE_WEBEDITION                           0x00000080
-#define COSVERSION_SUITE_EMBEDDEDNT                           0x00000100
+#define COSVERSION_SUITE_EMBEDDED                             0x00000100
 #define COSVERSION_SUITE_REMOTEADMINMODE_TERMINAL             0x00000200
 #define COSVERSION_SUITE_UNIPROCESSOR_FREE                    0x00000400
 #define COSVERSION_SUITE_UNIPROCESSOR_CHECKED                 0x00000800
@@ -67,6 +67,16 @@ to maintain a single distribution point for the source code.
 #define COSVERSION_SUITE2_FOUNDATION                          0x00000100
 #define COSVERSION_SUITE2_MULTIPOINT                          0x00000200
 #define COSVERSION_SUITE2_HYPERV_SERVER                       0x00000400
+#define COSVERSION_SUITE2_HOME_SERVER_PREMIUM                 0x00000800
+#define COSVERSION_SUITE2_STORAGE_SERVER_ESSENTIALS           0x00001000
+#define COSVERSION_SUITE2_PRERELEASE                          0x00002000
+#define COSVERSION_SUITE2_EVALUATION                          0x00004000
+#define COSVERSION_SUITE2_PREMIUM                             0x00008000
+#define COSVERSION_SUITE2_MULTIPOINT_SERVER_PREMIUM           0x00010000
+#define COSVERSION_SUITE2_THINPC                              0x00020000
+#define COSVERSION_SUITE2_AUTOMOTIVE                          0x00040000
+#define COSVERSION_SUITE2_CHINA                               0x00080000
+#define COSVERSION_SUITE2_SINGLE_LANGUAGE                     0x00100000
 
 
 ////////////////////////////////// Classes ////////////////////////////////////
@@ -182,6 +192,8 @@ public:
   BOOL IsWindowsXPOrWindowsServer2003(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindowsVistaOrWindowsServer2008(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindows7OrWindowsServer2008R2(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindows8OrWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindows8Point1OrWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation);
 
 //Returns the various flavours of the "os" that is installed. Note that these
 //functions are not completely mutually exlusive
@@ -204,9 +216,10 @@ public:
   BOOL IsWindowsXP(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindowsXPPersonal(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindowsXPProfessional(LPOS_VERSION_INFO lpVersionInformation);
-
-  BOOL IsWindows7(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindowsVista(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindows7(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindows8(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindows8Point1(LPOS_VERSION_INFO lpVersionInformation);
 
   BOOL IsWebWindowsServer2003(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWindowsServer2003(LPOS_VERSION_INFO lpVersionInformation);
@@ -229,6 +242,20 @@ public:
   BOOL IsDatacenterWindowsServer2008R2(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsDomainControllerWindowsServer2008R2(LPOS_VERSION_INFO lpVersionInformation);
 
+  BOOL IsWebWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsStandardWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsEnterpriseWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsDatacenterWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsDomainControllerWindowsServer2012(LPOS_VERSION_INFO lpVersionInformation);
+
+  BOOL IsWebWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsStandardWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsEnterpriseWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsDatacenterWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsDomainControllerWindowsServerBlue(LPOS_VERSION_INFO lpVersionInformation);
+  
   BOOL IsHomeBasicInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsHomeBasicPremium(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsBusinessInstalled(LPOS_VERSION_INFO lpVersionInformation);
@@ -245,7 +272,8 @@ public:
   BOOL IsDomainControllerWindowsServer2008(LPOS_VERSION_INFO lpVersionInformation);
 
   BOOL IsTerminalServicesInstalled(LPOS_VERSION_INFO lpVersionInformation);
-  BOOL ISSmallBusinessServerInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsSmallBusinessServerInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsSmallBusinessServerPremiumInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsEmulated64Bit(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsUnderlying64Bit(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsEmbedded(LPOS_VERSION_INFO lpVersionInformation);
@@ -255,6 +283,7 @@ public:
   BOOL IsStarterEditionInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsComputeClusterServerEditionInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsHomeServerEditionInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsHomeServerPremiumEditionInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsSecurityApplianceInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsBackOfficeInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsNEditionInstalled(LPOS_VERSION_INFO lpVersionInformation);
@@ -272,12 +301,23 @@ public:
   BOOL IsEssentialBusinessServerMessaging(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsEssentialBusinessServerSecurity(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsClusterServerInstalled(LPOS_VERSION_INFO lpVersionInformation);
-  BOOL ISSmallBusinessServerPremiumInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsStorageServerInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsEnterpriseStorageServerInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsExpressStorageServerInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsStandardStorageServerInstalled(LPOS_VERSION_INFO lpVersionInformation);
   BOOL IsWorkgroupStorageServerInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsEssentialsStorageServerInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsPreRelease(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsEvaluation(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindowsRT(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindowsCENET(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsPremium(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsWindowsEmbeddedCompact(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsMultipointServerPremiumEditionInstalled(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsThinPC(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsAutomotive(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsChina(LPOS_VERSION_INFO lpVersionInformation);
+  BOOL IsSingleLanguage(LPOS_VERSION_INFO lpVersionInformation);
 
 protected:
 //Defines / typedefs
