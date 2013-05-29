@@ -2029,7 +2029,7 @@ BOOL CWmi::GetMemorySlots(CMemorySlotList *pMyList)
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Speed"));
 				myObject.SetSpeed( csBuffer);
 				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "MemoryType"));
-				myObject.SetType( dwValue);
+				myObject.SetType( GetMemorySlotType( dwValue));
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "SerialNumber"));
 /*				// If S/N is empty, get Part number
 				if (csBuffer.IsEmpty())
@@ -2113,6 +2113,37 @@ BOOL CWmi::GetMemorySlots(CMemorySlotList *pMyList)
 		pEx->Delete();
 		AddLog( _T( "Failed because unknown exception !\n"));
 		return FALSE;
+	}
+}
+
+LPCTSTR CWmi::GetMemorySlotType( DWORD dwType)
+{
+	switch (dwType)
+	{
+	case 0:	return _T( "Unknown");
+	case 1: return _T( "Other");
+	case 2: return _T( "DRAM");
+	case 3: return _T( "Synchronous DRAM");
+	case 4: return _T( "Cache DRAM");
+	case 5: return _T( "EDO");
+	case 6: return _T( "EDRAM");
+	case 7: return _T( "VRAM");
+	case 8: return _T( "SRAM");
+	case 9: return _T( "RAM");
+	case 10: return _T( "ROM");
+	case 11: return _T( "Flash");
+	case 12: return _T( "EEPROM");
+	case 13: return _T( "FEPROM");
+	case 14: return _T( "EPROM");
+	case 15: return _T( "CDRAM");
+	case 16: return _T( "3DRAM");
+	case 17: return _T( "SDRAM");
+	case 18: return _T( "SGRAM");
+	case 19: return _T( "RDRAM");
+	case 20: return _T( "DDR");
+	case 21: return _T( "DDR-2");
+	default:
+		return NOT_AVAILABLE;
 	}
 }
 

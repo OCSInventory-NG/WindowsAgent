@@ -77,6 +77,8 @@ protected: // Methods
 	LPCTSTR GetArchitecture( DWORD dwArch);
 	LPCTSTR GetVoltage( DWORD dwVolts);
 	LPCTSTR GetCpuStatus( DWORD dwStatus);
+	// Return WMI type of memory, because not the same as DMI
+	LPCTSTR GetMemorySlotType( DWORD dwType);
 
 protected: // Attributes
 	COcsWmi m_dllWMI;	// Class to access WMI
