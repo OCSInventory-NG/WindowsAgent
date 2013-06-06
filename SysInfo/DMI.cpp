@@ -352,8 +352,10 @@ int CDMI::GetTableLength( int nPosition)
 
 	// Ensure this is a valid table type
 	dmi = (DmiHeader*) &m_pTables[ nPosition];
+/*  There is now DMI table type greater than 127, so remove type lower and upper bound check
 	if ((dmi->Type < 0) || (dmi->Type > 127))
 		return 0; // error
+*/	
 	// Fixed table size is in DMI header, but we need to find variable table size
 	// where strings are stored (ending with 2 '\0' characters)
 	nLength = dmi->Length;
