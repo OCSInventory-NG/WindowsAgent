@@ -871,6 +871,14 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			res = myWmiDll.GetClassObjectStringValue( _T( "CpuStatus"));
 			str += res;
 			m_List.AddString( str);
+			str = _T( "ProcessorId = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "ProcessorId"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "UniqueId = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "UniqueId"));
+			str += res;
+			m_List.AddString( str);
 			m_List.AddString( _T( ""));
 		}
 		myWmiDll.CloseEnumClassObject();
