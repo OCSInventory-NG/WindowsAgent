@@ -248,7 +248,7 @@ BOOL CCapDownload::writeConfig()
 	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "PeriodLatency"), m_csDownloadPeriodLatency, csFileName);
 	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "PeriodLength"), m_csDownloadPeriodLength, csFileName);
 	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "Timeout"), m_csDownloadTimeout, csFileName);
-	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "CommandTimeout"), COMMAND_TIMEOUT_DEFAULT, csFileName);
+	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "CommandTimeout"), m_csCommandTimeout, csFileName);
 	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "On"), m_csDownloadOn, csFileName);
 	return bResult;
 }
