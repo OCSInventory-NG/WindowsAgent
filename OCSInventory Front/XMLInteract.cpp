@@ -108,6 +108,7 @@ BOOL CXMLInteract::UpdateCPUs( CCpuList &myCpuList)
 				m_pXml->AddChildElem( _T( "VOLTAGE"), cObject.GetVoltage());
 				m_pXml->AddChildElem( _T( "CURRENT_SPEED"), cObject.GetCurrentClockSpeed());
 				m_pXml->AddChildElem( _T( "CPUSTATUS"), cObject.GetStatus());
+				m_pXml->AddChildElem( _T( "SERIALNUMBER"), cObject.GetStatus());
 			m_pXml->OutOfElem();		
 			if (pos != NULL)
 				cObject = myCpuList.GetNext( pos);

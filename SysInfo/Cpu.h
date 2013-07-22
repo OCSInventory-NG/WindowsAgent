@@ -48,6 +48,7 @@ public: // Methods
 	UINT GetDataWidth();		
 	LPCTSTR GetVoltage();		
 	LPCTSTR GetStatus();		
+	LPCTSTR GetSN();		
 
 	//////////////////////////////////
 	// Set attributes values
@@ -66,6 +67,7 @@ public: // Methods
 	void SetDataWidth( UINT uDataWidth);		
 	void SetVoltage( LPCTSTR lpstrVoltage);		
 	void SetStatus( LPCTSTR lpstrSatus);				
+	void SetSN( LPCTSTR lpstrSN);				
 
 	//////////////////////////////////
 	// Comparison operators
@@ -90,6 +92,7 @@ protected: // Attributes
 	UINT m_uDataWidth;				// Processor data width, in bits
 	CString m_csVoltage;			// Voltage capabilities of the processor (5, 3.3 or 2.9 volts)
 	CString m_csStatus;				// CPU status (Enabled, disabled...)
+	CString m_csSN;					// CPU serial number
 };
 #endif // !defined(AFX_CPU_H__13BBD121_3DC4_4C39_8023_2409A47F8704__INCLUDED_)
 

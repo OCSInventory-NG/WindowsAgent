@@ -100,6 +100,11 @@ LPCTSTR CCpu::GetStatus()
 	return m_csStatus;
 }
 
+LPCTSTR CCpu::GetSN()
+{
+	return m_csSN;
+}
+
 void CCpu::SetSocket( LPCTSTR lpstrSocket)
 {
 	m_csSocket = lpstrSocket;
@@ -171,6 +176,12 @@ void CCpu::SetStatus( LPCTSTR lpstrSatus)
 	StrForSQL( m_csStatus);
 }
 
+void CCpu::SetSN( LPCTSTR lpstrSN)
+{
+	m_csSN = lpstrSN;
+	StrForSQL( m_csSN);
+}
+
 void CCpu::Clear()
 {
 	m_csSocket.Empty();
@@ -186,6 +197,7 @@ void CCpu::Clear()
 	m_uDataWidth = 0;
 	m_csVoltage.Empty();
 	m_csStatus.Empty();
+	m_csSN.Empty();
 }
 
 int CCpu::operator==(CCpu cObject) const
@@ -202,5 +214,6 @@ int CCpu::operator==(CCpu cObject) const
 		(m_uAddressWidth == cObject.GetAddressWidth()) &&
 		(m_uDataWidth == cObject.GetDataWidth()) &&
 		(m_csVoltage == cObject.GetVoltage()) &&
-		(m_csStatus == cObject.GetStatus()));
+		(m_csStatus == cObject.GetStatus()) &&
+		(m_csSN == cObject.GetSN()));
 }

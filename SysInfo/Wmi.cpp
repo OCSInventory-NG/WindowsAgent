@@ -1530,6 +1530,13 @@ DWORD CWmi::GetCPU( CCpuList *pMyList, CRegistry *pReg)
 				myObject.SetVoltage( GetVoltage( dwValue));
 				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "CpuStatus"));
 				myObject.SetStatus( GetCpuStatus( dwValue));
+				csValue = m_dllWMI.GetClassObjectStringValue( _T( "ProcessorId"));
+				if (csValue.IsEmpty())
+				{
+					// Try UniqueId instead of ProcessorId
+					csValue = m_dllWMI.GetClassObjectStringValue( _T( "UniqueId"));
+				}
+				myObject.SetSN( csValue);
 				// Device is OK
 				pMyList->AddTail( myObject);
 				dwNumber ++;

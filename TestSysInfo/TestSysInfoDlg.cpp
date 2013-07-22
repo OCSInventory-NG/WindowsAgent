@@ -2499,6 +2499,8 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		SysInfoLog( str);
 		str.Format( _T( "Status: %s"), myCpu.GetStatus());
 		SysInfoLog( str);
+		str.Format( _T( "Serial Number: %s"), myCpu.GetSN());
+		SysInfoLog( str);
 		if (pos != NULL)
 		{
 			myCpu = m_CpuList.GetNext( pos);
