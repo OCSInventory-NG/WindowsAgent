@@ -803,10 +803,10 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 			setDone( ERR_UNZIP);
 			return FALSE;
 		}
-		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Launching command <%s> for package <%s>"), m_csCommand, m_csID);
+		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Launching command <%s> for package <%s> on <%s>"), m_csCommand, m_csID, CTime::GetCurrentTime().Format( _T( "%#c")));
 		if (m_csCommand.IsEmpty())
 		{
-			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => No command provided for <%s> action of package <%s>"), OCS_DOWNLOAD_ACTION_STORE, m_csID);
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => No command provided for <%s> action of package <%s>"), OCS_DOWNLOAD_ACTION_LAUNCH, m_csID);
 			setDone( ERR_BAD_PARAM);
 			return FALSE;
 		}
@@ -824,7 +824,7 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 			csBuffer = ERR_EXECUTE_NO_EXIT_CODE;
 			break;
 		case EXEC_ERROR_TIMEOUT_COMMAND:
-			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Command <%s> execution reached timeout (%s)"), m_csCommand, cmProcess.getOutput());
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Command <%s> execution reached timeout on <%s> (%s)"), m_csCommand, CTime::GetCurrentTime().Format( _T( "%#c")), cmProcess.getOutput());
 			csBuffer = ERR_EXECUTE_TIMEOUT;
 			break;
 		default:
@@ -849,10 +849,10 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 			setDone( ERR_UNZIP);
 			return FALSE;
 		}
-		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Executing command <%s> for package <%s>"), m_csCommand, m_csID);
+		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Executing command <%s> for package <%s> on <%s>"), m_csCommand, m_csID, CTime::GetCurrentTime().Format( _T( "%#c")));
 		if (m_csCommand.IsEmpty())
 		{
-			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => No command provided for <%s> action of package <%s>"), OCS_DOWNLOAD_ACTION_STORE, m_csID);
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => No command provided for <%s> action of package <%s>"), OCS_DOWNLOAD_ACTION_EXECUTE, m_csID);
 			setDone( ERR_BAD_PARAM);
 			return FALSE;
 		}
@@ -870,7 +870,7 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 			csBuffer = ERR_EXECUTE_NO_EXIT_CODE;
 			break;
 		case EXEC_ERROR_TIMEOUT_COMMAND:
-			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Command <%s> execution reached timeout (%s)"), m_csCommand, cmProcess.getOutput());
+			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Command <%s> execution reached timeout on <%s> (%s)"), m_csCommand, CTime::GetCurrentTime().Format( _T( "%#c")), cmProcess.getOutput());
 			csBuffer = ERR_EXECUTE_TIMEOUT;
 			break;
 		default:
@@ -888,6 +888,7 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 	if (m_csAction == OCS_DOWNLOAD_ACTION_STORE)
 	{
 		// We just want to unzip data to specified folder
+		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Unzipping data to folder <%s> for package <%s> on <%s>"), m_csPath, m_csID, CTime::GetCurrentTime().Format( _T( "%#c")));
 		if (m_csPath.IsEmpty())
 		{
 			pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => No path provided for <%s> action of package <%s>"), OCS_DOWNLOAD_ACTION_STORE, m_csID);
