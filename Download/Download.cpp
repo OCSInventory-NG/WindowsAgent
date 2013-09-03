@@ -664,18 +664,18 @@ BOOL CDownloadApp::executePackage( CPackage *pPack)
 	if (pPack->isDoneNotifyUserRequired())
 	{
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Notifying user for package <%s> action end"), pPack->getID());
-		switch (cDlg.ShowPostInstall( pPack->getNotifyText()))
+		switch (cDlg.ShowPostInstall( pPack->getDoneNotifyText()))
 		{
 		case OCS_NOTIFY_APP_OK:
 			// Ok, install
 			break;
 		case OCS_NOTIFY_APP_CANCEL:
 			// Canceled by user
-			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Reboot for package <%s> cancelled by user"), pPack->getID());
+			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => End Action for package <%s> cancelled by user"), pPack->getID());
 			return TRUE;
 		case OCS_NOTIFY_APP_DELAY:
 			// Package delayed
-			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Reboot for package <%s> delayed by user"), pPack->getID());
+			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => End Action for package <%s> delayed by user"), pPack->getID());
 			return TRUE;
 		default:
 			m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Error notifying user for package <%s> end action"), 
