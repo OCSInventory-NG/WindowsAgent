@@ -640,14 +640,14 @@ Function StopService
 	StrCpy $logBuffer "Is Service <$9> running..."
 	Call Write_Log
 	services::IsServiceRunning "$9"
-	pop $0
+	Pop $0
 	StrCpy $logBuffer "$0.$\r$\n"
 	Call Write_Log
 	; Stop service
 	StrCpy $logBuffer "Trying to stop Service <$9>..."
 	Call Write_Log
 	services::SendServiceCommand "stop" "$9" ; This command dies silently on Win9x
-	pop $0
+	Pop $0
 	StrCpy $logBuffer "$0$\r$\n"
 	Call Write_Log
 	strcpy $1 0
@@ -658,7 +658,7 @@ stop_service_loop:
 	StrCpy $logBuffer "Is Service <$9> running..."
 	Call Write_Log
 	services::IsServiceRunning "$9"
-	pop $0
+	Pop $0
 	StrCpy $logBuffer "$0 - Waiting 1 second(s) for Service to stop...$\r$\n"
 	Call Write_Log
 	strcmp $0 "YES" stop_service_loop stop_service_end_loop
@@ -724,14 +724,14 @@ Function un.StopService
 	StrCpy $logBuffer "Is ${PRODUCT_SERVICE_NAME} running..."
 	Call un.Write_Log
 	services::IsServiceRunning "${PRODUCT_SERVICE_NAME}"
-	pop $0
+	Pop $0
 	StrCpy $logBuffer "$0.$\r$\n"
 	Call un.Write_Log
 	; Stop service
 	StrCpy $logBuffer "Trying to stop ${PRODUCT_SERVICE_NAME}..."
 	Call un.Write_Log
 	services::SendServiceCommand "stop" "${PRODUCT_SERVICE_NAME}" ; This command dies silently on Win9x
-	pop $0
+	Pop $0
 	StrCpy $logBuffer "$0$\r$\n"
 	Call un.Write_Log
 	strcpy $1 0
@@ -742,7 +742,7 @@ un.stop_service_loop:
 	StrCpy $logBuffer "Is ${PRODUCT_SERVICE_NAME} running..."
 	Call un.Write_Log
 	services::IsServiceRunning "${PRODUCT_SERVICE_NAME}"
-	pop $0
+	Pop $0
 	StrCpy $logBuffer "$0 - waiting 1 second(s) for service to stop...$\r$\n"
 	Call un.Write_Log
 	strcmp $0 "YES" un.stop_service_loop un.stop_service_end_loop
@@ -1056,7 +1056,7 @@ WriteServiceIni_Skip_TAG:
     StrCpy $logBuffer "Writing agent configuration file by launching ocsinventory.exe /SAVE_CONF..."
     Call Write_Log
     nsExec::ExecToLog '"$INSTDIR\ocsinventory.exe" /SAVE_CONF $R2'
-    pop $0
+    Pop $0
     StrCpy $logBuffer "Result: $0$\r$\n"
     Call Write_Log
 	Sleep 1000
@@ -1347,14 +1347,14 @@ Section "!Working data folder" SEC01
     StrCpy $logBuffer "SetACL allowing Users / Power users read/write permissions on <$APPDATA\OCS Inventory NG\Agent>..."
     Call Write_Log
     nsExec::ExecToLog 'SetACL -on "$APPDATA\OCS Inventory NG\Agent" -ot file -actn ace -ace "n:S-1-5-32-545;p:read_ex,change;s:y;m:set" -ace "n:S-1-5-32-547;p:read_ex,change;s:y;m:set" -actn clear -clr "dacl,sacl" -actn rstchldrn -rst "dacl,sacl"'
-    pop $0
+    Pop $0
     StrCpy $logBuffer "Result: $0$\r$\n"
     Call Write_Log
     ; Propagate inherited permissions to Download directory
     StrCpy $logBuffer "SetACL propagating inherited permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
     Call Write_Log
     nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -actn setprot -op "dacl:np;sacl:np" -actn clear -clr "dacl,sacl" -actn rstchldrn -rst "dacl,sacl"'
-    pop $0
+    Pop $0
     StrCpy $logBuffer "Result: $0$\r$\n"
     Call Write_Log
 SectionEnd
@@ -1382,6 +1382,7 @@ Section "Upgrade from 1.X Agent" SEC02
 	StrCpy $logBuffer "Unregistering old service from Windows Service Manager...$\r$\n"
 	Call Write_Log
 	ExecWait "$INSTDIR\ocsservice.exe -uninstall" $R0
+	Sleep 1000
     ; Copy ocsinventory.dat file to new folder, continue on error
     SetShellVarContext All
 	StrCpy $logBuffer "Copying ocsinventory.dat file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
@@ -1459,14 +1460,20 @@ UpgradeEndCacert:
     IfErrors 0 +3
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
-	; Uninstall old service
-	StrCpy $logBuffer "$\r$\nUnregistering service from Windows Service Manager...$\r$\n"
+	; Uninstall old service if needed
+	StrCpy $logBuffer "$\r$\n"
+	Call Write_Log
+    services::IsServiceInstalled "OCS INVENTORY"
+    Pop $0
+    StrCmp $0 "Yes" UpgradeSkipUnregister
+	StrCpy $logBuffer "Old service still registered, unregistering service from Windows Service Manager...$\r$\n"
 	Call Write_Log
     nsExec::ExecToLog '"$INSTDIR\OcsService.exe" -uninstall'
-    pop $0
+    Pop $0
     StrCpy $logBuffer "Service unregister ended with exit code $0$\r$\n"
     Call Write_Log
 	Sleep 1000
+UpgradeSkipUnregister:
     ; Remove old data files
 	StrCpy $logBuffer "Removing old data files from <$INSTDIR>..."
 	Call Write_Log
