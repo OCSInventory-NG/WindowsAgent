@@ -368,6 +368,8 @@ LPCSTR CEdid::GetManufacturerName(LPCSTR lpstrID)
 		return "Polaroid";
 	else if (_strnicmp( lpstrID, "PRT", 3) == 0)
 		return "Princeton";
+	else if (_strnicmp( lpstrID, "PTS", 3) == 0)
+		return "ProView/EMC/PTS Yakumo";
 	else if (_strnicmp( lpstrID, "REL", 3) == 0)
 		return "Relisys";
 	else if (_strnicmp( lpstrID, "SAM", 3) == 0)
