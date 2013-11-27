@@ -703,6 +703,13 @@ Section "-Do the job"
         goto Job_AgentInstall
     ${EndIf}
     ; Compare version
+    ${VersionCompare} "$R0" "0.0.0.0" $R1
+    ${If} $R1 = 0
+        ; No installed version
+        StrCpy $logBuffer "OCS Inventory NG Agent does not seems to be installed, setup version $strVersion_To_Setup required..$\r$\n"
+        Call Write_Log
+        goto Job_AgentInstall
+    ${EndIf}
     ${VersionCompare} "$R0" "$strVersion_To_Setup" $R1
     ${If} $R1 = 0
         ; Version equal
