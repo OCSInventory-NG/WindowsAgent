@@ -301,27 +301,19 @@ BOOL OCSINVENTORYFRONT_API WriteTextToFile( LPCTSTR lpstrText, LPCTSTR lpstrFile
 	return TRUE;
 }
 
-BOOL OCSINVENTORYFRONT_API WriteTextToUTF8File( LPCTSTR lpstrText, LPCTSTR lpstrFilename)
+BOOL OCSINVENTORYFRONT_API WriteTextToUTF8File( LPCSTR lpstrText, LPCTSTR lpstrFilename)
 {
 	FILE *pFile = NULL;
 
-	try
+	// Open the file for writing with UTF-8 encoding
+	if (_tfopen_s( &pFile, lpstrFilename, _T( "wt,ccs=UTF-8")) != 0)
+		return FALSE;
+	if (fwrite( lpstrText, strlen( lpstrText), 1, pFile) != 1)
 	{
-		// Open the file for writing with UTF-8 encoding
-		if (_tfopen_s( &pFile, lpstrFilename, _T( "wt,ccs=UTF-8")) != 0)
-			return FALSE;
-		CStdioFile	cFile( pFile);
-		cFile.WriteString( lpstrText);
-		cFile.Close();
-	}
-	catch( CException *pEx)
-	{
-		// Exception=> free exception, but continue
-		pEx->Delete();
-		if (pFile != NULL)
-			fclose( pFile);
+		fclose( pFile);
 		return FALSE;
 	}
+	fclose( pFile);
 	return TRUE;
 }
 
