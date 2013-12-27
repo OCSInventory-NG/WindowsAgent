@@ -54,8 +54,8 @@ BOOL OCSINVENTORYFRONT_API LoadFileToText( CString &csBuffer, LPCTSTR lpstrFilen
 // Write text buffer into file using default OS charset
 BOOL OCSINVENTORYFRONT_API WriteTextToFile( LPCTSTR lpstrText, LPCTSTR lpstrFilename);
 
-// Write ANSI UTF-8 encoded text buffer into UTF-8 encoded file
-BOOL OCSINVENTORYFRONT_API WriteTextToUTF8File( LPCSTR lpstrText, LPCTSTR lpstrFilename);
+// Write text buffer into UTF-8 encoded file
+BOOL OCSINVENTORYFRONT_API WriteTextToUTF8File( LPCTSTR lpstrText, LPCTSTR lpstrFilename);
 
 // Write content into file
 BOOL OCSINVENTORYFRONT_API WriteVoidToFile( LPCVOID lpVoid, UINT uLength, LPCTSTR lpstrFilename);
