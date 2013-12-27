@@ -31,6 +31,9 @@ protected:
 	// Execute VBS scripts find into plugins directory if bScript = TRUE
 	// Execute executable files find into plugins directory if bScript = FALSE
 	BOOL execute( BOOL bScript, LPCTSTR lpstrPath = NULL);
+
+	// Encode file to UTF-8
+	BOOL encodeFileToUTF8( LPCTSTR lpstrFile);
 };
 
 #endif // _CAPSCRIPT_H_INCLUDED_

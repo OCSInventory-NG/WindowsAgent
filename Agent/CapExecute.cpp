@@ -111,9 +111,21 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 			if (!myXml.LoadFile( csOutputFile))
 			{
 				// Not XML well formed, or not UTF-8 encoded
-				m_pLogger->log( LOG_PRIORITY_ERROR, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output is not an XML document"), cFinder.GetFilePath());
-				// Do not delete plugin output, to allow diagnostic
-				continue;
+				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output is not UTF-8 encoded or an XML document, trying to UTF-8 encode"), cFinder.GetFilePath());
+				if (!encodeFileToUTF8( csOutputFile))
+				{
+					m_pLogger->log( LOG_PRIORITY_ERROR, _T( "EXECUTABLE PLUGIN => Failed to UTF-8 encode executable plugin <%s> output"), cFinder.GetFilePath());
+					// Do not delete plugin output, to allow diagnostic
+					continue;
+				}
+				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output encoded to UTF-8, trying to reload XML document"), cFinder.GetFilePath());
+				// UTF-8 encode successfull, try to reload
+				if (!myXml.LoadFile( csOutputFile))
+				{
+					m_pLogger->log( LOG_PRIORITY_ERROR, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output is not a valid XML document"), cFinder.GetFilePath());
+					// Do not delete plugin output, to allow diagnostic
+					continue;
+				}
 			}
 			// Copy XML content to inventory, node <content>
 			if (! m_pInventory->getXmlPointerContent()->AddXml( &myXml))
@@ -136,4 +148,13 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 		pEx->Delete();
 		return FALSE;
 	}
+}
+
+BOOL CCapExecute::encodeFileToUTF8( LPCTSTR lpstrFile)
+{
+	CString csText;
+
+	if (!LoadFileToText( csText, lpstrFile))
+		return FALSE;
+	return WriteTextToUTF8File( csText, lpstrFile);
 }
