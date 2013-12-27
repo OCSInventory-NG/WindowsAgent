@@ -217,6 +217,8 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		for (UINT uChar=0; (uChar < pIfEntry->dwDescrLen) && (uChar<MAXLEN_IFDESCR); uChar++)
 			pDescription[uChar] = pIfEntry->bDescr[uChar];
 		csAddress.Format( _T( "%S"), pDescription);
+		if (pIfEntry->dwDescrLen <= csAddress.GetLength())
+			csAddress.Truncate( pIfEntry->dwDescrLen);
 		cAdapter.SetDescription( csAddress);
 		// Get MAC Address 
 		csMAC.Format( _T("%02X:%02X:%02X:%02X:%02X:%02X"),
