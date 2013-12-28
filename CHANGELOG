@@ -1,3 +1,21 @@
+2.1.0.2
+  * Add detection of Smartcard readers as input devices
+  * Update XSL to display CPU table into systray applet "show computer informations"
+  * Fix bug #980740 : try to UTF-8 encode VBS output if XML loading fails, then try to reload XML
+  * Fix bug #820218: Truncate out of bound characters in adapter description
+  * Fix bug #1252671: Unhandled mismatch when OcsLogon.exe launcher looks for the installed OCS Agent through Active Directory GPO
+  * Add PTS EDID code
+  * Fix Bug #1217435: Packager tries to shutdown ocs service twice when upgrading from 1.X agent
+  * Fix bug displaying before installation user notification at the end of installation, instead of post installation notification text
+  * Add package command start date/time and timeout date/time to log
+  * Fix bug #1184426: Retreive processor Serial Number
+  * Fix bug disabling ability to control command execution timeout from server
+  * Try to retreive CPU S/N using WMI
+  * There is now DMI table type greater than 127, so remove type lower and upper bound check
+  * WMI meory bank type codes are not the same as DMI codes
+  * Add printer information (Print server name and share, resolution, comment, Is printer shared, Is printer on network)
+  * Update DtWinver to version 1.88 to support Windows Blue
+  * Fix bug ID #1178946: Get logged on user and domain from WMI first                              
 2.1.0.1
   * Update icons ans banners for new graphical identity
   * Add new EDID manufacturer codes
