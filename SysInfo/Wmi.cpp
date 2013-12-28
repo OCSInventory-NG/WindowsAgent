@@ -2246,6 +2246,48 @@ BOOL CWmi::GetInputDevices(CInputDeviceList *pMyList)
 		pEx->Delete();
 		AddLog( _T( "Failed because unknown exception !\n"));
 	}
+	// Get smartcard reader
+	AddLog( _T( "WMI GetInputDevices: Trying to find Win32_PnPSignedDriver WMI objects for Smartcard Reader..."));
+	try
+	{
+		uIndex = 0;
+		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_PnPSignedDriver")))
+		{
+			while (m_dllWMI.MoveNextEnumClassObject())
+			{
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "DeviceClass"));
+				if (csBuffer.CompareNoCase( _T( "SMARTCARDREADER")) == 0)
+				{
+					myObject.Clear();
+					myObject.SetType( INPUT_DEVICE_SMARTCARD);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Manufacturer"));
+					myObject.SetManufacturer( csBuffer);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "DeviceName"));
+					myObject.SetCaption( csBuffer);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
+					myObject.SetDescription( csBuffer);
+					myObject.SetPointingType( NOT_AVAILABLE);
+					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Location"));
+					myObject.SetPointingInterface( csBuffer);
+					pMyList->AddTail( myObject);
+					uIndex ++;
+				}
+			}
+			m_dllWMI.CloseEnumClassObject();
+		}
+		if (uIndex > 0)
+		{
+			uTotal += uIndex;
+			AddLog( _T( "OK (%u objects)\n"), uIndex);
+		}
+		else
+			AddLog( _T( "Failed because no Win32_PnPSignedDriver Smartcard Reader object !\n"));
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		AddLog( _T( "Failed because unknown exception !\n"));
+	}
 	if (uTotal > 0)
 	{
 		AddLog( _T( "WMI GetInputDevices: OK\n"));

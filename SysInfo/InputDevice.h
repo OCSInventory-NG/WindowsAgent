@@ -22,6 +22,7 @@
 
 #define INPUT_DEVICE_KEYBOARD	_T( "Keyboard")
 #define INPUT_DEVICE_POINTING	_T( "Pointing")
+#define INPUT_DEVICE_SMARTCARD	_T( "Smartcard Reader")
 
 class SYSINFO_API CInputDevice  
 {
