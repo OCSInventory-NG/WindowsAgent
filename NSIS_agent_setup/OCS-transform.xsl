@@ -73,6 +73,24 @@
     </xsl:for-each>
   </table>
 
+  <h2>Cenral Processor Units</h2>  
+  <table>
+    <xsl:for-each select="/REQUEST/CONTENT/CPU/self::node()">
+    <xsl:if test="position()=1" >
+    <tr>
+      <xsl:for-each select="node()">
+      <th><xsl:value-of select="name()"/></th>
+      </xsl:for-each>
+    </tr>
+    </xsl:if>
+    <tr>
+      <xsl:for-each select="node()">
+      <td><xsl:value-of select="."/></td>
+      </xsl:for-each>
+    </tr>
+    </xsl:for-each>
+  </table>
+
   <h2>Memory slots</h2>  
   <table>
     <xsl:for-each select="/REQUEST/CONTENT/MEMORIES/self::node()">
