@@ -83,6 +83,8 @@ CStringW OCSINVENTORYFRONT_API GetUnicodeFromUTF8( LPCSTR a_strString)
 
 BOOL OCSINVENTORYFRONT_API isValidUTF8( LPCSTR a_strString)
 {
+	if (a_strString == NULL)
+		return TRUE;
 	if (MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, a_strString, strlen( a_strString), NULL, 0) > 0)
 		// Return the required size for output buffer, so success, all character are UTF8 encoded
 		return TRUE;
@@ -319,6 +321,8 @@ BOOL OCSINVENTORYFRONT_API WriteTextToUTF8File( LPCTSTR lpstrText, LPCTSTR lpstr
 
 	try
 	{
+		if ((lpstrText == NULL) || (lpstrFilename == NULL))
+			return FALSE;
 		// Open the file for writing with UTF-8 encoding
 		if (_tfopen_s( &pFile, lpstrFilename, _T( "w,ccs=UTF-8")) != 0)
 			return FALSE;

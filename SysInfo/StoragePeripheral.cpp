@@ -141,7 +141,7 @@ void CStoragePeripheral::SetSN( LPCTSTR lpstrSN)
 	char	myCar;
 
 	m_csSN.Empty();
-	if (_tcslen( lpstrSN) > STORAGE_MAX_LENGTH_SERIAL)
+	if ((lpstrSN != NULL) && (_tcslen( lpstrSN) > STORAGE_MAX_LENGTH_SERIAL))
 	{
 		// Each serial number character is coded in ASCII hexadecimal value using 2 bytes, so we have to decode it
 		for (size_t i=0; (i<STORAGE_MAX_LENGTH_SERIAL) && ((i*2)<_tcslen( lpstrSN)); i++) 

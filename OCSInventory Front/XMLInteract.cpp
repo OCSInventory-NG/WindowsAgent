@@ -55,25 +55,34 @@ BOOL CXMLInteract::ReadBIOS( CBios &myBios)
 				 *pXmlElement;
 
 	// Search BIOS node under current node
-	pXml = m_pXml->FindFirstElem( _T( "BIOS"));
-	if (pXml)
+	try
 	{
-		pXmlElement = m_pXml->FindFirstElem( _T( "SMANUFACTURER"), pXml);
-		myBios.SetSystemManufacturer( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SMODEL"), pXml);
-		myBios.SetSystemModel( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SSN"), pXml);
-		myBios.SetSystemSerialNumber( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
-		myBios.SetMachineType( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "BMANUFACTURER"), pXml);
-		myBios.SetBiosManufacturer( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "BVERSION"), pXml);
-		myBios.SetBiosVersion( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "BDATE"), pXml);
-		myBios.SetBiosDate( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "ASSETTAG"), pXml);
-		myBios.SetAssetTag( m_pXml->GetData( pXmlElement));
+		pXml = m_pXml->FindFirstElem( _T( "BIOS"));
+		if (pXml)
+		{
+			pXmlElement = m_pXml->FindFirstElem( _T( "SMANUFACTURER"), pXml);
+			myBios.SetSystemManufacturer( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SMODEL"), pXml);
+			myBios.SetSystemModel( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SSN"), pXml);
+			myBios.SetSystemSerialNumber( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
+			myBios.SetMachineType( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "BMANUFACTURER"), pXml);
+			myBios.SetBiosManufacturer( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "BVERSION"), pXml);
+			myBios.SetBiosVersion( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "BDATE"), pXml);
+			myBios.SetBiosDate( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "ASSETTAG"), pXml);
+			myBios.SetAssetTag( m_pXml->GetData( pXmlElement));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -130,38 +139,54 @@ BOOL CXMLInteract::ReadCPUs( CCpuList &myCpuList)
 				 *pXmlElement;
 
 	// Search CPU nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "CPU"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "SOCKET"), pXml);
-		cObject.SetSocket( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
-		cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SPEED"), pXml);
-		cObject.SetMaxSpeed( _ttoi( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
-		cObject.SetName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "CORES"), pXml);
-		cObject.SetNumberOfCores( _ttoi( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "L2CACHESIZE"), pXml);
-		cObject.SetL2CacheSize( _ttoi( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "CPUARCH"), pXml);
-		cObject.SetArchitecture( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DATA_WIDTH"), pXml);
-		cObject.SetDataWidth( _ttoi( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "CURRENT_ADDRESS_WIDTH"), pXml);
-		cObject.SetAddressWith( _ttoi( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "LOGICAL_CPUS"), pXml);
-		cObject.SetNumberOfLogicalProcessors( _ttoi( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "VOLTAGE"), pXml);
-		cObject.SetVoltage( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "CURRENT_SPEED"), pXml);
-		cObject.SetCurrentSpeed( _ttoi( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "CPUSTATUS"), pXml);
-		cObject.SetStatus( m_pXml->GetData( pXmlElement));
-		myCpuList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "CPU"));
+		pXml = m_pXml->FindFirstElem( _T( "CPU"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "SOCKET"), pXml);
+			cObject.SetSocket( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
+			cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SPEED"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetMaxSpeed( _ttoi( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
+			cObject.SetName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "CORES"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetNumberOfCores( _ttoi( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "L2CACHESIZE"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetL2CacheSize( _ttoi( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "CPUARCH"), pXml);
+			cObject.SetArchitecture( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DATA_WIDTH"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetDataWidth( _ttoi( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "CURRENT_ADDRESS_WIDTH"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetAddressWith( _ttoi( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "LOGICAL_CPUS"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetNumberOfLogicalProcessors( _ttoi( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "VOLTAGE"), pXml);
+			cObject.SetVoltage( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "CURRENT_SPEED"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetCurrentSpeed( _ttoi( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "CPUSTATUS"), pXml);
+			cObject.SetStatus( m_pXml->GetData( pXmlElement));
+			myCpuList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "CPU"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -211,26 +236,38 @@ BOOL CXMLInteract::ReadDrives( CLogicalDriveList &myDriveList)
 				 *pXmlElement;
 
 	// Search CPU nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "DRIVES"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "LETTER"), pXml);
-		cObject.SetDriveLetter( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
-		cObject.SetDriveType( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "FILESYSTEM"), pXml);
-		cObject.SetFileSystem( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "TOTAL"), pXml);
-		cObject.SetTotalSize( _ttol( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "FREE"), pXml);
-		cObject.SetFreeSpace( _ttol( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "NUMFILES"), pXml);
-		cObject.SetFilesNumber( _ttol( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "VOLUMN"), pXml);
-		cObject.SetVolumName( m_pXml->GetData( pXmlElement));
-		myDriveList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "DRIVES"));
+		pXml = m_pXml->FindFirstElem( _T( "DRIVES"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "LETTER"), pXml);
+			cObject.SetDriveLetter( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
+			cObject.SetDriveType( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "FILESYSTEM"), pXml);
+			cObject.SetFileSystem( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "TOTAL"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetTotalSize( _ttol( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "FREE"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetFreeSpace( _ttol( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "NUMFILES"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetFilesNumber( _ttol( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "VOLUMN"), pXml);
+			cObject.SetVolumName( m_pXml->GetData( pXmlElement));
+			myDriveList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "DRIVES"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -327,24 +364,33 @@ BOOL CXMLInteract::ReadInputDevices( CInputDeviceList &myInputList)
 				 *pXmlElement;
 
 	// Search Inputs nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "INPUTS"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
-		cObject.SetType( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
-		cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "CAPTION"), pXml);
-		cObject.SetCaption( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
-		cObject.SetDescription( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "INTERFACE"), pXml);
-		cObject.SetPointingInterface( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "POINTTYPE"), pXml);
-		cObject.SetPointingType( m_pXml->GetData( pXmlElement));
-		myInputList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "INPUTS"));
+		pXml = m_pXml->FindFirstElem( _T( "INPUTS"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
+			cObject.SetType( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
+			cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "CAPTION"), pXml);
+			cObject.SetCaption( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
+			cObject.SetDescription( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "INTERFACE"), pXml);
+			cObject.SetPointingInterface( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "POINTTYPE"), pXml);
+			cObject.SetPointingType( m_pXml->GetData( pXmlElement));
+			myInputList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "INPUTS"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -396,28 +442,38 @@ BOOL CXMLInteract::ReadMemorySlots( CMemorySlotList &myMemoryList)
 				 *pXmlElement;
 
 	// Search Memories nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "MEMORIES"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "CAPTION"), pXml);
-		cObject.SetCaption( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
-		cObject.SetDescription( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "CAPACITY"), pXml);
-		cObject.SetCapacity( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "PURPOSE"), pXml);
-		cObject.SetUsage( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
-		cObject.SetType( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SPEED"), pXml);
-		cObject.SetSpeed( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "NUMSLOTS"), pXml);
-		cObject.SetSlotNumber( _ttoi( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SERIALNUMBER"), pXml);
-		cObject.SetSN( m_pXml->GetData( pXmlElement));
-		myMemoryList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "MEMORIES"));
+		pXml = m_pXml->FindFirstElem( _T( "MEMORIES"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "CAPTION"), pXml);
+			cObject.SetCaption( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
+			cObject.SetDescription( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "CAPACITY"), pXml);
+			cObject.SetCapacity( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "PURPOSE"), pXml);
+			cObject.SetUsage( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
+			cObject.SetType( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SPEED"), pXml);
+			cObject.SetSpeed( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "NUMSLOTS"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetSlotNumber( _ttoi( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SERIALNUMBER"), pXml);
+			cObject.SetSN( m_pXml->GetData( pXmlElement));
+			myMemoryList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "MEMORIES"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -465,20 +521,29 @@ BOOL CXMLInteract::ReadModems( CModemList &myModemList)
 				 *pXmlElement;
 
 	// Search Modems nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "MODEMS"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
-		cObject.SetName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "MODEL"), pXml);
-		cObject.SetModel( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
-		cObject.SetDescription( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
-		cObject.SetType( m_pXml->GetData( pXmlElement));
-		myModemList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "MODEMS"));
+		pXml = m_pXml->FindFirstElem( _T( "MODEMS"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
+			cObject.SetName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "MODEL"), pXml);
+			cObject.SetModel( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
+			cObject.SetDescription( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
+			cObject.SetType( m_pXml->GetData( pXmlElement));
+			myModemList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "MODEMS"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -526,22 +591,31 @@ BOOL CXMLInteract::ReadMonitors( CMonitorList &myMonitorList)
 				 *pXmlElement;
 
 	// Search Monitors nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "MONITORS"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
-		cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "CAPTION"), pXml);
-		cObject.SetCaption( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
-		cObject.SetDescription( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
-		cObject.SetType( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SERIALNUMBER"), pXml);
-		cObject.SetSerial( m_pXml->GetData( pXmlElement));
-		myMonitorList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "MONITORS"));
+		pXml = m_pXml->FindFirstElem( _T( "MONITORS"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
+			cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "CAPTION"), pXml);
+			cObject.SetCaption( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
+			cObject.SetDescription( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
+			cObject.SetType( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SERIALNUMBER"), pXml);
+			cObject.SetSerial( m_pXml->GetData( pXmlElement));
+			myMonitorList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "MONITORS"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -595,34 +669,43 @@ BOOL CXMLInteract::ReadNetworks( CNetworkAdapterList &myNetworkList)
 				 *pXmlElement;
 
 	// Search Networks nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "NETWORKS"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
-		cObject.SetDescription( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
-		cObject.SetType( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPEMIB"), pXml);
-		cObject.SetTypeMIB( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SPEED"), pXml);
-		cObject.SetSpeed( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "MACADDR"), pXml);
-		cObject.SetMACAddress( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "STATUS"), pXml);
-		cObject.SetStatus( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "IPADDRESS"), pXml);
-		cObject.SetIPAddress( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "IPMASK"), pXml);
-		cObject.SetIPNetMask( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "IPGATEWAY"), pXml);
-		cObject.SetGateway( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "IPSUBNET"), pXml);
-		cObject.SetNetNumber( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "IPDHCP"), pXml);
-		cObject.SetDhcpServer( m_pXml->GetData( pXmlElement));
-		myNetworkList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "NETWORKS"));
+		pXml = m_pXml->FindFirstElem( _T( "NETWORKS"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
+			cObject.SetDescription( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
+			cObject.SetType( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPEMIB"), pXml);
+			cObject.SetTypeMIB( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SPEED"), pXml);
+			cObject.SetSpeed( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "MACADDR"), pXml);
+			cObject.SetMACAddress( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "STATUS"), pXml);
+			cObject.SetStatus( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "IPADDRESS"), pXml);
+			cObject.SetIPAddress( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "IPMASK"), pXml);
+			cObject.SetIPNetMask( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "IPGATEWAY"), pXml);
+			cObject.SetGateway( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "IPSUBNET"), pXml);
+			cObject.SetNetNumber( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "IPDHCP"), pXml);
+			cObject.SetDhcpServer( m_pXml->GetData( pXmlElement));
+			myNetworkList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "NETWORKS"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -707,20 +790,29 @@ BOOL CXMLInteract::ReadSystemPorts( CSystemPortList &myPortList)
 				 *pXmlElement;
 
 	// Search Ports nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "PORTS"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
-		cObject.SetType( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
-		cObject.SetName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "CAPTION"), pXml);
-		cObject.SetCaption( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
-		cObject.SetDescription( m_pXml->GetData( pXmlElement));
-		myPortList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "PORTS"));
+		pXml = m_pXml->FindFirstElem( _T( "PORTS"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
+			cObject.SetType( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
+			cObject.SetName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "CAPTION"), pXml);
+			cObject.SetCaption( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
+			cObject.SetDescription( m_pXml->GetData( pXmlElement));
+			myPortList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "PORTS"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -773,30 +865,41 @@ BOOL CXMLInteract::ReadPrinters( CPrinterList &myPrinterList)
 				 *pXmlElement;
 
 	// Search Printers nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "PRINTERS"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
-		cObject.SetName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DRIVER"), pXml);
-		cObject.SetDriver( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "PORT"), pXml);
-		cObject.SetPort( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SERVERNAME"), pXml);
-		cObject.SetServerName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SHARENAME"), pXml);
-		cObject.SetShareName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "RESOLUTION"), pXml);
-		cObject.SetResolution( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "COMMENT"), pXml);
-		cObject.SetComment( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SHARED"), pXml);
-		cObject.SetShared( _ttoi( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SHARED"), pXml);
-		cObject.SetNetworkPrinter( _ttoi( m_pXml->GetData( pXmlElement)));
-		myPrinterList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "PRINTERS"));
+		pXml = m_pXml->FindFirstElem( _T( "PRINTERS"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
+			cObject.SetName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DRIVER"), pXml);
+			cObject.SetDriver( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "PORT"), pXml);
+			cObject.SetPort( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SERVERNAME"), pXml);
+			cObject.SetServerName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SHARENAME"), pXml);
+			cObject.SetShareName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "RESOLUTION"), pXml);
+			cObject.SetResolution( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "COMMENT"), pXml);
+			cObject.SetComment( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SHARED"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetShared( _ttoi( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SHARED"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetNetworkPrinter( _ttoi( m_pXml->GetData( pXmlElement)));
+			myPrinterList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "PRINTERS"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -940,16 +1043,25 @@ BOOL CXMLInteract::ReadRegistryValues( CRegistryValueList &myRegistryList)
 				 *pXmlElement;
 
 	// Search Registry nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "REGISTRY"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
-		cObject.SetName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "REGVALUE"), pXml);
-		cObject.SetValue( m_pXml->GetData( pXmlElement));
-		myRegistryList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "REGISTRY"));
+		pXml = m_pXml->FindFirstElem( _T( "REGISTRY"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
+			cObject.SetName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "REGVALUE"), pXml);
+			cObject.SetValue( m_pXml->GetData( pXmlElement));
+			myRegistryList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "REGISTRY"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -1004,37 +1116,49 @@ BOOL CXMLInteract::ReadSoftwares( CSoftwareList &mySoftwareList)
 	TiXmlElement *pXml, 
 				 *pXmlElement;
 
-	// Search Softwares nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "SOFTWARES"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "PUBLISHER"), pXml);
-		cObject.SetPublisher( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
-		cObject.SetName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "VERSION"), pXml);
-		cObject.SetVersion( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "FOLDER"), pXml);
-		cObject.SetFolder( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "COMMENTS"), pXml);
-		cObject.SetComments( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "FILENAME"), pXml);
-		cObject.SetFilename( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "FILESIZE"), pXml);
-		cObject.SetFilesize( _ttol( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "GUID"), pXml);
-		cObject.SetGUID( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "LANGUAGE"), pXml);
-		cObject.SetLanguage( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "INSTALLDATE"), pXml);
-		cObject.SetInstallDate( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "BITSWIDTH"), pXml);
-		cObject.SetMemoryAddressWidth( _ttoi( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SOURCE"), pXml);
-		cObject.SetFromRegistry( _ttoi( m_pXml->GetData( pXmlElement)));
-		mySoftwareList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "SOFTWARES"));
+		// Search Softwares nodes under current node
+		pXml = m_pXml->FindFirstElem( _T( "SOFTWARES"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "PUBLISHER"), pXml);
+			cObject.SetPublisher( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
+			cObject.SetName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "VERSION"), pXml);
+			cObject.SetVersion( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "FOLDER"), pXml);
+			cObject.SetFolder( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "COMMENTS"), pXml);
+			cObject.SetComments( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "FILENAME"), pXml);
+			cObject.SetFilename( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "FILESIZE"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetFilesize( _ttol( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "GUID"), pXml);
+			cObject.SetGUID( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "LANGUAGE"), pXml);
+			cObject.SetLanguage( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "INSTALLDATE"), pXml);
+			cObject.SetInstallDate( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "BITSWIDTH"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetMemoryAddressWidth( _ttoi( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SOURCE"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetFromRegistry( _ttoi( m_pXml->GetData( pXmlElement)));
+			mySoftwareList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "SOFTWARES"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -1081,18 +1205,27 @@ BOOL CXMLInteract::ReadSounds( CSoundDeviceList &mySoundList)
 				 *pXmlElement;
 
 	// Search Sounds nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "SOUNDS"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
-		cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
-		cObject.SetName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
-		cObject.SetDescription( m_pXml->GetData( pXmlElement));
-		mySoundList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "SOUNDS"));
+		pXml = m_pXml->FindFirstElem( _T( "SOUNDS"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
+			cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
+			cObject.SetName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
+			cObject.SetDescription( m_pXml->GetData( pXmlElement));
+			mySoundList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "SOUNDS"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -1144,28 +1277,38 @@ BOOL CXMLInteract::ReadStorages( CStoragePeripheralList &myStorageList)
 				 *pXmlElement;
 
 	// Search Storages nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "STORAGES"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
-		cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
-		cObject.SetName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "MODEL"), pXml);
-		cObject.SetModel( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
-		cObject.SetDescription( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
-		cObject.SetType( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DISKSIZE"), pXml);
-		cObject.SetSize( _ttol( m_pXml->GetData( pXmlElement)));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SERIALNUMBER"), pXml);
-		cObject.SetSN( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "FIRMWARE"), pXml);
-		cObject.SetFirmware( m_pXml->GetData( pXmlElement));
-		myStorageList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "STORAGES"));
+		pXml = m_pXml->FindFirstElem( _T( "STORAGES"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
+			cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
+			cObject.SetName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "MODEL"), pXml);
+			cObject.SetModel( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
+			cObject.SetDescription( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
+			cObject.SetType( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DISKSIZE"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetSize( _ttol( m_pXml->GetData( pXmlElement)));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SERIALNUMBER"), pXml);
+			cObject.SetSN( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "FIRMWARE"), pXml);
+			cObject.SetFirmware( m_pXml->GetData( pXmlElement));
+			myStorageList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "STORAGES"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -1215,24 +1358,33 @@ BOOL CXMLInteract::ReadSystemControllers( CSystemControllerList &mySystemControl
 				 *pXmlElement;
 
 	// Search Controllers nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "CONTROLLERS"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
-		cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
-		cObject.SetName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "CAPTION"), pXml);
-		cObject.SetCaption( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
-		cObject.SetDescription( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "VERSION"), pXml);
-		cObject.SetHardwareVersion( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
-		cObject.SetType( m_pXml->GetData( pXmlElement));
-		mySystemControllerList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "CONTROLLERS"));
+		pXml = m_pXml->FindFirstElem( _T( "CONTROLLERS"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "MANUFACTURER"), pXml);
+			cObject.SetManufacturer( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
+			cObject.SetName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "CAPTION"), pXml);
+			cObject.SetCaption( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
+			cObject.SetDescription( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "VERSION"), pXml);
+			cObject.SetHardwareVersion( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "TYPE"), pXml);
+			cObject.SetType( m_pXml->GetData( pXmlElement));
+			mySystemControllerList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "CONTROLLERS"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -1282,24 +1434,34 @@ BOOL CXMLInteract::ReadSystemSlots( CSystemSlotList &mySlotList)
 				 *pXmlElement;
 
 	// Search Slots nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "SLOTS"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
-		cObject.SetName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
-		cObject.SetDescription( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "DESIGNATION"), pXml);
-		cObject.SetSlotDesignation( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "PURPOSE"), pXml);
-		cObject.SetUsage( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "STATUS"), pXml);
-		cObject.SetStatus( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "SHARED"), pXml);
-		cObject.SetShared( _ttoi( m_pXml->GetData( pXmlElement)));
-		mySlotList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "SLOTS"));
+		pXml = m_pXml->FindFirstElem( _T( "SLOTS"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
+			cObject.SetName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DESCRIPTION"), pXml);
+			cObject.SetDescription( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "DESIGNATION"), pXml);
+			cObject.SetSlotDesignation( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "PURPOSE"), pXml);
+			cObject.SetUsage( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "STATUS"), pXml);
+			cObject.SetStatus( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "SHARED"), pXml);
+			if (m_pXml->GetData( pXmlElement))
+				cObject.SetShared( _ttoi( m_pXml->GetData( pXmlElement)));
+			mySlotList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "SLOTS"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -1347,20 +1509,29 @@ BOOL CXMLInteract::ReadVideos( CVideoAdapterList &myVideoList)
 				 *pXmlElement;
 
 	// Search Videos nodes under current node
-	pXml = m_pXml->FindFirstElem( _T( "VIDEOS"));
-	while (pXml)
+	try
 	{
-		cObject.Clear();
-		pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
-		cObject.SetName( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "CHIPSET"), pXml);
-		cObject.SetChipset( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "MEMORY"), pXml);
-		cObject.SetMemory( m_pXml->GetData( pXmlElement));
-		pXmlElement = m_pXml->FindFirstElem( _T( "RESOLUTION"), pXml);
-		cObject.SetScreenResolution( m_pXml->GetData( pXmlElement));
-		myVideoList.AddTail( cObject);
-		pXml = m_pXml->FindNextElem( _T( "VIDEOS"));
+		pXml = m_pXml->FindFirstElem( _T( "VIDEOS"));
+		while (pXml)
+		{
+			cObject.Clear();
+			pXmlElement = m_pXml->FindFirstElem( _T( "NAME"), pXml);
+			cObject.SetName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "CHIPSET"), pXml);
+			cObject.SetChipset( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "MEMORY"), pXml);
+			cObject.SetMemory( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "RESOLUTION"), pXml);
+			cObject.SetScreenResolution( m_pXml->GetData( pXmlElement));
+			myVideoList.AddTail( cObject);
+			pXml = m_pXml->FindNextElem( _T( "VIDEOS"));
+		}
+	}
+	catch( CException *pEx)
+	{
+		// Exception=> free exception, but continue
+		pEx->Delete();
+		return FALSE;
 	}
 	return TRUE;
 }

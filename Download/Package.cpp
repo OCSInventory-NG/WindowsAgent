@@ -145,8 +145,14 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 				csBuffer = COMMAND_TIMEOUT_DEFAULT;
 			m_uNotifyCountdown = _ttoi( csBuffer);
 			m_csNotifyText = myXml.GetAttrib( _T( "NOTIFY_TEXT"));
-			m_bNotifyCanAbort = ( _ttoi( myXml.GetAttrib( _T( "NOTIFY_CAN_ABORT"))) != 0);
-			m_bNotifyCanDelay = ( _ttoi( myXml.GetAttrib( _T( "NOTIFY_CAN_DELAY"))) != 0);
+			if (myXml.GetAttrib( _T( "NOTIFY_CAN_ABORT")))
+				m_bNotifyCanAbort = ( _ttoi( myXml.GetAttrib( _T( "NOTIFY_CAN_ABORT"))) != 0);
+			else
+				m_bNotifyCanAbort = FALSE;
+			if (myXml.GetAttrib( _T( "NOTIFY_CAN_DELAY")))
+				m_bNotifyCanDelay = ( _ttoi( myXml.GetAttrib( _T( "NOTIFY_CAN_DELAY"))) != 0);
+			else
+				m_bNotifyCanDelay = FALSE;
 		}
 		csBuffer = myXml.GetAttrib( _T( "NEED_DONE_ACTION"));
 		// Ensure non empty value

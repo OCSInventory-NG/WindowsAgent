@@ -73,7 +73,8 @@ ULONG CMemorySlotList::GetTotalMemory()
 	while (pos)
 	{
 		myObject = GetNext( pos);
-		ulTotal += _ttol( myObject.GetCapacity());
+		if (myObject.GetCapacity())
+			ulTotal += _ttol( myObject.GetCapacity());
 	}
 	return ulTotal;
 }

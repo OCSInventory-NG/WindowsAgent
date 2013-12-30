@@ -126,6 +126,7 @@ int DiskInfo::ReadPhysicalDriveInNTWithAdminRights (void)
 //  using the IOCTL_STORAGE_QUERY_PROPERTY command 
 char * DiskInfo::flipAndCodeBytes (char * str)
 {
+	ASSERT( str);
 	static char flipped [1000];
 	int num = strlen (str);
 	strcpy (flipped, "");

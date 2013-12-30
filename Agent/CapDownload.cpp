@@ -571,6 +571,8 @@ BOOL COptDownloadPackage::regAddPackageDigest( LPCTSTR lpstrPackID, LPCTSTR lpst
 	HKEY  hKey;
 	DWORD dwValue;
 
+	if ((lpstrPackID == NULL) || (lpstrDigest == NULL))
+		return FALSE;
 	if (RegCreateKeyEx( HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, NULL, REG_OPTION_NON_VOLATILE,
 						KEY_WRITE, NULL, &hKey, &dwValue) != ERROR_SUCCESS) 
 		return FALSE;
