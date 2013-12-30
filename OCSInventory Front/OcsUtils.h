@@ -30,6 +30,9 @@ CStringA OCSINVENTORYFRONT_API GetUTF8FromUnicode( LPCTSTR a_wstrString);
 // Transform UTF-8 source text string to Unicode
 CStringW OCSINVENTORYFRONT_API GetUnicodeFromUTF8( LPCSTR a_strString);
 
+// Ensure if a string if UTF8 encoded
+BOOL OCSINVENTORYFRONT_API isValidUTF8( LPCSTR a_strString);
+
 // Create directory (and every missing parent directories if needed)
 BOOL OCSINVENTORYFRONT_API directoryCreate( LPCTSTR lpstrDir);
 

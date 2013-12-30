@@ -81,6 +81,18 @@ CStringW OCSINVENTORYFRONT_API GetUnicodeFromUTF8( LPCSTR a_strString)
 	return unicode;
 }
 
+BOOL OCSINVENTORYFRONT_API isValidUTF8( LPCSTR a_strString)
+{
+	if (MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, a_strString, strlen( a_strString), NULL, 0) > 0)
+		// Return the required size for output buffer, so success, all character are UTF8 encoded
+		return TRUE;
+	if (GetLastError() == ERROR_NO_UNICODE_TRANSLATION)
+		// Text include non UTF8 encoded characters
+		return FALSE;
+	// Function fails
+	return FALSE;
+}
+
 BOOL OCSINVENTORYFRONT_API directoryCreate( LPCTSTR lpstrDir)
 {
 	// Create it if not exists
