@@ -1530,6 +1530,7 @@ DWORD CWmi::GetCPU( CCpuList *pMyList, CRegistry *pReg)
 				myObject.SetVoltage( GetVoltage( dwValue));
 				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "CpuStatus"));
 				myObject.SetStatus( GetCpuStatus( dwValue));
+				csValue.Empty();
 				csValue = m_dllWMI.GetClassObjectStringValue( _T( "ProcessorId"));
 				if (csValue.IsEmpty())
 				{
