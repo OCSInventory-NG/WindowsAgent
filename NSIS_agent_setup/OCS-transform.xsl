@@ -73,9 +73,9 @@
     </xsl:for-each>
   </table>
 
-  <h2>Cenral Processor Units</h2>  
+  <h2>Central Processor Units</h2>  
   <table>
-    <xsl:for-each select="/REQUEST/CONTENT/CPU/self::node()">
+    <xsl:for-each select="/REQUEST/CONTENT/CPUS/self::node()">
     <xsl:if test="position()=1" >
     <tr>
       <xsl:for-each select="node()">
