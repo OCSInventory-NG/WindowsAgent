@@ -1,3 +1,7 @@
+2.1.0.3
+  * Fix XSLT for displaying CPU into "show computer information" command of systrau applet
+  * Fix Processor S/N filled with CPU Status if no serial number exist
+  * Better handling of potentially not well formatted data, to avoid application crash
 2.1.0.2
   * Add detection of Smartcard readers as input devices
   * Update XSL to display CPU table into systray applet "show computer informations"
