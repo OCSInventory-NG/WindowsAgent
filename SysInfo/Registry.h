@@ -73,11 +73,15 @@ public: // Methods
 	//////////////////////////////////
 
 protected: // Methods
-	BOOL GetBiosInfoNT( CBios *pMyBios);
+	BOOL GetLoggedOnUserNT( CString &csUser);
+	BOOL GetLoggedOnUserVista( CString &csUser);
+	BOOL GetLastLoggedUserNT(CString &csLastLoggedUser);
+	BOOL GetLastLoggedUserVista(CString &csLastLoggedUser);
 	BOOL GetDeviceDescriptionNT( CString &csDescription);
 	BOOL GetDomainOrWorkgroupNT( CString &csDomain);
+	BOOL GetBiosInfoNT( CBios *pMyBios);
+	BOOL GetBiosInfoVista( CBios *pMyBios);
 	BOOL GetInputDevicesNT( CInputDeviceList *pList);
-	BOOL GetLoggedOnUserNT( CString &csUser);
 	BOOL GetModemsNT( CModemList *pMyList);
 	BOOL GetMonitorsNT( CMonitorList *pList);
 	BOOL GetSystemPortsNT( CSystemPortList *pMyList);
@@ -103,6 +107,7 @@ protected: // Attributes
 	HKEY m_hKey;			// Handle to HKLM key on computer
 	DWORD m_dwPlatformId;	// OS Platform ID to determine if Win9X or NT
 	BOOL  m_bIsXP;			// TRUE if Win XP or higher
+	BOOL  m_bIsVista;		// TRUE if Win Vista or higher
 	DWORD m_dwAddressWidth; // OS Address Width (32, 64 bits)
 
 };

@@ -48,7 +48,7 @@ BOOL CWmi::Connect( LPCTSTR lpstrDevice)
 		if (m_bConnected)
 			return TRUE;
 		// Load OcsWmi wrapper library
-		AddLog( _T( "WMI Connect: Trying to connect to WMI namespace root\\cimv2 on device <%s>..."), 
+		AddLog( _T( "WMI Connect: Trying to connect to WMI namespace root\\cimv2 on device <%s>...\n"), 
 			(lpstrDevice == NULL ? _T( "Localhost") : lpstrDevice));
 		if (lpstrDevice == NULL)
 			csCimRoot.Format( _T( "root\\CIMV2"));
@@ -57,17 +57,17 @@ BOOL CWmi::Connect( LPCTSTR lpstrDevice)
 		if (!m_dllWMI.ConnectWMI( csCimRoot))
 		{
 			// Unable to connect to WMI => no WMI support
-			AddLog( _T( "Failed because unable to connect to WMI namespace (0x%lX) !\n"), m_dllWMI.GetLastErrorWMI());
+			AddLog( _T( "\tFailed because unable to connect to WMI namespace (0x%lX) !\n"), m_dllWMI.GetLastErrorWMI());
 			return FALSE;
 		}
 		m_bConnected = TRUE;
-		AddLog( _T( "OK.\n"));
+		AddLog( _T( "\tOK\n"));
 		return TRUE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception.\n"));
+		AddLog( _T( "\tFailed because unknown exception.\n"));
 		return FALSE;
 	}
 }
@@ -174,7 +174,7 @@ BOOL CWmi::IsNotebook()
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI IsNotebook: Trying to find Win32_PortableBattery WMI objects..."));
+	AddLog( _T( "WMI IsNotebook: Trying to find Win32_PortableBattery WMI objects...\n"));
 	// Try to use PortableBattery object
 	try
 	{
@@ -189,16 +189,16 @@ BOOL CWmi::IsNotebook()
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%u objects). Is a Notebook.\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects). Is a Notebook.\n"), uIndex);
 			return TRUE;
 		}
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception!\n"));
+		AddLog( _T( "\tFailed because unknown exception!\n"));
 	}
-	AddLog( _T( "No Win32_PortableBattery => not a Notebook\n"));
+	AddLog( _T( "\tNo Win32_PortableBattery => not a Notebook\n"));
 	return FALSE;
 }
 
@@ -267,7 +267,7 @@ BOOL CWmi::GetBios( CString &csVendor, CString &csVersion, CString &csDate, CStr
 		return FALSE;
 	
 	// GET BIOS Informations
-	AddLog( _T( "WMI GetBiosInfo: Trying to find Win32_Bios WMI objects..."));
+	AddLog( _T( "WMI GetBiosInfo: Trying to find Win32_Bios WMI objects...\n"));
 	try
 	{
 		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_Bios")))
@@ -283,22 +283,24 @@ BOOL CWmi::GetBios( CString &csVendor, CString &csVersion, CString &csDate, CStr
 				csSN = m_dllWMI.GetClassObjectStringValue( _T( "SerialNumber"));
 				// TODO: Throw exception sometimes, why ?
 				csDate = m_dllWMI.GetClassObjectStringValue( _T( "ReleaseDate"));
+				AddLog( _T( "\t\t<Manufacturer: %s><Version: %s><Date: %s><S/N: %s>\n"), 
+					csVendor, csVersion, csDate, csSN);
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%s %s %s %s)\n"), csVendor, csVersion, csDate, csSN);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_Bios object !\n"));
+		AddLog( _T( "\tFailed because no Win32_Bios object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -312,7 +314,7 @@ BOOL CWmi::GetSystemInformation( CString &csVendor, CString &csModel)
 		return FALSE;
 	
 	// GET BIOS Informations
-	AddLog( _T( "WMI GetSystemInformation: Trying to find Win32_ComputerSystem WMI objects..."));
+	AddLog( _T( "WMI GetSystemInformation: Trying to find Win32_ComputerSystem WMI objects...\n"));
 	try
 	{
 		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_ComputerSystem")))
@@ -321,22 +323,24 @@ BOOL CWmi::GetSystemInformation( CString &csVendor, CString &csModel)
 			{
 				csVendor = m_dllWMI.GetClassObjectStringValue( _T( "Manufacturer"));
 				csModel = m_dllWMI.GetClassObjectStringValue( _T( "Model"));
+				AddLog( _T( "\t\t<Manufacturer: %s><Model: %s>\n"), 
+					csVendor, csModel);
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%s %s)\n"), csVendor, csModel);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_ComputerSystem object !\n"));
+		AddLog( _T( "\tFailed because no Win32_ComputerSystem object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -350,7 +354,7 @@ BOOL CWmi::GetBaseBoard( CString &csVendor, CString &csProduct, CString &csSN)
 		return FALSE;
 	
 	// GET BIOS Informations
-	AddLog( _T( "WMI GetBaseBoard: Trying to find Win32_BaseBoard WMI objects..."));
+	AddLog( _T( "WMI GetBaseBoard: Trying to find Win32_BaseBoard WMI objects...\n"));
 	try
 	{
 		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_BaseBoard")))
@@ -360,22 +364,24 @@ BOOL CWmi::GetBaseBoard( CString &csVendor, CString &csProduct, CString &csSN)
 				csVendor = m_dllWMI.GetClassObjectStringValue( _T( "Manufacturer"));
 				csProduct = m_dllWMI.GetClassObjectStringValue( _T( "Model"));
 				csSN = m_dllWMI.GetClassObjectStringValue( _T( "SerialNumber"));
+				AddLog( _T( "\t\t<Manufacturer: %s><Model: %s><S/N: %s>\n"), 
+					csVendor, csProduct, csSN);
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%s %s %S)\n"), csVendor, csProduct, csSN);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_BaseBoard object !\n"));
+		AddLog( _T( "\tFailed because no Win32_BaseBoard object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -389,7 +395,7 @@ BOOL CWmi::GetSystemEnclosure( CString &csVendor, CString &csType, CString &csSN
 		return FALSE;
 	
 	// GET BIOS Informations
-	AddLog( _T( "WMI GetSystemEnclosure: Trying to find Win32_SystemEnclosure WMI objects..."));
+	AddLog( _T( "WMI GetSystemEnclosure: Trying to find Win32_SystemEnclosure WMI objects...\n"));
 	try
 	{
 		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_SystemEnclosure")))
@@ -401,22 +407,24 @@ BOOL CWmi::GetSystemEnclosure( CString &csVendor, CString &csType, CString &csSN
 				ParseChassisType( csType);
 				csSN = m_dllWMI.GetClassObjectStringValue( _T( "SerialNumber"));
 				csAssetTag = m_dllWMI.GetClassObjectStringValue( _T( "SMBIOSAssetTag"));
+				AddLog( _T( "\t\t<Manufacturer: %s><Type: %s><S/N: %s><Asset Tag: %s>\n"), 
+					csVendor, csType, csSN, csAssetTag);
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%s %s %s %s)\n"), csVendor, csType, csSN, csAssetTag);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_SystemEnclosure object !\n"));
+		AddLog( _T( "\tFailed because no Win32_SystemEnclosure object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -435,7 +443,7 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 		return FALSE;
 
 	// Get Floppy drives
-	AddLog( _T( "WMI GetStoragePeripherals: Trying to find Win32_FloppyDrive WMI objects..."));
+	AddLog( _T( "WMI GetStoragePeripherals: Trying to find Win32_FloppyDrive WMI objects...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	try
@@ -457,6 +465,9 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 				myObject.SetType( csBuffer);
 				myObject.SetSize( m_dllWMI.GetClassObjectU64Value( _T( "Size")) / ONE_MEGABYTE);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><MediaType: %s><Size: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetModel(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetSizeString());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -464,18 +475,18 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_FloppyDrive object !\n"));
+			AddLog( _T( "\tFailed because no Win32_FloppyDrive object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	// Get Disk drives
-	AddLog( _T( "WMI GetStoragePeripherals: Trying to find Win32_DiskDrive WMI objects..."));
+	AddLog( _T( "WMI GetStoragePeripherals: Trying to find Win32_DiskDrive WMI objects...\n"));
 	try
 	{
 		uIndex = 0;
@@ -525,6 +536,10 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 						myObject.SetFirmware( csBuffer);
 				}
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><MediaType: %s><Size: %s><S/N: %s><FirmwareRevision: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetModel(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetSizeString(), 
+					myObject.GetSN(), myObject.GetFirmware());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -533,18 +548,18 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_DiskDrive object !\n"));
+			AddLog( _T( "\tFailed because no Win32_DiskDrive object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	// Get CD-Rom drives
-	AddLog( _T( "WMI GetStoragePeripherals: Trying to find Win32_CDROMDrive WMI objects..."));
+	AddLog( _T( "WMI GetStoragePeripherals: Trying to find Win32_CDROMDrive WMI objects...\n"));
 	try
 	{
 		uIndex = 0;
@@ -567,6 +582,10 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 				myObject.SetType( csBuffer);
 				myObject.SetSize( m_dllWMI.GetClassObjectU64Value( _T( "Size")) / ONE_MEGABYTE);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><MediaType: %s><Size: %s><S/N: %s><RevisionLevel: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetModel(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetSizeString(), 
+					myObject.GetSN(), myObject.GetFirmware());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -574,18 +593,18 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_CDROMDrive object !\n"));
+			AddLog( _T( "\tFailed because no Win32_CDROMDrive object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	// Get tape drives
-	AddLog( _T( "WMI GetStoragePeripherals: Trying to find Win32_TapeDrive WMI objects..."));
+	AddLog( _T( "WMI GetStoragePeripherals: Trying to find Win32_TapeDrive WMI objects...\n"));
 	try
 	{
 		uIndex = 0;
@@ -608,6 +627,9 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 				myObject.SetType( csBuffer);
 				myObject.SetSize( m_dllWMI.GetClassObjectU64Value( _T( "Size")) / ONE_MEGABYTE);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption/Id: %s><Description: %s><Name: %s><MediaType: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetModel(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetSizeString());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -615,22 +637,20 @@ BOOL CWmi::GetStoragePeripherals(CStoragePeripheralList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_TapeDrive object !\n"));
+			AddLog( _T( "\tFailed because no Win32_TapeDrive object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	if (uTotalIndex > 0)
 	{
-		AddLog( _T( "WMI GetStoragePeripherals: OK\n"));
 		return TRUE;
 	}
-	AddLog( _T( "WMI GetStoragePeripherals: Failed because no storage peripherals found !\n"));
 	return FALSE;
 }
 
@@ -648,7 +668,7 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 		return FALSE;
 
 	// Get Floppy controller
-	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_FloppyController WMI objects..."));
+	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_FloppyController WMI objects...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	try
@@ -669,6 +689,9 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 				myObject.SetName( csBuffer);
 				myObject.SetHardwareVersion( NOT_AVAILABLE);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -676,18 +699,18 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_FloppyController object !\n"));
+			AddLog( _T( "\tFailed because no Win32_FloppyController object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	// Get IDE controller
-	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_IDEController WMI objects..."));
+	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_IDEController WMI objects...\n"));
 	try
 	{
 		uIndex = 0;
@@ -707,6 +730,9 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 				myObject.SetName( csBuffer);
 				myObject.SetHardwareVersion( NOT_AVAILABLE);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -714,18 +740,18 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_IDEController object !\n"));
+			AddLog( _T( "\tFailed because no Win32_IDEController object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	// Get SCSI controller
-	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_SCSIController WMI objects..."));
+	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_SCSIController WMI objects...\n"));
 	try
 	{
 		uIndex = 0;
@@ -746,6 +772,9 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "HardwareVersion"));
 				myObject.SetHardwareVersion( csBuffer);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -753,18 +782,18 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_SCSIController object !\n"));
+			AddLog( _T( "\tFailed because no Win32_SCSIController object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	// Get USB controller
-	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_InfraredDevice WMI objects..."));
+	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_InfraredDevice WMI objects...\n"));
 	try
 	{
 		uIndex = 0;
@@ -784,6 +813,9 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 				myObject.SetName( csBuffer);
 				myObject.SetHardwareVersion( NOT_AVAILABLE);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -791,18 +823,18 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_InfraredDevice object !\n"));
+			AddLog( _T( "\tFailed because no Win32_InfraredDevice object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	// Get USB controller
-	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_USBController WMI objects..."));
+	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_USBController WMI objects...\n"));
 	try
 	{
 		uIndex = 0;
@@ -822,6 +854,9 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 				myObject.SetName( csBuffer);
 				myObject.SetHardwareVersion( NOT_AVAILABLE);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -829,18 +864,18 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_USBController object !\n"));
+			AddLog( _T( "\tFailed because no Win32_USBController object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	// Get IEEE1394 controller
-	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_1394Controller WMI objects..."));
+	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_1394Controller WMI objects...\n"));
 	try
 	{
 		uIndex = 0;
@@ -860,6 +895,9 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 				myObject.SetName( csBuffer);
 				myObject.SetHardwareVersion( NOT_AVAILABLE);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -867,18 +905,18 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_1394Controller object !\n"));
+			AddLog( _T( "\tFailed because no Win32_1394Controller object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	// Get PCMCIA controller
-	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_PCMCIAController WMI objects..."));
+	AddLog( _T( "WMI GetSystemControllers: Trying to find Win32_PCMCIAController WMI objects...\n"));
 	try
 	{
 		uIndex = 0;
@@ -898,6 +936,9 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 				myObject.SetName( csBuffer);
 				myObject.SetHardwareVersion( NOT_AVAILABLE);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -905,22 +946,20 @@ BOOL CWmi::GetSystemControllers(CSystemControllerList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotalIndex += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_PCMCIAController object !\n"));
+			AddLog( _T( "\tFailed because no Win32_PCMCIAController object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	if (uTotalIndex > 0)
 	{
-		AddLog( _T( "WMI GetSystemControllers: OK\n"));
 		return TRUE;
 	}
-	AddLog( _T( "WMI GetSystemControllers: Failed because no system controler found !\n"));
 	return FALSE;
 }
 
@@ -932,7 +971,7 @@ BOOL CWmi::GetVideoAdapters(CVideoAdapterList *pMyList)
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetVideoAdapters: Trying to find Win32_VideoController WMI objects..."));
+	AddLog( _T( "WMI GetVideoAdapters: Trying to find Win32_VideoController WMI objects...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	try
@@ -959,22 +998,24 @@ BOOL CWmi::GetVideoAdapters(CVideoAdapterList *pMyList)
 				csBuffer.Format( _T("%I64u x %I64u"), u64HorzRes, u64VertRes);
 				myObject.SetScreenResolution( csBuffer);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Description: %s><VideoProcessor: %s><Memory: %s><Resolution: %s>\n"), 
+					myObject.GetName(), myObject.GetChipset(), myObject.GetMemory(), myObject.GetScreenResolution());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_VideoController object !\n"));
+		AddLog( _T( "\tFailed because no Win32_VideoController object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -1025,6 +1066,10 @@ BOOL CWmi::GetNetworkAdapters(CNetworkAdapterList *pMyList)
 				myObject.SetStatus( csBuffer);
 				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "AdapterType"));
 				myObject.SetTypeMIB( csBuffer);
+				AddLog( _T( "\t\t<IfIndex: %ld><Type: %s><Description: %s><Speed: %s><MAC: %s><IP Address: %s><IP Subnet: %s><Gateway: %s><DHCP: %s><Status: %s><TypeMIB: %s>\n"), 
+					myObject.GetIfIndex(), myObject.GetType(), myObject.GetDescription(), myObject.GetSpeed(),
+					myObject.GetMACAddress(), myObject.GetIPAddress(), myObject.GetIPNetMask(), myObject.GetGateway(), 
+					myObject.GetDhcpServer(), myObject.GetOperationalStatus(), myObject.GetTypeMIB());
 				if (!csMacAddress.IsEmpty())
 				{
 					// Skip adapters without MAC Address
@@ -1036,16 +1081,16 @@ BOOL CWmi::GetNetworkAdapters(CNetworkAdapterList *pMyList)
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_NetworkAdapterSetting object with valid MAC Address !\n"));
+		AddLog( _T( "\tFailed because no Win32_NetworkAdapterSetting object with valid MAC Address !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -1058,7 +1103,7 @@ BOOL CWmi::GetMonitors(CMonitorList *pMyList)
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetMonitors: Trying to find Win32_DesktopMonitor WMI objects..."));
+	AddLog( _T( "WMI GetMonitors: Trying to find Win32_DesktopMonitor WMI objects...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	try
@@ -1081,22 +1126,25 @@ BOOL CWmi::GetMonitors(CMonitorList *pMyList)
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "MonitorType"));
 				myObject.SetType( csBuffer);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetType());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_DesktopMonitor object !\n"));
+		AddLog( _T( "\tFailed because no Win32_DesktopMonitor object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -1109,7 +1157,7 @@ BOOL CWmi::GetModems(CModemList *pMyList)
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetModems: Trying to find Win32_POTSModem WMI objects..."));
+	AddLog( _T( "WMI GetModems: Trying to find Win32_POTSModem WMI objects...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	try
@@ -1136,21 +1184,24 @@ BOOL CWmi::GetModems(CModemList *pMyList)
 					pMyList->AddTail( myObject);
 					uIndex ++;
 				}
+				AddLog( _T( "\t\t<Type: %s><Name: %s><Model: %s><Description: %s><StatusInfo: %u>\n"), 
+					myObject.GetType(), myObject.GetName(), myObject.GetModel(),
+					myObject.GetDescription(), m_dllWMI.GetClassObjectDwordValue( _T( "StatusInfo")));
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_POTSModem object !\n"));
+		AddLog( _T( "\tFailed because no Win32_POTSModem object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -1163,7 +1214,7 @@ BOOL CWmi::GetSoundDevices(CSoundDeviceList *pMyList)
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetSoundDevices: Trying to find Win32_SoundDevice WMI objects..."));
+	AddLog( _T( "WMI GetSoundDevices: Trying to find Win32_SoundDevice WMI objects...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	try
@@ -1188,21 +1239,23 @@ BOOL CWmi::GetSoundDevices(CSoundDeviceList *pMyList)
 					pMyList->AddTail( myObject);
 					uIndex ++;
 				}
+				AddLog( _T( "\t\t<Manufacturer: %s><Name: %s><Description: %s><StatusInfo: %u>\n"), 
+					myObject.GetManufacturer(), myObject.GetName(), myObject.GetDescription(), m_dllWMI.GetClassObjectDwordValue( _T( "StatusInfo")));
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_SoundDevice object !\n"));
+		AddLog( _T( "\tFailed because no Win32_SoundDevice object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -1215,7 +1268,7 @@ BOOL CWmi::GetPrinters(CPrinterList *pMyList)
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetPrinters: Trying to find Win32_Printer WMI objects..."));
+	AddLog( _T( "WMI GetPrinters: Trying to find Win32_Printer WMI objects...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	try
@@ -1250,22 +1303,25 @@ BOOL CWmi::GetPrinters(CPrinterList *pMyList)
 				myObject.SetShared( m_dllWMI.GetClassObjectDwordValue( _T( "Shared")));
 				myObject.SetNetworkPrinter( m_dllWMI.GetClassObjectDwordValue( _T( "Network")));
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Name: %s><Driver: %s><Port: %s><Server: %s><Share: %s><Resolution: %s><Comment: %s><Shared: %s><Network: %s>\n"), 
+					myObject.GetName(), myObject.GetDriver(), myObject.GetPort(), myObject.GetServerName(), myObject.GetShareName(), 
+					myObject.GetResolution(), myObject.GetComment(), myObject.IsShared()?_T("Yes"):_T("No"), myObject.IsNetworkPrinter()?_T("Yes"):_T("No"));
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_Printer object !\n"));
+		AddLog( _T( "\tFailed because no Win32_Printer object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -1286,7 +1342,7 @@ BOOL CWmi::GetSystemPorts(CSystemPortList *pMyList)
 		return FALSE;
 
 	// Get Connector ports
-	AddLog( _T( "WMI GetSystemPorts: Trying to find Win32_PortConnector WMI objects..."));
+	AddLog( _T( "WMI GetSystemPorts: Trying to find Win32_PortConnector WMI objects...\n"));
 	try
 	{
 		uIndex = 0;
@@ -1311,6 +1367,8 @@ BOOL CWmi::GetSystemPorts(CSystemPortList *pMyList)
 				csBuffer.Format( _T( "%s %s"), myObject.GetName(), myObject.GetDescription());
 				myObject.SetCaption( csBuffer);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Name: %s><Type: %s><Caption: %s><Description: %s>\n"), 
+					myObject.GetName(), myObject.GetType(), myObject.GetCaption(), myObject.GetDescription());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -1318,21 +1376,21 @@ BOOL CWmi::GetSystemPorts(CSystemPortList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotal += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_PortConnector object !\n"));
+			AddLog( _T( "\tFailed because no Win32_PortConnector object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	if (uTotal == 0)
 	{
 		// No connector port object, try serial and parallel
 		// Get serial ports
-		AddLog( _T( "WMI GetSystemPorts: Trying to find Win32_SerialPort WMI objects..."));
+		AddLog( _T( "WMI GetSystemPorts: Trying to find Win32_SerialPort WMI objects...\n"));
 		// Reset object list content
 		pMyList->RemoveAll();
 		try
@@ -1355,24 +1413,26 @@ BOOL CWmi::GetSystemPorts(CSystemPortList *pMyList)
 						pMyList->AddTail( myObject);
 						uIndex ++;
 					}
+					AddLog( _T( "\t\t<Name: %s><Type: %s><Caption: %s><Description: %s>\n"), 
+						myObject.GetName(), myObject.GetType(), myObject.GetCaption(), myObject.GetDescription());
 				}
 				m_dllWMI.CloseEnumClassObject();
 			}
 			if (uIndex > 0)
 			{
 				uTotal += uIndex;
-				AddLog( _T( "OK (%u objects)\n"), uIndex);
+				AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			}
 			else
-				AddLog( _T( "Failed because no Win32_SerialPort object !\n"));
+				AddLog( _T( "\tFailed because no Win32_SerialPort object !\n"));
 		}
 		catch (CException *pEx)
 		{
 			pEx->Delete();
-			AddLog( _T( "Failed because unknown exception !\n"));
+			AddLog( _T( "\tFailed because unknown exception !\n"));
 		}
 		// Get parallel ports
-		AddLog( _T( "WMI GetSystemPorts: Trying to find Win32_ParallelPort WMI objects..."));
+		AddLog( _T( "WMI GetSystemPorts: Trying to find Win32_ParallelPort WMI objects...\n"));
 		try
 		{
 			uIndex = 0;
@@ -1393,29 +1453,29 @@ BOOL CWmi::GetSystemPorts(CSystemPortList *pMyList)
 						pMyList->AddTail( myObject);
 						uIndex ++;
 					}
+					AddLog( _T( "\t\t<Name: %s><Type: %s><Caption: %s><Description: %s>\n"), 
+						myObject.GetName(), myObject.GetType(), myObject.GetCaption(), myObject.GetDescription());
 				}
 				m_dllWMI.CloseEnumClassObject();
 			}
 			if (uIndex > 0)
 			{
 				uTotal += uIndex;
-				AddLog( _T( "OK (%u objects)\n"), uIndex);
+				AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			}
 			else
-				AddLog( _T( "Failed because no Win32_ParallelPort object !\n"));
+				AddLog( _T( "\tFailed because no Win32_ParallelPort object !\n"));
 		}
 		catch (CException *pEx)
 		{
 			pEx->Delete();
-			AddLog( _T( "Failed because unknown exception !\n"));
+			AddLog( _T( "\tFailed because unknown exception !\n"));
 		}
 	}
 	if (uTotal > 0)
 	{
-		AddLog( _T( "WMI GetSystemPorts: OK\n"));
 		return TRUE;
 	}
-	AddLog( _T( "WMI GetSystemPorts: Failed because no system port found !\n"));
 	return FALSE;
 }
 
@@ -1428,7 +1488,7 @@ DWORD CWmi::GetProcessors(CString &csProcType, CString &csProcSpeed)
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetProcessors: Trying to find Win32_Processor WMI objects..."));
+	AddLog( _T( "WMI GetProcessors: Trying to find Win32_Processor WMI objects...\n"));
 	dwNumber = 0;
 	try
 	{
@@ -1444,7 +1504,7 @@ DWORD CWmi::GetProcessors(CString &csProcType, CString &csProcSpeed)
 				// If value NumberOfCores is not available, assume at least 1 core
 				if (dwCore == 0)
 					dwCore = 1;
-				csProcType.AppendFormat( _T( " [%lu core(s) %s]"), dwCore, GetArchitecture( dwArch));
+				csProcType.AppendFormat( _T( " [%lu cores %s]"), dwCore, GetArchitecture( dwArch));
 				StrForSQL( csProcType);
 				dwNumber ++;
 			}
@@ -1452,16 +1512,16 @@ DWORD CWmi::GetProcessors(CString &csProcType, CString &csProcSpeed)
 		}
 		if (dwNumber > 0)
 		{
-			AddLog( _T( "%lu x %s at %s. OK\n"), dwNumber, csProcType, csProcSpeed);
+			AddLog( _T( "\tOK (%lu x %s at %s)\n"), dwNumber, csProcType, csProcSpeed);
 			return dwNumber;
 		}
-		AddLog( _T( "Failed because no Win32_Processor object !\n"));
+		AddLog( _T( "\tFailed because no Win32_Processor object !\n"));
 		return 0;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return 0;
 	}
 }
@@ -1540,22 +1600,27 @@ DWORD CWmi::GetCPU( CCpuList *pMyList, CRegistry *pReg)
 				myObject.SetSN( csValue);
 				// Device is OK
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Manufacturer: %s><Name: %s><Socket: %s><Architecture: %s><NumberOfCores: %u><NumberOfLogicalProcessors: %u><CurrentClockSpeed: %u><MaxClockSpeed: %u><L2CacheSize: %u><AddressWidth: %u><DataWidth: %u><VoltageCaps: %s><CpuStatus: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetName(), myObject.GetSocket(), myObject.GetArchitecture(),
+					myObject.GetNumberOfCores(), myObject.GetNumberOfLogicalProcessors(), myObject.GetCurrentClockSpeed(),
+					myObject.GetMaxClockSpeed(), myObject.GetL2CacheSize(), myObject.GetAddressWidth(), myObject.GetDataWidth(),
+					myObject.GetVoltage(), myObject.GetStatus());
 				dwNumber ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (dwNumber > 0)
 		{
-			AddLog( _T( "WMI GetCPU: OK (%u objects)\n"), dwNumber);
+			AddLog( _T( "\tOK (%u objects)\n"), dwNumber);
 			return dwNumber;
 		}
-		AddLog( _T( "WMI GetCPU: Failed because no Win32_Processor object !\n"));
+		AddLog( _T( "\tFailed because no Win32_Processor object !\n"));
 		return 0;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "WMI GetCPU: Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return 0;
 	}
 }
@@ -1566,7 +1631,7 @@ BOOL CWmi::GetOS(CString &csName, CString &csVersion, CString &csComment, CStrin
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetOS: Trying to find Win32_OperatingSystem WMI objects..."));
+	AddLog( _T( "WMI GetOS: Trying to find Win32_OperatingSystem WMI objects...\n"));
 	try
 	{
 		UINT	uIndex = 0;
@@ -1587,22 +1652,23 @@ BOOL CWmi::GetOS(CString &csName, CString &csVersion, CString &csComment, CStrin
 				csInstallDate = m_dllWMI.GetClassObjectStringValue( _T( "InstallDate"));
 				csInstallDate.Truncate( 8);
 				StrForSQL( csInstallDate);
+				AddLog( _T( "\t\t<OS: %s %s %s><Comments: %s>\n"), csName, csVersion, csComment, csDescription);
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%s %s %s %s).\n"), csName, csVersion, csComment, csDescription);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_OperatingSystem object !\n"));
+		AddLog( _T( "\tFailed because no Win32_OperatingSystem object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -1613,9 +1679,10 @@ DWORD CWmi::GetAddressWidthOS()
 	DWORD			dwNumber = 0;
 	// If not WMI connected => cannot do this
 	if (!m_bConnected)
-		return FALSE;
+		// If value AddressWidth is not available, assume 32 bits
+		return 32;
 
-	AddLog( _T( "WMI GetAddressWidthOS: Trying to find Win32_Processor WMI objects..."));
+	AddLog( _T( "WMI GetAddressWidthOS: Trying to find Win32_Processor WMI objects...\n"));
 	try
 	{
 		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_Processor")))
@@ -1626,15 +1693,16 @@ DWORD CWmi::GetAddressWidthOS()
 				// If value AddressWidth is not available, assume 32 bits
 				if (dwBits == 0)
 					dwBits = 32;
+				AddLog( _T( "\t\tProcessor uses %u bits AddressWidth\n"), dwBits);
 				dwNumber ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (dwNumber > 0)
-			AddLog( _T( "%u bits OS. OK\n"), dwBits);
+			AddLog( _T( "\tOK (%u objects)\n"), dwNumber);
 		else
 		{
-			AddLog( _T( "Failed because no Win32_Processor object, assuming 32 bits OS !\n"));
+			AddLog( _T( "\tFailed because no Win32_Processor object, assuming 32 bits OS !\n"));
 			dwBits = 32;
 		}
 		return dwBits;
@@ -1642,7 +1710,7 @@ DWORD CWmi::GetAddressWidthOS()
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception, assuming 32 bits OS !\n"));
+		AddLog( _T( "\tFailed because unknown exception, assuming 32 bits OS !\n"));
 		dwBits = 32;
 		return dwBits;
 	}
@@ -1655,7 +1723,7 @@ BOOL CWmi::GetWindowsRegistration( CString &csCompany, CString &csUser, CString 
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetWindowsRegistration: Trying to find Win32_OperatingSystem WMI objects..."));
+	AddLog( _T( "WMI GetWindowsRegistration: Trying to find Win32_OperatingSystem WMI objects...\n"));
 	try
 	{
 		UINT	uIndex = 0;
@@ -1670,22 +1738,23 @@ BOOL CWmi::GetWindowsRegistration( CString &csCompany, CString &csUser, CString 
 				StrForSQL( csUser);
 				csSN = m_dllWMI.GetClassObjectStringValue( _T( "SerialNumber"));
 				StrForSQL( csSN);
+				AddLog( _T( "\t\t<Organization: %s><User: %s><S/N: %s>\n"), csCompany, csUser, csSN);
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%s %s %s).\n"), csCompany, csUser, csSN);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_OperatingSystem object !\n"));
+		AddLog( _T( "\tFailed because no Win32_OperatingSystem object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -1724,48 +1793,54 @@ BOOL CWmi::ParseChassisType(CString &csType)
 
 BOOL CWmi::GetDomainOrWorkgroup( CString &csDomain)
 {
-	BOOL	bResult = FALSE;
-
 	// If not WMI connected => cannot do this
 	if (!m_bConnected)
-		return bResult;
+		return FALSE;
 
-	// Try to use win32 computer system object to get System Manufacturer, Model
-	AddLog( _T( "WMI GetDomainOrWorkgroup: Trying to find Win32_ComputerSystem WMI objects..."));
+	// Try to use win32 computer system object to get Domain
+	AddLog( _T( "WMI GetDomainOrWorkgroup: Trying to find Win32_ComputerSystem WMI objects...\n"));
 	try
 	{
+		UINT	uIndex = 0;
 		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_ComputerSystem")))
 		{
 			while (m_dllWMI.MoveNextEnumClassObject())
 			{
 				csDomain = m_dllWMI.GetClassObjectStringValue( _T( "Domain"));
+				AddLog( _T( "\t\t<Domain: %s>\n"), csDomain);
+				uIndex++;
+
 			}
 			m_dllWMI.CloseEnumClassObject();
-			AddLog( _T( "OK (%s)\n"), csDomain);
-			bResult = TRUE;
 		}
+		if (uIndex > 0)
+		{
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
+			return TRUE;
+		}
+		AddLog( _T( "\tFailed because no Win32_ComputerSystem object !\n"));
+		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
-	return bResult;
+	return FALSE;
 }
 
 
 BOOL CWmi::GetLoggedOnUser( CString &csUser)
 {
-	BOOL	bResult = FALSE;
-
 	// If not WMI connected => cannot do this
 	if (!m_bConnected)
-		return bResult;
+		return FALSE;
 
 	// Try to use win32 logon session system object to get interactive session
-	AddLog( _T( "WMI GetLoggedOnUser: Trying to find Win32_LoggedOnUser WMI objects..."));
+	AddLog( _T( "WMI GetLoggedOnUser: Trying to find Win32_LoggedOnUser WMI objects...\n"));
 	try
 	{
+		UINT	uIndex = 0;
 		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_LoggedOnUser")))
 		{
 			while (m_dllWMI.MoveNextEnumClassObject())
@@ -1773,23 +1848,27 @@ BOOL CWmi::GetLoggedOnUser( CString &csUser)
 				if (m_dllWMI.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "LogonType")) == 2)
 				{
 					// This is an interactive session
-					bResult = TRUE;
 					csUser = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Name"));
+					AddLog( _T( "\t\t<User: %s>\n"), csUser);
+					uIndex++;
 				}
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
-		if (bResult)
-			AddLog( _T( "OK (%s)\n"), csUser);
-		else
-			AddLog( _T( "No interactive session found !\n"));
+		if (uIndex > 0)
+		{
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
+			return TRUE;
+		}
+		AddLog( _T( "\tFailed because no Win32_LoggedOnUser object with interactive session found !\n"));
+		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
-	return bResult;
+	return FALSE;
 }
 
 BOOL CWmi::GetUserDomain( CString &csDomain)
@@ -1801,9 +1880,10 @@ BOOL CWmi::GetUserDomain( CString &csDomain)
 		return bResult;
 
 	// Try to use win32 logon session system object to get interactive session
-	AddLog( _T( "WMI GetUserDomain: Trying to find Win32_LoggedOnUser WMI objects..."));
+	AddLog( _T( "WMI GetUserDomain: Trying to find Win32_LoggedOnUser WMI objects...\n"));
 	try
 	{
+		UINT	uIndex = 0;
 		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_LoggedOnUser")))
 		{
 			while (m_dllWMI.MoveNextEnumClassObject())
@@ -1811,23 +1891,27 @@ BOOL CWmi::GetUserDomain( CString &csDomain)
 				if (m_dllWMI.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "LogonType")) == 2)
 				{
 					// This is an interactive session
-					bResult = TRUE;
 					csDomain = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Domain"));
+					AddLog( _T( "\t\t<Domain: %s>\n"), csDomain);
+					uIndex++;
 				}
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
-		if (bResult)
-			AddLog( _T( "OK (%s)\n"), csDomain);
-		else
-			AddLog( _T( "No interactive session found !\n"));
+		if (uIndex > 0)
+		{
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
+			return TRUE;
+		}
+		AddLog( _T( "\tFailed because no Win32_LoggedOnUser object with interactive session found !\n"));
+		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
-	return bResult;
+	return FALSE;
 }
 
 BOOL CWmi::GetSystemSlots(CSystemSlotList *pMyList)
@@ -1838,7 +1922,7 @@ BOOL CWmi::GetSystemSlots(CSystemSlotList *pMyList)
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetSystemSlots: Trying to find Win32_SystemSlot WMI objects..."));
+	AddLog( _T( "WMI GetSystemSlots: Trying to find Win32_SystemSlot WMI objects...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	try
@@ -1869,22 +1953,25 @@ BOOL CWmi::GetSystemSlots(CSystemSlotList *pMyList)
 				myObject.SetShared( dwValue);
 				// Device is OK
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Name: %s><Description: %s><Slot: %s><Usage: %s><Status: %s><Shared: %s>\n"), 
+					myObject.GetName(), myObject.GetDescription(), myObject.GetSlotDesignation(), myObject.GetUsage(),
+					myObject.IsShared()?_T("Yes"):_T("No"));
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_SystemSlot object !\n"));
+		AddLog( _T( "\tFailed because no Win32_SystemSlot object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -1897,7 +1984,7 @@ BOOL CWmi::GetLogicalDrives( CLogicalDriveList *pMyList)
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetLogicalDrives: Trying to find Win32_LogicalDisk WMI objects..."));
+	AddLog( _T( "WMI GetLogicalDrives: Trying to find Win32_LogicalDisk WMI objects...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	try
@@ -1973,22 +2060,25 @@ BOOL CWmi::GetLogicalDrives( CLogicalDriveList *pMyList)
 				}
 
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Drive: %s><Type: %s><Filesystem: %s><Volum Name: %s><size: %ld MB><Free Space: %ld MB>\n"), 
+					myObject.GetDriveLetter(), myObject.GetDriveType(), myObject.GetFileSystem(), myObject.GetVolumName(),
+					myObject.GetTotalMB(), myObject.GetFreeMB());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_LogicalDisk object !\n"));
+		AddLog( _T( "\tFailed because no Win32_LogicalDisk object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -2001,7 +2091,7 @@ BOOL CWmi::GetMemorySlots(CMemorySlotList *pMyList)
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetMemorySlots: Trying to find Win32_PhysicalMemory WMI objects..."));
+	AddLog( _T( "WMI GetMemorySlots: Trying to find Win32_PhysicalMemory WMI objects...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	try
@@ -2037,7 +2127,10 @@ BOOL CWmi::GetMemorySlots(CMemorySlotList *pMyList)
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Speed"));
 				myObject.SetSpeed( csBuffer);
 				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "MemoryType"));
-				myObject.SetType( GetMemorySlotType( dwValue));
+				if (u64Value > 0)
+					myObject.SetType( GetMemorySlotType( dwValue));
+				else
+					myObject.SetType( _T("Empty slot"));
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "SerialNumber"));
 /*				// If S/N is empty, get Part number
 				if (csBuffer.IsEmpty())
@@ -2047,18 +2140,21 @@ BOOL CWmi::GetMemorySlots(CMemorySlotList *pMyList)
 					myObject.SetSN( csBuffer);
 				// Device is OK
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Caption: %s><Description: %s><Slot: %u><Capacity: %s><Speed: %s><Type: %s><S/N: %s>\n"), 
+					myObject.GetCaption(), myObject.GetDescription(), myObject.GetSlotNumber(), myObject.GetCapacity(),
+					myObject.GetSpeed(), myObject.GetType(), myObject.GetSN());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex == 0)
 		{
-			AddLog( _T( "Failed because no Win32_PhysicalMemory object !\n"));
+			AddLog( _T( "\tFailed because no Win32_PhysicalMemory object !\n"));
 			return FALSE;
 		}
-		AddLog( _T( "OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		// Checking Physical Memory Array objects for completing properties
-		AddLog( _T( "WMI GetMemorySlots: Trying to find Win32_PhysicalMemoryArray WMI objects..."));
+		AddLog( _T( "WMI GetMemorySlots: Trying to find Win32_PhysicalMemoryArray WMI objects...\n"));
 		pPosNext = pMyList->GetHeadPosition();
 		pPosCur = pMyList->GetHeadPosition();
 		UINT nbFilled = uIndex;
@@ -2113,13 +2209,13 @@ BOOL CWmi::GetMemorySlots(CMemorySlotList *pMyList)
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
-		AddLog( _T( "OK (%u objects updated)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects updated)\n"), uIndex);
 		return TRUE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -2170,7 +2266,7 @@ BOOL CWmi::GetInputDevices(CInputDeviceList *pMyList)
 		return FALSE;
 
 	// Get keyboard
-	AddLog( _T( "WMI GetInputDevices: Trying to find Win32_Keyboard WMI objects..."));
+	AddLog( _T( "WMI GetInputDevices: Trying to find Win32_Keyboard WMI objects...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	try
@@ -2191,6 +2287,9 @@ BOOL CWmi::GetInputDevices(CInputDeviceList *pMyList)
 				myObject.SetPointingType( NOT_AVAILABLE);
 				myObject.SetPointingInterface( NOT_AVAILABLE);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Type: %s><Manufacturer: %s><Caption: %s><Description: %s><Pointing Type: %s><Interface: %s>\n"), 
+					myObject.GetType(), myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetPointingType(), myObject.GetPointingInterface());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -2198,18 +2297,18 @@ BOOL CWmi::GetInputDevices(CInputDeviceList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotal += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_Keyboard object !\n"));
+			AddLog( _T( "\tFailed because no Win32_Keyboard object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	// Get pointing devices
-	AddLog( _T( "WMI GetInputDevices: Trying to find Win32_PointingDevice WMI objects..."));
+	AddLog( _T( "WMI GetInputDevices: Trying to find Win32_PointingDevice WMI objects...\n"));
 	try
 	{
 		uIndex = 0;
@@ -2230,6 +2329,9 @@ BOOL CWmi::GetInputDevices(CInputDeviceList *pMyList)
 				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "DeviceInterface"));
 				myObject.SetPointingInterface( dwValue);
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Type: %s><Manufacturer: %s><Caption: %s><Description: %s><Pointing Type: %s><Interface: %s>\n"), 
+					myObject.GetType(), myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetPointingType(), myObject.GetPointingInterface());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
@@ -2237,18 +2339,18 @@ BOOL CWmi::GetInputDevices(CInputDeviceList *pMyList)
 		if (uIndex > 0)
 		{
 			uTotal += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_PointingDevice object !\n"));
+			AddLog( _T( "\tFailed because no Win32_PointingDevice object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	// Get smartcard reader
-	AddLog( _T( "WMI GetInputDevices: Trying to find Win32_PnPSignedDriver WMI objects for Smartcard Reader..."));
+	AddLog( _T( "WMI GetInputDevices: Trying to find Win32_PnPSignedDriver WMI objects for Smartcard Reader...\n"));
 	try
 	{
 		uIndex = 0;
@@ -2256,45 +2358,46 @@ BOOL CWmi::GetInputDevices(CInputDeviceList *pMyList)
 		{
 			while (m_dllWMI.MoveNextEnumClassObject())
 			{
+				myObject.Clear();
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Manufacturer"));
+				myObject.SetManufacturer( csBuffer);
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "DeviceName"));
+				myObject.SetCaption( csBuffer);
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
+				myObject.SetDescription( csBuffer);
+				myObject.SetPointingType( NOT_AVAILABLE);
+				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Location"));
+				myObject.SetPointingInterface( csBuffer);
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "DeviceClass"));
 				if (csBuffer.CompareNoCase( _T( "SMARTCARDREADER")) == 0)
 				{
-					myObject.Clear();
 					myObject.SetType( INPUT_DEVICE_SMARTCARD);
-					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Manufacturer"));
-					myObject.SetManufacturer( csBuffer);
-					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "DeviceName"));
-					myObject.SetCaption( csBuffer);
-					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Description"));
-					myObject.SetDescription( csBuffer);
-					myObject.SetPointingType( NOT_AVAILABLE);
-					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Location"));
-					myObject.SetPointingInterface( csBuffer);
 					pMyList->AddTail( myObject);
 					uIndex ++;
 				}
+				AddLog( _T( "\t\t<Type: %s><Manufacturer: %s><Caption: %s><Description: %s><Pointing Type: %s><Interface: %s>\n"), 
+					csBuffer, myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetPointingType(), myObject.GetPointingInterface());
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
 			uTotal += uIndex;
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 		}
 		else
-			AddLog( _T( "Failed because no Win32_PnPSignedDriver Smartcard Reader object !\n"));
+			AddLog( _T( "\tFailed because no Win32_PnPSignedDriver Smartcard Reader object !\n"));
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 	}
 	if (uTotal > 0)
 	{
-		AddLog( _T( "WMI GetInputDevices: OK\n"));
 		return TRUE;
 	}
-	AddLog( _T( "WMI GetInputDevices: Failed because no input device found !\n"));
 	return FALSE;
 }
 
@@ -2306,7 +2409,7 @@ BOOL CWmi::GetHotFixes( CSoftwareList *pMyList)
 	if (!m_bConnected)
 		return FALSE;
 
-	AddLog( _T( "WMI GetHotFixes: Trying to find Win32_QuickFixEngineering WMI objects..."));
+	AddLog( _T( "WMI GetHotFixes: Trying to find Win32_QuickFixEngineering WMI objects...\n"));
 	try
 	{
 		CSoftware	myObject;
@@ -2334,19 +2437,21 @@ BOOL CWmi::GetHotFixes( CSoftwareList *pMyList)
 				myObject.SetInstallDate( csBuffer1);
 				// Software is OK
 				pMyList->AddTail( myObject);
+				AddLog( _T( "\t\t<Publisher: %s><Name: %s><Comments: %s><InstallDate: %s>\n"), 
+					myObject.GetPublisher(), myObject.GetName(), myObject.GetComments(), myObject.GetInstallDate());
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
-			AddLog( _T( "OK (%u objects)\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_QuickFixEngineering object !\n"));
+		AddLog( _T( "\tFailed because no Win32_QuickFixEngineering object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }
@@ -2361,7 +2466,7 @@ BOOL CWmi::GetUUID( CString &csUUID)
 		return FALSE;
 	
 	// GET BIOS Informations
-	AddLog( _T( "WMI GetUUID: Trying to find Win32_ComputerSystemProduct WMI objects..."));
+	AddLog( _T( "WMI GetUUID: Trying to find Win32_ComputerSystemProduct WMI objects...\n"));
 	try
 	{
 		if (m_dllWMI.BeginEnumClassObject( _T( "Win32_ComputerSystemProduct")))
@@ -2369,22 +2474,23 @@ BOOL CWmi::GetUUID( CString &csUUID)
 			while (m_dllWMI.MoveNextEnumClassObject())
 			{
 				csUUID = m_dllWMI.GetClassObjectStringValue( _T( "UUID"));
+				AddLog( _T( "\t\t<UUID: %s>\n"), csUUID);
 				uIndex ++;
 			}
 			m_dllWMI.CloseEnumClassObject();
 		}
 		if (uIndex > 0)
 		{
-			AddLog( _T( "OK (%s)\n"), csUUID);
+			AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 			return TRUE;
 		}
-		AddLog( _T( "Failed because no Win32_ComputerSystemProduct object !\n"));
+		AddLog( _T( "\tFailed because no Win32_ComputerSystemProduct object !\n"));
 		return FALSE;
 	}
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		AddLog( _T( "Failed because unknown exception !\n"));
+		AddLog( _T( "\tFailed because unknown exception !\n"));
 		return FALSE;
 	}
 }

@@ -29,15 +29,19 @@ static char THIS_FILE[] = __FILE__;
 #define NT_REGISTRATION_COMPANY_VALUE			_T( "RegisteredOrganization")
 #define NT_REGISTRATION_OWNER_VALUE				_T( "RegisteredOwner")
 
-// Defines for retrieving logon username from 9X/Me registry
-#define NT_LOGON_USER_KEY						_T( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer")
-#define NT_LOGON_USER_VALUE						_T( "Logon User Name")
+// Defines for retrieving logon username from NT/2000/XP registry
+#define NT_LOGON_USER_KEY						_T( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\WinLogon")
+#define NT_LOGON_USER_VALUE						_T( "DefaultUserName")
+
+// Defines for retrieving logon username from Vista+ registry
+#define VISTA_LOGON_USER_KEY					_T( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI")
+#define VISTA_LOGON_USER_VALUE					_T( "LastLoggedOnSAMUser")
 
 // Defines for retrieving last user who'd been logged in
 #define NT_LASTLOGGEDUSER_USER_KEY				_T( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon")
 #define NT_LASTLOGGEDUSER_USER_VALUE			_T( "DefaultUserName")
 
-// Defines for retrieving last user who'd been logged in on Vista
+// Defines for retrieving last user who'd been logged in on Vista+
 #define VISTA_LASTLOGGEDUSER_USER_KEY			_T( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI")
 #define VISTA_LASTLOGGEDUSER_USER_VALUE			_T( "LastLoggedOnUser" )
 
@@ -48,8 +52,6 @@ static char THIS_FILE[] = __FILE__;
 // Defines for retrieving domain or workgroup from NT registry
 #define NT_DOMAIN_KEY							_T( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon")
 #define NT_DOMAIN_VALUE							_T( "DefaultDomainName")
-#define NT_WORKGROUP_KEY						_T( "SYSTEM\\CurrentControlSet\\Services\\VxD\\VNETSUP")
-#define NT_WORKGROUP_VALUE						_T( "Workgroup")
 
 // Defines for retrieving BIOS from NT registry
 #define NT_BIOS_KEY								_T( "HARDWARE\\Description\\System")
@@ -61,12 +63,15 @@ static char THIS_FILE[] = __FILE__;
 #define NT_BIOS_VERSION_VALUE					_T( "SystemBiosVersion")
 #define NT_BIOS_DATE_VALUE						_T( "SystemBiosDate")
 
-// Defines for retrieving BIOS from Windows Update NT registry
-#define NT_WU_KEY								_T( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\WindowsUpdate\\OemInfo")
-#define NT_WU_SYSTEM_MANUFACTURER_VALUE			_T( "WbemOem")
-#define NT_WU_SYSTEM_MODEL_VALUE				_T( "WbemProduct")
-#define NT_WU_ACPI_MANUFACTURER_VALUE			_T( "AcpiOem")
-#define NT_WU_ACPI_MODEL_VALUE					_T( "AcpiProduct")
+// Defines for retrieving BIOS from Vista registry
+#define VISTA_BIOS_KEY							_T( "HARDWARE\\Description\\System\\BIOS")
+#define VISTA_SYSTEM_MANUFACTURER_VALUE			_T( "SystemManufacturer")
+#define VISTA_SYSTEM_MODEL_VALUE				_T( "SystemProductName")
+#define VISTA_SYSTEM_SERIAL_VALUE				_T( "SystemFamily")
+#define VISTA_BIOS_MACHINE_TYPE_VALUE			_T( "SystemFamily")
+#define VISTA_BIOS_MANUFACTURER_VALUE			_T( "BIOSVendor")
+#define VISTA_BIOS_VERSION_VALUE				_T( "BIOSVersion")
+#define VISTA_BIOS_DATE_VALUE					_T( "BIOSReleaseDate")
 
 // Defines for retrieving processors from NT registry
 #define NT_PROCESSOR_KEY						_T( "HARDWARE\\Description\\System\\CentralProcessor")
@@ -242,12 +247,15 @@ CRegistry::CRegistry()
 		m_bIsXP = (osVersion.dwPlatformId == VER_PLATFORM_WIN32_NT) &&
 				  (((osVersion.dwMajorVersion == 5) && (osVersion.dwMinorVersion >= 1)) ||
 				  (osVersion.dwMajorVersion > 5));
+		m_bIsVista = (osVersion.dwPlatformId == VER_PLATFORM_WIN32_NT) &&
+				  	 (osVersion.dwMajorVersion >= 6);
 	}
 	else
 	{
 		// Failed so assume NT based, but not XP or later
 		m_dwPlatformId = VER_PLATFORM_WIN32_NT;
 		m_bIsXP = FALSE;
+		m_bIsVista = FALSE;
 	}
 	m_hKey = NULL;
 	m_bRemoteRegistry = FALSE;
@@ -401,24 +409,24 @@ BOOL CRegistry::Connect(LPCTSTR lpstrDevice)
 	// Do not connect if already connected
 	if (m_hKey != NULL)
 		return TRUE;
-	AddLog( _T( "Registry Connect: Trying to connect to HKEY_LOCAL_MACHINE on device <%s>..."), lpstrDevice == NULL ? _T( "Localhost") : lpstrDevice);
+	AddLog( _T( "Registry Connect: Trying to connect to HKEY_LOCAL_MACHINE on device <%s>...\n"), lpstrDevice == NULL ? _T( "Localhost") : lpstrDevice);
 	if (lpstrDevice != NULL)
 	{
 		// Connect to remote registry
 		csDevice.Format( _T( "\\\\%s"), lpstrDevice);
 		if (RegConnectRegistry( csDevice, HKEY_LOCAL_MACHINE, &m_hKey) != ERROR_SUCCESS)
 		{
-			AddLog( _T( "Failed in call to <RegConnectRegistry> function for %s\\HKLM !\n"),
+			AddLog( _T( "\tFailed in call to <RegConnectRegistry> function for %s\\HKLM !\n"),
 					csDevice);
 			return FALSE;
 		}
 		m_bRemoteRegistry = TRUE;
-		AddLog( _T( "OK.\n"));
+		AddLog( _T( "\tOK\n"));
 		return TRUE;
 	}
 	// connect to local registry
 	m_hKey = HKEY_LOCAL_MACHINE;
-	AddLog( _T( "OK.\n"));
+	AddLog( _T( "\tOK\n"));
 	return TRUE;
 }
 
@@ -445,13 +453,15 @@ BOOL CRegistry::GetBiosInfo( CBios *pMyBios)
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
+		if (m_bIsVista && GetBiosInfoVista( pMyBios))
+			return TRUE;
 		// Windows NT/2000/XP/2003
 		return GetBiosInfoNT( pMyBios);
 	default:
 		// Unknown
 		pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE
 					  NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
-		AddLog( _T( "Registry GetBiosInfo...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetBiosInfo:\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -465,7 +475,7 @@ BOOL CRegistry::GetBiosInfoNT( CBios *pMyBios)
 	BOOL	bManufacturer = FALSE,
 			bModel = FALSE;
 
-	AddLog( _T( "Registry NT GetBiosInfo...\n"));
+	AddLog( _T( "Registry NT GetBiosInfo: Trying to find BIOS in HKLM\\%s...\n"), NT_BIOS_KEY);
 	// Windows NT
 	lResult = RegOpenKeyEx( m_hKey, NT_BIOS_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 	if (lResult == ERROR_SUCCESS)
@@ -558,6 +568,9 @@ BOOL CRegistry::GetBiosInfoNT( CBios *pMyBios)
 		{
 			pMyBios->SetMachineType( csValue);
 		}
+		AddLog( _T( "\t\t<System Manufacturer: %s><System Model: %s><System S/N: %s><BIOS Manufacturer: %s><BIOS Version: %s><BIOS Date: %s><Type: %s>\n"), 
+			pMyBios->GetSystemManufacturer(), pMyBios->GetSystemModel(), pMyBios->GetSystemSerialNumber(), pMyBios->GetBiosManufacturer(),
+			pMyBios->GetBiosVersion(), pMyBios->GetBiosDate(), pMyBios->GetMachineType());
 		RegCloseKey( hKey);
 	}
 	else
@@ -567,99 +580,124 @@ BOOL CRegistry::GetBiosInfoNT( CBios *pMyBios)
 		pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE
 					  NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
 	}
-	if ((!bManufacturer) || (!bModel))
+	AddLog( _T( "\tOK.\n"));
+	return TRUE;
+}
+
+BOOL CRegistry::GetBiosInfoVista( CBios *pMyBios)
+{
+	HKEY	hKey = NULL;
+	CString	csValue;
+	LONG	lResult;
+	BOOL	bManufacturer = FALSE,
+			bModel = FALSE;
+
+	AddLog( _T( "Registry Vista GetBiosInfo: Trying to find BIOS in HKLM\\%s...\n"), NT_BIOS_KEY);
+	// Windows NT
+	lResult = RegOpenKeyEx( m_hKey, VISTA_BIOS_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
+	if (lResult == ERROR_SUCCESS)
 	{
-		// Try to get System Manufacturer and Model from Windows Update Registry key
-		lResult = RegOpenKeyEx( m_hKey, NT_WU_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
-		if (lResult == ERROR_SUCCESS)
+		// Get System manufacturer
+		lResult = GetValue( hKey, VISTA_SYSTEM_MANUFACTURER_VALUE, csValue);
+		if (lResult != ERROR_SUCCESS)
 		{
-			// Get System manufacturer
-			if (!bManufacturer)
-			{
-				lResult = GetValue( hKey, NT_WU_SYSTEM_MANUFACTURER_VALUE, csValue);
-				if (lResult != ERROR_SUCCESS)
-				{
-					AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
-							NT_WU_KEY, NT_WU_SYSTEM_MANUFACTURER_VALUE);
-					pMyBios->SetSystemManufacturer( NOT_AVAILABLE);
-					bManufacturer = FALSE;
-				}
-				else
-				{
-					pMyBios->SetSystemManufacturer( csValue);
-					if (csValue.CompareNoCase( _T( "System Manufacturer")) == 0)
-						// Default WU value when not available
-						bManufacturer = FALSE;
-					else
-						// Not default value
-						bManufacturer = TRUE;
-				}
-			}
-			// Get System model
-			if (!bModel)
-			{
-				lResult = GetValue( hKey, NT_WU_SYSTEM_MODEL_VALUE, csValue);
-				if (lResult != ERROR_SUCCESS)
-				{
-					AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
-							NT_WU_KEY, NT_WU_SYSTEM_MODEL_VALUE);
-					pMyBios->SetSystemModel( NOT_AVAILABLE);
-					bModel = FALSE;
-				}
-				else
-				{
-					pMyBios->SetSystemModel( csValue);
-					if (csValue.CompareNoCase( _T( "System Name")) == 0)
-						// Default WU value when not available
-						bModel = FALSE;
-					else
-						// Not default value
-						bModel = TRUE;
-				}
-			}
-			// Get ACPI manufacturer
-			if (!bManufacturer)
-			{
-				lResult = GetValue( hKey, NT_WU_ACPI_MANUFACTURER_VALUE, csValue);
-				if (lResult != ERROR_SUCCESS)
-				{
-					AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
-							NT_WU_KEY, NT_WU_ACPI_MANUFACTURER_VALUE);
-					pMyBios->SetSystemManufacturer( NOT_AVAILABLE);
-					bManufacturer = FALSE;
-				}
-				else
-				{
-					pMyBios->SetSystemManufacturer( csValue);
-					bManufacturer = TRUE;
-				}
-			}
-			// Get ACPI model
-			if (!bModel)
-			{
-				lResult = GetValue( hKey, NT_WU_ACPI_MODEL_VALUE, csValue);
-				if (lResult != ERROR_SUCCESS)
-				{
-					AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
-							NT_WU_KEY, NT_WU_ACPI_MODEL_VALUE);
-					pMyBios->SetSystemModel( NOT_AVAILABLE);
-					bModel = FALSE;
-				}
-				else
-				{
-					pMyBios->SetSystemModel( csValue);
-					bModel = TRUE;
-				}
-			}
-			RegCloseKey( hKey);
+			AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+					VISTA_BIOS_KEY, VISTA_SYSTEM_MANUFACTURER_VALUE);
+			pMyBios->SetSystemManufacturer( NOT_AVAILABLE);
+			bManufacturer = FALSE;
 		}
 		else
 		{
-			AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
-					NT_WU_KEY);
+			pMyBios->SetSystemManufacturer( csValue);
+			bManufacturer = TRUE;
 		}
+		// Get System model
+		lResult = GetValue( hKey, VISTA_SYSTEM_MODEL_VALUE, csValue);
+		if (lResult != ERROR_SUCCESS)
+		{
+			AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+					VISTA_BIOS_KEY, VISTA_SYSTEM_MODEL_VALUE);
+			pMyBios->SetSystemModel( NOT_AVAILABLE);
+			bModel = FALSE;
+		}
+		else
+		{
+			pMyBios->SetSystemModel( csValue);
+			bModel = TRUE;
+		}
+		// Get System serial number
+		lResult = GetValue( hKey, VISTA_SYSTEM_SERIAL_VALUE, csValue);
+		if (lResult != ERROR_SUCCESS)
+		{
+			AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+					VISTA_BIOS_KEY, VISTA_SYSTEM_SERIAL_VALUE);
+			pMyBios->SetSystemSerialNumber( NOT_AVAILABLE);
+		}
+		else
+		{
+			pMyBios->SetSystemSerialNumber( csValue);
+		}
+		// Get BIOS manufacturer
+		lResult = GetValue( hKey, NT_BIOS_MANUFACTURER_VALUE, csValue);
+		if (lResult != ERROR_SUCCESS)
+		{
+			AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+					VISTA_BIOS_KEY, VISTA_BIOS_MANUFACTURER_VALUE);
+			pMyBios->SetBiosManufacturer( NOT_AVAILABLE);
+		}
+		else
+		{
+			pMyBios->SetBiosManufacturer( csValue);
+		}
+		// Get BIOS version
+		lResult = GetValue( hKey, VISTA_BIOS_VERSION_VALUE, csValue);
+		if (lResult != ERROR_SUCCESS)
+		{
+			AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+					VISTA_BIOS_KEY, VISTA_BIOS_VERSION_VALUE);
+			pMyBios->SetBiosVersion( NOT_AVAILABLE);
+		}
+		else
+		{
+			pMyBios->SetBiosVersion( csValue);
+		}
+		// Get BIOS date
+		lResult = GetValue( hKey, VISTA_BIOS_DATE_VALUE, csValue);
+		if (lResult != ERROR_SUCCESS)
+		{
+			AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+					VISTA_BIOS_KEY, VISTA_BIOS_DATE_VALUE);
+			pMyBios->SetBiosDate( NOT_AVAILABLE);
+		}
+		else
+		{
+			pMyBios->SetBiosDate( csValue);
+		}
+		// Get machine type
+		lResult = GetValue( hKey, VISTA_BIOS_MACHINE_TYPE_VALUE, csValue);
+		if (lResult != ERROR_SUCCESS)
+		{
+			AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+					VISTA_BIOS_KEY, VISTA_BIOS_MACHINE_TYPE_VALUE);
+			pMyBios->SetMachineType( NOT_AVAILABLE);
+		}
+		else
+		{
+			pMyBios->SetMachineType( csValue);
+		}
+		AddLog( _T( "\t\t<System Manufacturer: %s><System Model: %s><System S/N: %s><BIOS Manufacturer: %s><BIOS Version: %s><BIOS Date: %s><Type: %s>\n"), 
+			pMyBios->GetSystemManufacturer(), pMyBios->GetSystemModel(), pMyBios->GetSystemSerialNumber(), pMyBios->GetBiosManufacturer(),
+			pMyBios->GetBiosVersion(), pMyBios->GetBiosDate(), pMyBios->GetMachineType());
+		RegCloseKey( hKey);
 	}
-	AddLog( _T( "Registry NT GetBiosInfo: OK.\n"));
+	else
+	{
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+				VISTA_BIOS_KEY);
+		pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE
+					  NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
+	}
+	AddLog( _T( "\tOK.\n"));
 	return TRUE;
 }
 
@@ -673,7 +711,7 @@ BOOL CRegistry::IsNotebook()
 		return IsNotebookNT();
 	default:
 		// Unknown
-		AddLog( _T( "Registry IsNotebook...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry IsNotebook...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -688,7 +726,7 @@ BOOL CRegistry::IsNotebookNT()
 	LONG			lResult;
 	FILETIME		MyFileTime;
 
-	AddLog( _T( "Registry NT IsNotebook...\n"));
+	AddLog( _T( "Registry NT IsNotebook: Trying to find Battery in HKLM\\%s...\n"), NT_NOTEBOOK_KEY);
 	// Windows NT => Open the battery key
 	if (RegOpenKeyEx( m_hKey, NT_NOTEBOOK_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
@@ -704,13 +742,13 @@ BOOL CRegistry::IsNotebookNT()
 		RegCloseKey( hKeyEnum);
 		if (dwIndexEnum == 0)
 			// No key found
-			AddLog( _T( "Registry NT IsNotebook: Failed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+			AddLog( _T( "\tFailed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
 					NT_NOTEBOOK_KEY);
 		else
-			AddLog( _T( "Registry NT IsNotebook: OK (%lu objects).\n"), dwIndexEnum);
+			AddLog( _T( "\tOK (%lu objects).\n"), dwIndexEnum);
 	}
 	else
-		AddLog( _T( "Registry NT IsNotebook: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 				NT_NOTEBOOK_KEY);
 	return (dwIndexEnum > 0);
 }
@@ -726,7 +764,7 @@ DWORD CRegistry::GetProcessors(CString &csProcType, CString &csProcSpeed)
 		// Unknown
 		csProcType = NOT_AVAILABLE;
 		csProcSpeed = NOT_AVAILABLE;
-		AddLog( _T( "Registry GetProcessors...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetProcessors...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return 0;
 	}
 	return 0;
@@ -745,7 +783,7 @@ DWORD CRegistry::GetProcessorsNT(CString &csProcType, CString &csProcSpeed)
 	FILETIME		MyFileTime;
 	BOOL			bHaveToStore;
 
-	AddLog( _T( "Registry NT GetProcessors...\n"));
+	AddLog( _T( "Registry NT GetProcessors: Trying to find Processors in HKLM\\%s\n"), NT_PROCESSOR_KEY);
 	// Windows NT => Open the processor key
 	if (RegOpenKeyEx( m_hKey, NT_PROCESSOR_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
@@ -801,6 +839,8 @@ DWORD CRegistry::GetProcessorsNT(CString &csProcType, CString &csProcSpeed)
 					StrForSQL( csProcSpeed);
 					dwIndex ++;
 				}
+				AddLog( _T( "\t\t<Type: %s><Speed: %s MHz>\n"), 
+					csProcType, csProcSpeed);
 			}
 			else
 				AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
@@ -812,14 +852,13 @@ DWORD CRegistry::GetProcessorsNT(CString &csProcType, CString &csProcSpeed)
 		RegCloseKey( hKeyEnum);
 		if (dwIndexEnum == 0)
 			// No key found
-			AddLog( _T( "Registry NT GetProcessors: Failed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+			AddLog( _T( "\tFailed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
 					NT_PROCESSOR_KEY);
 		else
-			AddLog( _T( "Registry NT GetProcessors: OK (%s %s MHz, %lu objects).\n"),
-					csProcType, csProcSpeed, dwIndex);
+			AddLog( _T( "\tOK (%lu objects)\n"), dwIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetProcessors: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 				NT_PROCESSOR_KEY);
 	AddLog( _T( "Registry NT GetProcessors: %lu processor(s) found.\n"), dwIndex);
 	return dwIndex;
@@ -839,7 +878,7 @@ DWORD CRegistry::GetCPU( CCpuList *pMyList)
 	BOOL			bHaveToStore;
 	CCpu            myObject;
 
-	AddLog( _T( "Registry NT GetCPU...\n"));
+	AddLog( _T( "Registry NT GetCPU: Trying to find CPU in HKLM\\%s...\n"), NT_PROCESSOR_KEY);
 	// Windows NT => Open the processor key
 	if (RegOpenKeyEx( m_hKey, NT_PROCESSOR_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
@@ -900,26 +939,31 @@ DWORD CRegistry::GetCPU( CCpuList *pMyList)
 					csSpeed = NOT_AVAILABLE;
 				}
 				RegCloseKey( hKeyObject);
+				myObject.Clear();
+				StrForSQL( csManufacturer);
+				myObject.SetManufacturer( csManufacturer);
+				StrForSQL( csType);
+				myObject.SetName( csType);
+				StrForSQL( csSpeed);
+				myObject.SetMaxSpeed( _ttoi( csSpeed));
+				// Assume current speed to max speed
+				myObject.SetCurrentSpeed( _ttoi( csSpeed));
+				// Assume x86 architecture
+				myObject.SetArchitecture( _T( "x86"));
+				// Assume 1 core and 1 logical CPU
+				myObject.SetNumberOfCores( 1);
+				myObject.SetNumberOfLogicalProcessors( 1);
+				// Assume 32 bits OS and processor
+				myObject.SetAddressWith( 32);
+				myObject.SetDataWidth( 32);
+				AddLog( _T( "\t\t<Manufacturer: %s><Name: %s><Socket: %s><Architecture: %s><NumberOfCores: %u><NumberOfLogicalProcessors: %u><CurrentClockSpeed: %u><MaxClockSpeed: %u><L2CacheSize: %u><AddressWidth: %u><DataWidth: %u><VoltageCaps: %s><CpuStatus: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetName(), myObject.GetSocket(), myObject.GetArchitecture(),
+					myObject.GetNumberOfCores(), myObject.GetNumberOfLogicalProcessors(), myObject.GetCurrentClockSpeed(),
+					myObject.GetMaxClockSpeed(), myObject.GetL2CacheSize(), myObject.GetAddressWidth(), myObject.GetDataWidth(),
+					myObject.GetVoltage(), myObject.GetStatus());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
-					myObject.Clear();
-					StrForSQL( csManufacturer);
-					myObject.SetManufacturer( csManufacturer);
-					StrForSQL( csType);
-					myObject.SetName( csType);
-					StrForSQL( csSpeed);
-					myObject.SetMaxSpeed( _ttoi( csSpeed));
-					// Assume current speed to max speed
-					myObject.SetCurrentSpeed( _ttoi( csSpeed));
-					// Assume x86 architecture
-					myObject.SetArchitecture( _T( "x86"));
-					// Assume 1 core and 1 logical CPU
-					myObject.SetNumberOfCores( 1);
-					myObject.SetNumberOfLogicalProcessors( 1);
-					// Assume 32 bits OS and processor
-					myObject.SetAddressWith( 32);
-					myObject.SetDataWidth( 32);
 					pMyList->AddTail( myObject);
 					dwIndex ++;
 				}
@@ -934,13 +978,13 @@ DWORD CRegistry::GetCPU( CCpuList *pMyList)
 		RegCloseKey( hKeyEnum);
 		if (dwIndexEnum == 0)
 			// No key found
-			AddLog( _T( "Registry NT GetCPU: Failed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+			AddLog( _T( "\tFailed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
 					NT_PROCESSOR_KEY);
 	}
 	else
-		AddLog( _T( "Registry NT GetCPU: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 				NT_PROCESSOR_KEY);
-	AddLog( _T( "Registry NT GetCPU: %lu processor(s) found.\n"), dwIndex);
+	AddLog( _T( "\tOK( %lu objects)\n"), dwIndex);
 	return dwIndex;
 }
 
@@ -988,7 +1032,7 @@ BOOL CRegistry::GetPrinters(CPrinterList *pList)
 
 	ASSERT( pList);
 
-	AddLog( _T( "Registry GetPrinters...\n"));
+	AddLog( _T( "Registry GetPrinters: Trying to find Printer in HKLM\\%s...\n"), PRINTERS_ENUM_KEY);
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
@@ -1043,6 +1087,8 @@ BOOL CRegistry::GetPrinters(CPrinterList *pList)
 				cPrinter.SetName( csPrinterName);
 				cPrinter.SetDriver( csDriver);
 				cPrinter.SetPort( csPort);
+				AddLog( _T( "\t\t<Name: %s><Driver: %s><Port: %s>\n"), 
+					cPrinter.GetName(), cPrinter.GetDriver(), cPrinter.GetPort());
 				// Add the device to the printer list if needed
 				if (bHaveToStore)
 				{
@@ -1060,12 +1106,12 @@ BOOL CRegistry::GetPrinters(CPrinterList *pList)
 		RegCloseKey( hKeyEnum);
 		if (dwIndexEnum == 0)
 			// No key found
-			AddLog( _T( "Registry GetPrinters: Failed in call to <RegEnumKeyEx> function to find Printer subkey.\n"));
+			AddLog( _T( "\tFailed in call to <RegEnumKeyEx> function to find Printer subkey.\n"));
 		else
-			AddLog( _T( "Registry GetPrinters: OK (%u objects).\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects).\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry GetPrinters: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"), PRINTERS_ENUM_KEY);
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"), PRINTERS_ENUM_KEY);
 	return TRUE;
 }
 
@@ -1086,7 +1132,7 @@ BOOL CRegistry::GetVideoAdapters(CVideoAdapterList *pList)
 		return GetVideoAdaptersNT_2K( pList);
 	default:
 		// Unknown
-		AddLog( _T( "Registry GetVideoAdapters...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetVideoAdapters...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -1121,7 +1167,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 
 	ASSERT( pList);
 
-	AddLog( _T( "Registry NT GetVideoAdapters...\n"));
+	AddLog( _T( "Registry NT GetVideoAdapters: Trying to find Video Adapter in HKLM\\%s...\n"), NT_ENUM_KEY);
 	// Windows NT =>  Browse the active service keys to find the Display service
 	// Enumerate service groups under HKLM\System\CurrentControlSet\Enum
 	if (RegOpenKeyEx( m_hKey, NT_ENUM_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
@@ -1240,6 +1286,8 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 									myObject.SetChipset( csAdapterChip);
 									myObject.SetMemory( lAdapterMemory);
 									myObject.SetScreenResolution( csResolution);
+									AddLog( _T( "\t\t<Description: %s><VideoProcessor: %s><Memory: %s><Resolution: %s>\n"), 
+										myObject.GetName(), myObject.GetChipset(), myObject.GetMemory(), myObject.GetScreenResolution());
 									// Add the device to the adapter lis
 									if (bHaveToStore)
 									{
@@ -1285,13 +1333,13 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 		RegCloseKey( hKeyEnum);
 		if (dwIndexEnum == 0)
 			// No key found
-			AddLog( _T( "Registry NT GetVideoAdapters: Failed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+			AddLog( _T( "\tFailed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
 				    NT_ENUM_KEY);
 		else
-			AddLog( _T( "Registry NT GetVideoAdapters: OK (%u objects).\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects).\n"), uIndex);
 	} // if RegOpenKey enum Key
 	else
-		AddLog( _T( "Registry NT GetVideoAdapters: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 				NT_ENUM_KEY);
 	return TRUE;
 }
@@ -1320,7 +1368,7 @@ BOOL CRegistry::GetVideoAdaptersXP(CVideoAdapterList *pList)
 
 	ASSERT( pList);
 
-	AddLog( _T( "Registry XP GetVideoAdapters...\n"));
+	AddLog( _T( "Registry XP GetVideoAdapters: Trying to find Video Adapter in HKLM\\%s...\n"), XP_ENUM_KEY);
 	// Windows XP =>  Browse the active service keys to find the Display service
 	// Enumerate device groups under HKLM\System\CurrentControlSet\Control\Video
 	if (RegOpenKeyEx( m_hKey, XP_ENUM_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
@@ -1390,6 +1438,8 @@ BOOL CRegistry::GetVideoAdaptersXP(CVideoAdapterList *pList)
 						myObject.SetChipset( csAdapterChip);
 						myObject.SetMemory( lAdapterMemory);
 						myObject.SetScreenResolution( csResolution);
+						AddLog( _T( "\t\t<Description: %s><VideoProcessor: %s><Memory: %s><Resolution: %s>\n"), 
+							myObject.GetName(), myObject.GetChipset(), myObject.GetMemory(), myObject.GetScreenResolution());
 						// Add the device to the adapter lis
 						if (bHaveToStore)
 						{
@@ -1420,14 +1470,14 @@ BOOL CRegistry::GetVideoAdaptersXP(CVideoAdapterList *pList)
 		if (dwIndexEnum == 0)
 		{
 			// No key found
-			AddLog( _T( "Registry XP GetVideoAdapters: Failed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+			AddLog( _T( "\tFailed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
 				   NT_ENUM_KEY);
 			return FALSE;
 		}
-		AddLog( _T( "Registry XP GetVideoAdapters: OK (%u objects).\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects).\n"), uIndex);
 		return TRUE;
 	} // if RegOpenKey enum Key
-	AddLog( _T( "Registry XP GetVideoAdapters: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"), NT_ENUM_KEY);
+	AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"), NT_ENUM_KEY);
 	return FALSE;
 }
 
@@ -1460,7 +1510,7 @@ BOOL CRegistry::GetSoundDevices(CSoundDeviceList *pList)
 		return GetSoundDevicesNT( pList);
 	default:
 		// Unknown
-		AddLog( _T( "Registry GetSoundDevices...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetSoundDevices...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -1486,7 +1536,7 @@ BOOL CRegistry::GetSoundDevicesNT(CSoundDeviceList *pList)
 
 	ASSERT( pList);
 
-	AddLog( _T( "Registry NT GetSoundDevices...\n"));
+	AddLog( _T( "Registry NT GetSoundDevices: Trying to find Sound Device in HKLM\\%s...\n"), NT_SOUND_KEY);
 	// Windows NT => Open the sound key
 	if (RegOpenKeyEx( m_hKey, NT_SOUND_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
@@ -1554,6 +1604,8 @@ BOOL CRegistry::GetSoundDevicesNT(CSoundDeviceList *pList)
 				else
 					// No Driver sub key => skip
 					bHaveToStore = FALSE;
+				AddLog( _T( "\t\t<Manufacturer: %s><Name: %s><Description: %s><SubClass: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetName(), myObject.GetDescription(), csProviderName);
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -1571,13 +1623,13 @@ BOOL CRegistry::GetSoundDevicesNT(CSoundDeviceList *pList)
 		RegCloseKey( hKeyEnum);
 		if (dwIndexEnum == 0)
 			// No key found
-			AddLog( _T( "Registry NT GetSoundDevices: Failed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+			AddLog( _T( "\tFailed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
 					NT_SOUND_KEY);
 		else
-			AddLog( _T( "Registry NT GetSoundDevices: OK (%u objects).\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects).\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetSoundDevices: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 				NT_SOUND_KEY);
 	return !pList->IsEmpty();
 }
@@ -1597,7 +1649,7 @@ BOOL CRegistry::GetModems(CModemList *pList)
 		return GetModemsNT( pList);
 	default:
 		// Unknown
-		AddLog( _T( "Registry GetModems...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetModems...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -1623,7 +1675,7 @@ BOOL CRegistry::GetModemsNT(CModemList *pList)
 
 	ASSERT( pList);
 
-	AddLog( _T( "Registry NT GetModems...\n"));
+	AddLog( _T( "Registry NT GetModems: Trying to find Modem in HKLM\\%s...\n"), NT_MODEM_KEY);
 	// Windows NT => Open the modem key
 	if (RegOpenKeyEx( m_hKey, NT_MODEM_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
@@ -1690,6 +1742,9 @@ BOOL CRegistry::GetModemsNT(CModemList *pList)
 				myObject.SetName( csDeviceName);
 				myObject.SetModel( csModel);
 				myObject.SetDescription( csDescription);
+				AddLog( _T( "\t\t<Type: %s><Name: %s><Model: %s><Description: %s>\n"), 
+					myObject.GetType(), myObject.GetName(), myObject.GetModel(),
+					myObject.GetDescription());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -1707,13 +1762,13 @@ BOOL CRegistry::GetModemsNT(CModemList *pList)
 		RegCloseKey( hKeyEnum);
 		if (dwIndexEnum == 0)
 			// No key found
-			AddLog( _T( "Registry NT GetModems: Failed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+			AddLog( _T( "\tFailed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
 					NT_MODEM_KEY);
 		else
-			AddLog( _T( "Registry NT GetModems: OK (%u objects).\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects).\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetModems: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 				NT_MODEM_KEY);
 	return !pList->IsEmpty();
 }
@@ -1733,7 +1788,7 @@ BOOL CRegistry::GetMonitors(CMonitorList *pList)
 		return GetMonitorsNT( pList);
 	default:
 		// Unknown
-		AddLog( _T( "Registry GetMonitors...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetMonitors...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -1759,7 +1814,7 @@ BOOL CRegistry::GetMonitorsNT(CMonitorList *pList)
 
 	ASSERT( pList);
 
-	AddLog( _T( "Registry NT GetMonitors...\n"));
+	AddLog( _T( "Registry NT GetMonitors: Trying to find Monitor in HKLM\\%s...\n"), NT_MONITOR_KEY);
 	// Windows 9X => Open the monitor key
 	if (RegOpenKeyEx( m_hKey, NT_MONITOR_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
@@ -1826,6 +1881,9 @@ BOOL CRegistry::GetMonitorsNT(CMonitorList *pList)
 				myObject.SetType( csModel);
 				myObject.SetCaption( csCaption);
 				myObject.SetDescription( csDescription);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetType());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -1843,13 +1901,13 @@ BOOL CRegistry::GetMonitorsNT(CMonitorList *pList)
 		RegCloseKey( hKeyEnum);
 		if (dwIndexEnum == 0)
 			// No key found
-			AddLog( _T( "Registry NT GetMonitors: Failed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+			AddLog( _T( "\tFailed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
 					NT_MONITOR_KEY);
 		else
-			AddLog( _T( "Registry NT GetMonitors: OK (%u objects).\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects).\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetMonitors: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 				NT_MONITOR_KEY);
 	return !pList->IsEmpty();
 }
@@ -1869,7 +1927,7 @@ BOOL CRegistry::GetSystemControllers(CSystemControllerList *pList)
 		return GetSystemControllersNT( pList);
 	default:
 		// Unknown
-		AddLog( _T( "Registry GetSystemControllers...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetSystemControllers...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -1980,6 +2038,9 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				myObject.SetHardwareVersion( csVersion);
 				myObject.SetCaption( csCaption);
 				myObject.SetDescription( csDescription);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -2006,10 +2067,10 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	if (uIndex > 0)
 	{
 		uTotalIndex += uIndex;
-		AddLog( _T( "Registry NT GetSystemControllers: Find Floppy Controllers OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetSystemControllers: Find Floppy Controllers failed because no valid object !\n"));
+		AddLog( _T( "\tFailed because no valid object !\n"));
 	// Windows NT => Open the IDE controler key
 	uIndex = 0;
 	dwIndexEnum = 0;
@@ -2094,6 +2155,9 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				myObject.SetHardwareVersion( csVersion);
 				myObject.SetCaption( csCaption);
 				myObject.SetDescription( csDescription);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -2120,10 +2184,10 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	if (uIndex > 0)
 	{
 		uTotalIndex += uIndex;
-		AddLog( _T( "Registry NT GetSystemControllers: Find IDE Controllers OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetSystemControllers: Find IDE Controllers failed because no valid object !\n"));
+		AddLog( _T( "\tFailed because no valid object !\n"));
 	// Windows NT => Open the SCSI controler key
 	uIndex = 0;
 	dwIndexEnum = 0;
@@ -2208,6 +2272,9 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				myObject.SetHardwareVersion( csVersion);
 				myObject.SetCaption( csCaption);
 				myObject.SetDescription( csDescription);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -2234,10 +2301,10 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	if (uIndex > 0)
 	{
 		uTotalIndex += uIndex;
-		AddLog( _T( "Registry NT GetSystemControllers: Find SCSI Controllers OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetSystemControllers: Find SCSI Controllers failed because no valid object !\n"));
+		AddLog( _T( "\tFailed because no valid object !\n"));
 	// Windows NT => Open the InfraRed controler key
 	uIndex = 0;
 	dwIndexEnum = 0;
@@ -2333,6 +2400,9 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				myObject.SetHardwareVersion( csVersion);
 				myObject.SetCaption( csCaption);
 				myObject.SetDescription( csDescription);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -2359,10 +2429,10 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	if (uIndex > 0)
 	{
 		uTotalIndex += uIndex;
-		AddLog( _T( "Registry NT GetSystemControllers: Find InfraRed Controllers OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetSystemControllers: Find InfraRed Controllers failed because no valid object !\n"));
+		AddLog( _T( "\tFailed because no valid object !\n"));
 	// Windows NT => Open the USB controler key
 	uIndex = 0;
 	dwIndexEnum = 0;
@@ -2458,6 +2528,9 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				myObject.SetHardwareVersion( csVersion);
 				myObject.SetCaption( csCaption);
 				myObject.SetDescription( csDescription);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -2484,10 +2557,10 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	if (uIndex > 0)
 	{
 		uTotalIndex += uIndex;
-		AddLog( _T( "Registry NT GetSystemControllers: Find USB Controllers OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetSystemControllers: Find USB Controllers failed because no valid object !\n"));
+		AddLog( _T( "\tFailed because no valid object !\n"));
 	// Windows NT => Open the IEEE1394 controler key
 	uIndex = 0;
 	dwIndexEnum = 0;
@@ -2572,6 +2645,9 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				myObject.SetHardwareVersion( csVersion);
 				myObject.SetCaption( csCaption);
 				myObject.SetDescription( csDescription);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -2598,10 +2674,10 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	if (uIndex > 0)
 	{
 		uTotalIndex += uIndex;
-		AddLog( _T( "Registry NT GetSystemControllers: Find IEEE1394 Controllers OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetSystemControllers: Find IEEE1394 Controllers failed because no valid object !\n"));
+		AddLog( _T( "\tFailed because no valid object !\n"));
 	// Windows NT => Open the PCMCIA controler key
 	uIndex = 0;
 	dwIndexEnum = 0;
@@ -2686,6 +2762,9 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				myObject.SetHardwareVersion( csVersion);
 				myObject.SetCaption( csCaption);
 				myObject.SetDescription( csDescription);
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s><Version: %s>\n"), 
+					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetName(), myObject.GetType(), myObject.GetHardwareVersion());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -2712,17 +2791,11 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	if (uIndex > 0)
 	{
 		uTotalIndex += uIndex;
-		AddLog( _T( "Registry NT GetSystemControllers: Find PCMCIA Controllers OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetSystemControllers: Find PCMCIA Controllers failed because no valid object !\n"));
-	if (uTotalIndex > 0)
-	{
-		AddLog( _T( "Registry NT GetSystemControllers: OK (%u objects).\n"), uTotalIndex);
-		return TRUE;
-	}
-	AddLog( _T( "Registry NT GetSystemControllers: Failed because no controler found.\n"));
-	return FALSE;
+		AddLog( _T( "\tFailed because no valid object !\n"));
+	return (uTotalIndex > 0);
 }
 
 BOOL CRegistry::GetStoragePeripherals(CStoragePeripheralList *pList)
@@ -2740,7 +2813,7 @@ BOOL CRegistry::GetStoragePeripherals(CStoragePeripheralList *pList)
 		return GetStoragePeripheralsNT( pList);
 	default:
 		// Unknown
-		AddLog( _T( "Registry GetStoragePeripherals...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetStoragePeripherals...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -2869,6 +2942,9 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 						myObject.SetName( csName);
 						myObject.SetModel( csModel);
 						myObject.SetDescription( csDescription);
+						AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><MediaType: %s>\n"), 
+							myObject.GetManufacturer(), myObject.GetModel(), myObject.GetDescription(),
+							myObject.GetName(), myObject.GetType());
 						// Add the device to the adapter list
 						if (bHaveToStore)
 						{
@@ -2908,10 +2984,10 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 	if (uIndex > 0)
 	{
 		uTotalIndex += uIndex;
-		AddLog( _T( "Registry NT GetStoragePeripherals: Find Floppy Drives OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetStoragePeripherals: Find Floppy Drives failed because no valid object !\n"));
+		AddLog( _T( "\tFailed because no valid object !\n"));
 
 	AddLog( _T( "Registry NT GetStoragePeripherals: Trying to find Other Drives in HKLM\\%s...\n"),
 			NT_STORAGE_OTHER_KEY);
@@ -3029,6 +3105,9 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 										myObject.SetName( csName);
 										myObject.SetModel( csModel);
 										myObject.SetDescription( csDescription);
+										AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><MediaType: %s>\n"), 
+											myObject.GetManufacturer(), myObject.GetModel(), myObject.GetDescription(),
+											myObject.GetName(), myObject.GetType());
 										// Add the device to the adapter list
 										if (bHaveToStore)
 										{
@@ -3093,18 +3172,12 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 	if (uIndex > 0)
 	{
 		uTotalIndex += uIndex;
-		AddLog( _T( "Registry NT GetStoragePeripherals: Find Other Drives OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetStoragePeripherals: Find Other Drives failed because no valid object !\n"));
+		AddLog( _T( "\tFailed because no valid object !\n"));
 
-	if (uTotalIndex > 0)
-	{
-		AddLog( _T( "Registry NT GetStoragePeripherals: OK (%u objects).\n"), uTotalIndex);
-		return TRUE;
-	}
-	AddLog( _T( "Registry NT GetStoragePeripherals: Failed because no storage peripherals found.\n"));
-	return FALSE;
+	return (uTotalIndex > 0);
 }
 
 BOOL CRegistry::GetRegistryApplications(CSoftwareList *pList, BOOL hkcu)
@@ -3146,7 +3219,7 @@ BOOL CRegistry::GetRegistryApplications(CSoftwareList *pList, BOOL hkcu)
 		return bResult;
 	default:
 		// Unknown
-		AddLog( _T( "Registry GetRegistryApplications...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetRegistryApplications...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -3323,6 +3396,10 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 					cApp.SetMemoryAddressWidth( 64);
 				else
 					cApp.SetMemoryAddressWidth( 32);
+				AddLog( _T( "\t\t<Publisher: %s><Name: %s><Version: %s><Folder: %s><Comments: %s><GUID: %s><Language: %s><Install Date: %s><Architecture: %lu bits>\n"), 
+					cApp.GetPublisher(), cApp.GetName(), cApp.GetVersion(),
+					cApp.GetFolder(), cApp.GetComments(), cApp.GetGUID(),
+					cApp.GetLanguage(), cApp.GetInstallDate(), cApp.GetMemoryAddressWidth());
 				// Add the app to the apps list
 				if (bHaveToStore)
 				{
@@ -3340,13 +3417,13 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 		RegCloseKey( hKeyEnum);
 		if (dwIndexEnum == 0)
 			// No key found
-			AddLog( _T( "Registry NT GetRegistryApplications: Failed in call to <RegEnumKeyEx> function to find subkey of %s\\%s.\n"),csCurHive,
+			AddLog( _T( "\tFailed in call to <RegEnumKeyEx> function to find subkey of %s\\%s.\n"),csCurHive,
 					NT_APPS_KEY);
 		else
-			AddLog( _T( "Registry NT GetRegistryApplications: OK (%u objects).\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects).\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetRegistryApplications: Failed in call to <RegOpenKeyEx> function for %s\\%s !\n"),csCurHive,
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for %s\\%s !\n"),csCurHive,
 				NT_APPS_KEY);
 	return !pList->IsEmpty();
 }
@@ -3361,7 +3438,7 @@ BOOL CRegistry::GetDeviceDescription( CString &csDescription)
 		return GetDeviceDescriptionNT( csDescription);
 	default:
 		// Unknown
-		AddLog( _T( "Registry GetDeviceDescription...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetDeviceDescription...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return NULL;
 	}
 	return NULL;
@@ -3372,10 +3449,10 @@ BOOL CRegistry::GetDeviceDescriptionNT( CString &csDescription)
 	HKEY		 hKey = NULL;
 
 	csDescription = NOT_AVAILABLE;
-	AddLog( _T( "Registry NT GetDeviceDescription..."));
+	AddLog( _T( "Registry NT GetDeviceDescription...\n"));
 	if (RegOpenKeyEx( m_hKey, NT_COMPUTER_DESCRIPTION_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey) != ERROR_SUCCESS)
 	{
-		AddLog( _T( "Failed in call to <RegOpenKey> function for HKLM\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKey> function for HKLM\\%s !\n"),
 				NT_COMPUTER_DESCRIPTION_KEY);
 		return FALSE;
 	}
@@ -3383,14 +3460,14 @@ BOOL CRegistry::GetDeviceDescriptionNT( CString &csDescription)
 	// Get description.
 	if (GetValue( hKey, NT_COMPUTER_DESCRIPTION_VALUE, csDescription) != ERROR_SUCCESS)
 	{
-		AddLog( _T( "Failed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
 				NT_COMPUTER_DESCRIPTION_KEY,
 				NT_COMPUTER_DESCRIPTION_VALUE);
 		RegCloseKey( hKey);
 		return FALSE;
 	}
 	RegCloseKey( hKey);
-	AddLog( _T( "OK (%s).\n"), csDescription);
+	AddLog( _T( "\t\t<Description: %s>\n\tOK.\n"), csDescription);
 	return TRUE;
 }
 
@@ -3405,7 +3482,7 @@ BOOL CRegistry::GetDomainOrWorkgroup(CString &csDomain)
 	default:
 		// Unknown
 		csDomain = NOT_AVAILABLE;
-		AddLog( _T( "Registry GetDomainOrWorkgroup...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetDomainOrWorkgroup...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return NULL;
 	}
 	return NULL;
@@ -3416,10 +3493,10 @@ BOOL CRegistry::GetDomainOrWorkgroupNT(CString &csDomain)
 	HKEY  hKey = NULL;
 
 	csDomain = NOT_AVAILABLE;
-	AddLog( _T( "Registry NT GetDomainOrWorkgroup..."));
+	AddLog( _T( "Registry NT GetDomainOrWorkgroup...\n"));
 	if (RegOpenKeyEx( m_hKey, NT_DOMAIN_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey) != ERROR_SUCCESS)
 	{
-		AddLog( _T( "Failed in call to <RegOpenKey> function for HKLM\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKey> function for HKLM\\%s !\n"),
 				NT_DOMAIN_KEY);
 		return FALSE;
 	}
@@ -3427,14 +3504,14 @@ BOOL CRegistry::GetDomainOrWorkgroupNT(CString &csDomain)
 	// Get domain name or workgroup.
 	if (GetValue( hKey, NT_DOMAIN_VALUE, csDomain) != ERROR_SUCCESS)
 	{
-		AddLog( _T( "Failed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
 				NT_DOMAIN_KEY,
 				NT_DOMAIN_VALUE);
 		RegCloseKey( hKey);
 		return FALSE;
 	}
 	RegCloseKey( hKey);
-	AddLog( _T( "OK (%s).\n"), csDomain);
+	AddLog( _T( "\t\t<Domain: %s>\n\tOK\n"), csDomain);
 	return TRUE;
 }
 
@@ -3450,7 +3527,7 @@ BOOL CRegistry::GetWindowsRegistration(CString &csCompany, CString &csOwner, CSt
 		csCompany = NOT_AVAILABLE;
 		csOwner = NOT_AVAILABLE;
 		csProductID = NOT_AVAILABLE;
-		AddLog( _T( "Registry GetWindowsRegistration...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetWindowsRegistration...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -3500,11 +3577,10 @@ BOOL CRegistry::GetWindowsRegistrationNT(CString &csCompany, CString &csOwner, C
 		StrForSQL( csCompany);
 		StrForSQL( csOwner);
 		StrForSQL( csProductID);
-		AddLog( _T( "Registry NT GetWindowsRegistration: OK (%s %s %s).\n"),
-				csCompany, csOwner, csProductID);
+		AddLog( _T( "\t\t<Organization: %s><User: %s><S/N: %s>\n\tOK\n"), csCompany, csOwner, csProductID);
 		return TRUE;
 	}
-	AddLog( _T( "Registry NT GetWindowsRegistration: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+	AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 			NT_REGISTRATION_KEY);
 	return FALSE;
 }
@@ -3530,7 +3606,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 	UINT A;
 	int i,j;
 
-	AddLog( _T( "Registry GetWindowsProductKey..."));
+	AddLog( _T( "Registry GetWindowsProductKey...\n"));
 
 	switch( m_dwPlatformId)
 	{
@@ -3542,12 +3618,12 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 	default:
 		// Unknown
 		csProductKey = NOT_AVAILABLE;
-		AddLog( _T( "Registry GetWindowsProductKey...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 
 	//Requete registry
-	if( RegOpenKeyEx( HKEY_LOCAL_MACHINE, csKeyPath, 0, KEY_READ|KEY_WOW64_64KEY, &InfoKey ) == ERROR_SUCCESS )
+	if( RegOpenKeyEx( m_hKey, csKeyPath, 0, KEY_READ|KEY_WOW64_64KEY, &InfoKey ) == ERROR_SUCCESS )
 	{
 		if( RegQueryValueEx(InfoKey, csValueName, NULL, &InfoType, Data, &dwDataSize) == ERROR_SUCCESS )
 		{
@@ -3583,7 +3659,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 			if (csProductKey.CompareNoCase( _T( "BBBBB-BBBBB-BBBBB-BBBBB-BBBBB")) == 0)
 				csProductKey = _T( "MAK or VLK key unavailable"); 
 
-			AddLog( _T( "OK (%s).\n"), csProductKey);
+			AddLog( _T( "\t\t<Product key: %s>\n\tOK\n"), csProductKey);
 
 			return TRUE;
 		}
@@ -3592,7 +3668,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 		}
 	}
 	else{
-		AddLog( _T( "Registry GetWindowsProductKey: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 			csKeyPath);
 	}
 	return FALSE;
@@ -3604,12 +3680,15 @@ BOOL CRegistry::GetLoggedOnUser(CString &csUser)
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
+		if (m_bIsVista)
+			// Vista/2008 or +
+			return GetLoggedOnUserVista( csUser);
 		// Windows NT/2000/XP/2003
 		return GetLoggedOnUserNT( csUser);
 	default:
 		// Unknown
 		csUser = NOT_AVAILABLE;
-		AddLog( _T( "Registry GetLoggedOnUser...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetLoggedOnUser...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return NULL;
 	}
 	return NULL;
@@ -3620,66 +3699,124 @@ BOOL CRegistry::GetLoggedOnUserNT(CString &csUser)
 	HKEY  hKey = NULL;
 
 	csUser = NOT_AVAILABLE;
-	AddLog( _T( "Registry NT GetLoggedOnUser: Trying to get Logon User Name..."));
+	AddLog( _T( "Registry NT GetLoggedOnUser: Trying to get Logon User Name...\n"));
 	// Try to get logged on user
-	if (RegOpenKeyEx( HKEY_CURRENT_USER, NT_LOGON_USER_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey) == ERROR_SUCCESS)
+	if (RegOpenKeyEx( m_hKey, NT_LOGON_USER_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey) == ERROR_SUCCESS)
 	{
 		// Get user name.
 		if (GetValue( hKey, NT_LOGON_USER_VALUE, csUser) == ERROR_SUCCESS)
 		{
 			RegCloseKey( hKey);
-			AddLog( _T( "OK (%s).\n"), csUser);
+			AddLog( _T( "\t\t<User: %s>\n\tOK\n"), csUser);
 			return TRUE;
 		}
-		AddLog( _T( "Failed in call to <RegQueryValueEx> function for HKCU\\%s\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKCU\\%s\\%s !\n"),
 				NT_LOGON_USER_KEY,
 				NT_LOGON_USER_VALUE);
 		RegCloseKey( hKey);
 	}
 	else
-		AddLog( _T( "Failed in call to <RegOpenKey> function for HKCU\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKey> function for HKCU\\%s !\n"),
 				NT_LOGON_USER_KEY);
 	return FALSE;
 }
 
+BOOL CRegistry::GetLoggedOnUserVista(CString &csUser)
+{
+	HKEY  hKey = NULL;
+
+	csUser = NOT_AVAILABLE;
+	AddLog( _T( "Registry Vista GetLoggedOnUser: Trying to get Logon User Name...\n"));
+	// Try to get logged on user
+	if (RegOpenKeyEx( m_hKey, VISTA_LOGON_USER_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKey) == ERROR_SUCCESS)
+	{
+		// Get user name.
+		if (GetValue( hKey, VISTA_LOGON_USER_VALUE, csUser) == ERROR_SUCCESS)
+		{
+			RegCloseKey( hKey);
+			AddLog( _T( "\t\t<User: %s>\n\tOK\n"), csUser);
+			return TRUE;
+		}
+		AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKCU\\%s\\%s !\n"),
+				VISTA_LOGON_USER_KEY,
+				VISTA_LOGON_USER_VALUE);
+		RegCloseKey( hKey);
+	}
+	else
+		AddLog( _T( "\tFailed in call to <RegOpenKey> function for HKCU\\%s !\n"),
+				VISTA_LOGON_USER_KEY);
+	return FALSE;
+}
+
+
 BOOL CRegistry::GetLastLoggedUser(CString &csLastLoggedUser)
+{
+	ASSERT( pList);
+
+	switch( m_dwPlatformId)
+	{
+	case VER_PLATFORM_WIN32_NT:
+		if (m_bIsVista)
+			// Windows Vista/Seven/8/2008/2012
+			return GetLastLoggedUserVista( csLastLoggedUser);
+		// Windows NT/2000/XP/2003
+		return GetLastLoggedUserNT( csLastLoggedUser);
+	default:
+		// Unknown
+		AddLog( _T( "Registry GetInputDevices...\n\tFailed because unsupported or unrecognized OS !\n"));
+		return FALSE;
+	}
+	return FALSE;
+}
+
+BOOL CRegistry::GetLastLoggedUserNT(CString &csLastLoggedUser)
 {
 	HKEY  hKey = NULL;
 	LONG lResult;
 
-  	AddLog( _T( "Registry NT GetLastLoggedUser: Trying to get the last user who'd been logged in..."));
-	// Since Vista 
-	if ((lResult = RegOpenKeyEx( HKEY_CURRENT_USER, VISTA_LASTLOGGEDUSER_USER_KEY, 0, KEY_READ, &hKey)) == ERROR_SUCCESS)
-	{
-		lResult = GetValue( hKey, VISTA_LASTLOGGEDUSER_USER_VALUE, csLastLoggedUser);
-		RegCloseKey( hKey);	
-	}
+  	AddLog( _T( "Registry NT GetLastLoggedUser: Trying to get the last user who'd been logged in...\n"));
 	// Since Windows 2000, deprecated on Vista
-	if (lResult != ERROR_SUCCESS) 
+	if (RegOpenKeyEx( m_hKey, NT_LASTLOGGEDUSER_USER_KEY, 0, KEY_READ, &hKey) != ERROR_SUCCESS)
 	{
-		if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, NT_LASTLOGGEDUSER_USER_KEY, 0, KEY_READ, &hKey) == ERROR_SUCCESS)
-		{
-			lResult = GetValue( hKey, NT_LASTLOGGEDUSER_USER_VALUE, csLastLoggedUser);
-			RegCloseKey( hKey);
-		} 
-		else 
-		{
-			AddLog( _T( "Failed in retrieve Last Logged User from registry!\n"));
-			csLastLoggedUser = NOT_AVAILABLE;
-			return FALSE;
-		}
-	}
-	if (lResult == ERROR_SUCCESS) 
-	{
-		AddLog( _T( "OK (%s).\n"), csLastLoggedUser);
-		return TRUE;
-	}
-	else 
-	{
-		AddLog( _T( "Failed in read Last Logged User from registry!\n"));
+		AddLog( _T( "\tFailed in retrieve Last Logged User from registry!\n"));
 		csLastLoggedUser = NOT_AVAILABLE;
 		return FALSE;
+	} 
+	lResult = GetValue( hKey, NT_LASTLOGGEDUSER_USER_VALUE, csLastLoggedUser);
+	RegCloseKey( hKey);
+	if (lResult == ERROR_SUCCESS) 
+	{
+		AddLog( _T( "\t\t<Last logged: %s>\n\tOK\n"), csLastLoggedUser);
+		return TRUE;
 	}
+	AddLog( _T( "\tFailed in read Last Logged User from registry!\n"));
+	csLastLoggedUser = NOT_AVAILABLE;
+	return FALSE;
+}
+
+BOOL CRegistry::GetLastLoggedUserVista(CString &csLastLoggedUser)
+{
+	HKEY  hKey = NULL;
+	LONG lResult;
+
+  	AddLog( _T( "Registry Vista GetLastLoggedUser: Trying to get the last user who'd been logged in...\n"));
+	// Since Windows 2000, deprecated on Vista
+	if (RegOpenKeyEx( m_hKey, VISTA_LASTLOGGEDUSER_USER_KEY, 0, KEY_READ, &hKey) != ERROR_SUCCESS)
+	{
+		AddLog( _T( "\tFailed in retrieve Last Logged User from registry!\n"));
+		csLastLoggedUser = NOT_AVAILABLE;
+		return FALSE;
+	} 
+	lResult = GetValue( hKey, VISTA_LASTLOGGEDUSER_USER_VALUE, csLastLoggedUser);
+	RegCloseKey( hKey);
+	if (lResult == ERROR_SUCCESS) 
+	{
+		AddLog( _T( "\t\t<Last logged: %s>\n\tOK\n"), csLastLoggedUser);
+		return TRUE;
+	}
+	AddLog( _T( "\tFailed in read Last Logged User from registry!\n"));
+	csLastLoggedUser = NOT_AVAILABLE;
+	return FALSE;
 }
 
 BOOL CRegistry::GetInputDevices(CInputDeviceList *pList)
@@ -3697,7 +3834,7 @@ BOOL CRegistry::GetInputDevices(CInputDeviceList *pList)
 		return GetInputDevicesNT( pList);
 	default:
 		// Unknown
-		AddLog( _T( "Registry GetInputDevices...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetInputDevices...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -3809,6 +3946,9 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 				myObject.SetDescription( csDescription);
 				myObject.SetPointingType( csPointingType);
 				myObject.SetPointingInterface( csPointingInterface);
+				AddLog( _T( "\t\t<Type: %s><Manufacturer: %s><Caption: %s><Description: %s><Pointing Type: %s><Interface: %s>\n"), 
+					myObject.GetType(), myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetPointingType(), myObject.GetPointingInterface());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -3835,10 +3975,10 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 	if (uIndex > 0)
 	{
 		uTotalIndex += uIndex;
-		AddLog( _T( "Registry NT GetInputDevices: Find Keyboards OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetInputDevices: Find Keyboards failed because no valid object !\n"));
+		AddLog( _T( "\tFailed because no valid object !\n"));
 	// Windows NT => Open the Pointing Devices key
 	uIndex = 0;
 	dwIndexEnum = 0;
@@ -3923,6 +4063,9 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 				myObject.SetDescription( csDescription);
 				myObject.SetPointingType( csPointingType);
 				myObject.SetPointingInterface( csPointingInterface);
+				AddLog( _T( "\t\t<Type: %s><Manufacturer: %s><Caption: %s><Description: %s><Pointing Type: %s><Interface: %s>\n"), 
+					myObject.GetType(), myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
+					myObject.GetPointingType(), myObject.GetPointingInterface());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -3949,17 +4092,11 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 	if (uIndex > 0)
 	{
 		uTotalIndex += uIndex;
-		AddLog( _T( "Registry NT GetInputDevices: Find Pointing Devices OK (%u objects)\n"), uIndex);
+		AddLog( _T( "\tOK (%u objects)\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetInputDevices: Find Pointing Devices failed because no valid object !\n"));
-	if (uTotalIndex > 0)
-	{
-		AddLog( _T( "Registry NT GetInputDevices: OK (%u objects).\n"), uTotalIndex);
-		return TRUE;
-	}
-	AddLog( _T( "Registry NT GetInputDevices: Failed because no controler found.\n"));
-	return FALSE;
+		AddLog( _T( "\tFailed because no valid object !\n"));
+	return (uTotalIndex > 0);
 }
 
 BOOL CRegistry::GetSystemPorts(CSystemPortList *pList)
@@ -3977,7 +4114,7 @@ BOOL CRegistry::GetSystemPorts(CSystemPortList *pList)
 		return GetSystemPortsNT( pList);
 	default:
 		// Unknown
-		AddLog( _T( "Registry GetSystemPorts...Failed because unsupported or unrecognized OS !\n"));
+		AddLog( _T( "Registry GetSystemPorts...\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
 	return FALSE;
@@ -4083,6 +4220,8 @@ BOOL CRegistry::GetSystemPortsNT(CSystemPortList *pList)
 				myObject.SetName( csName);
 				myObject.SetCaption( csCaption);
 				myObject.SetDescription( csDescription);
+				AddLog( _T( "\t\t<Name: %s><Type: %s><Caption: %s><Description: %s>\n"), 
+					myObject.GetName(), myObject.GetType(), myObject.GetCaption(), myObject.GetDescription());
 				// Add the device to the adapter list
 				if (bHaveToStore)
 				{
@@ -4100,13 +4239,13 @@ BOOL CRegistry::GetSystemPortsNT(CSystemPortList *pList)
 		RegCloseKey( hKeyEnum);
 		if (dwIndexEnum == 0)
 			// No key found
-			AddLog( _T( "Registry NT GetSystemPorts: Failed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+			AddLog( _T( "\tFailed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
 					NT_SYSTEM_PORT_KEY);
 		else
-			AddLog( _T( "Registry NT GetSystemPorts: OK (%u objects).\n"), uIndex);
+			AddLog( _T( "\tOK (%u objects).\n"), uIndex);
 	}
 	else
-		AddLog( _T( "Registry NT GetSystemPorts: Failed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
+		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 				NT_SYSTEM_PORT_KEY);
 	return !pList->IsEmpty();
 }
@@ -4145,21 +4284,14 @@ BOOL CRegistry::GetRegistryValue( UINT uKeyTree, LPCTSTR lpstrSubKey, LPCTSTR lp
 			_T( "HKU"),
 			lpstrSubKey,
 			lpstrValue);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
+		lResult = RegOpenKeyEx( HKEY_USERS, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKCC_TREE: // HKEY_CURRENT_CONFIG
 		AddLog( _T( "Registry GetRegistryValue (%s\\%s\\%s)..."),
 			_T( "HKCC"),
 			lpstrSubKey,
 			lpstrValue);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
-		break;
-	case HKDD_TRE: // HKEY_DYN_DATA (9X only)
-		AddLog( _T( "Registry GetRegistryValue (%s\\%s\\%s)..."),
-			_T( "HKDD"),
-			lpstrSubKey,
-			lpstrValue);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
+		lResult = RegOpenKeyEx( HKEY_CURRENT_CONFIG, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	default: // Error
 		AddLog( _T( "Registry GetRegistryValue...Failed because unrecognized Registry Tree %u !\n"), uKeyTree);
@@ -4224,19 +4356,13 @@ BOOL CRegistry::GetRegistryMultipleValues( LPCTSTR lpstrQueryName, UINT uKeyTree
 		AddLog( _T( "Registry GetRegistryMultipleValues (%s\\%s)...\n"),
 			_T( "HKU"),
 			lpstrSubKey);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
+		lResult = RegOpenKeyEx( HKEY_USERS, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	case HKCC_TREE: // HKEY_CURRENT_CONFIG
 		AddLog( _T( "Registry GetRegistryMultipleValues (%s\\%s)...\n"),
 			_T( "HKCC"),
 			lpstrSubKey);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
-		break;
-	case HKDD_TRE: // HKEY_DYN_DATA (9X only)
-		AddLog( _T( "Registry GetRegistryMultipleValues (%s\\%s)...\n"),
-			_T( "HKDD"),
-			lpstrSubKey);
-		lResult = RegOpenKeyEx( HKEY_LOCAL_MACHINE, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
+		lResult = RegOpenKeyEx( HKEY_CURRENT_CONFIG, lpstrSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKey);
 		break;
 	default: // Error
 		AddLog( _T( "Registry GetRegistryMultipleValues...Failed because unrecognized Registry Tree %u !\n"), uKeyTree);

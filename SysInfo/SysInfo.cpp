@@ -78,7 +78,7 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 		// WMI successful
 		return TRUE;
 
-	AddLog( _T( "dtWinVer GetOS..."));
+	AddLog( _T( "dtWinVer GetOS...\n"));
 
 	COSVersion::OS_VERSION_INFO osvi;
 	COSVersion					os;
@@ -369,13 +369,13 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 	}
 	else
 	{
-		AddLog( _T( "Failed in call to GetVersion !\n"));
+		AddLog( _T( "\tFailed in call to GetVersion !\n"));
 		csName = _T( "Unbknown OS");
 		csVersion = NOT_AVAILABLE;
 		csComment.Empty();
 		return FALSE;
 	}
-	AddLog( _T( "%s %s %s. OK\n"), csName, csVersion, csComment);
+	AddLog( _T( "\t\t<OS %s %s %s>\n\tOK\n"), csName, csVersion, csComment);
 	m_registryInfo.GetDeviceDescription( csDescription);
 	return TRUE;
 }
@@ -386,12 +386,12 @@ BOOL CSysInfo::getMemory( ULONG *m_ulPhysicalMemory, ULONG *m_ulSwapSize)
 	ULONGLONG	ulTotalRAM,
 				ulTotalSwap;
 
-	AddLog( _T( "getMemory..."));
+	AddLog( _T( "getMemory...\n"));
 	ulTotalRAM = memoryInfo.getTotalRAM() / ONE_MEGABYTE;
 	*m_ulPhysicalMemory = (ULONG) ulTotalRAM;
 	ulTotalSwap = memoryInfo.getTotalPageFile() / ONE_MEGABYTE;
 	*m_ulSwapSize = (ULONG) ulTotalSwap;
-	AddLog( _T( "Physical: %I64u bytes, Swap: %I64u bytes. OK\n"), memoryInfo.getTotalRAM(), memoryInfo.getTotalPageFile());
+	AddLog( _T( "\t\t<Physical: %I64u bytes><Swap: %I64u bytes>\n\tOK\n"), memoryInfo.getTotalRAM(), memoryInfo.getTotalPageFile());
 	return TRUE;
 }
 
@@ -516,8 +516,13 @@ BOOL CSysInfo::getMemorySlots( CMemorySlotList *pMyList)
 		ulTotalSlot = pMyList->GetTotalMemory();
 		ulTotalRAM = memoryInfo.getTotalRAM() / ONE_MEGABYTE;
 
-		// Try to check if part of memory is used by video, either less than 32 MB or less than 10%
-		if (((ulTotalSlot - ulTotalRAM) < 32) || ((ulTotalSlot - ulTotalRAM) < (ulTotalRAM/10)))
+		// 32 bits Windows OS can only use 3235 MB max
+		if ((getAddressWidthOS() < 64) && (ulTotalSlot > 3235))
+				// More than 3 GB memory on 32 bits OS, so assume result is OK
+				return TRUE;
+		// 64 bits OS od less than 3 GB on 32 bits OS
+		// Try to check if part of memory is used by video, either less than 128 MB or less than 15%
+		if (((ulTotalSlot - ulTotalRAM) < 128) || ((ulTotalSlot - ulTotalRAM) < (ulTotalRAM/15)))
 			// DMI query seems OK
 			return TRUE;
 	}
@@ -632,14 +637,14 @@ BOOL CSysInfo::getUserName(CString &csUserName)
 	if (getUserNameFromExplorerProcess( csUserName))
 		return TRUE;
 	// Call the GetUserName function.
-	AddLog( _T( "GetUserName: Trying to find logged on User ID from current running process..."));
+	AddLog( _T( "GetUserName: Trying to find logged on User ID from current running process...\n"));
 	if (GetUserName( szUserName, &dwUserName))
 	{
-		AddLog( _T( "OK (%s).\n"), szUserName);
+		AddLog( _T( "\t\t<User: %s>\n\tOK.\n"), szUserName);
 		csUserName = szUserName;
 		return TRUE;
 	}
-	AddLog( _T( "Failed with error <%i> !\n"), GetLastError());
+	AddLog( _T( "\tFailed with error <%i> !\n"), GetLastError());
 	// Last use registry
 	return m_registryInfo.GetLoggedOnUser( csUserName);	
 }
@@ -671,12 +676,12 @@ BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
 	BOOL	(WINAPI* pLookupAccountSid)			(LPCTSTR, PSID, LPTSTR, LPDWORD, LPTSTR, LPDWORD, PSID_NAME_USE ) = NULL; 
 	BOOL	(WINAPI* pGetTokenInformation)		(HANDLE, TOKEN_INFORMATION_CLASS, LPVOID, DWORD, PDWORD) = NULL;
 
-	AddLog( _T( "getUserNameFromExplorerProcess: Trying to find logged on User ID from <explorer.exe> process..."));
+	AddLog( _T( "getUserNameFromExplorerProcess: Trying to find logged on User ID from <explorer.exe> process...\n"));
 
 	// First, try to use Advapi.dll
 	if( !(hAdv = LoadLibrary( _T( "Advapi32.dll"))))
 	{
-		AddLog( _T( "Failed to load AdvApi32 library !\n"));	
+		AddLog( _T( "\tFailed to load AdvApi32 library !\n"));	
 		return FALSE;
 	}
 	if( !( (*(FARPROC*)&pOpenProcessToken			= GetProcAddress( hAdv , "OpenProcessToken" ) ) )||
@@ -688,7 +693,7 @@ BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
 		!( (*(FARPROC*)&pLookupAccountSid			= GetProcAddress( hAdv , "LookupAccountSidA") ) ) ) 
 #endif
 	{
-		AddLog( _T( "Failed to load AdvApi32 library with error <%i> !\n"), GetLastError());
+		AddLog( _T( "\tFailed to load AdvApi32 library with error <%i> !\n"), GetLastError());
 		FreeLibrary( hAdv);
 		return FALSE;
 	}
@@ -702,21 +707,21 @@ BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
 		 !(*(FARPROC*)&pProcess32Next			= GetProcAddress( GetModuleHandle( _T("KERNEL32.DLL")), "Process32Next") ) ) 
 #endif
 	{
-		AddLog( _T( "Failed to load Kernel32 process access functions with error <%i> !\n"), GetLastError());	
+		AddLog( _T( "\tFailed to load Kernel32 process access functions with error <%i> !\n"), GetLastError());	
 		FreeLibrary( hAdv);
 		return FALSE;
 	}
 	// Create snapshot of running processes
 	if( (hSnapshot = pCreateToolhelp32Snapshot( TH32CS_SNAPALL ,0 )) == INVALID_HANDLE_VALUE )
 	{
-		AddLog( _T( "CreateToolhelp32Snapshot failed with error <%i> !\n"), GetLastError());
+		AddLog( _T( "\tCreateToolhelp32Snapshot failed with error <%i> !\n"), GetLastError());
 		FreeLibrary( hAdv);
 		return FALSE;
 	}
 	// Trying to find explorer.exe into snapshot
 	if( !pProcess32First( hSnapshot, &pe) )
 	{
-		AddLog( _T( "Process32First failed with error <%i> !\n"), GetLastError());
+		AddLog( _T( "\tProcess32First failed with error <%i> !\n"), GetLastError());
 		CloseHandle( hSnapshot );
 		FreeLibrary( hAdv);
 		return FALSE;
@@ -733,7 +738,7 @@ BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
 	while (pProcess32Next( hSnapshot, &pe ));
 	if (!bExplorerFound)
 	{
-		AddLog( _T( "Could not find <explorer.exe> process !\n"));
+		AddLog( _T( "\tCould not find <explorer.exe> process !\n"));
 		CloseHandle( hSnapshot );
 		FreeLibrary( hAdv);
 		return FALSE;
@@ -741,7 +746,7 @@ BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
 	// Retrieve a handle on explorer.exe process using ID */
 	if( !(hExplorer = pOpenProcess( PROCESS_ALL_ACCESS, FALSE, pe.th32ProcessID )))
 	{
-		AddLog( _T( "Failed to open <explorer.exe> process with error <%i> !\n"), GetLastError());
+		AddLog( _T( "\tFailed to open <explorer.exe> process with error <%i> !\n"), GetLastError());
 		CloseHandle( hSnapshot );
 		FreeLibrary( hAdv);
 		return FALSE;
@@ -749,7 +754,7 @@ BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
 	// Open token associated to explorer.exe to get information
 	if( !pOpenProcessToken( hExplorer, TOKEN_READ, &hToken ) )
 	{
-		AddLog( _T( "OpenProcessToken failed with error <%i>\n"), GetLastError());
+		AddLog( _T( "\tOpenProcessToken failed with error <%i>\n"), GetLastError());
 		CloseHandle( hExplorer );
 		CloseHandle( hToken );
 		CloseHandle( hSnapshot );
@@ -758,7 +763,7 @@ BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
 	}
 	if( !pGetTokenInformation( hToken, TokenInformationClass, &szTokenInformation, dwTokenInformationLength, &dwReturnLength))
 	{
-		AddLog( _T( "GetTokenInformation failed with error <%i>\n"), GetLastError());
+		AddLog( _T( "\tGetTokenInformation failed with error <%i>\n"), GetLastError());
 		CloseHandle( hExplorer );
 		CloseHandle( hToken );
 		CloseHandle( hSnapshot );
@@ -768,7 +773,7 @@ BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
 	// Lokkup user account running explorer.exe process
 	if( !pLookupAccountSid( NULL, ((TOKEN_USER*)&szTokenInformation)->User.Sid, szUserName, &dwName, szReferencedDomainName, &dwReferencedDomainName, &peUse ) )
 	{
-		AddLog( _T( "LookupAccountSid failed with error <%i>\n"), GetLastError());
+		AddLog( _T( "\tLookupAccountSid failed with error <%i>\n"), GetLastError());
 		CloseHandle( hExplorer );
 		CloseHandle( hToken );
 		CloseHandle( hSnapshot );
@@ -782,10 +787,10 @@ BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
 	// Ensure username exists
 	if( CString(szUserName) == _T( "") )
 	{
-		AddLog( _T( "Found empty user, so assuming failed !\n"));
+		AddLog( _T( "\tFound empty user, so assuming failed !\n"));
 		return FALSE;
 	}
-	AddLog( _T( "OK (%s).\n"), szUserName);
+	AddLog( _T( "\t\t<User: %s>\n\tOK\n"), szUserName);
 	csUserName = szUserName;
 	return TRUE;
 }
@@ -812,7 +817,13 @@ BOOL CSysInfo::getInstalledApplications(CSoftwareList *pList, BOOL hkcu)
 	{
 		// Under Vista, 2008 or higher, Registry do not include Hotfix
 		// We have to also query WMI for Hotfixes
-		return (m_registryInfo.GetRegistryApplications( pList, hkcu) && m_wmiInfo.GetHotFixes( pList));
+		if (m_registryInfo.GetRegistryApplications( pList, hkcu))
+		{
+			// Don't care about hotfix
+			m_wmiInfo.GetHotFixes( pList);
+			return TRUE;
+		}
+		return FALSE;
 	}
 	else
 	{

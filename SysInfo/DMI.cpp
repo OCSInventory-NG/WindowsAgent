@@ -170,10 +170,10 @@ BOOL CDMI::Connect()
 	CIMTYPE cimType;
 
 	// Initialize COM.
-	AddLog( _T( "DMI: Trying to initialize COM...")); 
+	AddLog( _T( "DMI Connect: Trying to initialize COM...\n")); 
     if ((hResult =  CoInitializeEx(0, COINIT_MULTITHREADED)) < 0) 
 	{
-		AddLog( _T( "Failed in call to CoInitializeEx !\n"));
+		AddLog( _T( "\tFailed in call to CoInitializeEx !\n"));
         return FALSE;
 	}
     // Obtain the initial locator to Windows Management
@@ -186,7 +186,7 @@ BOOL CDMI::Connect()
  
     if (hResult<0)
     {
-  		AddLog( _T( "Failed in call to CoCreateInstance !\n"));
+  		AddLog( _T( "\tFailed in call to CoCreateInstance !\n"));
 		CoUninitialize();
         return FALSE;
     }
@@ -206,7 +206,7 @@ BOOL CDMI::Connect()
     
     if (hResult<0)
     {
-  		AddLog( _T( "Failed in call to ConnectServer !\n"));
+  		AddLog( _T( "\tFailed in call to ConnectServer !\n"));
         pWbemLocator->Release();     
         CoUninitialize();
         return FALSE;
@@ -225,18 +225,18 @@ BOOL CDMI::Connect()
     );
     if (hResult<0)
     {
-  		AddLog( _T( "Failed in call to CoSetProxyBlanket !\n"));
+  		AddLog( _T( "\tFailed in call to CoSetProxyBlanket !\n"));
         pWbemService->Release();
         pWbemLocator->Release();     
         CoUninitialize();
         return FALSE;
     }
-	AddLog( _T( "OK\nDMI: Trying to get raw SMBios data...")); 
+	AddLog( _T( "\tOK\nDMI Connect: Trying to get raw SMBios data...\n")); 
 	// Enumerates MSSMBios_RawSMBiosTables objects
     hResult = pWbemService->CreateInstanceEnum( _bstr_t("MSSMBios_RawSMBiosTables"), 0, NULL, &pWbemEnumerator);
     if (hResult<0)
     {
-  		AddLog( _T( "Failed in call to CreateInstanceEnum( MSSMBios_RawSMBiosTables) !\n"));
+  		AddLog( _T( "\tFailed in call to CreateInstanceEnum( MSSMBios_RawSMBiosTables) !\n"));
         pWbemService->Release();
         pWbemLocator->Release();     
         CoUninitialize();
@@ -295,7 +295,7 @@ BOOL CDMI::Connect()
 				free( m_pTables);
 			if ((m_pTables = (UCHAR*) malloc( m_nStructureLength+2)) == NULL) 
 			{
-				AddLog( _T( "Unable to allocate memory for raw SMBIOS data !\n"));
+				AddLog( _T( "\tUnable to allocate memory for raw SMBIOS data !\n"));
 				pWbemObjectIntance->Release();
 				pWbemEnumerator->Release();
 				pWbemService->Release();
@@ -321,10 +321,10 @@ BOOL CDMI::Connect()
     CoUninitialize();
 	if (m_pTables == NULL)
 	{
-		AddLog( _T( "No MSSMBios_RawSMBiosTables found !\n"));
+		AddLog( _T( "\tNo MSSMBios_RawSMBiosTables found !\n"));
 		return FALSE;
 	}
-	AddLog( _T( "OK\n"));
+	AddLog( _T( "\tOK\n"));
 	return TRUE;
 }
 
@@ -335,13 +335,12 @@ BOOL CDMI::IsConnected()
 
 BOOL CDMI::Disconnect()
 {
-	AddLog( _T( "DMI: Unload DMI tables...")); 
+	AddLog( _T( "DMI: Unload DMI tables...\n")); 
 	if (m_pTables != NULL)
 	{
 		free( m_pTables);
 		m_pTables = NULL;
 	}
-	AddLog( _T( "OK\n"));
 	return TRUE;
 }
 
@@ -463,7 +462,7 @@ BOOL CDMI::GetBios( CString &csVendor, CString &csVersion, CString &csDate)
 
 	if (m_pTables == NULL)
 		return FALSE;
-	AddLog( _T( "DMI GetBios: Trying to find DMI Structure type 0..."));
+	AddLog( _T( "DMI GetBios: Trying to find DMI Structure type 0...\n"));
 	// 00 BIOS Information
 	pPointer = GetNextTable( DMI_BIOS_INFORMATION, TRUE);
 	while( pPointer != NULL)
@@ -472,11 +471,13 @@ BOOL CDMI::GetBios( CString &csVendor, CString &csVersion, CString &csDate)
 		csVendor = DmiString(dmi, pPointer[0x04]);
 		csVersion = DmiString(dmi, pPointer[0x05]);
 		csDate = DmiString(dmi, pPointer[0x08]);
+		AddLog( _T( "\t\t<Manufacturer: %s><Version: %s><Date: %s>\n"), 
+			csVendor, csVersion, csDate);
 		uCount++;
 		// next 
 		pPointer = GetNextTable( DMI_BIOS_INFORMATION);
 	}
-	AddLog( _T( "OK (%u object(s)\n"), uCount);
+	AddLog( _T( "\tOK (%u objects)\n"), uCount);
 	return (uCount > 0);
 }
 
@@ -488,7 +489,7 @@ BOOL CDMI::GetSystemInformation( CString &csVendor, CString &csModel, CString &c
  
 	if (m_pTables == NULL)
 		return FALSE;
-	AddLog( _T( "DMI GetSystemInformation: Trying to find DMI Structure type 1..."));
+	AddLog( _T( "DMI GetSystemInformation: Trying to find DMI Structure type 1...\n"));
 	// 01 System Information
 	pPointer = GetNextTable( DMI_SYSTEM_INFORMATION, TRUE);
 	while( pPointer != NULL)
@@ -497,11 +498,13 @@ BOOL CDMI::GetSystemInformation( CString &csVendor, CString &csModel, CString &c
 		csVendor = DmiString(dmi, pPointer[0x04]);
 		csModel = DmiString(dmi, pPointer[0x05]);
 		csSN = DmiString(dmi, pPointer[0x07]);
+		AddLog( _T( "\t\t<Manufacturer: %s><Model: %s><S/N: %s>\n"), 
+			csVendor, csModel, csSN);
 		uCount++;
 		// next 
 		pPointer = GetNextTable( DMI_SYSTEM_INFORMATION);
 	}
-	AddLog( _T( "OK (%u object(s)\n"), uCount);
+	AddLog( _T( "\tOK (%u objects)\n"), uCount);
 	return (uCount > 0);
 }
 
@@ -513,7 +516,7 @@ BOOL CDMI::GetBaseBoard( CString &csVendor, CString &csProduct, CString &csVersi
  
 	if (m_pTables == NULL)
 		return FALSE;
-	AddLog( _T( "DMI GetBaseBoard: Trying to find DMI Structure type 2..."));
+	AddLog( _T( "DMI GetBaseBoard: Trying to find DMI Structure type 2...\n"));
 	// 02 Base Board Information
 	pPointer = GetNextTable( DMI_BASEBOARD_INFORMATION, TRUE);
 	while( pPointer != NULL)
@@ -528,11 +531,13 @@ BOOL CDMI::GetBaseBoard( CString &csVendor, CString &csProduct, CString &csVersi
 			// Asset tag is stored here
 			csAssetTag = DmiString(dmi, pPointer[0x08]);
 		}
+		AddLog( _T( "\t\t<Manufacturer: %s><Model: %s><Version: %s><S/N: %s><Asset Tag: %s>\n"), 
+			csVendor, csProduct, csVersion, csSN, csAssetTag);
 		uCount++;
 		// next 
 		pPointer = GetNextTable( DMI_BASEBOARD_INFORMATION);
 	}
-	AddLog( _T( "OK (%u object(s)\n"), uCount);
+	AddLog( _T( "\tOK (%u objects)\n"), uCount);
 	return (uCount > 0);
 }
 
@@ -544,7 +549,7 @@ BOOL CDMI::GetSystemEnclosure( CString &csVendor, CString &csType, CString &csSN
  
 	if (m_pTables == NULL)
 		return FALSE;
-	AddLog( _T( "DMI GetSystemEnclosure: Trying to find DMI Structure type 3..."));
+	AddLog( _T( "DMI GetSystemEnclosure: Trying to find DMI Structure type 3...\n"));
 	// 03 System Enclosure or Chassis
 	pPointer = GetNextTable( DMI_SYSTEM_ENCLOSURE, TRUE);
 	while( pPointer != NULL)
@@ -555,10 +560,12 @@ BOOL CDMI::GetSystemEnclosure( CString &csVendor, CString &csType, CString &csSN
 		csAssetTag = DmiString(dmi, pPointer[0x08]);
 		csType = CBios::ParseChassisType( pPointer[0x05] & 0x7f);
 		uCount++;
+		AddLog( _T( "\t\t<Manufacturer: %s><Type: %s><S/N: %s><Asset Tag: %s>\n"), 
+			csVendor, csType, csSN, csAssetTag);
 		// next 
 		pPointer = GetNextTable( DMI_SYSTEM_ENCLOSURE);
 	}
-	AddLog( _T( "OK (%u object(s)\n"), uCount);
+	AddLog( _T( "\tOK (%u objects)\n"), uCount);
 	return (uCount > 0);
 }
 
@@ -575,7 +582,7 @@ BOOL CDMI::GetSystemPorts( CSystemPortList *pMyList)
 	if (m_pTables == NULL)
 		return FALSE;
 
-	AddLog( _T( "DMI GetSystemPorts: Trying to find DMI Structure type 8..."));
+	AddLog( _T( "DMI GetSystemPorts: Trying to find DMI Structure type 8...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	// 08 Port Connector Information
@@ -593,11 +600,13 @@ BOOL CDMI::GetSystemPorts( CSystemPortList *pMyList)
 		csBuffer.Format( _T( "%s %s"), myObject.GetName(), myObject.GetDescription());
 		myObject.SetCaption( csBuffer);
 		pMyList->AddTail( myObject);
-		uCount++;
+		AddLog( _T( "\t\t<Name: %s><Type: %s><Caption: %s><Description: %s>\n"), 
+			myObject.GetName(), myObject.GetType(), myObject.GetCaption(), myObject.GetDescription());
 		// next 
+		uCount++;
 		pPointer = GetNextTable( DMI_SYSTEM_PORTS);
 	}
-	AddLog( _T( "OK (%u object(s)\n"), uCount);
+	AddLog( _T( "\tOK (%u objects)\n"), uCount);
 	return (uCount > 0);
 }
 
@@ -615,7 +624,7 @@ BOOL CDMI::GetSystemSlots( CSystemSlotList *pMyList)
 	if (m_pTables == NULL)
 		return FALSE;
 
-	AddLog( _T( "DMI GetSystemSlots: Trying to find DMI Structure type 9..."));
+	AddLog( _T( "DMI GetSystemSlots: Trying to find DMI Structure type 9...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	// 09 System Slots
@@ -634,11 +643,13 @@ BOOL CDMI::GetSystemSlots( CSystemSlotList *pMyList)
 		// Usage
 		myObject.SetUsage( pPointer[0x07]);
 		pMyList->AddTail( myObject);
-		uCount++;
+		AddLog( _T( "\t\t<Name: %s><Slot: %s><Type: %s>\n"), 
+			myObject.GetName(), myObject.GetSlotDesignation(), myObject.GetDescription());
 		// next 
+		uCount++;
 		pPointer = GetNextTable( DMI_SYSTEM_SLOTS);
 	}
-	AddLog( _T( "OK (%u object(s)\n"), uCount);
+	AddLog( _T( "\tOK (%u objects)\n"), uCount);
 	return (uCount > 0);
 }
 
@@ -660,7 +671,7 @@ BOOL CDMI::GetMemorySlots( CMemorySlotList *pMyList)
 	if (m_pTables == NULL)
 		return FALSE;
 
-	AddLog( _T( "DMI GetMemorySlots: Trying to find DMI Structure type 17..."));
+	AddLog( _T( "DMI GetMemorySlots: Trying to find DMI Structure type 17...\n"));
 	// Reset object list content
 	pMyList->RemoveAll();
 	// 17 Memory Device
@@ -708,17 +719,20 @@ BOOL CDMI::GetMemorySlots( CMemorySlotList *pMyList)
 		if ((wCapacity > 0) && myObject.IsValidSN( csBuffer))
 			myObject.SetSN( csBuffer);
 		pMyList->AddTail( myObject);
+		AddLog( _T( "\t\t<Caption: %s><Description: %s><Slot: %u><Capacity: %s><Speed: %s><Type: %s><S/N: %s>\n"), 
+			myObject.GetCaption(), myObject.GetDescription(), myObject.GetSlotNumber(), myObject.GetCapacity(),
+			myObject.GetSpeed(), myObject.GetType(), myObject.GetSN());
 		// next 
 		pPointer = GetNextTable( DMI_MEMORY_DEVICE);
 	}
 	if (uCount == 0)
 	{
-		AddLog( _T( "Failed because no DMI Structure type 17 !\n"));
+		AddLog( _T( "\tFailed because no DMI Structure type 17 !\n"));
 		return FALSE;
 	}
-	AddLog( _T( "OK (%u objects)\n"), uCount);
+	AddLog( _T( "\tOK (%u objects)\n"), uCount);
 	// Add information from Memory Array
-	AddLog( _T( "DMI GetMemorySlots: Trying to find DMI Structure type 16..."));
+	AddLog( _T( "DMI GetMemorySlots: Trying to find DMI Structure type 16...\n"));
 	pPosNext = pMyList->GetHeadPosition();
 	pPosCur = pMyList->GetHeadPosition();
 	UINT nbFilled = uCount;
@@ -752,8 +766,10 @@ BOOL CDMI::GetMemorySlots( CMemorySlotList *pMyList)
 		{
 			myObject.SetUsage( dwUse);
 			myObject.SetCaption( myObject.GetUsage());
-			if( _tcscmp( myObject.GetType(), _T("Empty slot")) != 0 )
+			if (_tcscmp( myObject.GetType(), _T("Empty slot")) != 0)
 				myObject.SetTypeECC( dwECC);
+			if (_tcscmp( myObject.GetCapacity(), _T("0")) == 0)
+				myObject.SetType( _T("Empty slot"));
 			pMyList->SetAt( pPosCur, myObject);
 			pPosCur = pPosNext;
 			if (pPosNext != NULL)
@@ -763,7 +779,7 @@ BOOL CDMI::GetMemorySlots( CMemorySlotList *pMyList)
 		// next 
 		pPointer = GetNextTable( DMI_MEMORY_ARRAY);
 	}
-		AddLog( _T( "OK (%u objects updated)\n"), uCount);
+	AddLog( _T( "\tOK (%u objects updated)\n"), uCount);
 	return (uCount > 0);
 }
 
@@ -779,7 +795,7 @@ BOOL CDMI::GetUUID( CString &csUUID)
  
 	if (m_pTables == NULL)
 		return FALSE;
-	AddLog( _T( "DMI GetUUID: Trying to find DMI Structure type 1..."));
+	AddLog( _T( "DMI GetUUID: Trying to find DMI Structure type 1...\n"));
 	// 01 System Information
 	pPointer = GetNextTable( DMI_SYSTEM_INFORMATION, TRUE);
 	while( pPointer != NULL)
@@ -827,14 +843,15 @@ BOOL CDMI::GetUUID( CString &csUUID)
 					pUUID[0], pUUID[1], pUUID[2], pUUID[3], pUUID[4], pUUID[5], pUUID[6], pUUID[7],
 					pUUID[8], pUUID[9], pUUID[10], pUUID[11], pUUID[12], pUUID[13], pUUID[14], pUUID[15]);
 
+			AddLog( _T( "\t\t<SMBios version: %d.%d><UUID: %s>\n"), m_nSMBiosVersionMajor, m_nSMBiosVersionMinor, csUUID);
 			uCount++;
 		}
 		// next 
 		pPointer = GetNextTable( DMI_SYSTEM_INFORMATION);
 	}
 	if (uCount > 0)
-		AddLog( _T( "OK (%u object(s)), SMBios version %d.%d, UUID %s\n"), uCount, m_nSMBiosVersionMajor, m_nSMBiosVersionMinor, csUUID);
+		AddLog( _T( "\tOK (%u objects)\n"));
 	else
-		AddLog( _T( "OK (%u object(s))"), uCount);
+		AddLog( _T( "\tFailed because no DMI Structure type 1 !\n"));
 	return (uCount > 0);
 }
