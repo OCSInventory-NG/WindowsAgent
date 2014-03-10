@@ -24,7 +24,6 @@
 #define HKLM_TREE	2	// HKEY_LOCAL_MACHINE
 #define HKU_TREE	3	// HKEY_USERS
 #define HKCC_TREE	4	// HKEY_CURRENT_CONFIG
-#define HKDD_TRE	5	// HKEY_DYN_DATA (9X only)
 
 #define REGISTRY_ALL_VALUES_OF_KEY	_T( "*") // Get all values of a key
 
