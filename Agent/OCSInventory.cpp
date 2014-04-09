@@ -68,6 +68,28 @@ BOOL COCSInventoryApp::InitInstance()
 			return FALSE; // terminates the application
 		}
 
+		// Initialize COM.
+		if (FAILED( CoInitializeEx( 0, COINIT_MULTITHREADED)))
+		{
+			m_nExitCode = OCS_APP_GENERIC_ERROR;
+			return FALSE; // terminates the application
+		}
+		// Set general COM security levels --------------------------
+		if (FAILED( CoInitializeSecurity(	NULL, 
+										-1,                          // COM authentication
+										NULL,                        // Authentication services
+										NULL,                        // Reserved
+										RPC_C_AUTHN_LEVEL_DEFAULT,   // Default authentication 
+										RPC_C_IMP_LEVEL_IMPERSONATE, // Default Impersonation  
+										NULL,                        // Authentication info
+										EOAC_NONE,                   // Additional capabilities 
+										NULL                         // Reserved
+										)))
+		{
+			CoUninitialize();
+			m_nExitCode = OCS_APP_GENERIC_ERROR;
+			return FALSE; // terminates the application
+		}
 
 		/*****
 		 *
@@ -663,6 +685,8 @@ CLEAN_AND_EXIT:
 
 int COCSInventoryApp::ExitInstance() 
 {
+	// Free COM
+	CoUninitialize();
 	if (CWinApp::ExitInstance() != 0)
 		m_nExitCode = OCS_APP_GENERIC_ERROR;
 	return m_nExitCode;

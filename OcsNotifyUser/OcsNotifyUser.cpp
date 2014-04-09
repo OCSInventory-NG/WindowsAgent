@@ -68,6 +68,28 @@ BOOL COcsNotifyUserApp::InitInstance()
 		if (!CWinApp::InitInstance())
 			return FALSE; // terminates the application
 
+		// Initialize COM.
+		if (FAILED( CoInitializeEx( 0, COINIT_MULTITHREADED)))
+		{
+			AfxMessageBox( _T( "Failed to initialize COM"));
+			return FALSE; // terminates the application
+		}
+		// Set general COM security levels --------------------------
+		if (FAILED( CoInitializeSecurity(	NULL, 
+										-1,                          // COM authentication
+										NULL,                        // Authentication services
+										NULL,                        // Reserved
+										RPC_C_AUTHN_LEVEL_DEFAULT,   // Default authentication 
+										RPC_C_IMP_LEVEL_IMPERSONATE, // Default Impersonation  
+										NULL,                        // Authentication info
+										EOAC_NONE,                   // Additional capabilities 
+										NULL                         // Reserved
+										)))
+		{
+			AfxMessageBox( _T( "Failed to initialize COM Security"));
+			CoUninitialize();
+			return FALSE; // terminates the application
+		}
 		// Logger
 		CTime	cStartTime;		// Start time of the inventory check
 		cStartTime = CTime::GetCurrentTime();
@@ -171,6 +193,8 @@ BOOL COcsNotifyUserApp::InitInstance()
 int COcsNotifyUserApp::ExitInstance() 
 {
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "Notification Tool => Exit code is %d"), m_nExitCode);
+	// Free COM
+	CoUninitialize();
 	CWinApp::ExitInstance();
 	return m_nExitCode;
 }

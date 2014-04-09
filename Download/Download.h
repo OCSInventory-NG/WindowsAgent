@@ -38,6 +38,7 @@ public:
 // Overrides
 	public:
 	virtual BOOL InitInstance();
+	virtual int ExitInstance();
 
 	// Read download configuration stored by agent
 	BOOL readConfig();

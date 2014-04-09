@@ -170,13 +170,13 @@ BOOL CDMI::Connect()
 	CIMTYPE cimType;
 
 	// Initialize COM.
-	AddLog( _T( "DMI Connect: Trying to initialize COM...\n")); 
+/*	AddLog( _T( "DMI Connect: Trying to initialize COM...\n")); 
     if ((hResult =  CoInitializeEx(0, COINIT_MULTITHREADED)) < 0) 
 	{
 		AddLog( _T( "\tFailed in call to CoInitializeEx !\n"));
         return FALSE;
 	}
-    // Obtain the initial locator to Windows Management
+*/    // Obtain the initial locator to Windows Management
     // on a particular host computer.
     hResult = CoCreateInstance(
         CLSID_WbemLocator,             
@@ -187,7 +187,7 @@ BOOL CDMI::Connect()
     if (hResult<0)
     {
   		AddLog( _T( "\tFailed in call to CoCreateInstance !\n"));
-		CoUninitialize();
+//		CoUninitialize();
         return FALSE;
     }
     // Connect to the root\WMI namespace with the
@@ -208,7 +208,7 @@ BOOL CDMI::Connect()
     {
   		AddLog( _T( "\tFailed in call to ConnectServer !\n"));
         pWbemLocator->Release();     
-        CoUninitialize();
+//		CoUninitialize();
         return FALSE;
     }
     // Set the IWbemServices proxy so that impersonation
@@ -228,7 +228,7 @@ BOOL CDMI::Connect()
   		AddLog( _T( "\tFailed in call to CoSetProxyBlanket !\n"));
         pWbemService->Release();
         pWbemLocator->Release();     
-        CoUninitialize();
+//		CoUninitialize();
         return FALSE;
     }
 	AddLog( _T( "\tOK\nDMI Connect: Trying to get raw SMBios data...\n")); 
@@ -239,7 +239,7 @@ BOOL CDMI::Connect()
   		AddLog( _T( "\tFailed in call to CreateInstanceEnum( MSSMBios_RawSMBiosTables) !\n"));
         pWbemService->Release();
         pWbemLocator->Release();     
-        CoUninitialize();
+//		CoUninitialize();
         return FALSE;
     }
     while (pWbemEnumerator)
@@ -300,7 +300,7 @@ BOOL CDMI::Connect()
 				pWbemEnumerator->Release();
 				pWbemService->Release();
 				pWbemLocator->Release();     
-				CoUninitialize();
+//				CoUninitialize();
 				return FALSE;
 			}
 			memset( m_pTables, 0, m_nStructureLength+2);
@@ -318,7 +318,7 @@ BOOL CDMI::Connect()
 	pWbemEnumerator->Release();
     pWbemService->Release();
     pWbemLocator->Release();     
-    CoUninitialize();
+//	CoUninitialize();
 	if (m_pTables == NULL)
 	{
 		AddLog( _T( "\tNo MSSMBios_RawSMBiosTables found !\n"));

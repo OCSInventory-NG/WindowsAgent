@@ -71,6 +71,29 @@ BOOL CDownloadApp::InitInstance()
 			return FALSE; // terminates the application
 		}
 
+		// Initialize COM.
+		if (FAILED( CoInitializeEx( 0, COINIT_MULTITHREADED)))
+		{
+			AfxMessageBox( _T( "Failed to initialize COM"));
+			return FALSE; // terminates the application
+		}
+		// Set general COM security levels --------------------------
+		if (FAILED( CoInitializeSecurity(	NULL, 
+										-1,                          // COM authentication
+										NULL,                        // Authentication services
+										NULL,                        // Reserved
+										RPC_C_AUTHN_LEVEL_DEFAULT,   // Default authentication 
+										RPC_C_IMP_LEVEL_IMPERSONATE, // Default Impersonation  
+										NULL,                        // Authentication info
+										EOAC_NONE,                   // Additional capabilities 
+										NULL                         // Reserved
+										)))
+		{
+			AfxMessageBox( _T( "Failed to initialize COM Security"));
+			CoUninitialize();
+			return FALSE; // terminates the application
+		}
+
 		/*****
 		 *
 		 *	Checks wether another instance of ocsinventory.exe is 
@@ -686,4 +709,11 @@ BOOL CDownloadApp::executePackage( CPackage *pPack)
 	pPack->executePostCmd( m_uCommandTimeout);
 	// Execution finished
 	return TRUE;
+}
+
+int CDownloadApp::ExitInstance() 
+{
+	// Free COM
+	CoUninitialize();
+	return CWinApp::ExitInstance();
 }

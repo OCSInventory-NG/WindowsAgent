@@ -221,10 +221,35 @@ BOOL COcsService::OnInit()
 	 ****/
     ::CreateMutex( NULL, TRUE, _T("OCSSERVICE-088FA840-B10D-11D3-BC36-006067709674") );
 	int Err = GetLastError();
-	if ( Err == ERROR_ALREADY_EXISTS || Err == ERROR_ACCESS_DENIED ) {
-
+	if ( Err == ERROR_ALREADY_EXISTS || Err == ERROR_ACCESS_DENIED )
+	{
 	    ExitProcess(0); // terminates the application
 	}
+	// Initialize COM.
+	if (FAILED( CoInitializeEx( 0, COINIT_MULTITHREADED)))
+	{
+		csMessage.Format( _T( "Failed to initialize COM"));
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
+		ExitProcess(0); // terminates the application
+	}
+	// Set general COM security levels --------------------------
+	if (FAILED( CoInitializeSecurity(	NULL, 
+									-1,                          // COM authentication
+									NULL,                        // Authentication services
+									NULL,                        // Reserved
+									RPC_C_AUTHN_LEVEL_DEFAULT,   // Default authentication 
+									RPC_C_IMP_LEVEL_IMPERSONATE, // Default Impersonation  
+									NULL,                        // Authentication info
+									EOAC_NONE,                   // Additional capabilities 
+									NULL                         // Reserved
+									)))
+	{
+		csMessage.Format( _T( "Failed to initialize COM Security"));
+		LogEvent( EVENTLOG_WARNING_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
+		CoUninitialize();
+		ExitProcess(0); // terminates the application
+	}
+
 	// Load service configuration
 	loadConfig();
 	if( m_iPrologFreq <= 0 )
@@ -430,6 +455,8 @@ void COcsService::OnStop()
 	unProtectConfigFiles();
 	// Report to the event log that the service has stopped successfully
 	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_STOPPED, m_csServiceName);
+	// Free COM
+	CoUninitialize();
 }
 
 void COcsService::Run()

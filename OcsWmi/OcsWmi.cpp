@@ -96,11 +96,11 @@ BOOL COcsWmi::ConnectWMI( LPCTSTR lpstrNameSpace)
 			m_pEnumClassObject = NULL;
 			m_pClassObject = NULL;
 
-			m_hResult =  CoInitializeEx( 0, COINIT_MULTITHREADED); // Initialize COM.
+/*			m_hResult =  CoInitializeEx( 0, COINIT_MULTITHREADED); // Initialize COM.
 			if (FAILED( m_hResult))
 				return FALSE;
-		}
-
+*/		}
+/*
 		// Step 2: --------------------------------------------------
 		// Set general COM security levels --------------------------
 		m_hResult =  CoInitializeSecurity(	NULL, 
@@ -118,7 +118,7 @@ BOOL COcsWmi::ConnectWMI( LPCTSTR lpstrNameSpace)
 			CoUninitialize();
 			return FALSE;
 		}
-
+*/
 		// Step 3: ---------------------------------------------------
 		// Obtain the initial locator to WMI -------------------------
 		m_hResult = CoCreateInstance( CLSID_WbemLocator, 
@@ -128,7 +128,7 @@ BOOL COcsWmi::ConnectWMI( LPCTSTR lpstrNameSpace)
 									(LPVOID *) &pIWbemLocator);
 		if (FAILED( m_hResult))
 		{
-			CoUninitialize();
+//			CoUninitialize();
 			return FALSE;
 		}
 
@@ -147,7 +147,7 @@ BOOL COcsWmi::ConnectWMI( LPCTSTR lpstrNameSpace)
 		pIWbemLocator = NULL;
 		if (FAILED( m_hResult))
 		{
-			CoUninitialize();
+//			CoUninitialize();
 			return FALSE;
 		}
 
@@ -164,7 +164,7 @@ BOOL COcsWmi::ConnectWMI( LPCTSTR lpstrNameSpace)
 		if (FAILED( m_hResult))
 		{
 			m_pIWbemServices->Release();
-			CoUninitialize();
+//			CoUninitialize();
 			return FALSE;
 		}
 		// Connected successfully to WMI given namespace
@@ -178,7 +178,7 @@ BOOL COcsWmi::ConnectWMI( LPCTSTR lpstrNameSpace)
 		if (pIWbemLocator)
 			pIWbemLocator->Release();
 		m_hResult = WBEM_E_FAILED;
-		CoUninitialize();
+//		CoUninitialize();
 		return FALSE;
 	}
 }
@@ -199,7 +199,7 @@ BOOL COcsWmi::DisconnectWMI()
 		if (m_pIWbemServices)
 			m_pIWbemServices->Release();
 		m_pIWbemServices = NULL;
-		CoUninitialize();
+//		CoUninitialize();
 		return TRUE;
 	}
 	catch (CException *pEx)
