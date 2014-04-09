@@ -55,7 +55,7 @@ public:
 	//////////////////////////////////
 	// Connection methods
 	//////////////////////////////////
-	BOOL Connect();
+	BOOL Connect( LPCTSTR lpstrDevice = NULL);
 	BOOL IsConnected();
 	BOOL Disconnect();
 

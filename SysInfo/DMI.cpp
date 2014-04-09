@@ -18,8 +18,7 @@
 
 #include "DebugLog.h"
 #include "SysInfo.h"
-#include "wbemidl.h"
-#include <comdef.h>
+#include "OcsWmi.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -158,132 +157,56 @@ BOOL CDMI::CheckSum(const BYTE *buf, int length)
 	return (sum==0);
 }
 
-BOOL CDMI::Connect()
+BOOL CDMI::Connect( LPCTSTR lpstrDevice)
 {
-	HRESULT hResult;
-	IWbemLocator* pWbemLocator = NULL;
-    IWbemServices* pWbemService = NULL;
-    IEnumWbemClassObject* pWbemEnumerator = NULL;
-    IWbemClassObject* pWbemObjectIntance = NULL;
-    ULONG dwCount = 0;
 	VARIANT variantBiosData;
-	CIMTYPE cimType;
+	COcsWmi dllWMI;
+	CString	csCimRoot;
 
-	// Initialize COM.
-/*	AddLog( _T( "DMI Connect: Trying to initialize COM...\n")); 
-    if ((hResult =  CoInitializeEx(0, COINIT_MULTITHREADED)) < 0) 
+    // Connect to the root\WMI namespace
+	AddLog( _T( "DMI Connect: Trying to connect to WMI namespace root\\WMI on device <%s>...\n"), 
+		(lpstrDevice == NULL ? _T( "Localhost") : lpstrDevice));
+	if (lpstrDevice == NULL)
+		csCimRoot.Format( _T( "root\\WMI"));
+	else
+		csCimRoot.Format( _T( "\\\\%s\\root\\WMI"), lpstrDevice);
+	if (!dllWMI.ConnectWMI( csCimRoot))
 	{
-		AddLog( _T( "\tFailed in call to CoInitializeEx !\n"));
-        return FALSE;
+		// Unable to connect to WMI => no WMI support
+		AddLog( _T( "\tFailed because unable to connect to WMI namespace (0x%lX) !\n"), dllWMI.GetLastErrorWMI());
+		return FALSE;
 	}
-*/    // Obtain the initial locator to Windows Management
-    // on a particular host computer.
-    hResult = CoCreateInstance(
-        CLSID_WbemLocator,             
-        0, 
-        CLSCTX_INPROC_SERVER, 
-        IID_IWbemLocator, (LPVOID *) &pWbemLocator);
- 
-    if (hResult<0)
-    {
-  		AddLog( _T( "\tFailed in call to CoCreateInstance !\n"));
-//		CoUninitialize();
-        return FALSE;
-    }
-    // Connect to the root\WMI namespace with the
-    // current user and obtain pointer pSvc
-    // to make IWbemServices calls.
-    hResult = pWbemLocator->ConnectServer(
-        _bstr_t( "root\\WMI"),	 // WMI namespace
-        NULL,                    // User name
-        NULL,                    // User password
-        NULL,                    // Locale
-        NULL,                    // Security flags                 
-        NULL,                    // Authority       
-        NULL,                    // Context object
-        &pWbemService            // IWbemServices proxy
-    );                              
-    
-    if (hResult<0)
-    {
-  		AddLog( _T( "\tFailed in call to ConnectServer !\n"));
-        pWbemLocator->Release();     
-//		CoUninitialize();
-        return FALSE;
-    }
-    // Set the IWbemServices proxy so that impersonation
-    // of the user (client) occurs.
-    hResult = CoSetProxyBlanket(
-       pWbemService,                 // the proxy to set
-       RPC_C_AUTHN_WINNT,            // authentication service
-       RPC_C_AUTHZ_NONE,             // authorization service
-       NULL,                         // Server principal name
-       RPC_C_AUTHN_LEVEL_CALL,       // authentication level
-       RPC_C_IMP_LEVEL_IMPERSONATE,  // impersonation level
-       NULL,                         // client identity 
-       EOAC_NONE                     // proxy capabilities     
-    );
-    if (hResult<0)
-    {
-  		AddLog( _T( "\tFailed in call to CoSetProxyBlanket !\n"));
-        pWbemService->Release();
-        pWbemLocator->Release();     
-//		CoUninitialize();
-        return FALSE;
-    }
 	AddLog( _T( "\tOK\nDMI Connect: Trying to get raw SMBios data...\n")); 
 	// Enumerates MSSMBios_RawSMBiosTables objects
-    hResult = pWbemService->CreateInstanceEnum( _bstr_t("MSSMBios_RawSMBiosTables"), 0, NULL, &pWbemEnumerator);
-    if (hResult<0)
+    if (!dllWMI.BeginEnumClassObject( _T("MSSMBios_RawSMBiosTables")))
     {
-  		AddLog( _T( "\tFailed in call to CreateInstanceEnum( MSSMBios_RawSMBiosTables) !\n"));
-        pWbemService->Release();
-        pWbemLocator->Release();     
-//		CoUninitialize();
+  		AddLog( _T( "\tFailed because no MSSMBios_RawSMBiosTables object !\n"));
         return FALSE;
     }
-    while (pWbemEnumerator)
+	VariantInit( &variantBiosData);
+	while (dllWMI.MoveNextEnumClassObject())
     {
-        pWbemObjectIntance = NULL;
-        dwCount = 0;
-
-        hResult = pWbemEnumerator->Next(
-            30000,					// Query timeout 30 seconds
-            1,						// Number of objects to retreive
-            &pWbemObjectIntance,	// Object retreived
-            &dwCount);				// Real number of objects retreived
-		if ((hResult != WBEM_S_NO_ERROR) || (dwCount ==0))
-		{
-			// Error, or no more object to enumerate
-			break;
-		}
 		// This an object, ensure SMBios data are ok
-		VariantInit( &variantBiosData);
-
 		// Try to get SMBios version
-		hResult = pWbemObjectIntance->Get( _bstr_t("SmbiosMajorVersion"), 0, &variantBiosData, &cimType, NULL);
-		if (hResult < 0)
+		if ((m_nSMBiosVersionMajor = dllWMI.GetClassObjectDwordValue( _T( "SmbiosMajorVersion"))) == 0)
 		{
 			// No SMBios version, skip this object
-			VariantClear( &variantBiosData);
-			pWbemObjectIntance->Release();
 			continue;
 		}
-		m_nSMBiosVersionMajor = V_I2( &variantBiosData);
-		VariantInit( &variantBiosData);
-		hResult = pWbemObjectIntance->Get( _bstr_t("SmbiosMinorVersion"), 0, &variantBiosData, &cimType, NULL);
-		if (hResult < 0)
+		if ((m_nSMBiosVersionMajor = dllWMI.GetClassObjectDwordValue( _T( "SmbiosMinorVersion"))) == 0)
 		{
 			// No SMBios version, skip this object
-			VariantClear( &variantBiosData);
-			pWbemObjectIntance->Release();
 			continue;
 		}
-		m_nSMBiosVersionMinor = V_I2( &variantBiosData);
 		// Try to get DMI tables
-		VariantInit( &variantBiosData);
-		hResult = pWbemObjectIntance->Get( _bstr_t("SMBiosData"), 0, &variantBiosData, &cimType, NULL);
-		if ((hResult >= 0) && ((VT_UI1 | VT_ARRAY) == variantBiosData.vt))
+		VariantClear( &variantBiosData);
+		if (!dllWMI.GetClassObjectVariantValue( _T( "SMBiosData"), variantBiosData))
+		{
+			// No SMBios version, skip this object
+			VariantClear( &variantBiosData);
+			continue;
+		}
+		if (variantBiosData.vt == (VT_UI1 | VT_ARRAY))
 		{
 			// SMBios data inside
 			SAFEARRAY* p_array = NULL;
@@ -296,11 +219,6 @@ BOOL CDMI::Connect()
 			if ((m_pTables = (UCHAR*) malloc( m_nStructureLength+2)) == NULL) 
 			{
 				AddLog( _T( "\tUnable to allocate memory for raw SMBIOS data !\n"));
-				pWbemObjectIntance->Release();
-				pWbemEnumerator->Release();
-				pWbemService->Release();
-				pWbemLocator->Release();     
-//				CoUninitialize();
 				return FALSE;
 			}
 			memset( m_pTables, 0, m_nStructureLength+2);
@@ -310,15 +228,9 @@ BOOL CDMI::Connect()
 			break;
 		}
 		// Not already found, enumerate next object
-		VariantClear( &variantBiosData);
-		pWbemObjectIntance->Release();
     }
+	dllWMI.DisconnectWMI();
 	// Release used WMI objects
-	pWbemObjectIntance->Release();
-	pWbemEnumerator->Release();
-    pWbemService->Release();
-    pWbemLocator->Release();     
-//	CoUninitialize();
 	if (m_pTables == NULL)
 	{
 		AddLog( _T( "\tNo MSSMBios_RawSMBiosTables found !\n"));
