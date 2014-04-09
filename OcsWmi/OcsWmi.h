@@ -51,13 +51,16 @@ public:
 	COcsWmi();
 	virtual ~COcsWmi();
 
+	// Connect/disconnect to WMI namespace
 	BOOL ConnectWMI( LPCTSTR lpstrNameSpace);
 	BOOL DisconnectWMI();
 
-	BOOL BeginEnumClassObject( LPCTSTR lpstrObject);
+	// Enumerate objects from WMI (excuting WQL query "SELECT * FROM lpstrObject WHERE lpstrCondition")
+	BOOL BeginEnumClassObject( LPCTSTR lpstrObject, LPCTSTR lpstrCondition = NULL);
 	BOOL MoveNextEnumClassObject();
 	BOOL CloseEnumClassObject();
 
+	// Get current enumerated object properties (or properties of an objet referenced by the current enumerated object)
 	LPCTSTR GetClassObjectStringValue( LPCTSTR lpstrProperty);
 	LPCTSTR GetRefElementClassObjectStringValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty);
 
@@ -69,6 +72,9 @@ public:
 	
 	unsigned __int64 GetClassObjectU64Value( LPCTSTR lpstrProperty);
 	unsigned __int64 GetRefElementClassObjectU64Value( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty);
+
+	BOOL GetClassObjectVariantValue( LPCTSTR lpstrProperty, VARIANT &pVal);
+	BOOL GetRefElementClassObjectVariantValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, VARIANT &pVal);
 
 	HRESULT GetLastErrorWMI();
 

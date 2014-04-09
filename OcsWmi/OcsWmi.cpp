@@ -211,7 +211,7 @@ BOOL COcsWmi::DisconnectWMI()
 }
 
 
-BOOL COcsWmi::BeginEnumClassObject( LPCTSTR lpstrObject)
+BOOL COcsWmi::BeginEnumClassObject( LPCTSTR lpstrObject, LPCTSTR lpstrCondition)
 {
 	ASSERT( m_pIWbemServices);
 	ASSERT( lpstrObject);
@@ -220,7 +220,10 @@ BOOL COcsWmi::BeginEnumClassObject( LPCTSTR lpstrObject)
 	{
 		// Get the object class
 		CString csQuery;
-		csQuery.Format( _T( "SELECT * FROM %s"), lpstrObject);
+		if (lpstrCondition == NULL)
+			csQuery.Format( _T( "SELECT * FROM %s"), lpstrObject);
+		else
+			csQuery.Format( _T( "SELECT * FROM %s WHERE %s"), lpstrObject, lpstrCondition);
 		
 		if (m_pEnumClassObject)
 			m_pEnumClassObject->Release();
@@ -414,6 +417,79 @@ unsigned __int64 COcsWmi::GetClassObjectU64Value(LPCTSTR lpstrProperty)
 		pEx->Delete();
 		m_hResult = WBEM_E_FAILED;
 		return 0;
+	}
+}
+
+
+BOOL COcsWmi::GetClassObjectVariantValue( LPCTSTR lpstrProperty, VARIANT &pVal)
+{
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrProperty);
+
+	try
+	{
+		VariantInit(&pVal);
+		CIMTYPE pType;
+
+		VariantClear(&pVal);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
+		if (SUCCEEDED( m_hResult))
+			return TRUE;
+		return FALSE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		m_hResult = WBEM_E_FAILED;
+		return FALSE;
+	}
+}
+
+
+BOOL COcsWmi::GetRefElementClassObjectVariantValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, VARIANT &pVal)
+{
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrRefElement);
+	ASSERT( lpstrProperty);
+
+	try
+	{
+		CString	csObject;
+		CIMTYPE pType;
+		IWbemClassObject *pClassObject;
+
+		VariantClear(&pVal);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrRefElement), 0L, &pVal, &pType, NULL);
+		if (FAILED( m_hResult))
+			return FALSE;
+		csObject = strCimValue( pVal, pType);
+		if (csObject.IsEmpty())
+			return FALSE;
+		m_hResult = m_pIWbemServices->GetObject( _bstr_t( csObject),
+												WBEM_FLAG_RETURN_WBEM_COMPLETE,
+												NULL,
+												&pClassObject,
+												NULL);
+		if (FAILED( m_hResult))
+		{
+//			pClassObject->Release();
+			return FALSE;
+		}
+		VariantClear(&pVal);
+		m_hResult = pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
+		if (FAILED( m_hResult))
+		{
+			pClassObject->Release();
+			return FALSE;
+		}
+		pClassObject->Release();
+		return TRUE;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		m_hResult = WBEM_E_FAILED;
+		return FALSE;
 	}
 }
 
