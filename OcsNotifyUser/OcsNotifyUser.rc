@@ -393,8 +393,8 @@ IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ic
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,1,0,3
- PRODUCTVERSION 2,1,0,3
+ FILEVERSION 2,1,0,4
+ PRODUCTVERSION 2,1,0,4
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -412,13 +412,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory NG User Notification Provider"
             VALUE "CompanyName", "OCS Inventory NG"
             VALUE "FileDescription", "OCS Inventory NG User Notification Provider"
-            VALUE "FileVersion", "2, 1, 0, 3"
+            VALUE "FileVersion", "2, 1, 0, 4"
             VALUE "InternalName", "OcsNotifyUser.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OcsNotifyUser.exe"
             VALUE "ProductName", "OCS Inventory NG Windows Agent"
-            VALUE "ProductVersion", "2, 1, 0, 3"
+            VALUE "ProductVersion", "2, 1, 0, 4"
         END
     END
     BLOCK "VarFileInfo"
