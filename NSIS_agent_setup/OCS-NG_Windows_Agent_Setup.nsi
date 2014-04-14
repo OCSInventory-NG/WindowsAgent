@@ -1375,17 +1375,22 @@ Section "Upgrade from 1.X Agent" SEC02
     FileClose $R0
 	StrCpy $logBuffer "Old agent 4000 series detected, running migration process...$\r$\n"
 	Call Write_Log
-	; First, stop service
+    services::IsServiceInstalled "OCS INVENTORY"
+    Pop $0
+    StrCmp $0 "Yes" UpgradeSkipSelfUnregister
 	StrCpy $OcsService "TRUE"
+	; First, stop service and use service to unregister itself
+	StrCpy $logBuffer "$\tService registered, stopping it and unregistering service from Windows Service Manager...$\r$\n"
+	Call Write_Log
 	Push "OCS INVENTORY"
 	Call StopService
-	StrCpy $logBuffer "Unregistering old service from Windows Service Manager...$\r$\n"
 	Call Write_Log
 	ExecWait "$INSTDIR\ocsservice.exe -uninstall" $R0
 	Sleep 1000
+UpgradeSkipSelfUnregister:
     ; Copy ocsinventory.dat file to new folder, continue on error
     SetShellVarContext All
-	StrCpy $logBuffer "Copying ocsinventory.dat file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
+	StrCpy $logBuffer "$\tCopying ocsinventory.dat file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
 	ClearErrors
     CopyFiles /SILENT "$INSTDIR\ocsinventory.dat" "$APPDATA\OCS Inventory NG\Agent\ocsinventory.dat"
@@ -1393,7 +1398,7 @@ Section "Upgrade from 1.X Agent" SEC02
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
     ; Copy admininfo.conf file to new folder, continue on error
-	StrCpy $logBuffer "$\r$\nCopying admininfo.conf file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
+	StrCpy $logBuffer "$\r$\n$\tCopying admininfo.conf file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
 	ClearErrors
     CopyFiles /SILENT "$INSTDIR\admininfo.conf" "$APPDATA\OCS Inventory NG\Agent\admininfo.conf"
@@ -1401,7 +1406,7 @@ Section "Upgrade from 1.X Agent" SEC02
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
     ; Copy lasy_state file to new folder, continue on error
-	StrCpy $logBuffer "$\r$\nCopying last_state file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
+	StrCpy $logBuffer "$\r$\n$\tCopying last_state file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
 	ClearErrors
     CopyFiles /SILENT "$INSTDIR\last_state" "$APPDATA\OCS Inventory NG\Agent\last_state"
@@ -1410,7 +1415,7 @@ Section "Upgrade from 1.X Agent" SEC02
 	Call Write_Log
     ; Copy cacert.pem file to new folder, continue on error, skip if exist on new folder
     IfFileExists "$APPDATA\OCS Inventory NG\Agent\cacert.pem" UpgradeSkipCacert
-	StrCpy $logBuffer "$\r$\nCopying cacert.pem file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
+	StrCpy $logBuffer "$\r$\n$\tCopying cacert.pem file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
 	ClearErrors
     CopyFiles /SILENT "$INSTDIR\cacert.pem" "$APPDATA\OCS Inventory NG\Agent\cacert.pem"
@@ -1419,11 +1424,11 @@ Section "Upgrade from 1.X Agent" SEC02
 	Call Write_Log
 	goto UpgradeEndCacert
 UpgradeSkipCacert:
-	StrCpy $logBuffer "$\r$\nFile <$APPDATA\OCS Inventory NG\Agent\cacert.pem> exists, skipping it..."
+	StrCpy $logBuffer "$\r$\n$\tFile <$APPDATA\OCS Inventory NG\Agent\cacert.pem> exists, skipping it..."
 	Call Write_Log
 UpgradeEndCacert:
     ; Copy label file to new folder, continue on error
-	StrCpy $logBuffer "$\r$\nCopying label file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
+	StrCpy $logBuffer "$\r$\n$\tCopying label file from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
 	ClearErrors
     CopyFiles /SILENT "$INSTDIR\label" "$APPDATA\OCS Inventory NG\Agent\label"
@@ -1431,7 +1436,7 @@ UpgradeEndCacert:
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
     ; Copy history file to new folder, continue on error
-	StrCpy $logBuffer "$\r$\nCopying History file from <$INSTDIR\download> to <$APPDATA\OCS Inventory NG\Agent>..."
+	StrCpy $logBuffer "$\r$\n$\tCopying History file from <$INSTDIR\download> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
 	ClearErrors
     CopyFiles /SILENT "$INSTDIR\download\History" "$APPDATA\OCS Inventory NG\Agent\History"
@@ -1439,7 +1444,7 @@ UpgradeEndCacert:
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
     ; Transfer old service config to new file (TTO_WAIT, PROLOG_FREQ...)
-	StrCpy $logBuffer "$\r$\nCopying service configuration from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
+	StrCpy $logBuffer "$\r$\n$\tCopying service configuration from <$INSTDIR> to <$APPDATA\OCS Inventory NG\Agent>..."
 	Call Write_Log
 	ClearErrors
     ReadINIStr $R0 "$INSTDIR\service.ini" "OCS_SERVICE" "TTO_WAIT"
@@ -1452,7 +1457,7 @@ UpgradeEndCacert:
 	StrCpy $logBuffer "Failed, but non blocking !"
 	Call Write_Log
 	; Transfer Downloads
-	StrCpy $logBuffer "$\r$\nCopying current downloads from <$INSTDIR\download> to <$APPDATA\OCS Inventory NG\Agent\download>...$\r$\n"
+	StrCpy $logBuffer "$\r$\n$\tCopying current downloads from <$INSTDIR\download> to <$APPDATA\OCS Inventory NG\Agent\download>...$\r$\n"
 	Call Write_Log
 	ClearErrors
     CreateDirectory "$APPDATA\OCS Inventory NG\Agent\download"
@@ -1466,7 +1471,7 @@ UpgradeEndCacert:
     services::IsServiceInstalled "OCS INVENTORY"
     Pop $0
     StrCmp $0 "Yes" UpgradeSkipUnregister
-	StrCpy $logBuffer "Old service still registered, unregistering service from Windows Service Manager...$\r$\n"
+	StrCpy $logBuffer "$\tOld service still registered, forcing service unregister from Windows Service Manager...$\r$\n"
 	Call Write_Log
     nsExec::ExecToLog '"$INSTDIR\OcsService.exe" -uninstall'
     Pop $0
@@ -1475,7 +1480,7 @@ UpgradeEndCacert:
 	Sleep 1000
 UpgradeSkipUnregister:
     ; Remove old data files
-	StrCpy $logBuffer "Removing old data files from <$INSTDIR>..."
+	StrCpy $logBuffer "$\tRemoving old data files from <$INSTDIR>..."
 	Call Write_Log
 	ClearErrors
     Delete /REBOOTOK "$INSTDIR\admininfo.conf"
@@ -1490,7 +1495,7 @@ UpgradeSkipUnregister:
 	StrCpy $logBuffer "One or more file remove failed (perhaps missing file), but non blocking !"
 	Call Write_Log
     ; Remove no more used files
-	StrCpy $logBuffer "$\r$\nRemoving unused binary files from <$INSTDIR>..."
+	StrCpy $logBuffer "$\r$\n$\tRemoving unused binary files from <$INSTDIR>..."
 	Call Write_Log
 	ClearErrors
     Delete /REBOOTOK "$INSTDIR\BiosInfo.exe"
@@ -1505,7 +1510,7 @@ UpgradeSkipUnregister:
 	StrCpy $logBuffer "One or more file remove failed (perhaps missing file), but non blocking !"
 	Call Write_Log
 	; Remove old uninstall registry key
-	StrCpy $logBuffer "$\r$\nRemoving old uninstall key <HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory Agent>..."
+	StrCpy $logBuffer "$\r$\n$\tRemoving old uninstall key <HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory Agent>..."
 	Call Write_Log
 	ClearErrors
 	DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory Agent"
