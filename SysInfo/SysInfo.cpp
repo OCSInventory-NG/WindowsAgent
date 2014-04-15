@@ -630,9 +630,11 @@ BOOL CSysInfo::getUserName(CString &csUserName)
 	TCHAR szUserName[255]; 
 	DWORD dwUserName = 255; 
 
+/* Don't use this code, it list all users connected on Domain controlers and uses 100% CPU
 	// First, try WMI
 	if (m_wmiInfo.IsConnected() && m_wmiInfo.GetLoggedOnUser( csUserName))
 		return TRUE;
+*/
 	// Then, try to find user running explorer.exe process
 	if (getUserNameFromExplorerProcess( csUserName))
 		return TRUE;
