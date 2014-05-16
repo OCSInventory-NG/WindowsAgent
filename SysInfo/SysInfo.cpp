@@ -630,13 +630,23 @@ BOOL CSysInfo::getUserName(CString &csUserName)
 	TCHAR szUserName[255]; 
 	DWORD dwUserName = 255; 
 
-/* Don't use this code, it list all users connected on Domain controlers and uses 100% CPU
-	// First, try WMI
-	if (m_wmiInfo.IsConnected() && m_wmiInfo.GetLoggedOnUser( csUserName))
-		return TRUE;
-*/
-	// Then, try to find user running explorer.exe process
+	// First, try to find user running explorer.exe process
 	if (getUserNameFromExplorerProcess( csUserName))
+		return TRUE;
+	/* Then, try WMI
+	May sometimes produce 100% CPU during many minutes
+
+	Install these patchs from Microsoft solves the problem:
+		For windows 2003 SP2: http://support.microsoft.com/kb/2257980/en
+		For Winows 2008 : http://support.microsoft.com/kb/2464876/en
+		For windows 2008 R2: http://support.microsoft.com/kb/2465990/en
+
+	Anyway, I advice to run all this KB to fix WMI performance or errors:
+	http://support.microsoft.com/kb/2591403
+
+	See https://bugs.launchpad.net/ocsinventory-windows-agent/+bug/1300172
+	*/
+	if (m_wmiInfo.IsConnected() && m_wmiInfo.GetLoggedOnUser( csUserName))
 		return TRUE;
 	// Call the GetUserName function.
 	AddLog( _T( "GetUserName: Trying to find logged on User ID from current running process...\n"));
