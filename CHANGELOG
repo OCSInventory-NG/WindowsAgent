@@ -1,3 +1,16 @@
+2.1.1.1
+  * Fix bug #1300172 WMI GetLoggedOnUser blocking and CPU full on OCS 2.1.0.3. Agent may sometimes produce 100% CPU during many minutes, when retrieving logged on users from WMI. Install these patchs from Microsoft solves the problem:
+		For windows 2003 SP2: http://support.microsoft.com/kb/2257980/en
+		For Winows 2008 : http://support.microsoft.com/kb/2464876/en
+		For windows 2008 R2: http://support.microsoft.com/kb/2465990/en
+	Anyway, I advice to run all this KB to fix WMI performance or errors: http://support.microsoft.com/kb/2591403
+  * Fix bug #1300172: Agent uses 100% CPU on TSC servers and DC
+  * Fix bug #1292465: Do not try to unregister from service manager if not installed
+  * Fix bug #1292020 Windows Agent 2.1.0.3 doesn't report User 
+2.1.0.4
+  * Get DMI data using OcsWmi DLL, instead of using own WMI code
+  * Fix bug #1062582 Windows agent leaks handles by initializing COM and COM Security into main executable, instead of DLL
+  * Enable more detailled debug logs, and fixes small issues
 2.1.0.3
   * Fix XSLT for displaying CPU into "show computer information" command of systrau applet
   * Fix Processor S/N filled with CPU Status if no serial number exist
