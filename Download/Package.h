@@ -104,6 +104,8 @@ protected:
 	BOOL regReadPackageDigest( CString &csDigest);
 	// Delete package digest from registry
 	BOOL regDeletePackageDigest();
+	// Is execution result successfull
+	BOOL isExecSuccessful( int nExitCode, CString &csStatus);
 
 protected:
 	CString m_csID;				// Package ID

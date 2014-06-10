@@ -834,12 +834,8 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 			csBuffer = ERR_EXECUTE_TIMEOUT;
 			break;
 		default:
-			pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Package <%s> successfully launched. Command exit code is <%d>"), m_csID, cmProcess.getExitValue());
-			if (cmProcess.getExitValue() != 0)
-				// Command result code is not a success
-				csBuffer.Format( _T( "%s%d"), ERR_EXIT_CODE, cmProcess.getExitValue());
-			else
-				csBuffer = CODE_SUCCESS;
+			isExecSuccessful( cmProcess.getExitValue(), csBuffer);
+			pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Package <%s> successfully launched. Command exit code is <%d>. Package return code is <%s>"), m_csID, cmProcess.getExitValue(), csBuffer);
 			break;
 		}
 		setDone( csBuffer);
@@ -880,13 +876,8 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 			csBuffer = ERR_EXECUTE_TIMEOUT;
 			break;
 		default:
-			pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Package <%s> successfully executed. Command exit code is <%d>"), m_csID, cmProcess.getExitValue());
-			if (cmProcess.getExitValue() != 0)
-				// Command result code is not a success
-				csBuffer.Format( _T( "%s%d"), ERR_EXIT_CODE, cmProcess.getExitValue());
-			else
-				csBuffer = CODE_SUCCESS;
-			break;
+			isExecSuccessful( cmProcess.getExitValue(), csBuffer);
+			pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Package <%s> successfully executed. Command exit code is <%d>. Package return code is <%s>"), m_csID, cmProcess.getExitValue(), csBuffer);
 		}
 		setDone( csBuffer, GetUnicodeFromAnsi( cmProcess.getOutput()));
 		return TRUE;
@@ -1144,4 +1135,31 @@ BOOL CPackage::deleteScheduler()
 	}
 	RegCloseKey( hKey);
 	return TRUE;
+}
+
+BOOL CPackage::isExecSuccessful( int nExitCode, CString &csStatus)
+{
+	switch (nExitCode)
+	{
+	case ERROR_SUCCESS:
+		// Code 0: The operation completed successfully
+		csStatus = CODE_SUCCESS;
+		return TRUE;
+	case ERROR_SUCCESS_REBOOT_INITIATED:
+		// Code 1641: The operation completed successfully. The system will be restarted so the changes can take effect.
+		csStatus.Format( _T( "%s_REBOOT_INITIATED"), CODE_SUCCESS);
+		return TRUE;
+	case ERROR_SUCCESS_REBOOT_REQUIRED:
+		// Code 3010: The operation completed successfully. Changes will not be effective until the system is rebooted.
+		csStatus.Format( _T( "%s_REBOOT_REQUIRED"), CODE_SUCCESS);
+		return TRUE;
+	case ERROR_SUCCESS_RESTART_REQUIRED:
+		// Code 3011: The operation completed successfully. Changes will not be effective until the service is restarted.
+		csStatus.Format( _T( "%s_RESTART_REQUIRED"), CODE_SUCCESS);
+		return TRUE;
+	default:
+		// Command result code is not a success
+		csStatus.Format( _T( "%s%d"), ERR_EXIT_CODE, nExitCode);
+		return FALSE;
+	}
 }
