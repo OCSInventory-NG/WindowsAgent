@@ -25,8 +25,10 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 
 SimpleBrowser::SimpleBrowser()
-	: _Browser(NULL),
-	  _BrowserDispatch(NULL)
+	:	_Browser(NULL),
+		_BrowserDispatch(NULL),
+		_Ready(false),
+		_Content(_T(""))
 {
 }
 
@@ -54,7 +56,9 @@ BOOL SimpleBrowser::Create(DWORD dwStyle,
 {
     BOOL results = TRUE;
 
-    _Browser     = NULL;
+	_Ready      = false;
+	
+    _Browser	= NULL;
 
     // create this window
 
@@ -98,41 +102,10 @@ BOOL SimpleBrowser::Create(DWORD dwStyle,
         return FALSE;        
     }
 
-	// navigate to blank page; wait for document creation
+	// navigate to initial blank page
 
 	if (_Browser != NULL) {
-	
 		Navigate(_T("about:blank"));
-
-		IHTMLDocument2 *document = NULL;
-		HRESULT			hr       = S_OK;
-
-		while ((document == NULL) && (hr == S_OK)) {
-
-			Sleep(0);
-
-			IDispatch *document_dispatch = NULL;
-
-			hr = _Browser->get_Document(&document_dispatch);
-
-			// if dispatch interface available, retrieve document interface
-			
-			if (SUCCEEDED(hr) && (document_dispatch != NULL)) {
-
-				// retrieve document interface
-				
-				hr = document_dispatch->QueryInterface(IID_IHTMLDocument2,(void **)&document);
-
-				document_dispatch->Release();
-
-			}
-			
-		}
-		
-		if (document != NULL) {
-			document->Release();	
-		}
-
 	}
 
     return TRUE;
@@ -140,7 +113,7 @@ BOOL SimpleBrowser::Create(DWORD dwStyle,
 
 // Create in place of dialog control
 
-BOOL SimpleBrowser::CreateFromControl(CWnd *pParentWnd,UINT nID)
+BOOL SimpleBrowser::CreateFromControl(CWnd *pParentWnd,UINT nID,DWORD dwStyle)
 {
 	BOOL result = FALSE;
 
@@ -163,7 +136,7 @@ BOOL SimpleBrowser::CreateFromControl(CWnd *pParentWnd,UINT nID)
 
 		// create browser
 
-		result = Create((WS_CHILD | WS_VISIBLE),
+		result = Create(dwStyle,
 		                rect,
 						pParentWnd,
 						nID);
@@ -188,6 +161,11 @@ void SimpleBrowser::PostNcDestroy()
 		_BrowserDispatch->Release();
 		_BrowserDispatch = NULL;
 	}
+	
+	_Ready		= false;
+	_Content	= _T("");
+	
+	CWnd::PostNcDestroy();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -198,6 +176,9 @@ void SimpleBrowser::PostNcDestroy()
 
 void SimpleBrowser::Navigate(LPCTSTR URL)
 {
+	_Ready   = false;
+	_Content = _T("");
+
 	if (_Browser != NULL) {
 
 		CString		url(URL);
@@ -353,33 +334,9 @@ void SimpleBrowser::Write(LPCTSTR string)
 {
 	if (_Browser != NULL) {
 
-		// get document interface
-
-		IHTMLDocument2 *document = GetDocument();
+		_Content.Append(string);
 		
-		if (document != NULL) {
-
-			// construct text to be written to browser as SAFEARRAY
-
-			SAFEARRAY *safe_array = SafeArrayCreateVector(VT_VARIANT,0,1);
-			
-			VARIANT	*variant;
-			
-			SafeArrayAccessData(safe_array,(LPVOID *)&variant);
-			
-			variant->vt      = VT_BSTR;
-			variant->bstrVal = CString(string).AllocSysString();
-			
-			SafeArrayUnaccessData(safe_array);
-
-			// write SAFEARRAY to browser document
-
-			document->write(safe_array);
-			
-			document->Release();
-			document = NULL;
-
-		}
+		_ContentWrite();
 
 	}
 }
@@ -388,7 +345,9 @@ void SimpleBrowser::Clear()
 {
 	if (_Browser != NULL) {
 
-		// if document interface available, close/re-open document to clear display
+		_Content = _T("");
+
+		// get document interface
 
 		IHTMLDocument2	*document	= GetDocument();
 		HRESULT			hr			= S_OK;
@@ -426,42 +385,16 @@ void SimpleBrowser::Clear()
 				open_window->Release();
 			}
 
+			::VariantClear(&open_name);
+			
+			document->Release();
+			document = NULL;
+		
 		}
-
-		// otherwise, navigate to about:blank and wait for document ready
-
+		
 		else {
 
 			Navigate(_T("about:blank"));
-
-			IHTMLDocument2 *document = NULL;
-			HRESULT			hr       = S_OK;
-
-			while ((document == NULL) && (hr == S_OK)) {
-
-				Sleep(0);
-
-				IDispatch *document_dispatch = NULL;
-
-				hr = _Browser->get_Document(&document_dispatch);
-
-				// if dispatch interface available, retrieve document interface
-				
-				if (SUCCEEDED(hr) && (document_dispatch != NULL)) {
-
-					// retrieve document interface
-					
-					hr = document_dispatch->QueryInterface(IID_IHTMLDocument2,(void **)&document);
-
-					document_dispatch->Release();
-
-				}
-				
-			}
-			
-			if (document != NULL) {
-				document->Release();	
-			}
 
 		}
 		
@@ -551,10 +484,6 @@ void SimpleBrowser::Print(LPCTSTR header,LPCTSTR footer)
 
 		hr = _Browser->ExecWB(OLECMDID_PRINT,OLECMDEXECOPT_DODEFAULT,&parameter,NULL);
 
-			// Note: There is no simple way to determine that printing has completed. 
-			//       In fact, if the browser is destroyed while printing is in progress, 
-			//       only part of the contents will be printed.
-
 		// release SAFEARRAY
 
 		if (!SUCCEEDED(hr)) {
@@ -565,6 +494,13 @@ void SimpleBrowser::Print(LPCTSTR header,LPCTSTR footer)
 			}
 		}
 
+	}
+}
+
+void SimpleBrowser::PrintPreview()
+{
+	if (_Browser != NULL) {
+		_Browser->ExecWB(OLECMDID_PRINTPREVIEW,OLECMDEXECOPT_DODEFAULT,NULL,NULL);
 	}
 }
 
@@ -710,6 +646,36 @@ BEGIN_MESSAGE_MAP(SimpleBrowser,CWnd)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
+BOOL SimpleBrowser::PreTranslateMessage(MSG *pMsg)
+{
+	BOOL result = FALSE;
+
+	// translate keys correctly, especially Tab, Del, (Enter?)
+	
+	if (_Browser != NULL) {
+	
+		IOleInPlaceActiveObject* OleInPlaceActiveObject = NULL;
+
+		HRESULT hr = _Browser->QueryInterface(IID_IOleInPlaceActiveObject, (void**)&OleInPlaceActiveObject);
+
+		if (SUCCEEDED(hr) && (OleInPlaceActiveObject != NULL)) {
+
+			hr = OleInPlaceActiveObject->TranslateAccelerator(pMsg);
+			result = (hr == S_OK ? TRUE : FALSE);
+
+			OleInPlaceActiveObject->Release();
+
+		}
+
+	}
+
+	else {
+		result = CWnd::PreTranslateMessage(pMsg);
+	}
+
+	return result;
+}
+
 // Resize control window as this window is resized
 
 void SimpleBrowser::OnSize(UINT nType, int cx, int cy)
@@ -725,6 +691,13 @@ void SimpleBrowser::OnSize(UINT nType, int cx, int cy)
 /////////////////////////////////////////////////////////////////////////////
 // Event handlers
 /////////////////////////////////////////////////////////////////////////////
+
+#ifndef DISPID_PRINTTEMPLATEINSTANTIATION
+	#define DISPID_PRINTTEMPLATEINSTANTIATION 225
+#endif
+#ifndef DISPID_PRINTTEMPLATETEARDOWN
+	#define DISPID_PRINTTEMPLATETEARDOWN 226
+#endif
 
 BEGIN_EVENTSINK_MAP(SimpleBrowser,CWnd)
     ON_EVENT(SimpleBrowser,AFX_IDW_PANE_FIRST,
@@ -759,6 +732,14 @@ BEGIN_EVENTSINK_MAP(SimpleBrowser,CWnd)
 	         DISPID_TITLECHANGE,
              _OnTitleChange, 
 			 VTS_BSTR)
+	ON_EVENT(SimpleBrowser,AFX_IDW_PANE_FIRST,
+	         DISPID_PRINTTEMPLATEINSTANTIATION,
+	         _OnPrintTemplateInstantiation, 
+	         VTS_DISPATCH)
+	ON_EVENT(SimpleBrowser,AFX_IDW_PANE_FIRST,
+	         DISPID_PRINTTEMPLATETEARDOWN,
+	         _OnPrintTemplateTeardown, 
+	         VTS_DISPATCH)
 END_EVENTSINK_MAP()
 
 SimpleBrowser::Notification::Notification(HWND hwnd,UINT ID,NotificationType type)
@@ -774,6 +755,10 @@ SimpleBrowser::Notification::Notification(HWND hwnd,UINT ID,NotificationType typ
 	progress		= 0;
 	progress_max	= 0;
 	text			= _T("");
+}
+
+SimpleBrowser::Notification::~Notification()
+{
 }
 
 // Called before navigation begins; application may cancel if required
@@ -842,6 +827,11 @@ void SimpleBrowser::_OnBeforeNavigate2(LPDISPATCH lpDisp,
 
 		}
 
+		if ((Headers       != NULL) &&
+            (V_VT(Headers) == VT_BSTR)) {
+			headers = V_BSTR(Headers);
+        }
+
 		bool cancel = OnBeforeNavigate2(URL_string,
 		                                frame,
 										post_data,post_data_size,
@@ -889,6 +879,106 @@ bool SimpleBrowser::OnBeforeNavigate2(CString URL,
     return cancel;
 }
 
+bool SimpleBrowser::ParsePostData(CString post_data,
+	                              CStringArray &names,
+	                              CStringArray &values)
+{
+	bool result = true;
+	
+	int size = 1;
+	
+	names.SetSize(size);
+	values.SetSize(size);
+	
+	int offset = 0;
+	
+	bool parsing_name = true;
+	
+	CString hex(_T("0123456789ABCDEF"));
+	
+	while ((offset < post_data.GetLength()) && result) {
+
+		if      (post_data[offset] == _T('%')) {
+
+			if ((offset + 2) < post_data.GetLength()) {
+
+				int digit1 = hex.Find(_totupper(post_data[offset + 1]));
+				int digit2 = hex.Find(_totupper(post_data[offset + 2]));
+
+				if ((digit1 >= 0) && (digit2 >= 0)) {
+
+					_TCHAR character = (_TCHAR)((digit1 << 4) + digit2);
+
+					if (parsing_name) names[size - 1].AppendChar(character);
+					else              values[size - 1].AppendChar(character);
+
+				}
+				
+				else {
+					result = false;
+				}
+
+				offset += 2;
+
+			}
+
+			else {
+				result = false;
+			}
+
+		}
+
+		else if (post_data[offset] == _T('+')) {
+			if (parsing_name) names[size - 1].AppendChar(_T(' '));
+			else              values[size - 1].AppendChar(_T(' '));
+		}
+
+		else if (post_data[offset] == _T('=')) {
+
+			if (parsing_name) {
+				parsing_name = false;
+			}
+			else {
+				values[size - 1].AppendChar(post_data[offset]);
+			}
+
+		}
+
+		else if (post_data[offset] == _T('&')) {
+
+			if (!parsing_name) {
+				parsing_name = true;
+				size += 1;
+				names.SetSize(size);
+				values.SetSize(size);
+			}
+
+			else {
+				values[size - 1].AppendChar(post_data[offset]);
+			}
+
+		}
+		
+		else {
+
+			if (parsing_name) names[size - 1].AppendChar(post_data[offset]);
+			else              values[size - 1].AppendChar(post_data[offset]);
+
+		}
+
+		offset++;
+		
+	}
+
+	if ((names[size - 1]  == _T("")) &&
+	    (values[size - 1] == _T(""))) {
+		names.SetSize(size - 1);
+		values.SetSize(size - 1);
+	}
+
+	return result;
+}
+
 // Document loaded and initialized
 
 void SimpleBrowser::_OnDocumentComplete(LPDISPATCH lpDisp,VARIANT *URL)
@@ -899,7 +989,7 @@ void SimpleBrowser::_OnDocumentComplete(LPDISPATCH lpDisp,VARIANT *URL)
 		
 		if ((URL       != NULL) &&
             (V_VT(URL) == VT_BSTR)) {
-			URL_string = V_BSTR(URL);
+			URL_string = CString(V_BSTR(URL));
         }
 
         OnDocumentComplete(URL_string);
@@ -995,6 +1085,16 @@ void SimpleBrowser::_OnNavigateComplete2(LPDISPATCH lpDisp,VARIANT *URL)
 {
     if (lpDisp == _BrowserDispatch) {
 
+		// signal document ready
+
+		_Ready = true;
+
+		// write current content
+		
+		_ContentWrite();
+		
+		// inform user navigation complete
+		
 		CString URL_string;
 		
 		if ((URL       != NULL) &&
@@ -1081,5 +1181,91 @@ void SimpleBrowser::OnTitleChange(CString text)
 		                                     notification.hdr.idFrom,
 											 (LPARAM)&notification);
 		
+	}
+}
+
+// Print template instantiation and teardown
+ 
+void SimpleBrowser::_OnPrintTemplateInstantiation(LPDISPATCH lpDisp)
+{
+	OnPrintTemplateInstantiation();
+};
+
+void SimpleBrowser::OnPrintTemplateInstantiation()
+{
+	CWnd *parent = GetParent();
+	
+	if (parent != NULL) {
+
+		Notification	notification(m_hWnd,GetDlgCtrlID(),PrintTemplateInstantiation);
+		
+		LRESULT result = parent->SendMessage(WM_NOTIFY,
+		                                     notification.hdr.idFrom,
+											 (LPARAM)&notification);
+		
+	}
+}
+
+void SimpleBrowser::_OnPrintTemplateTeardown(LPDISPATCH lpDisp)
+{
+	OnPrintTemplateTeardown();
+};
+
+void SimpleBrowser::OnPrintTemplateTeardown()
+{
+	CWnd *parent = GetParent();
+	
+	if (parent != NULL) {
+
+		Notification	notification(m_hWnd,GetDlgCtrlID(),PrintTemplateTeardown);
+		
+		LRESULT result = parent->SendMessage(WM_NOTIFY,
+		                                     notification.hdr.idFrom,
+											 (LPARAM)&notification);
+		
+	}
+}
+
+// Write deferred content
+
+void SimpleBrowser::_ContentWrite()
+{
+	if (_Ready && (!_Content.IsEmpty())) {
+	
+		// get document interface
+
+		IHTMLDocument2 *document = GetDocument();
+		
+		if (document != NULL) {
+
+			// construct text to be written to browser as SAFEARRAY
+
+			SAFEARRAY *safe_array = SafeArrayCreateVector(VT_VARIANT,0,1);
+			
+			VARIANT	*variant;
+			
+			SafeArrayAccessData(safe_array,(LPVOID *)&variant);
+			
+			variant->vt      = VT_BSTR;
+			variant->bstrVal = _Content.AllocSysString();
+			
+			SafeArrayUnaccessData(safe_array);
+
+			// write SAFEARRAY to browser document
+
+			document->write(safe_array);
+			
+			// cleanup
+			
+			document->Release();
+			document = NULL;
+
+			::SysFreeString(variant->bstrVal);
+			variant->bstrVal = NULL;
+			
+			SafeArrayDestroy(safe_array);
+		
+		}
+
 	}
 }

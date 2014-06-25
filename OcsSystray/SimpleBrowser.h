@@ -2,19 +2,6 @@
 // SimpleBrowser: Web browser control
 /////////////////////////////////////////////////////////////////////////////
 
-//
-// Change History:
-//
-// April 6, 2003		- Original release, and article posted at
-//						  http://www.codeproject.com/useritems/SimpleBrowserForMFC.asp
-//
-// April 12, 2003		- Replaced NavigateString() with Write() and Clear().
-//						- Added logic to Create() to wait for document ready.
-//						- Added GetDocument() method.
-//						- Added notification support.
-//						- Added post data and headers to BeforeNavigate2 handling.
-//
-
 #if !defined(SimpleBrowser_defined)
 #define SimpleBrowser_defined
 
@@ -36,7 +23,7 @@ public:
 		
 		// create browser directly
 
-	BOOL CreateFromControl(CWnd *pParentWnd,UINT nID);
+	BOOL CreateFromControl(CWnd *pParentWnd,UINT nID,DWORD dwStyle = WS_CHILD | WS_VISIBLE);
 
 		// create browser in place of dialog control; the dialog control 
 		// identified by nID will be destroyed, and the browser will take
@@ -85,6 +72,8 @@ public:
 			   
 		// start printing contents; uses same 'metacharacters' for header and
 		// footer as Internet Explorer; see IE Page Setup dialog
+
+	void PrintPreview();					// print preview
 
     bool GetBusy();                         // returns true if browser
                                             // busy downloading or other
@@ -152,6 +141,14 @@ public:
 
 		// title has changed
 
+	virtual void OnPrintTemplateInstantiation();
+	
+		// print template has been instantiated (printing has begun)
+		
+	virtual void OnPrintTemplateTeardown();
+	
+		// print template is being destroyed (printing has completed)		
+
 	// notifications
 	
 	enum NotificationType {					// Note: SimpleBrowser does NOT support the
@@ -164,7 +161,9 @@ public:
 		DownloadComplete,
 		NavigateComplete2,
 		StatusTextChange,
-		TitleChange
+		TitleChange,
+		PrintTemplateInstantiation,
+		PrintTemplateTeardown
 
 	};
 	
@@ -173,6 +172,7 @@ public:
 	public:
 
 		Notification(HWND hwnd,UINT ID,NotificationType type);
+		~Notification();
 
 		NMHDR			hdr;				// hdr.hwndFrom = SimpleBrowser's HWND
 											// hdr.idFrom   = SimpleBrowser's control ID
@@ -195,6 +195,11 @@ public:
 
 	};
 
+	bool ParsePostData(CString post_data,		// parse URL-encoded POST data
+	                   CStringArray &names,		// string into list of names
+	                   CStringArray &values);	// and values; returns true if
+												// successful
+
     //{{AFX_VIRTUAL(SimpleBrowser)
 	public:
 	virtual void PostNcDestroy();
@@ -204,6 +209,7 @@ protected:
 
     //{{AFX_MSG(SimpleBrowser)
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg BOOL PreTranslateMessage(MSG *pMsg);
 	//}}AFX_MSG
 
     void _OnBeforeNavigate2(LPDISPATCH lpDisp,
@@ -220,6 +226,8 @@ protected:
     void _OnNavigateComplete2(LPDISPATCH lpDisp,VARIANT FAR* URL);
     void _OnStatusTextChange(BSTR bstrText);
     void _OnTitleChange(BSTR bstrText);
+	void _OnPrintTemplateInstantiation(LPDISPATCH pDisp);
+	void _OnPrintTemplateTeardown(LPDISPATCH pDisp);
 
     DECLARE_MESSAGE_MAP()
     DECLARE_EVENTSINK_MAP()
@@ -227,9 +235,22 @@ protected:
 private:
 
     CWnd                    _BrowserWindow;     // browser window
+
+protected:
+
 	IWebBrowser2			*_Browser;          // browser control
+
+	bool					_Ready;				// document ready
+												// (initial navigation completed)
+
+private:    
+    
     IDispatch               *_BrowserDispatch;  // browser control 
 												// dispatch interface
+
+	CString					_Content;			// current content set via Write()/Clear()
+	
+	void _ContentWrite();
 
 };
 
