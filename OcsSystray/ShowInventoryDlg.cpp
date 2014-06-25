@@ -61,8 +61,16 @@ BOOL CShowInventoryDlg::OnInitDialog()
 	// Set link to OCS Web site
 	m_HLink.SetLinkUrl( _T( "http://www.ocsinventory-ng.org"));
 	// Display XML using SimpleBrowser
-	m_Browser.CreateFromControl( this, IDC_BROWSER);
-	m_Browser.Navigate( m_csXml);
+	if (!m_Browser.CreateFromControl( this, IDC_BROWSER))
+	{
+		CString csMessage;
+
+		csMessage.Format( IDS_SHOW_INVENTORY_FAILED, _T( "Failed to create MSIE Control for displaying inventory"));
+		AfxMessageBox( csMessage, MB_OK|MB_ICONEXCLAMATION);
+	}
+	else
+		m_Browser.Navigate( m_csXml);
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 

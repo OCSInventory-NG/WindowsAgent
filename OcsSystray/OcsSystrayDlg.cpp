@@ -234,14 +234,14 @@ void COcsSystrayDlg::OnShowInventory()
 	csXml.Format( _T( "%s\\OCSInventory.xml"), getDataFolder());
 	if (!fileExists( csXml))
 	{
-		csXml.FormatMessage( IDS_SHOW_INVENTORY_FAILED, _T( "Service did not generate XML file"));
+		csXml.Format( IDS_SHOW_INVENTORY_FAILED, _T( "Service did not generate XML file"));
 		AfxMessageBox( csXml, MB_OK|MB_ICONEXCLAMATION);
 		return;
 	}
 	cDlg.SetInventory( csXml);
 	if (cDlg.DoModal() != IDCANCEL)
 	{
-		csXml.FormatMessage( IDS_SHOW_INVENTORY_FAILED, _T( "Unknown"));
+		csXml.Format( IDS_SHOW_INVENTORY_FAILED, _T( "Unknown"));
 		AfxMessageBox( csXml, MB_OK|MB_ICONEXCLAMATION);
 		return;
 	}
