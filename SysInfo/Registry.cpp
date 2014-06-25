@@ -3751,8 +3751,6 @@ BOOL CRegistry::GetLoggedOnUserVista(CString &csUser)
 
 BOOL CRegistry::GetLastLoggedUser(CString &csLastLoggedUser)
 {
-	ASSERT( pList);
-
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
