@@ -46,6 +46,11 @@ BOOL CVMSystem::FindHypervisor( LPCTSTR lpstrValue, CString &csVMSystem)
 		csVMSystem = _T( "QEMU");
 		return TRUE;
 	}
+	if (csSearch.Find( _T( "Microsoft")) >= 0)
+	{
+		csVMSystem = _T( "Microsoft");
+		return TRUE;
+	}
 	if ((csSearch.Find( _T( "VirtualBox")) >= 0) ||
 		(csSearch.Find( _T( "VBOX")) >= 0))
 	{
