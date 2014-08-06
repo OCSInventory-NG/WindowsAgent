@@ -1126,7 +1126,7 @@ BOOL CWmi::GetMonitors(CMonitorList *pMyList)
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "MonitorType"));
 				myObject.SetType( csBuffer);
 				pMyList->AddTail( myObject);
-				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Name: %s><Type: %s>\n"), 
+				AddLog( _T( "\t\t<Manufacturer: %s><Caption: %s><Description: %s><Type: %s>\n"),  
 					myObject.GetManufacturer(), myObject.GetCaption(), myObject.GetDescription(),
 					myObject.GetType());
 				uIndex ++;
