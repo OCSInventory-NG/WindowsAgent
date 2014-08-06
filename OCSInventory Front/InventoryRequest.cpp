@@ -665,9 +665,10 @@ BOOL CInventoryRequest::runInventory()
 	if (!m_pSysInfo->getBiosInfo( &m_BIOS))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve BIOS"));
 	else
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => System Manufacturer <%s>, System Model <%s>, System S/N <%s>, Bios Manufacturer <%s>, Bios Date <%s>, Bios Version <%s>"),
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => System Manufacturer <%s>, System Model <%s>, System S/N <%s>, Bios Manufacturer <%s>, Bios Date <%s>, Bios Version <%s>, Motherboard Manufacturer <%s>, Motherboard Model <%s>, Motherboard S/N <%s>"),
 					  m_BIOS.GetSystemManufacturer(), m_BIOS.GetSystemModel(), m_BIOS.GetSystemSerialNumber(),
-					  m_BIOS.GetBiosManufacturer(), m_BIOS.GetBiosDate(), m_BIOS.GetBiosVersion());
+					  m_BIOS.GetBiosManufacturer(), m_BIOS.GetBiosDate(), m_BIOS.GetBiosVersion(),
+					  m_BIOS.GetMotherboardManufacturer(), m_BIOS.GetMotherboardModel(), m_BIOS.GetMotherboardSerialNumber());
 	// Get Processor infos (0 means error)
 	if (!(dwValue = m_pSysInfo->getProcessors( cs1, cs2, &m_CpuList)))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve processor(s)"));

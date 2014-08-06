@@ -218,7 +218,7 @@ BOOL CWmi::GetBiosInfo(CBios *pMyBios)
 	if (!m_bConnected)
 		return bResult;
 
-	pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
+	pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
 	// GET BIOS Informations
 	if (GetBios( csManufacturer, csBiosVer, csRdate, csSN))
 	{
@@ -254,6 +254,9 @@ BOOL CWmi::GetBiosInfo(CBios *pMyBios)
 			pMyBios->SetSystemModel( csModel);
 		if (!pMyBios->IsValidSystemSerialNumber())
 			pMyBios->SetSystemSerialNumber( csSN);
+		pMyBios->SetMotherboardManufacturer( csManufacturer);
+		pMyBios->SetMotherboardModel( csModel);
+		pMyBios->SetMotherboardSerialNumber( csSN);
 	}
 	return bResult;
 }

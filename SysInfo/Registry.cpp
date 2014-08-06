@@ -62,6 +62,8 @@ static char THIS_FILE[] = __FILE__;
 #define NT_BIOS_MANUFACTURER_VALUE				_T( "BIOSName")
 #define NT_BIOS_VERSION_VALUE					_T( "SystemBiosVersion")
 #define NT_BIOS_DATE_VALUE						_T( "SystemBiosDate")
+#define NT_BASEBOARD_MANUFACTURER_VALUE			_T( "BaseBoardManufacturer")
+#define NT_BASEBOARD_MODEL_VALUE				_T( "BaseBoardProduct")
 
 // Defines for retrieving BIOS from Vista registry
 #define VISTA_BIOS_KEY							_T( "HARDWARE\\Description\\System\\BIOS")
@@ -72,6 +74,8 @@ static char THIS_FILE[] = __FILE__;
 #define VISTA_BIOS_MANUFACTURER_VALUE			_T( "BIOSVendor")
 #define VISTA_BIOS_VERSION_VALUE				_T( "BIOSVersion")
 #define VISTA_BIOS_DATE_VALUE					_T( "BIOSReleaseDate")
+#define VISTA_BASEBOARD_MANUFACTURER_VALUE		_T( "BaseBoardManufacturer")
+#define VISTA_BASEBOARD_MODEL_VALUE				_T( "BaseBoardProduct")
 
 // Defines for retrieving processors from NT registry
 #define NT_PROCESSOR_KEY						_T( "HARDWARE\\Description\\System\\CentralProcessor")
@@ -459,8 +463,9 @@ BOOL CRegistry::GetBiosInfo( CBios *pMyBios)
 		return GetBiosInfoNT( pMyBios);
 	default:
 		// Unknown
-		pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE
-					  NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
+		pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE,
+					  NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE,
+					  NOT_AVAILABLE, NOT_AVAILABLE);
 		AddLog( _T( "Registry GetBiosInfo:\n\tFailed because unsupported or unrecognized OS !\n"));
 		return FALSE;
 	}
@@ -556,6 +561,34 @@ BOOL CRegistry::GetBiosInfoNT( CBios *pMyBios)
 		{
 			pMyBios->SetBiosDate( csValue);
 		}
+		// Get Motherboard manufacturer
+		lResult = GetValue( hKey, NT_BASEBOARD_MANUFACTURER_VALUE, csValue);
+		if (lResult != ERROR_SUCCESS)
+		{
+			AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+					NT_BIOS_KEY, NT_BASEBOARD_MANUFACTURER_VALUE);
+			pMyBios->SetMotherboardManufacturer( NOT_AVAILABLE);
+			bManufacturer = FALSE;
+		}
+		else
+		{
+			pMyBios->SetMotherboardManufacturer( csValue);
+			bManufacturer = TRUE;
+		}
+		// Get Motherboard model
+		lResult = GetValue( hKey, NT_BASEBOARD_MODEL_VALUE, csValue);
+		if (lResult != ERROR_SUCCESS)
+		{
+			AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+					NT_BIOS_KEY, NT_BASEBOARD_MODEL_VALUE);
+			pMyBios->SetMotherboardModel( NOT_AVAILABLE);
+			bModel = FALSE;
+		}
+		else
+		{
+			pMyBios->SetMotherboardModel( csValue);
+			bModel = TRUE;
+		}
 		// Get machine type
 		lResult = GetValue( hKey, NT_BIOS_MACHINE_TYPE_VALUE, csValue);
 		if (lResult != ERROR_SUCCESS)
@@ -568,17 +601,19 @@ BOOL CRegistry::GetBiosInfoNT( CBios *pMyBios)
 		{
 			pMyBios->SetMachineType( csValue);
 		}
-		AddLog( _T( "\t\t<System Manufacturer: %s><System Model: %s><System S/N: %s><BIOS Manufacturer: %s><BIOS Version: %s><BIOS Date: %s><Type: %s>\n"), 
+		AddLog( _T( "\t\t<System Manufacturer: %s><System Model: %s><System S/N: %s><BIOS Manufacturer: %s><BIOS Version: %s><BIOS Date: %s><Baseboard Manufacturer: %s><Baseboard Model: %s><Type: %s>\n"), 
 			pMyBios->GetSystemManufacturer(), pMyBios->GetSystemModel(), pMyBios->GetSystemSerialNumber(), pMyBios->GetBiosManufacturer(),
-			pMyBios->GetBiosVersion(), pMyBios->GetBiosDate(), pMyBios->GetMachineType());
+			pMyBios->GetBiosVersion(), pMyBios->GetBiosDate(), pMyBios->GetMotherboardManufacturer(), pMyBios->GetMotherboardModel(), 
+			pMyBios->GetMachineType());
 		RegCloseKey( hKey);
 	}
 	else
 	{
 		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 				NT_BIOS_KEY);
-		pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE
-					  NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
+		pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE,
+					  NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE,
+					  NOT_AVAILABLE, NOT_AVAILABLE);
 	}
 	AddLog( _T( "\tOK.\n"));
 	return TRUE;
@@ -673,6 +708,34 @@ BOOL CRegistry::GetBiosInfoVista( CBios *pMyBios)
 		{
 			pMyBios->SetBiosDate( csValue);
 		}
+		// Get Motherboard manufacturer
+		lResult = GetValue( hKey, VISTA_BASEBOARD_MANUFACTURER_VALUE, csValue);
+		if (lResult != ERROR_SUCCESS)
+		{
+			AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+					NT_BIOS_KEY, VISTA_BASEBOARD_MANUFACTURER_VALUE);
+			pMyBios->SetMotherboardManufacturer( NOT_AVAILABLE);
+			bManufacturer = FALSE;
+		}
+		else
+		{
+			pMyBios->SetMotherboardManufacturer( csValue);
+			bManufacturer = TRUE;
+		}
+		// Get Motherboard model
+		lResult = GetValue( hKey, VISTA_BASEBOARD_MODEL_VALUE, csValue);
+		if (lResult != ERROR_SUCCESS)
+		{
+			AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+					NT_BIOS_KEY, VISTA_BASEBOARD_MODEL_VALUE);
+			pMyBios->SetMotherboardModel( NOT_AVAILABLE);
+			bModel = FALSE;
+		}
+		else
+		{
+			pMyBios->SetMotherboardModel( csValue);
+			bModel = TRUE;
+		}
 		// Get machine type
 		lResult = GetValue( hKey, VISTA_BIOS_MACHINE_TYPE_VALUE, csValue);
 		if (lResult != ERROR_SUCCESS)
@@ -685,17 +748,19 @@ BOOL CRegistry::GetBiosInfoVista( CBios *pMyBios)
 		{
 			pMyBios->SetMachineType( csValue);
 		}
-		AddLog( _T( "\t\t<System Manufacturer: %s><System Model: %s><System S/N: %s><BIOS Manufacturer: %s><BIOS Version: %s><BIOS Date: %s><Type: %s>\n"), 
+		AddLog( _T( "\t\t<System Manufacturer: %s><System Model: %s><System S/N: %s><BIOS Manufacturer: %s><BIOS Version: %s><BIOS Date: %s><Baseboard Manufacturer: %s><Baseboard Model: %s><Type: %s>\n"), 
 			pMyBios->GetSystemManufacturer(), pMyBios->GetSystemModel(), pMyBios->GetSystemSerialNumber(), pMyBios->GetBiosManufacturer(),
-			pMyBios->GetBiosVersion(), pMyBios->GetBiosDate(), pMyBios->GetMachineType());
+			pMyBios->GetBiosVersion(), pMyBios->GetBiosDate(), pMyBios->GetMotherboardManufacturer(), pMyBios->GetMotherboardModel(), 
+			pMyBios->GetMachineType());
 		RegCloseKey( hKey);
 	}
 	else
 	{
 		AddLog( _T( "\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"),
 				VISTA_BIOS_KEY);
-		pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE
-					  NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
+		pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE,
+					  NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE,
+					  NOT_AVAILABLE, NOT_AVAILABLE);
 	}
 	AddLog( _T( "\tOK.\n"));
 	return TRUE;

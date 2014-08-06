@@ -49,6 +49,12 @@ public: // Methods
 	LPCTSTR GetBiosVersion();
 	// Return the BIOS Date
 	LPCTSTR GetBiosDate();
+	// Return the Motherboard manufacturer
+	LPCTSTR GetMotherboardManufacturer();
+	// Return the Motherboard model
+	LPCTSTR GetMotherboardModel();
+	// Return the Motherboard S/N
+	LPCTSTR GetMotherboardSerialNumber();
 	// Return the Asset Tag
 	LPCTSTR GetAssetTag();
 	// Get hash code of data, to determine if changed since last inventory
@@ -66,13 +72,21 @@ public: // Methods
 	// Clear BIOS infos
 	void Clear();
 	// Set all BIOSInfo attributes
-	void Set( LPCTSTR lpstrSystemManufacturer, LPCTSTR lpstrSystemModel, LPCTSTR lpstrSystemSerialNumber, LPCTSTR lpstrMachineType, LPCTSTR lpstrBiosManufacturer, LPCTSTR lpstrBiosVersion, LPCTSTR lpstrBiosDate);
+	void Set( LPCTSTR lpstrSystemManufacturer, LPCTSTR lpstrSystemModel, LPCTSTR lpstrSystemSerialNumber, LPCTSTR lpstrMachineType,
+			  LPCTSTR lpstrBiosManufacturer, LPCTSTR lpstrBiosVersion, LPCTSTR lpstrBiosDate,
+			  LPCTSTR lpstrMotherboardManufacturer, LPCTSTR lpstrMotherboardModel, LPCTSTR lpstrMotherboardSerialNumber);
 	// Set System manufacturer
 	void SetSystemManufacturer( LPCTSTR lpstrManufacturer);
 	// Set System model
 	void SetSystemModel( LPCTSTR lpstrModel);
 	// Set System serial number
 	void SetSystemSerialNumber( LPCTSTR lpstrSerialNumber);
+	// Set Motherboard manufacturer
+	void SetMotherboardManufacturer( LPCTSTR lpstrManufacturer);
+	// Set Motherboard model
+	void SetMotherboardModel( LPCTSTR lpstrModel);
+	// Set Motherboard serial number
+	void SetMotherboardSerialNumber( LPCTSTR lpstrSerialNumber);
 	// Set BIOS machine type
 	void SetMachineType( LPCTSTR lpstrMachineType);
 	// Set BIOS manufacturer
@@ -95,6 +109,9 @@ protected: // Attributes
 	CString		m_csSystemManufacturer;	// Device manufacturer
 	CString		m_csSystemModel;		// Device model
 	CString		m_csSystemSerialNumber;	// Device serial number
+	CString		m_csMotherboardManufacturer; // Motherboard manufacturer
+	CString		m_csMotherboardModel;	// Motherboard model
+	CString		m_csMotherboardSerialNumber; // Motherboard serial number
 	CString		m_csMachineType;		// Device type (tower, mini-tower, pizza box...)
 	CString		m_csBiosManufacturer;	// BIOS manufacturer
 	CString		m_csBiosVersion;		// BIOS version

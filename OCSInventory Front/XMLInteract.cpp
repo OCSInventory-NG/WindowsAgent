@@ -44,6 +44,9 @@ BOOL CXMLInteract::UpdateBIOS( CBios &myBios)
 		m_pXml->AddChildElem( _T( "BMANUFACTURER"), myBios.GetBiosManufacturer());
 		m_pXml->AddChildElem( _T( "BVERSION"), myBios.GetBiosVersion());
 		m_pXml->AddChildElem( _T( "BDATE"), myBios.GetBiosDate());
+		m_pXml->AddChildElem( _T( "MMANUFACTURER"), myBios.GetMotherboardManufacturer());
+		m_pXml->AddChildElem( _T( "MMODEL"), myBios.GetMotherboardModel());
+		m_pXml->AddChildElem( _T( "MSN"), myBios.GetMotherboardSerialNumber());		
 		m_pXml->AddChildElem( _T( "ASSETTAG"), myBios.GetAssetTag());
 	m_pXml->OutOfElem();
 	return TRUE;
@@ -74,6 +77,12 @@ BOOL CXMLInteract::ReadBIOS( CBios &myBios)
 			myBios.SetBiosVersion( m_pXml->GetData( pXmlElement));
 			pXmlElement = m_pXml->FindFirstElem( _T( "BDATE"), pXml);
 			myBios.SetBiosDate( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "MMANUFACTURER"), pXml);
+			myBios.SetMotherboardManufacturer( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "MMODEL"), pXml);
+			myBios.SetMotherboardModel( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "MSN"), pXml);
+			myBios.SetMotherboardSerialNumber( m_pXml->GetData( pXmlElement));
 			pXmlElement = m_pXml->FindFirstElem( _T( "ASSETTAG"), pXml);
 			myBios.SetAssetTag( m_pXml->GetData( pXmlElement));
 		}

@@ -71,7 +71,9 @@ LPCTSTR CBios::ParseChassisType( DWORD dwType)
 	}
 }
 
-void CBios::Set( LPCTSTR lpstrSystemManufacturer, LPCTSTR lpstrSystemModel, LPCTSTR lpstrSystemSerialNumber, LPCTSTR lpstrMachineType, LPCTSTR lpstrBiosManufacturer, LPCTSTR lpstrBiosVersion, LPCTSTR lpstrBiosDate)
+void CBios::Set( LPCTSTR lpstrSystemManufacturer, LPCTSTR lpstrSystemModel, LPCTSTR lpstrSystemSerialNumber, LPCTSTR lpstrMachineType,
+				 LPCTSTR lpstrBiosManufacturer, LPCTSTR lpstrBiosVersion, LPCTSTR lpstrBiosDate,
+				 LPCTSTR lpstrMotherboardManufacturer, LPCTSTR lpstrMotherboardModel, LPCTSTR lpstrMotherboardSerialNumber)
 {
 	m_csSystemManufacturer = lpstrSystemManufacturer;
 	StrForSQL( m_csSystemManufacturer);
@@ -87,6 +89,12 @@ void CBios::Set( LPCTSTR lpstrSystemManufacturer, LPCTSTR lpstrSystemModel, LPCT
 	StrForSQL( m_csBiosVersion);
 	m_csBiosDate = lpstrBiosDate;
 	StrForSQL( m_csBiosDate);
+	m_csMotherboardManufacturer = lpstrMotherboardManufacturer;
+	StrForSQL(m_csMotherboardManufacturer);
+	m_csMotherboardModel = lpstrMotherboardModel;
+	StrForSQL(m_csMotherboardModel);
+	m_csMotherboardSerialNumber = lpstrMotherboardSerialNumber;
+	StrForSQL(m_csMotherboardSerialNumber);
 }
 
 void CBios::SetSystemManufacturer(LPCTSTR lpstrSystemManufacturer)
@@ -105,6 +113,24 @@ void CBios::SetSystemSerialNumber(LPCTSTR lpstrSystemSerialNumber)
 {
 	m_csSystemSerialNumber = lpstrSystemSerialNumber;
 	StrForSQL( m_csSystemSerialNumber);
+}
+
+void CBios::SetMotherboardManufacturer(LPCTSTR lpstrMotherboardManufacturer)
+{
+	m_csMotherboardManufacturer = lpstrMotherboardManufacturer;
+	StrForSQL( m_csMotherboardManufacturer);
+}
+
+void CBios::SetMotherboardModel(LPCTSTR lpstrMotherboardModel)
+{
+	m_csMotherboardModel = lpstrMotherboardModel;
+	StrForSQL( m_csMotherboardModel);
+}
+
+void CBios::SetMotherboardSerialNumber(LPCTSTR lpstrMotherboardSerialNumber)
+{
+	m_csMotherboardSerialNumber = lpstrMotherboardSerialNumber;
+	StrForSQL( m_csMotherboardSerialNumber);
 }
 
 void CBios::SetMachineType(LPCTSTR lpstrMachineType)
@@ -167,6 +193,21 @@ LPCTSTR CBios::GetSystemModel()
 LPCTSTR CBios::GetSystemSerialNumber()
 {
 	return m_csSystemSerialNumber;
+}
+
+LPCTSTR CBios::GetMotherboardManufacturer()
+{
+	return m_csMotherboardManufacturer;
+}
+
+LPCTSTR CBios::GetMotherboardModel()
+{
+	return m_csMotherboardModel;
+}
+
+LPCTSTR CBios::GetMotherboardSerialNumber()
+{
+	return m_csMotherboardSerialNumber;
 }
 
 LPCTSTR CBios::GetMachineType()

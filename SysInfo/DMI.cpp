@@ -329,7 +329,7 @@ BOOL CDMI::GetBiosInfo( CBios *pMyBios)
 			csType,
 			csAssetTag;
 
-	pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
+	pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
 	// First, get BIOS Info
 	if (!GetBios( csVendor, csVersion, csDate))
 		return FALSE;
@@ -362,6 +362,9 @@ BOOL CDMI::GetBiosInfo( CBios *pMyBios)
 			pMyBios->SetSystemManufacturer( csManufacturer);
 		if (!pMyBios->IsValidSystemModel())
 			pMyBios->SetSystemModel( csModel);
+		pMyBios->SetMotherboardManufacturer( csManufacturer);
+		pMyBios->SetMotherboardModel( csModel);
+		pMyBios->SetMotherboardSerialNumber( csSN);
 	}
 	return TRUE;
 }
