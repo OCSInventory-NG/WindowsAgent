@@ -141,7 +141,7 @@ void CStoragePeripheral::SetSN( LPCTSTR lpstrSN)
 	char	myCar;
 
 	m_csSN.Empty();
-	if ((lpstrSN != NULL) && (_tcslen( lpstrSN) > STORAGE_MAX_LENGTH_SERIAL))
+	if (is_hex( lpstrSN))
 	{
 		// Each serial number character is coded in ASCII hexadecimal value using 2 bytes, so we have to decode it
 		for (size_t i=0; (i<STORAGE_MAX_LENGTH_SERIAL) && ((i*2)<_tcslen( lpstrSN)); i++) 
@@ -158,10 +158,24 @@ void CStoragePeripheral::SetSN( LPCTSTR lpstrSN)
 			m_csSN.SetAt( i, m_csSN.GetAt( i+1));
 			m_csSN.SetAt( i+1, cPermute);
 		}
+		StrForSQL( m_csSN);
+		if (is_printable( m_csSN))
+			// Hex decode successfull
+			return;
 	}
-	else
+	// Not hex encoded (or hex decode failed), ensure printable
+	if (is_printable( lpstrSN))
 		// Serial length seems good, assume well formatted
 		m_csSN = lpstrSN;
+	else
+	{
+		// Not printable, hex encode it
+		m_csSN.Empty();
+		for (UINT uIndex = 0; uIndex<_tcslen(lpstrSN); uIndex++)
+		{
+			m_csSN.AppendFormat( _T( "%02x"), lpstrSN[uIndex]);
+		}
+	}
 	StrForSQL( m_csSN);
 }
 
@@ -215,4 +229,32 @@ int CStoragePeripheral::operator==(CStoragePeripheral cObject) const
 		(m_u64Size == cObject.GetSize()) &&
 		(m_csSN == cObject.GetSN()) &&
 		(m_csFirmware == cObject.GetFirmware()));
+}
+
+BOOL CStoragePeripheral::is_hex( LPCTSTR lpstrString)
+{
+	DWORD_PTR dw;
+	TCHAR ch; // !!!
+
+	return (1 == _stscanf( lpstrString, TEXT("&#37;x%c"), &dw, &ch));
+}
+
+BOOL CStoragePeripheral::is_printable( CString myString)
+{
+	BOOL  bPrintable = TRUE;
+	static CStringA csAnsi;
+	CT2W			pszA( myString);
+
+	// Convert to Ansi, and avoid producing "(null)" string we converting
+	if (!myString.IsEmpty() && (myString.GetLength() > 0))
+		csAnsi = pszA;
+	else
+		csAnsi.Empty();
+	
+	for (int i=0; i<csAnsi.GetLength(); i++)
+	{
+		if (!isprint( csAnsi.GetAt( i)))
+			bPrintable = FALSE;
+	}
+	return bPrintable;
 }

@@ -60,6 +60,10 @@ public:
 	BOOL MoveNextEnumClassObject();
 	BOOL CloseEnumClassObject();
 
+	// Get Length of data in object
+	INT_PTR GetClassObjectLength( LPCTSTR lpstrProperty);
+	INT_PTR GetRefElementClassObjectLength( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty);
+
 	// Get current enumerated object properties (or properties of an objet referenced by the current enumerated object)
 	LPCTSTR GetClassObjectStringValue( LPCTSTR lpstrProperty);
 	LPCTSTR GetRefElementClassObjectStringValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty);

@@ -66,8 +66,18 @@ BOOL OCSINVENTORYFRONT_API WriteVoidToFile( LPCVOID lpVoid, UINT uLength, LPCTST
 // Compute digest on a file, using algorithm lpstralgo, and return result encode in base64 or hexa
 BOOL OCSINVENTORYFRONT_API fileDigest( LPCTSTR lpstrFile, CString &csDigest, LPCTSTR lpstrAlgo = _T( "sha1"), BOOL bBase64 = TRUE);
 
+// Check wether a string is hex encoded or not
+BOOL OCSINVENTORYFRONT_API is_hex( LPCTSTR lpstrString);
+
 // Encode pBuffer (uLength bytes long) into hexadecimal, and put result into CString
 BOOL OCSINVENTORYFRONT_API hex_encode( LPBYTE pBuffer, UINT uLength, CString &csHex);
+
+// Decode CString hexadecimal encoded, and put result into a BYTE array of uLength elements
+// You MUST free this pointer when no more needed
+LPBYTE OCSINVENTORYFRONT_API hex_decode( CString &csHex, UINT *uLength);
+
+// Check wether a string is base64 encoded or not
+BOOL OCSINVENTORYFRONT_API is_base64( CString myString);
 
 // Encode pBuffer (uLength bytes long) into base64, and put result into CString
 BOOL OCSINVENTORYFRONT_API base64_encode( LPBYTE pBuffer, UINT uLength, CString &csBase64);
@@ -75,5 +85,8 @@ BOOL OCSINVENTORYFRONT_API base64_encode( LPBYTE pBuffer, UINT uLength, CString 
 // Decode null terminated string, and put result into a BYTE array of uLength elements
 // You MUST free this pointer when no more needed
 LPBYTE OCSINVENTORYFRONT_API base64_decode( LPCTSTR lpstrBase64, UINT *uLength);
+
+// Check wether a string is printable or not
+BOOL OCSINVENTORYFRONT_API is_printable( CString myString);
 
 #endif // _OCS_UTILS_H_INCLUDED_

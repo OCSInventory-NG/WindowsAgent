@@ -70,6 +70,11 @@ public: // Methods
 	//////////////////////////////////
 
 	int operator==( const CStoragePeripheral cObject) const;
+private:
+	// Check wether a string is hex encoded or not
+	BOOL is_hex( LPCTSTR lpstrString);
+	// Check wether a string is printable or not
+	BOOL is_printable( CString myString);
 
 protected: // Attributes
 	CString m_csType;			// Storage type (floppy, disk, tape...)

@@ -411,6 +411,14 @@ BOOL OCSINVENTORYFRONT_API fileDigest( LPCTSTR lpstrFile, CString &csDigest, LPC
 	return hex_encode( pDigest, uLength, csDigest);
 }
 
+BOOL OCSINVENTORYFRONT_API is_hex( LPCTSTR lpstrString)
+{
+	DWORD_PTR dw;
+	TCHAR ch; // !!!
+
+	return (1 == _stscanf( lpstrString, TEXT("&#37;x%c"), &dw, &ch));
+}
+
 BOOL OCSINVENTORYFRONT_API hex_encode( LPBYTE pBuffer, UINT uLength, CString &csHex)
 {
 	ASSERT( pBuffer);
@@ -421,6 +429,48 @@ BOOL OCSINVENTORYFRONT_API hex_encode( LPBYTE pBuffer, UINT uLength, CString &cs
 		csHex.AppendFormat( _T( "%02x"), pBuffer[uIndex]);
 	}
 	return TRUE;
+}
+
+LPBYTE OCSINVENTORYFRONT_API hex_decode( CString csHex, UINT *uLength)
+{
+	CString csBuffer;
+	INT_PTR i = 0;
+    BYTE x;
+	LPBYTE pBuffer;	
+    
+	*uLength = 0;
+	if ((pBuffer = (LPBYTE) malloc( sizeof(BYTE))) == NULL)
+		return NULL;
+	while(!csHex.IsEmpty() && (i<(csHex.GetLength()-2)))
+	{
+		csBuffer.Format( _T( "%c%c"), csHex.GetAt( i), csHex.GetAt( i+1));
+        _stscanf( csBuffer, _T( "%2X"), &x);
+		pBuffer[*uLength] = x;
+       	*uLength++;
+		if ((pBuffer = (LPBYTE) realloc(pBuffer, (*uLength+1)*sizeof(BYTE))) == NULL)
+		{
+			*uLength = 0;
+			free( pBuffer);
+			return NULL;
+		}
+        i += 2;
+    }
+	pBuffer[*uLength] = 0;
+    return pBuffer;
+}
+
+BOOL OCSINVENTORYFRONT_API is_base64( CString myString)
+{
+	TCHAR ch; // !!!
+	BOOL  bIsB64CharOnly = TRUE;
+
+	for (int i=0; i<myString.GetLength(); i++)
+	{
+		ch = myString.GetAt(i);
+		if (((ch<'A') || (ch>'Z')) && ((ch<'a') || (ch>'z')) && ((ch='=') && (i>=myString.GetLength()-2)))
+			bIsB64CharOnly = FALSE;
+	}
+	return ((myString.GetLength() % 4) == 0) && bIsB64CharOnly;
 }
 
 /* A helper function for base64 encoding */
@@ -506,4 +556,17 @@ LPBYTE OCSINVENTORYFRONT_API base64_decode( LPCTSTR lpstrBase64, UINT *uLength)
 			free( pRet);
 		return NULL;
 	}
+}
+
+BOOL OCSINVENTORYFRONT_API is_printable( CString myString)
+{
+	BOOL  bPrintable = TRUE;
+	CStringA myAnsiString = GetAnsiFromUnicode( myString);
+	
+	for (int i=0; i<myAnsiString.GetLength(); i++)
+	{
+		if (!isprint( myAnsiString.GetAt( i)))
+			bPrintable = FALSE;
+	}
+	return bPrintable;
 }

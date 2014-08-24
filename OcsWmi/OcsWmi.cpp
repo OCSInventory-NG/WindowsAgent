@@ -210,7 +210,6 @@ BOOL COcsWmi::DisconnectWMI()
 	}
 }
 
-
 BOOL COcsWmi::BeginEnumClassObject( LPCTSTR lpstrObject, LPCTSTR lpstrCondition)
 {
 	ASSERT( m_pIWbemServices);
@@ -305,6 +304,36 @@ BOOL COcsWmi::CloseEnumClassObject()
 	}
 }
 
+INT_PTR COcsWmi::GetClassObjectLength( LPCTSTR lpstrProperty)
+{
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrProperty);
+
+	try
+	{
+		VARIANT pVal;
+		VariantInit(&pVal);
+		CIMTYPE pType;
+
+		VariantClear(&pVal);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
+		if (SUCCEEDED( m_hResult))
+		{
+			COleVariant myObject;
+			CByteArray myBytes;
+			myObject.Attach( pVal);
+			myObject.GetByteArrayFromVariantArray( myBytes);
+			return myBytes.GetSize();
+		}
+		return 0;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		m_hResult = WBEM_E_FAILED;
+		return 0;
+	}
+}
 
 LPCTSTR COcsWmi::GetClassObjectStringValue(LPCTSTR lpstrProperty)
 {
@@ -445,6 +474,61 @@ BOOL COcsWmi::GetClassObjectVariantValue( LPCTSTR lpstrProperty, VARIANT &pVal)
 	}
 }
 
+
+INT_PTR COcsWmi::GetRefElementClassObjectLength( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty)
+{
+	ASSERT( m_pClassObject);
+	ASSERT( lpstrRefElement);
+	ASSERT( lpstrProperty);
+
+	try
+	{
+		CString	csObject;
+		VARIANT pVal;
+		VariantInit(&pVal);
+		CIMTYPE pType;
+		IWbemClassObject *pClassObject;
+		static INT_PTR iResult;
+
+		VariantClear(&pVal);
+		m_hResult = m_pClassObject->Get( _bstr_t( lpstrRefElement), 0L, &pVal, &pType, NULL);
+		if (FAILED( m_hResult))
+			return 0;
+		csObject = strCimValue( pVal, pType);
+		if (csObject.IsEmpty())
+			return 0;
+		m_hResult = m_pIWbemServices->GetObject( _bstr_t( csObject),
+												WBEM_FLAG_RETURN_WBEM_COMPLETE,
+												NULL,
+												&pClassObject,
+												NULL);
+		if (FAILED( m_hResult))
+		{
+//			pClassObject->Release();
+			return 0;
+		}
+		VariantClear(&pVal);
+		m_hResult = pClassObject->Get( _bstr_t( lpstrProperty), 0L, &pVal, &pType, NULL);
+		if (FAILED( m_hResult))
+			iResult = 0;
+		else
+		{
+			COleVariant myObject;
+			CByteArray myBytes;
+			myObject.Attach( pVal);
+			myObject.GetByteArrayFromVariantArray( myBytes);
+			iResult = myBytes.GetSize();
+		}
+		pClassObject->Release();
+		return iResult;
+	}
+	catch (CException *pEx)
+	{
+		pEx->Delete();
+		m_hResult = WBEM_E_FAILED;
+		return 0;
+	}
+}
 
 BOOL COcsWmi::GetRefElementClassObjectVariantValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, VARIANT &pVal)
 {
