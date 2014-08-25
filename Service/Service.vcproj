@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;;&quot;..\External_Deps\curl-7.21.2\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
+				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0n\inc32&quot;;..\External_Deps\ZipArchive;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
 				PreprocessorDefinitions="WIN32;_CONSOLE;_DEBUG;_BIND_TO_CURRENT_VCLIBS_VERSION"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -179,7 +179,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;;&quot;..\External_Deps\curl-7.21.2\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
+				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0n\inc32&quot;;..\External_Deps\ZipArchive;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml"
 				PreprocessorDefinitions="WIN32;_CONSOLE;NDEBUG;_BIND_TO_CURRENT_VCLIBS_VERSION"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"

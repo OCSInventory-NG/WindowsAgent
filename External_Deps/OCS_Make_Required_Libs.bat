@@ -22,13 +22,13 @@ Rem Set path to Perl 5.6 or higher binary
 set PERL_PATH=c:\xampp\perl\bin
 
 Rem Set path to Zlib sources
-set ZLIB_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\zlib-1.2.5
+set ZLIB_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\zlib-1.2.8
 
 Rem Set path to OpenSSL sources
-set OPENSSL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\openssl-1.0.0c
+set OPENSSL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\openssl-1.0.0n
 
 Rem Set path to cURL sources
-set CURL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\curl-7.21.3
+set CURL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\curl-7.37.1
 
 Rem Set path to tinyXML sources
 SET XML_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\tinyxml
@@ -140,12 +140,17 @@ echo *                                                                       *
 echo *************************************************************************
 echo.
 cd "%SNMP_PATH%\win32"
+Rem Prepare OpenSSL for Net-SNMP
+SET INCLUDE=%INCLUDE%;%OPENSSL_PATH%\inc32
+SET LIB=%LIB%;%OPENSSL_PATH%\out32dll
 Rem Configure Net-SNMP
-perl.exe Configure --linktype=dynamic
+perl.exe Configure  --with-ssl --linktype=dynamic
 if ERRORLEVEL 1 goto ERROR
 cd libsnmp_dll
 Rem Fix Net-SNMP DLL config for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
 perl.exe -pi.bak -e "s# /D \"WIN32\"# /D \"WIN32\" /D_BIND_TO_CURRENT_VCLIBS_VERSION#g" Makefile
+Rem Fix Net-SNMP DLL config for using OpenSSL dynamic library insteadd of static ones
+perl.exe -pi.bak -e "s#libeay32MD#libeay32#g" ../net-snmp/net-snmp-config.h
 Rem Build Net-SNMP dll
 nmake /NOLOGO
 if ERRORLEVEL 1 goto ERROR

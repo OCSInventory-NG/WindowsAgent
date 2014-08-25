@@ -49,7 +49,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;;&quot;..\External_Deps\curl-7.21.2\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml;..\Agent"
+				AdditionalIncludeDirectories="..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml;..\Agent"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_BIND_TO_CURRENT_VCLIBS_VERSION"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -150,7 +150,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;..\External_Deps\openssl-1.0.0c\inc32&quot;;&quot;..\External_Deps\curl-7.21.2\include&quot;;..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml;..\Agent"
+				AdditionalIncludeDirectories="..\OcsWmi;..\Sysinfo;&quot;..\OCSInventory Front&quot;;..\External_Deps\tinyxml;..\Agent"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;_BIND_TO_CURRENT_VCLIBS_VERSION"
 				StringPooling="true"
 				RuntimeLibrary="2"

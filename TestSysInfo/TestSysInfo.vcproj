@@ -48,7 +48,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../OcsWmi;../OcsSmBios;../Sysinfo;..\External_Deps\tinyxml"
+				AdditionalIncludeDirectories="../OcsWmi;../Sysinfo;..\External_Deps\tinyxml"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_BIND_TO_CURRENT_VCLIBS_VERSION"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -185,7 +185,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="../OcsWmi;../OcsSmBios;../Sysinfo;..\External_Deps\tinyxml"
+				AdditionalIncludeDirectories="../OcsWmi;../Sysinfo;..\External_Deps\tinyxml"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_BIND_TO_CURRENT_VCLIBS_VERSION"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
