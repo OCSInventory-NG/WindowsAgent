@@ -10,7 +10,7 @@
 // THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 // INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
 // FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
 // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
 // PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
 // OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
@@ -25,14 +25,14 @@ REQUIREMENTS
 
 - Microsoft Visual C++ 2008 SP1 or higher
 - Perl 5.8 or newer for building dependancies (you can use XAMPP perl addon)
-- Source code exported from Launchpad Bazaar repository. 
+- Source code exported from Launchpad Bazaar repository.
   svn co https://
 
 
 BUILDING DEPENDANCIES
 =====================
 
-OCS Inventory NG Agent for Windows needs followong libraries:
+OCS Inventory NG Agent for Windows needs following libraries:
 
 - zlib 1.2.5 or newer (www.zlib.net)
 - openssl 1.0.0c or newer (www.openssl.org)
@@ -42,7 +42,7 @@ OCS Inventory NG Agent for Windows needs followong libraries:
 - ZipArchive GPL Edition 4.0.1 or newer (http://www.artpol-software.com)
 
 Uncompress sources of these libraries into directory "External_Deps" to create
-the followong directory structures.
+the following directory structures.
 - External_Deps\Zlib-1.2.5
 - External_Deps\openssl-1.0.0c
 - External_Deps\curl-7.21.3
@@ -52,24 +52,24 @@ the followong directory structures.
 
 Open "ZipArchive.sln" Visual C++ 2008 solution in folder
 "External_Deps\ZipArchive", select configuration "Release Unicode STL MD DLL"
-for plateform Win32, and edit project properties. Add 
-_BIND_TO_CURRENT_VCLIBS_VERSION preprocessor define to "Configuration 
-properties / C/C++ / Preprocessor" section to automatically bind DLL to Visual 
+for platform Win32, and edit project properties. Add
+_BIND_TO_CURRENT_VCLIBS_VERSION preprocessor define to "Configuration
+properties / C/C++ / Preprocessor" section to automatically bind DLL to Visual
 C++ 2008 SP1 CRT and MFC versions (for more explanation, see Jochen Kalmbach's Blog
 http://blog.kalmbach-software.de/2009/05/27/deployment-of-vc2008-apps-without-installing-anything/)
 Save and build to create unicode DLL for ZipArchive Library.
 
-Script for building dependancy automatically fixess cURL and net-snmp Makefiles for Visual C++ 2008,
+Script for building dependancy automatically fixes cURL and net-snmp Makefiles for Visual C++ 2008,
 by adding "/D_BIND_TO_CURRENT_VCLIBS_VERSION" to the CFLAGS. As is, libcurl and net-snmp
-DLL will be binded to lastest Visual C++ 2008 SP1 CRT versions.
+DLL will be bound to latest Visual C++ 2008 SP1 CRT versions.
 
-For Zlib, OpenSSL and TinyXML, compiling using _BIND_TO_CURRENT_VCLIBS_VERSION 
+For Zlib, OpenSSL and TinyXML, compiling using _BIND_TO_CURRENT_VCLIBS_VERSION
 preprocessor define is done through the call of build file "OCS_Make_Required_Libs.bat".
 
 
 Edit script "OCS_Make_Required_Libs.bat" to meet your need, especially
 
-- Set path to MS Visual C++ 2008, for example 
+- Set path to MS Visual C++ 2008, for example
   set VC_PATH=C:\Program Files\Microsoft Visual Studio 9.0\VC
 - Set path to MS Windows SDK, needed to build cURL, for example with VC++ 2008
   set WINDOWS_SDK_PATH="C:\Program Files\Microsoft SDKs\Windows\v6.0A"
@@ -89,12 +89,12 @@ Edit script "OCS_Make_Required_Libs.bat" to meet your need, especially
 Then, launch script "OCS_Make_Required_Libs.bat" to create all libs and prepare for building OCS agent.
 
 
-BUIDLING AGENT
+BUILDING AGENT
 ==============
 
 You need Visual C++ 2008, which includes MS Windows SDK 6.0A.
 
-Open solution "OCSInventory.sln", select project "Agent" and buid it !
+Open solution "OCSInventory.sln", select project "Agent" and build it !
 
 See Options.txt for agent's command line switches.
 

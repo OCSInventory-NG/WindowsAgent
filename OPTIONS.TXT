@@ -10,7 +10,7 @@
 // THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 // INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
 // FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+// IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
 // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
 // PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
 // OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
@@ -22,56 +22,56 @@
 OCS Inventory NG Windows Agent Command Line Options:
 ----------------------------------------------------
 
-/work_dir:"path to directory"               Agent must use "path to directory" as working dir (this directory may included configuration file) 
+/work_dir:"path to directory"               Agent must use "path to directory" as working dir (this directory may be included in the configuration file)
                                             Default is "%ALLUSERSPROFILE\Application Data\OCS Inventory NG\Agent"
-						
+
 /local=["path to folder"]                   Agent do not contact communication server, and store inventory in xml compressed .ocs file into folder "path to folder"
                                             If no "path to folder" provided, agent assume folder as data folder
 
 /debug[=level]                              Generate a very verbose log file "ocsinventory.log" into agent's install folder
                                             0 => disable verbose logs (default)
                                             1 => enable default verbose logs (default when no level provided provided)
-                                            2 => enable debuging logs
+                                            2 => enable debugging logs
 
 /nosoftware	                                Agent must NOT scan computer for installed software in any case
-	
+
 /notag		                                Agent must NOT prompt user for TAG in any case
-	
+
 /tag="my value"                             Agent must set "my value" as TAG value
-	
-/xml=["path to folder"]                     Agent must store inventory in uncompressed xml format into folder "path to folder" 
+
+/xml=["path to folder"]                     Agent must store inventory in uncompressed xml format into folder "path to folder"
                                             If no "path to folder" provided, agent assume folder as data folder
-	
-/force		                                Always send inventory, even if server do not ask for it (use only for debugging purpose !)
-	
+
+/force		                                Always send inventory, even if server does not ask for it (use only for debugging purpose !)
+
 /ipdisc="network number"	                Agent must launch IP discovery on network "network number" (use only for debugging purpose !)
 
 /ipdisc_lat="number of milliseconds"        Set latency between 2 IP Discover requests to "number of milliseconds"
-    
-/fastip		                                Never wait for latency  between 2 IP Discover requests (use only for debugging purpose !)
-	
+
+/fastip		                                Never wait for latency between 2 IP Discover requests (use only for debugging purpose !)
+
 /hkcu                                       Search also for software under HKEY_CURRENT_USER registry hive (do not work with service as LocalSystem !)
 
 /uid                                        Agent must generate a new unique device ID
-	
+
 
 
 Default Communication Provider HTTP.dll Command Line Options:
 -------------------------------------------------------------
-	
+
 /server=http[s]://server.domain.tld[:port]/ocsinventory
                                             Agent try to connect to Communication Server address and port Listening on http[s]://server.domain.tld[:port]/ocsinventory
-	
-/ssl=0|1                                    When usng SSL connections, 0 => SSL without certificate validation, 1 => SSL with server certificate validation required (needs CA certificate)   
+
+/ssl=0|1                                    When using SSL connections, 0 => SSL without certificate validation, 1 => SSL with server certificate validation required (needs CA certificate)
 
 /ca="path_to_cabundle.pem"                  Path to CA certificate chain file in PEM format, for server certificate validation
-    
+
 /user=username                              Communication Server authentication credentials
 /pwd=password
 
-/proxy_type=0|1|2|3                         Agent proxy use (0 => no, 1 => HTTP proxy, 2 => Socks 4 proxy, 3 => Socks 5 proxy)    
+/proxy_type=0|1|2|3                         Agent proxy use (0 => no, 1 => HTTP proxy, 2 => Socks 4 proxy, 3 => Socks 5 proxy)
 
-/proxy=proxy_address                        Proxy server address (without protocol !)                        
+/proxy=proxy_address                        Proxy server address (without protocol !)
 /proxy_port=port                            Proxy server port
 
 /proxy_user=username                        Proxy authentication credentials
@@ -82,24 +82,24 @@ Default Communication Provider HTTP.dll Command Line Options:
 Configuration file:
 -------------------
 
-Some command line options can be store into configuration file. Default is assumed to be ocsinventory.ini into agent's data folder, usually "%ALLUSERSPROFILE%\Application Data\OCS Inventory NG\Agent".
-Agent can create this cnfiguration using /save_conf command line switch, to allow encrypting into config file username and password. 
+Some command line options can be stored in the configuration file. Default is assumed to be ocsinventory.ini in the agent's data folder, usually "%ALLUSERSPROFILE%\Application Data\OCS Inventory NG\Agent".
+Agent can create this configuration using /save_conf command line switch, to allow encrypting into config file username and password.
 
 Here is a sample configuration file to talk with a server on local computer.
 
 [OCS Inventory Agent]
 ; OCS Inventory NG Agent features
-; Enable debugging mode (0 => disabled, 1 => enabled, 2=> trace all) 
+; Enable debugging mode (0 => disabled, 1 => enabled, 2=> trace all)
 Debug=1
 ; Enable local inventory mode (path to folder to store .ocs file => enabled,
-; empty => disabled) 
+; empty => disabled)
 Local=
-; Enable agent scanning HKEY_CURRENT_USER hive for printers and sofware
-; (0 => disabled, 1 => enabled) 
+; Enable agent scanning HKEY_CURRENT_USER hive for printers and software
+; (0 => disabled, 1 => enabled)
 HKCU=0
-; Disable scanning computer for installed software (0 => software scan allowed, 1 => disabled) 
+; Disable scanning computer for installed software (0 => software scan allowed, 1 => disabled)
 NoSOFTWARE=0
-; Disable prompting user for TAG value (0 => prompt allowed, 1 => disabled) 
+; Disable prompting user for TAG value (0 => prompt allowed, 1 => disabled)
 NoTAG=0
 ; Force agent launching IpDiscover on specified network (network address => enabled,
 ; empty disabled)
@@ -135,6 +135,6 @@ ProxyAuthRequired=
 ProxyUser=
 ProxyPwd=
 
- 
+
 [OCS Inventory Service]
 PROLOG_FREQ=1
