@@ -1,14 +1,14 @@
 [OCS Inventory Agent]
 ; OCS Inventory NG Agent features
-; Enable debugging mode (0 => disabled, 1 => enabled, 2=> trace all) 
+; Enable debugging mode (0 => disabled, 1 => enabled, 2=> trace all)
 Debug=1
 ; Enable local inventory mode (path to folder to store .ocs file => enabled,
-; empty => disabled) 
+; empty => disabled)
 Local=
-; Enable agent scanning HKEY_CURRENT_USER hive for printers and sofware
-; (0 => disabled, 1 => enabled) 
+; Enable agent scanning HKEY_CURRENT_USER hive for printers and software
+; (0 => disabled, 1 => enabled)
 HKCU=0
-; Disable prompting user for TAG value (0 => prompt allowed, 1 => disabled) 
+; Disable prompting user for TAG value (0 => prompt allowed, 1 => disabled)
 NoTAG=0
 ; Force agent launching IpDiscover on specified network (network address => enabled,
 ; empty disabled)
@@ -43,6 +43,6 @@ ProxyAuthRequired=
 ; Proxy authentication credentials (encrypted)
 ProxyUser=
 ProxyPwd=
- 
+
 [OCS Inventory Service]
 PROLOG_FREQ=1
