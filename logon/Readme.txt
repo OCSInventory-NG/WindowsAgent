@@ -18,7 +18,7 @@ downloading installation package for OCS Inventory NG Server.
 By default, OcsLogon try to download and install standard Agent setup file 
 "ocsagent.exe", but it can also use "ocspackage.exe", file created by OCS
 Inventory NG Packager, which can embbed certificate file and can be executed
-under a fixed administrator account. This is usefull when user logon script 
+under a fixed administrator account. This is useful when user logon script
 is used in Samba domain, to allow installation process by non administrator
 users.       
 

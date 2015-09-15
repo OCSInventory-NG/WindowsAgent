@@ -60,7 +60,7 @@ SilentInstall silent
 # Global variables
 #####################################################################
 var /GLOBAL nGpo                  ; Set to 1 if /GPO is provided
-var /GLOBAL nShowlog              ; Set to 1 if /SHOWLOG is provided, to display log file at the end of exec, usefull for debugging
+var /GLOBAL nShowlog              ; Set to 1 if /SHOWLOG is provided, to display log file at the end of exec, useful for debugging
 var /GLOBAL nUninstall            ; Set to 1 if /Uninstall is provided
 var /GLOBAL nForce                ; Do we overwrite installed version (=1) or not (=0)
 var /GLOBAL nTimeOut              ; Download timeout (default 60 sec)
