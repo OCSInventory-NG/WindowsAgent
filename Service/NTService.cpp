@@ -213,7 +213,7 @@ BOOL CNTService::Install( LPCTSTR lpstrDescription, LPCTSTR lpstrDependancies)
                                          szFilePath,				// Main binary
                                          NULL,						// Load order group
                                          NULL,						// Tag ID to order service start in group
-                                         lpstrDependancies,			// Service dependancies
+                                         lpstrDependancies,			// Service dependencies
                                          NULL,						// Service runs under Local system account,
                                          NULL);						// so no user and password
     if (!hService) 
