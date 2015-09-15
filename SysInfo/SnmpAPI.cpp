@@ -121,7 +121,7 @@ VOID SNMP_FUNC_TYPE SnmpUtilVarBindFree(IN OUT RFC1157VarBind *VarBind)
 //* network traffic via a WebPage.
 //* http://www.ee.ethz.ch/~oetiker/webtools/mrtg/
 //*
-//* Copyright (c) 1996-2001 Tobias Oetiker and all the Contributers
+//* Copyright (c) 1996-2001 Tobias Oetiker and all the Contributors
 //* to MRTG
 //* All rights reserved.
 //*                                                                     

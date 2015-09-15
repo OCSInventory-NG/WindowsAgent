@@ -160,7 +160,7 @@ void CStoragePeripheral::SetSN( LPCTSTR lpstrSN)
 		}
 		StrForSQL( m_csSN);
 		if (is_printable( m_csSN))
-			// Hex decode successfull
+			// Hex decode successful
 			return;
 	}
 	// Not hex encoded (or hex decode failed), ensure printable

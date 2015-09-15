@@ -2023,7 +2023,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find Floppy Controllers in HKLM\\%s...\n"),
 			NT_CONTROLER_FLOPPY_KEY);
-	// Windows NT => Open the floppy controler key
+	// Windows NT => Open the floppy controller key
 	if (RegOpenKeyEx( m_hKey, NT_CONTROLER_FLOPPY_KEY, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
 	{
 		// Enum the devices subkeys to find devices
@@ -2136,7 +2136,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	}
 	else
 		AddLog( _T( "\tFailed because no valid object !\n"));
-	// Windows NT => Open the IDE controler key
+	// Windows NT => Open the IDE controller key
 	uIndex = 0;
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find IDE Controllers in HKLM\\%s...\n"),
@@ -2253,7 +2253,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	}
 	else
 		AddLog( _T( "\tFailed because no valid object !\n"));
-	// Windows NT => Open the SCSI controler key
+	// Windows NT => Open the SCSI controller key
 	uIndex = 0;
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find SCSI Controllers in HKLM\\%s...\n"),
@@ -2370,7 +2370,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	}
 	else
 		AddLog( _T( "\tFailed because no valid object !\n"));
-	// Windows NT => Open the InfraRed controler key
+	// Windows NT => Open the InfraRed controller key
 	uIndex = 0;
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find InfraRed Controllers in HKLM\\%s...\n"),
@@ -2447,7 +2447,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_INFRARED_VERSION_VALUE);
 					csVersion = NOT_AVAILABLE;
 				}
-				// Ensure it is a controler
+				// Ensure it is a controller
 				if (GetValue( hKeyObject, NT_CONTROLER_INFRARED_CONTROLER_VALUE, csValue) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2498,7 +2498,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	}
 	else
 		AddLog( _T( "\tFailed because no valid object !\n"));
-	// Windows NT => Open the USB controler key
+	// Windows NT => Open the USB controller key
 	uIndex = 0;
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find USB Controllers in HKLM\\%s...\n"),
@@ -2575,7 +2575,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_USB_VERSION_VALUE);
 					csVersion = NOT_AVAILABLE;
 				}
-				// Ensure it is a controler
+				// Ensure it is a controller
 				if (GetValue( hKeyObject, NT_CONTROLER_USB_CONTROLER_VALUE, csValue) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2626,7 +2626,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	}
 	else
 		AddLog( _T( "\tFailed because no valid object !\n"));
-	// Windows NT => Open the IEEE1394 controler key
+	// Windows NT => Open the IEEE1394 controller key
 	uIndex = 0;
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find IEEE1394 Controllers in HKLM\\%s...\n"),
@@ -2743,7 +2743,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 	}
 	else
 		AddLog( _T( "\tFailed because no valid object !\n"));
-	// Windows NT => Open the PCMCIA controler key
+	// Windows NT => Open the PCMCIA controller key
 	uIndex = 0;
 	dwIndexEnum = 0;
 	AddLog( _T( "Registry NT GetSystemControllers: Trying to find PCMCIA Controllers in HKLM\\%s...\n"),

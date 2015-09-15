@@ -86,7 +86,7 @@ protected:
 	BOOL CheckSum(const BYTE *buf, int length);
 	// Get length of DMI table at position nPosition
 	int GetTableLength( int nPosition);
-	// Get next DMI table of type uType, and start seraching form begining
+	// Get next DMI table of type uType, and start searching from beginning
 	// of table, or from current position
 	UCHAR *GetNextTable( UCHAR uType, BOOL bStart = FALSE);
 
