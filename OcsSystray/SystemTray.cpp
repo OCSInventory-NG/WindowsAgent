@@ -53,7 +53,7 @@
 //                       Explorer crashed
 //                       Fixed resource leak in SetIcon
 //						 Animate() now checks for empty icon list - Anton Treskunov
-//						 Added the virutal CustomizeMenu() method - Anton Treskunov
+//						 Added the virtual CustomizeMenu() method - Anton Treskunov
 //                       
 //
 // This code may be used in compiled form in any way you desire. This
@@ -112,7 +112,7 @@ CSystemTray::CSystemTray()
     Initialise();
 }
 
-CSystemTray::CSystemTray(CWnd* pParent,             // The window that will recieve tray notifications
+CSystemTray::CSystemTray(CWnd* pParent,             // The window that will receive tray notifications
                          UINT uCallbackMessage,     // the callback message to send to parent
                          LPCTSTR szToolTip,         // tray icon tooltip
                          HICON icon,                // Handle to icon

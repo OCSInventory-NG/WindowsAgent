@@ -120,7 +120,7 @@ BOOL CHTTPCrypt::retrievePreKey()
 
 BOOL CHTTPCrypt::encrypt( CString &csInput, CString &csOutput)
 {
-    BYTE pInitVector[AES_BLOCK_SIZE];	// Random generated intialization vector
+    BYTE pInitVector[AES_BLOCK_SIZE];	// Random generated initialization vector
     EVP_CIPHER_CTX oEncCtx;				// Cipher context
     const EVP_CIPHER *oChiper = NULL;	// Cipher object
     LPBYTE pInBuffer = NULL,			// Input buffer for data to encipher
