@@ -212,7 +212,7 @@ BOOL COCSInventoryApp::InitInstance()
 		 ****/
 		if (m_pConfig->isLocalRequired())
 		{
-			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT => Local mode actived by /LOCAL argument: No network connection"));
+			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT => Local mode activated by /LOCAL argument: No network connection"));
 			csMessage.Format( _T( "%s\\%s.ocs"), m_pConfig->getLocalInventoryFolder(), getOcsDeviceID()->getDeviceID());
 			// Create local connection object
 			if ((pConnexion = new CConnexionLocal( csMessage)) == NULL)
@@ -322,7 +322,7 @@ BOOL COCSInventoryApp::InitInstance()
 						DeleteFile( csLabelFile);
 					}
 					else
-						m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "AGENT => Label sucessfully retrieved")); 
+						m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "AGENT => Label successfully retrieved"));
 				}
 
 			}

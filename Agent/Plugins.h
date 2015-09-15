@@ -45,7 +45,7 @@ public:
 	CPlugins();
 	virtual ~CPlugins();
 
-	// Call plugin Hook when agent loads, typicaly used to initialize plugin
+	// Call plugin Hook when agent loads, typically used to initialize plugin
 	void startHook();
 	// Call plugin Hook before sending prolog to server, typically used to add/modify information to prolog request
 	void prologWriteHook(CPrologRequest*);

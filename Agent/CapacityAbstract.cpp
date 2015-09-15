@@ -38,7 +38,7 @@ CCapacityAbstract::~CCapacityAbstract()
 {
 }
 
-// Intialization
+// Initialization
 void CCapacityAbstract::setProlog( CPrologRequest *pProlog)
 {
 	m_pProlog = pProlog;

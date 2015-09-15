@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-// Hook called when agent loads, typicaly used to initialize plugin
+// Hook called when agent loads, typically used to initialize plugin
 typedef int (*HOOK_START)(void);
 OCSINVENTORY_API_EXPORTED int OCS_CALL_START_EXPORTED();
 // Hook called before sending prolog to server, typically used to add/modify information to prolog request
