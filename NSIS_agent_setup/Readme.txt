@@ -36,7 +36,7 @@ Just download this package and unzip it into nsis_agent_setup folder.
 
 MS11-025 critical fix introduces incompatibilty problem of MS CRT/MFC 9.0 with
 Windows 2000 (http://blogs.msdn.com/b/vcblog/archive/2011/04/26/10158277.aspx).
-So for Windows 2000 only, w've choosen to install original MS CRT/MFC 
+So for Windows 2000 only, we have chosen to install original MS CRT/MFC
 9.00.21022.8 provided with Visual C++ 2008 without Service Pack or hot fixes.
 You must put these files into "vc2008_redist_9.00.21022.8_for_Windows_2000"
 sub directory before building NSIS installer.
@@ -49,7 +49,7 @@ INSTALLER COMMAND LINE OPTIONS
  
 - /NOSPLASH disable spash screen when installer starts
 
-- /UPGRADE to deploy new agent through OCS deployement feature.
+- /UPGRADE to deploy new agent through OCS deployment feature.
   Because you upgrade agent using agent itself to run the upgrade, it is needed
   to notify the installer (which terminates agent's processes) to specify the
   result in order to send it back to the server next time agent will run
