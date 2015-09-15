@@ -51,7 +51,7 @@ public:
    * We don't care about command ending, so stdout and stderr
    * will not be grabbed, and we will not try to get process
    * exit code
-   * Return EXEC_SUCCESSFULL if all successfull
+   * Return EXEC_SUCCESSFULL if all successful
    *        EXEC_ERROR_START_COMMAND if start command error
    */
   int execNoWait(LPCTSTR lpstrCommand, LPCTSTR lpstrPath);
@@ -59,12 +59,12 @@ public:
   /**
    * Exec command in the directory path. Make sure that the
    * executable is either in the path or specify the full path.
-   * We will try to get process exit code (use getExitCode() to retreive it).
+   * We will try to get process exit code (use getExitCode() to retrieve it).
    * If bCapture is TRUE, stdout and stderr will be grabbed (use getOutput() 
-   * to retreive it)
+   * to retrieve it)
    * We will wait until command end (but if command starts other
    * processes/threads, we will not be able to wait for those ending)
-   * Return EXEC_SUCCESSFULL if all successfull
+   * Return EXEC_SUCCESSFULL if all successful
    *        EXEC_ERROR_START_COMMAND if start command error
    *        EXEC_ERROR_WAIT_COMMAND if wait or get exit code/ouput error,
    */
@@ -75,7 +75,7 @@ public:
    * executable is either in the path or specify the full path.
    * Wait for command AND ALL others threads/processes it may launch to finish.
    * In this case, we try get exit code, but NOT stdout and stderr
-   * Return EXEC_SUCCESSFULL if all successfull
+   * Return EXEC_SUCCESSFULL if all successful
    *        EXEC_ERROR_START_COMMAND if start command error
    *        EXEC_ERROR_WAIT_COMMAND if wait error,
    */

@@ -385,7 +385,7 @@ BOOL OCSINVENTORYFRONT_API fileDigest( LPCTSTR lpstrFile, CString &csDigest, LPC
 	UINT uLength;
 
 	OpenSSL_add_all_digests();
-	// Set the algorythm
+	// Set the algorithm
 	if (!(evpMD = EVP_get_digestbyname( GetAnsiFromUnicode( lpstrAlgo))))
 		// Unsupported digest
 		return FALSE;

@@ -156,7 +156,7 @@ BOOL CInventoryRequest::final()
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u System Port(s)"), m_PortList.GetCount());
 		// Update System Controllers
 		bSuccess = bSuccess && m_pTheDB->UpdateSystemControllers( m_SystemControllerList);
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u System Controler(s)"), m_SystemControllerList.GetCount());
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u System Controller(s)"), m_SystemControllerList.GetCount());
 		// Update System Slots
 		bSuccess = bSuccess && m_pTheDB->UpdateSystemSlots( m_SlotList);
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u System Slot(s)"), m_SlotList.GetCount());
@@ -710,7 +710,7 @@ BOOL CInventoryRequest::runInventory()
 	if (!m_pSysInfo->getSystemControllers( &m_SystemControllerList))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve system controlers"));
 	else
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %d system controler(s) found"),
+		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %d system controller(s) found"),
 					  m_SystemControllerList.GetCount());
 	// Get Physical storage devices
 	if (!m_pSysInfo->getStoragePeripherals( &m_StorageList))
