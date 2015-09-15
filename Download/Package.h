@@ -104,7 +104,7 @@ protected:
 	BOOL regReadPackageDigest( CString &csDigest);
 	// Delete package digest from registry
 	BOOL regDeletePackageDigest();
-	// Is execution result successfull
+	// Is execution result successful
 	BOOL isExecSuccessful( int nExitCode, CString &csStatus);
 
 protected:
@@ -131,7 +131,7 @@ protected:
 	CString m_csNotifyText;		// Before package action user notification text
 	BOOL m_bNotifyCanAbort;		// Is user able to abort package setup
 	BOOL m_bNotifyCanDelay;		// Is user able to report package setup at next agent execution
-	BOOL m_bNeedDoneAction;		// Do we have to notify user after package successfull execution
+	BOOL m_bNeedDoneAction;		// Do we have to notify user after package successful execution
 	CString m_csNeedDoneActionText; // After package success notification text
 };
 

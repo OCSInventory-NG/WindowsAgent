@@ -104,7 +104,7 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 
 		if (m_csAction == OCS_DOWNLOAD_ACTION_LAUNCH)
 		{
-			// In LAUNCH, command is in the NAME atribute
+			// In LAUNCH, command is in the NAME attribute
 			if( !ExpandEnvironmentStrings( m_csName, cCommand, 255 ))
 			{
 				return FALSE;
@@ -705,7 +705,7 @@ BOOL CPackage::isBuilt()
 	// Check if first fragment exist
 	csFile.Format( _T( "%s\\%s\\%s-1"), getDownloadFolder(), m_csID, m_csID);
 	if (fileExists( csFile))
-		// Package not built, or previous build unsuccessfull
+		// Package not built, or previous build unsuccessful
 		return FALSE;
 	// Check if ZIP exist
 	csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csID, OCS_DOWNLOAD_BUILD);
