@@ -25,8 +25,8 @@ REQUIREMENTS
 
 - Microsoft Visual C++ 2008 SP1 or higher
 - Perl 5.8 or newer for building dependencies (you can use XAMPP perl addon)
-- Source code exported from Launchpad Bazaar repository.
-  svn co https://
+- Source code exported from GitHub.
+  git clone https://github.com/OCSInventory-NG/WindowsAgent.git
 
 
 BUILDING DEPENDENCIES
