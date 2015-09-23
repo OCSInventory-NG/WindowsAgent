@@ -70,11 +70,11 @@ protected: //Attributes
 	CLog	*m_pLogger;
 	CConfig	*m_pConfig;
 	CConnexionAbstract	*m_pConnexion;
-	UINT	m_uDownloadFragLatency;		// Time to wait betwen fragment downloaded
+	UINT	m_uDownloadFragLatency;		// Time to wait between fragment downloaded
 	UINT	m_uDownloadCycleLatency;	// Time to wait between download cycle
 	UINT	m_uDownloadPeriodLatency;	// Time to wait between each cycle priority ( = period)
 	UINT	m_uDownloadPeriodLength;	// Number of period in a download cycle
-	UINT	m_uDownloadTimeout;			// Package deployement Timeout in days
+	UINT	m_uDownloadTimeout;			// Package deployment timeout in days
 	UINT	m_uCommandTimeout;			// Command Execution Timeout in minutes
 	BOOL	m_bDownloadOn;				// Is download enabled
 	CBlackList m_BlackList;				// Blacklist of package IDs, package to not process during the period

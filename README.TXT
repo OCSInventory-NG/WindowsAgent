@@ -24,12 +24,12 @@ REQUIREMENTS
 ============
 
 - Microsoft Visual C++ 2008 SP1 or higher
-- Perl 5.8 or newer for building dependancies (you can use XAMPP perl addon)
+- Perl 5.8 or newer for building dependencies (you can use XAMPP perl addon)
 - Source code exported from Launchpad Bazaar repository.
   svn co https://
 
 
-BUILDING DEPENDANCIES
+BUILDING DEPENDENCIES
 =====================
 
 OCS Inventory NG Agent for Windows needs following libraries:
@@ -59,7 +59,7 @@ C++ 2008 SP1 CRT and MFC versions (for more explanation, see Jochen Kalmbach's B
 http://blog.kalmbach-software.de/2009/05/27/deployment-of-vc2008-apps-without-installing-anything/)
 Save and build to create unicode DLL for ZipArchive Library.
 
-Script for building dependancy automatically fixes cURL and net-snmp Makefiles for Visual C++ 2008,
+Script for building dependency automatically fixes cURL and net-snmp Makefiles for Visual C++ 2008,
 by adding "/D_BIND_TO_CURRENT_VCLIBS_VERSION" to the CFLAGS. As is, libcurl and net-snmp
 DLL will be bound to latest Visual C++ 2008 SP1 CRT versions.
 

@@ -180,7 +180,7 @@ BOOL CConfig::load( LPCTSTR lpstrFile)
 	m_csLocal.ReleaseBuffer();
 	//  Scan for installed software or not
 	m_bNoSoftware = (BOOL)GetPrivateProfileInt( OCS_AGENT_SECTION, _T( "NoSoftware"), FALSE, m_csConfigFile);
-	//  Scanning HKEY_CURRENT_USER hive for printers and sofware
+	//  Scanning HKEY_CURRENT_USER hive for printers and software
 	m_bHKCU = (BOOL)GetPrivateProfileInt( OCS_AGENT_SECTION, _T( "HKCU"), FALSE, m_csConfigFile);
 	//  Disable prompting user for TAG value
 	m_bNoTag = (BOOL)GetPrivateProfileInt( OCS_AGENT_SECTION, _T( "NoTAG"), FALSE, m_csConfigFile);

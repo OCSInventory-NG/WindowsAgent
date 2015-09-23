@@ -75,7 +75,7 @@ typedef struct tag_EDIDMode
     BYTE Vertical_Frequency;
 } EDIDMode;
 
-// Format of Detailed_Timing_DescriptionX if it is a Detailled Timing
+// Format of Detailed_Timing_DescriptionX if it is a detailed timing
 typedef struct tag_EDID_Detailled_Timing
 {
 	BYTE Horizontal_Frequency;	// horizontal frequency in kHz (if 00h, may be text)(see #00135)
@@ -160,7 +160,7 @@ typedef struct tag_Standard_EDID
     BYTE Checksum; // (radix-complement: 256-low byte of 16-bit sum of 00h-7Eh)
 } Standard_EDID;
 
- // Detailled Timing enumeration types
+ // Detailed Timing enumeration types
 enum DetailTiming
 {
     Detailed_Timing_Description = 0,
@@ -191,7 +191,7 @@ protected: // Methods
 	BOOL		ParseEDID( LPBYTE lpByte, Standard_EDID &myEDID);
 	// Return manufacturer code (3 letters)
 	LPCSTR		GetManufacturerID(BYTE ID[2]);
-	// Retreive EDID data from registry
+	// Retrieve EDID data from registry
 	BOOL		GetDisplayEDID( HDEVINFO hDeviceInfoSet, SP_DEVINFO_DATA *pDevInfoData, Standard_EDID &myEDID);
 	// Decode DPMS flags to get monitor type
 	LPCSTR		DecodeDPMSFlag( BYTE Flag);

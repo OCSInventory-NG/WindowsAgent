@@ -101,7 +101,7 @@ BOOL OCSINVENTORYFRONT_API suspendDownload();
 BOOL OCSINVENTORYFRONT_API resumeDownload();
 // If suspend file exists, download is suspended
 BOOL OCSINVENTORYFRONT_API isDownloadSuspended();
-// Get exclusive acces to download directory by locking lock file
+// Get exclusive access to download directory by locking lock file
 BOOL OCSINVENTORYFRONT_API lockDownload();
 // Release exclusive access
 BOOL OCSINVENTORYFRONT_API unlockDownload();

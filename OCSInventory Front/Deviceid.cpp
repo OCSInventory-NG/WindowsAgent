@@ -145,7 +145,7 @@ BOOL CDeviceid::writeDeviceid()
 		delete pCb;
 		return FALSE;
 	}
-	// All sucessfull
+	// All successful
 	delete pCb;
 	return TRUE;
 }

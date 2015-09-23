@@ -291,7 +291,7 @@ UCHAR *CDMI::GetNextTable( UCHAR uType, BOOL bStart)
 	DmiHeader *dmi;
 
 	if (bStart)
-		// Search from begining of tables
+		// Search from beginning of tables
 		nPosition = 0;
 
 	while (nPosition < m_nStructureLength)

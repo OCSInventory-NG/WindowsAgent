@@ -81,7 +81,7 @@ void CRequestAbstract::cleanXml()
 		csXml.Delete( nIndex, nCount - nIndex);
 		// and insert space
 		csXml.Insert( nIndex, " ");
-		// Find next occurence
+		// Find next occurrence
 		nIndex = csXml.Find( "&#x", nIndex);
 	}
 	m_cmXml.SetDoc( csXml);

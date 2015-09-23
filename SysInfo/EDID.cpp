@@ -415,7 +415,7 @@ LPCSTR CEdid::GetEdidText(BYTE lpByte[18])
 	}
 	memset( szResult, 0, 15);
 	strncpy( szResult, (LPCSTR) (lpByte+DESCRIPTOR_DATA_OFFSET), 14);
-	// Ignore space characters at begining
+	// Ignore space characters at beginning
 	for (i=0; i<strlen( szResult) && szResult[i]==' '; i++);
 	m_csBuffer.Format( "%s", szResult+i);
 	return m_csBuffer;

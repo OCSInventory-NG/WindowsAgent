@@ -147,7 +147,7 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 				}
 				else if (os.IsWindowsME(&osvi))
 				{
-					csName = _T( "Microsoft Windows Millenium");
+					csName = _T( "Microsoft Windows Millennium");
 					csComment.Empty();
 				}
 				else

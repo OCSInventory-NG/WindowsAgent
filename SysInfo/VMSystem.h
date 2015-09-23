@@ -20,13 +20,13 @@ public:
 	CVMSystem(void);
 	~CVMSystem(void);
 
-	// Try to detect hypervisor we're runnning on using Bios
+	// Try to detect hypervisor we're running on using Bios
 	BOOL DetectVM( CBios *pBios, CString &csVMSystem);
-	// Try to detect hypervisor we're runnning on using System controller
+	// Try to detect hypervisor we're running on using System controller
 	BOOL DetectVM( CSystemControllerList *pMyList, CString &csVMSystem);
-	// Try to detect hypervisor we're runnning on using Storage Peripherals
+	// Try to detect hypervisor we're running on using Storage Peripherals
 	BOOL DetectVM( CStoragePeripheralList *pMyList, CString &csVMSystem);
-	// Try to detect hypervisor we're runnning on using Video Adapter
+	// Try to detect hypervisor we're running on using Video Adapter
 	BOOL DetectVM( CVideoAdapterList *pMyList, CString &csVMSystem);
 protected:
 	// Try to find Hypervisor signature into a string

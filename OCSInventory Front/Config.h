@@ -107,7 +107,7 @@ public: // Methods
 	// What's the content of TAG (/TAG:"tag value")
 	BOOL isTagTextProvided();
 	LPCTSTR getTagText();
-	// Does agent also scan HKEY_CURRENT_USER hive for printers and sofware (/HKCU)
+	// Does agent also scan HKEY_CURRENT_USER hive for printers and software (/HKCU)
 	BOOL isHkcuRequired();
 	// Is Inventory forced (/FORCE)
 	BOOL isForceInventoryRequired();
@@ -141,7 +141,7 @@ public: // Methods
 	void setIpDiscoverLatency(LPCTSTR lpstrLatency = NULL);
 	// Does agent launches a fast IpDiscover scan, without taking care of network load, or not
 	void setFastIpRequired( BOOL bFast = TRUE);
-	// Set if agent also scan HKEY_CURRENT_USER hive for printers and sofware (/HKCU)
+	// Set if agent also scan HKEY_CURRENT_USER hive for printers and software (/HKCU)
 	void setHkcuRequired( BOOL bHKCU = TRUE);
 	// Set Communication Provider DLL to use without extension .DLL
 	void setCommunicationProvider( LPCTSTR lpstrDll);

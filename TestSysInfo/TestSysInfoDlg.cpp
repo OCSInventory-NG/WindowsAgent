@@ -968,7 +968,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Video Controler infos"));
+	m_List.AddString( _T( "Video Controller infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_VideoController")))
 	{
@@ -1263,7 +1263,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Floppy Controler infos"));
+	m_List.AddString( _T( "Floppy Controller infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_FloppyController")))
 	{
@@ -1302,7 +1302,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "IDE Controler infos"));
+	m_List.AddString( _T( "IDE Controller infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_IDEController")))
 	{
@@ -1341,7 +1341,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "SCSI Controler infos"));
+	m_List.AddString( _T( "SCSI Controller infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_SCSIController")))
 	{
@@ -1388,7 +1388,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "InfraRed Controler infos"));
+	m_List.AddString( _T( "InfraRed Controller infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_InfraredDevice")))
 	{
@@ -1427,7 +1427,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "USB Controler infos"));
+	m_List.AddString( _T( "USB Controller infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_USBController")))
 	{
@@ -1466,7 +1466,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "IEEE 1394 Controler infos"));
+	m_List.AddString( _T( "IEEE 1394 Controller infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_1394Controller")))
 	{
@@ -1505,7 +1505,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "PCMCIA Controler infos"));
+	m_List.AddString( _T( "PCMCIA Controller infos"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_PCMCIAController")))
 	{

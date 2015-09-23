@@ -60,7 +60,7 @@ protected: //Attributes
 
 protected: //Attributes
 	CLog	*m_pLogger;
-	UINT	m_uNotifcation;		// Notifcation type
+	UINT	m_uNotifcation;		// Notification type
 	CString m_csMessage;		// Message to display to user
 	BOOL	m_bCancel;			// Is cancel allowed or not
 	BOOL	m_bDelay;			// Is delaying action allowed or not

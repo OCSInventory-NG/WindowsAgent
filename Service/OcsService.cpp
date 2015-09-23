@@ -488,7 +488,7 @@ void COcsService::Run()
 			{
 				if (!bNotifyInventory && isInventoryStateChanged())
 				{
-					// Inventory state changed, force inventory immediatly
+					// Inventory state changed, force inventory immediately
 					m_iTToWait = 0;
 					bNotifyInventory = TRUE;
 				}
@@ -691,7 +691,7 @@ BOOL COcsService::showInventory()
 		// Create inventory
 		if ((pRequest = new CInventoryRequest()) == NULL)
 		{
-			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to retreive inventory informations"));
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to retrieve inventory informations"));
 			return FALSE;
 		}
 		if (!pRequest->final())
@@ -723,7 +723,7 @@ BOOL COcsService::showInventory()
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "An unknown error occured while trying to generate inventory informations"));
+		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "An unknown error occurred while trying to generate inventory informations"));
 		return FALSE;
 	}
 }
@@ -755,7 +755,7 @@ BOOL COcsService::rotateLogs()
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "An unknown error occured while rotating log files"));
+		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "An unknown error occurred while rotating log files"));
 		return FALSE;
 	}
 	return TRUE;

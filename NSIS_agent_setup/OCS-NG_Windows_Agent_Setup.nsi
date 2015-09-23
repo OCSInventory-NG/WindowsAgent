@@ -597,11 +597,11 @@ ParseCmd_NoSplash_End:
 	; /UPGRADE switch to set deployment status
     ${GetOptions} '$9' '/UPGRADE' $R0
     IfErrors 0 ParseCmd_Upgrade
-	; Do not write deployement status file
+	; Do not write deployment status file
 	StrCpy $OcsUpgrade "FALSE"
     goto ParseCmd_Upgrade_End
 ParseCmd_Upgrade:
-	; Write deployement status file
+	; Write deployment status file
 	StrCpy $OcsUpgrade "TRUE"
 ParseCmd_Upgrade_End:
 	; Remove parsed arg from command line
@@ -1177,7 +1177,7 @@ FunctionEnd
 # stored by agent into the same folder as the installer
 #####################################################################
 Function WriteAgentSetupDone
-	; Write deployement status file if required
+	; Write deployment status file if required
 	StrCmp "$OcsUpgrade" "TRUE" 0 WriteAgentSetupDone_end
 	; Read package ID from same directory as the installer
     FileOpen $0 "$EXEDIR\OCSNG-Windows-Agent-PackageID" r
@@ -1517,7 +1517,7 @@ UpgradeSkipUnregister:
     IfErrors 0 +3
 	StrCpy $logBuffer "Failed to remove key, but non blocking !"
 	Call Write_Log
-	; Ensure service uninstall and migration process successfull
+	; Ensure service uninstall and migration process successful
     IfFileExists "$INSTDIR\PsApi.dll" TestInstall_Upgrade_Error
 	StrCpy $logBuffer "$\r$\nMigration process from old agent 4000 series succesfull, continuing setup...$\r$\n"
 	Call Write_Log
@@ -1571,7 +1571,7 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
     	strcpy $installSatus ":("
         clearerrors
-	    ; MSVC 9 CRT redist 9.00.21022.8 for Windows 2000 compatiblity only (DO NOT WORK ON XP AND HIGHER)
+	    ; MSVC 9 CRT redist 9.00.21022.8 for Windows 2000 compatibility only (DOES NOT WORK ON XP AND HIGHER)
      	SetOutPath "$INSTDIR"
       	File "vc2008_redist_9.00.21022.8_for_Windows_2000\Microsoft.VC90.CRT.manifest"
        	Iferrors 0 +5
@@ -1597,7 +1597,7 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    ; MSVC 9 MFC redist 9.00.21022.8 for Windows 2000 compatiblity only (DO NOT WORK ON XP AND HIGHER)
+	    ; MSVC 9 MFC redist 9.00.21022.8 for Windows 2000 compatibility only (DOES NOT WORK ON XP AND HIGHER)
 	    File "vc2008_redist_9.00.21022.8_for_Windows_2000\Microsoft.VC90.MFC.manifest"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying \Microsoft.VC90.MFC.manifest $\r$\n"
@@ -1913,14 +1913,14 @@ SectionEnd
 
 
 #####################################################################
-# This function writes install status into log file when sucessfull install
+# This function writes install status into log file when successful install
 #####################################################################
 Function .onInstSuccess
 	strcmp "$installSatus" ";-)" 0 onInstSuccess_Error
 	Push "SUCCESS"
 	Call WriteAgentSetupDone
 	${GetTime} "" "L" $0 $1 $2 $3 $4 $5 $6
-	StrCpy $logBuffer "SUCCESS: ${PRODUCT_NAME} ${PRODUCT_VERSION} successfuly installed on $0/$1/$2 at $4:$5:$6$\r$\n$installSatus$\r$\n "
+	StrCpy $logBuffer "SUCCESS: ${PRODUCT_NAME} ${PRODUCT_VERSION} successfully installed on $0/$1/$2 at $4:$5:$6$\r$\n$installSatus$\r$\n "
 	Call Write_Log
 	goto onInstSuccess_end
 onInstSuccess_Error:

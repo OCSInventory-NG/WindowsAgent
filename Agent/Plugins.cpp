@@ -141,7 +141,7 @@ int CPlugins::Load( LPCTSTR lpstrPath)
 			nCount++;
 		}
 		cFinder.Close();
-		m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => %d DLL Plug-in(s) succesfully loaded on %d DLL(s) found"), nPlugin, nCount);
+		m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DLL PLUGIN => %d DLL Plug-in(s) successfully loaded on %d DLL(s) found"), nPlugin, nCount);
 		return nPlugin;
 	}
 	catch (CException *pEx)

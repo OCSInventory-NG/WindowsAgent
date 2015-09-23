@@ -24,7 +24,7 @@
 
 /* OCS Inventory NG log modes
    /DEBUG=0 => default mode 
-   /DEBUG=1 => DEBUG mode, for more detailled logs
+   /DEBUG=1 => DEBUG mode, for more detailed logs
    /DEBUG=2 => TRACE mode, for full logs, including XML and SysInfo logs
 */
 
@@ -71,7 +71,7 @@ private: // Methods
 	// Trace log for full mode debug
 	void log_trace( LPCTSTR lpstrFormat, va_list args);
 
-private: // Atributes
+private: // Attributes
 	// Log filename
 	CString m_csFileName;
 	// The log file opened

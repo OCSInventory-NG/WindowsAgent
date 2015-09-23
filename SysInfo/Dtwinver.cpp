@@ -1531,7 +1531,7 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
     }
   #endif
   
-  #else //We must be runing on an emulated or real version of Win16 or DOS
+  #else //We must be running on an emulated or real version of Win16 or DOS
     lpVersionInformation->EmulatedProcessorType = IA32_PROCESSOR; //We can only be running x86-32 code from Win16 or DOS
 
     #ifdef _WINDOWS //Running on some version of Windows                   
@@ -1639,7 +1639,7 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
         _fstrcpy(lpVersionInformation->szUnderlyingCSDVersion, "");
       }
     #else //Must be some version of real or emulated DOS
-      //Retreive the current version of emulated DOS
+      //Retrieve the current version of emulated DOS
       BYTE DosMinor;
       BYTE DosMajor;
       _asm
@@ -3054,7 +3054,7 @@ void COSVersion::GetProductSuiteDetailsFromRegistry(LPOS_VERSION_INFO lpVersionI
     //puts in the ProductSuite. In Windows 2000 Datacenter it does not matter as it
     //supports GetVersionEx using a OSVERSIONINFOEX structure.
 
-    //Turn on appropiate fields in the "wSuiteMask" bit field
+    //Turn on appropriate fields in the "wSuiteMask" bit field
     if (_tcsicmp(lpszSuite, _T("Terminal Server")) == 0) 
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_TERMINAL;
     else if ((_tcsicmp(lpszSuite, _T("SBS")) == 0) || (_tcsicmp(lpszSuite, _T("Small Business")) == 0))

@@ -199,7 +199,7 @@
 	* Activate minimal log file ocsinventory.log by default into %PROGRAMDATA%\OCS Inventory NG\Agent
 	* Delay WMI first use until app start, to fix hang under Vista and higher. WMI cannot be used until WinMain starts
 	* Review WMI code, and use WMI to get Logical drives
-	* Add service description and dependancies to standards windows services RPCSS, EventLog, WMI and Tcpip
+	* Add service description and dependencies to standards windows services RPCSS, EventLog, WMI and Tcpip
 	* Bug #568534 and #493609: Add 64 bits support for registry key
 	* Bug #563796: NOTIFY should send the IPGATEWAY	
 	* Bug #484115: Frequency of inventory for ip_discover computer 

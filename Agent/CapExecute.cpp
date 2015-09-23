@@ -119,7 +119,7 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 					continue;
 				}
 				m_pLogger->log( LOG_PRIORITY_WARNING, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output encoded to UTF-8, trying to reload XML document"), cFinder.GetFilePath());
-				// UTF-8 encode successfull, try to reload
+				// UTF-8 encode successful, try to reload
 				if (!myXml.LoadFile( csOutputFile))
 				{
 					m_pLogger->log( LOG_PRIORITY_ERROR, _T( "EXECUTABLE PLUGIN => Executable plugin <%s> output is not a valid XML document"), cFinder.GetFilePath());

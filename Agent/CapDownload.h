@@ -48,7 +48,7 @@ protected: // Methods
 
 protected: // Attributes
 	CObArray m_tPackages;				// Array of package to process
-	CString m_csDownloadFragLatency;	// Time to wait betwen fragment downloaded
+	CString m_csDownloadFragLatency;	// Time to wait between fragment downloaded
 	CString m_csDownloadCycleLatency;	// Time to wait between download cycle
 	CString m_csDownloadPeriodLatency;	// Time to wait between each cycle priority ( = period)
 	CString m_csDownloadPeriodLength;	// Number of period in a download cycle

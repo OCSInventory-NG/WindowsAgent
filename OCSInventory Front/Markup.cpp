@@ -169,7 +169,7 @@ BOOL CMarkup::SetData( LPCTSTR szValue)
 			{
 				// This a test child, remove it...
 				m_pCurrentNode->RemoveChild( pChild);
-				// ...and restart from the begining of childs
+				// ...and restart from the beginning of children
 				pChild = NULL;
 			}
 		}

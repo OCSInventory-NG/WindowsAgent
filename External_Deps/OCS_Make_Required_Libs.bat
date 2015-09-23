@@ -212,7 +212,7 @@ echo *                                                                       *
 echo * Please, fix problem before trying to build OCS Inventory NG !         *
 echo *                                                                       *
 echo * Here is some common errors:                                           *
-echo * - Have you reviewed paths at the begining of this batch file ?        *
+echo * - Have you reviewed paths at the beginning of this batch file ?       *
 echo * - Have you updated Visual C++ version in cURL Makefile ?              *
 echo * - Have you build ZipArchive "Release Unicode STL MD DLL" ?            *
 echo *                                                                       *
