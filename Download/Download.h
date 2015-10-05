@@ -61,7 +61,7 @@ protected: // Methods
 	BOOL setFinished( CPackage *pPack);
 	// "Really" send package result code to server and optionally command output
 	BOOL sendResult( LPCTSTR lpstrPackID, LPCTSTR lpstrCode, LPCTSTR lpstrOuput = NULL);
-	// Download one package fragement
+	// Download one package fragment
 	BOOL downloadFragment( CPackage *pPack);
 	// All fragment are doanloaded, create build.zip, verify signature, unzip and execute command
 	BOOL executePackage( CPackage *pPack);

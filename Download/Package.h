@@ -93,7 +93,7 @@ protected:
 	// Verify package signature. Return
 	BOOL checkSignature();
 	// Delete fragament files
-	BOOL deleteFragement();
+	BOOL deleteFragment();
 	// Unzip package
 	BOOL unZip();
 	// Is Digest base64 encoded

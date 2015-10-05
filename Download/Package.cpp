@@ -650,7 +650,7 @@ BOOL CPackage::build()
 		return FALSE;
 	}
 	// Delete frag files, no more needed
-	deleteFragement();
+	deleteFragment();
 	return TRUE;
 }
 
@@ -698,7 +698,7 @@ BOOL CPackage::isBuilt()
 {
 	CString csFile;
 
-	// If there is no fragement, assume package built
+	// If there is no fragment, assume package built
 	if (m_uFrags == 0)
 		// No fragment
 		return TRUE;
@@ -715,7 +715,7 @@ BOOL CPackage::isBuilt()
 	return TRUE;
 }
 
-BOOL CPackage::deleteFragement()
+BOOL CPackage::deleteFragment()
 {
 	CString csFile;
 
@@ -732,7 +732,7 @@ BOOL CPackage::unZip()
 	CZipArchive cZip;
 	CString		csFile;
 
-	// If there is no fragement, assume package unzipped
+	// If there is no fragment, assume package unzipped
 	if (m_uFrags == 0)
 		// No fragment
 		return TRUE;
