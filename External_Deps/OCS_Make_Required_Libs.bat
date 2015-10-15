@@ -22,22 +22,22 @@ Rem Set path to Perl 5.6 or higher binary
 set PERL_PATH=c:\xampp\perl\bin
 
 Rem Set path to Zlib sources
-set ZLIB_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\zlib-1.2.8
+set ZLIB_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\zlib-1.2.8
 
 Rem Set path to OpenSSL sources
-set OPENSSL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\openssl-1.0.0n
+set OPENSSL_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\openssl-1.0.0s
 
 Rem Set path to cURL sources
-set CURL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\curl-7.37.1
+set CURL_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\curl-7.45.0
 
 Rem Set path to tinyXML sources
-SET XML_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\tinyxml
+SET XML_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\tinyxml
 
 Rem Set path to ZipArchive sources, for example
-SET ZIP_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\ZipArchive
+SET ZIP_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\ZipArchive
 
 Rem Set path to Net-SNMP sources, for example
-SET SNMP_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\net-snmp-5.7
+SET SNMP_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\net-snmp-5.7.3
 
 Rem ========= DO NOT MODIFY BELOW, UNTIL YOU KNOW WHAT YOU ARE DOING =========
 
