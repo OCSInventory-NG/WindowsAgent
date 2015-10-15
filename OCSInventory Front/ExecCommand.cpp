@@ -215,16 +215,6 @@ DWORD CExecCommand::realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, B
 
 	ASSERT( lpstrCommand);
 
-
-#if _WIN32_WINNT >= 0x0501
-    //  Disable redirection immediately prior to the native API
-    //  function call if compiled for Windows XP or higher.
-    if (!Wow64DisableWow64FsRedirection( &pOldWow64Value)) 
-	{
-		m_csOutputA.Format( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
-		return 0;
-	}
-#endif
 	if (m_bComspec)
 	{
 		// Find COMSPEC environnement variable to start process
@@ -234,9 +224,6 @@ DWORD CExecCommand::realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, B
 			* Oh gag, we're on Win9x or using COMMAND.COM. Not supported
 			*/
 			m_csOutputA.Format( "Get COMSPEC Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
-#if _WIN32_WINNT >= 0x0501
-			Wow64RevertWow64FsRedirection( pOldWow64Value);
-#endif
 			return 0;
 		}
 		csCommand.Format( _T( "\"%s\" /c %s"), csComspec, lpstrCommand);
@@ -265,9 +252,6 @@ DWORD CExecCommand::realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, B
 					NULL, lpstrPath, &siStartInfo, &piProcInfo)) 
 	{
 		m_csOutputA.Format( "CreateProcess Error: %s", GetAnsiFromUnicode( LookupError( GetLastError())));
-#if _WIN32_WINNT >= 0x0501
-		Wow64RevertWow64FsRedirection( pOldWow64Value);
-#endif
 		return 0;
 	}
 	// Close the handles now so anyone waiting is woken.
@@ -275,9 +259,6 @@ DWORD CExecCommand::realCreateProcess(LPCTSTR lpstrCommand, LPCTSTR lpstrPath, B
 	// Return process handle
 	m_hProcessHandle = piProcInfo.hProcess;
 	dwProcessID = piProcInfo.dwProcessId;
-#if _WIN32_WINNT >= 0x0501
-	Wow64RevertWow64FsRedirection( pOldWow64Value);
-#endif
 	return dwProcessID;
 }
 
