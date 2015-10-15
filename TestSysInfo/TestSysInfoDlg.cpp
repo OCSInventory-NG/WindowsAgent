@@ -780,6 +780,39 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		{
 			CString str, res;
 
+			str = _T( "Location = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Location"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Manufacturer = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Manufacturer"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "ManufactureDate = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "ManufactureDate"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "SERIALNUMBER = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "ManufactureDate"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "Chemistry = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "Chemistry"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "DesignCapacity = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "DesignCapacity"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "DesignVoltage = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "DesignVoltage"));
+			str += res;
+			m_List.AddString( str);
+			str = _T( "SBDS Version = ");
+			res = myWmiDll.GetClassObjectStringValue( _T( "SmartBatteryVersion"));
+			str += res;
+			m_List.AddString( str);
+			
 			str = _T( "Availability = ");
 			res = myWmiDll.GetClassObjectStringValue( _T( "Availability"));
 			str += res;
