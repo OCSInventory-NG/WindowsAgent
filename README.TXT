@@ -23,10 +23,9 @@
 REQUIREMENTS
 ============
 
-- Microsoft Visual C++ 2008 SP1 or higher
+- Microsoft Visual C++ 2013 SP1 or higher
 - Perl 5.8 or newer for building dependencies (you can use XAMPP perl addon)
-- Source code exported from Launchpad Bazaar repository.
-  svn co https://
+- Source code exported from git hub experimental repository
 
 
 BUILDING DEPENDENCIES
@@ -34,23 +33,23 @@ BUILDING DEPENDENCIES
 
 OCS Inventory NG Agent for Windows needs following libraries:
 
-- zlib 1.2.5 or newer (www.zlib.net)
-- openssl 1.0.0c or newer (www.openssl.org)
-- curl 7.21.2 or newer (http://curl.haxx.se/)
+- zlib 1.2.8 or newer (www.zlib.net)
+- openssl 1.0.0n or newer (www.openssl.org)
+- curl 7.37.1 or newer (http://curl.haxx.se/)
 - tinyXML 2.6.2 or newer (http://www.sourceforge.net/projects/tinyxml/)
 - net-snmp 5.7 or newer (http://www.net-snmp.org/)
 - ZipArchive GPL Edition 4.0.1 or newer (http://www.artpol-software.com)
 
 Uncompress sources of these libraries into directory "External_Deps" to create
 the following directory structures.
-- External_Deps\Zlib-1.2.5
-- External_Deps\openssl-1.0.0c
-- External_Deps\curl-7.21.3
+- External_Deps\Zlib-X.X.X
+- External_Deps\openssl-X.X.X
+- External_Deps\curl-X.X.X
 - External_Deps\tinyxml
-- External_Deps\net-snmp-5.7
+- External_Deps\net-snmp-X.X
 - External_Deps\ZipArchive
 
-Open "ZipArchive.sln" Visual C++ 2008 solution in folder
+Open "ZipArchive.sln" Visual C++ 2013 solution in folder
 "External_Deps\ZipArchive", select configuration "Release Unicode STL MD DLL"
 for platform Win32, and edit project properties. Add
 _BIND_TO_CURRENT_VCLIBS_VERSION preprocessor define to "Configuration
@@ -59,7 +58,7 @@ C++ 2008 SP1 CRT and MFC versions (for more explanation, see Jochen Kalmbach's B
 http://blog.kalmbach-software.de/2009/05/27/deployment-of-vc2008-apps-without-installing-anything/)
 Save and build to create unicode DLL for ZipArchive Library.
 
-Script for building dependency automatically fixes cURL and net-snmp Makefiles for Visual C++ 2008,
+Script for building dependency automatically fixes cURL and net-snmp Makefiles for Visual C++ 2013,
 by adding "/D_BIND_TO_CURRENT_VCLIBS_VERSION" to the CFLAGS. As is, libcurl and net-snmp
 DLL will be bound to latest Visual C++ 2008 SP1 CRT versions.
 
@@ -69,10 +68,10 @@ preprocessor define is done through the call of build file "OCS_Make_Required_Li
 
 Edit script "OCS_Make_Required_Libs.bat" to meet your need, especially
 
-- Set path to MS Visual C++ 2008, for example
-  set VC_PATH=C:\Program Files\Microsoft Visual Studio 9.0\VC
-- Set path to MS Windows SDK, needed to build cURL, for example with VC++ 2008
-  set WINDOWS_SDK_PATH="C:\Program Files\Microsoft SDKs\Windows\v6.0A"
+- Set path to MS Visual C++ 2013, for example
+  set VC_PATH=C:\Program Files (x86)\Microsoft Visual Studio X.X\VC
+- Set path to MS Windows SDK, needed to build cURL, for example with VC++ 2013
+  set WINDOWS_SDK_PATH="C:\Program Files\Microsoft SDKs\Windows\vX.X"
 - Set path to Perl 5.6 or higher binary, for example
   set PERL_PATH=C:\xampp\perl\bin
 - Set path to Zlib sources, for example
@@ -91,8 +90,6 @@ Then, launch script "OCS_Make_Required_Libs.bat" to create all libs and prepare 
 
 BUILDING AGENT
 ==============
-
-You need Visual C++ 2008, which includes MS Windows SDK 6.0A.
 
 Open solution "OCSInventory.sln", select project "Agent" and build it !
 

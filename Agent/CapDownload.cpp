@@ -43,14 +43,14 @@ CCapDownload::~CCapDownload()
 	{
 		delete m_tPackages[l];
 		l++;
-	}	
+	}
 }
 
 BOOL CCapDownload::retrievePackages()
 {
 	CString					csCertFile,
-							csId,
-							csValue;
+		csId,
+		csValue;
 	COptDownloadPackage		*pOptDownloadPackage;
 	CMapStringToStringArray	*pMapArray = NULL;
 	CMapStringToString		*pMap = NULL;
@@ -63,33 +63,33 @@ BOOL CCapDownload::retrievePackages()
 	***/
 
 	// Working directory
-	if (directoryCreate( getDownloadFolder()) == FALSE)
+	if (directoryCreate(getDownloadFolder()) == FALSE)
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Cannot create working directory (%s)"), LookupError( GetLastError()));
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Cannot create working directory (%s)"), LookupError(GetLastError()));
 		return FALSE;
 	}
 	// Open package history file, create it if needed
 	CFilePackageHistory cFileHistory;
-	if (! cFileHistory.Open( getPackageHistoryFilename(), FALSE, TRUE))
+	if (!cFileHistory.Open(getPackageHistoryFilename(), FALSE, TRUE))
 	{
-		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Cannot create history file <%>"), getPackageHistoryFilename());
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Cannot create history file <%>"), getPackageHistoryFilename());
 		return FALSE;
 	}
-	if (! m_pPrologResp->isDownloadRequired())
+	if (!m_pPrologResp->isDownloadRequired())
 	{
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => No package available for download"));
+		m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => No package available for download"));
 		return FALSE;
 	}
 	// Trying to create suspend Download tool
 	if (!suspendDownload())
 	{
-		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Cannot suspend Download and Setup Tool using <%s> file"), OCS_DOWNLOAD_SUSPEND);
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Cannot suspend Download and Setup Tool using <%s> file"), OCS_DOWNLOAD_SUSPEND);
 		return FALSE;
 	}
 	// Trying to get exclusive access to download
 	if (!lockDownload())
 	{
-		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Cannot lock directory <%s>"), getDownloadFolder());
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Cannot lock directory <%s>"), getDownloadFolder());
 		resumeDownload();
 		return FALSE;
 	}
@@ -97,81 +97,81 @@ BOOL CCapDownload::retrievePackages()
 	pMapArray = m_pPrologResp->getDownloadParameters();
 	if ((pMapArray == NULL) || pMapArray->IsEmpty())
 	{
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => No download parameter available"));
+		m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => No download parameter available"));
 		unlockDownload();
 		resumeDownload();
 		return FALSE;
 	}
 	// There is only one record for download parameters
 	pMap = pMapArray->GetAt(0);
-	pMap->Lookup( _T( "FRAG_LATENCY"), m_csDownloadFragLatency);
-	pMap->Lookup( _T( "CYCLE_LATENCY"), m_csDownloadCycleLatency);
-	pMap->Lookup( _T( "PERIOD_LATENCY"), m_csDownloadPeriodLatency);
-	pMap->Lookup( _T( "PERIOD_LENGTH"), m_csDownloadPeriodLength);
-	pMap->Lookup( _T( "TIMEOUT"), m_csDownloadTimeout);
-	pMap->Lookup( _T( "EXECUTION_TIMEOUT"), m_csCommandTimeout);
+	pMap->Lookup(_T("FRAG_LATENCY"), m_csDownloadFragLatency);
+	pMap->Lookup(_T("CYCLE_LATENCY"), m_csDownloadCycleLatency);
+	pMap->Lookup(_T("PERIOD_LATENCY"), m_csDownloadPeriodLatency);
+	pMap->Lookup(_T("PERIOD_LENGTH"), m_csDownloadPeriodLength);
+	pMap->Lookup(_T("TIMEOUT"), m_csDownloadTimeout);
+	pMap->Lookup(_T("EXECUTION_TIMEOUT"), m_csCommandTimeout);
 	if (m_csCommandTimeout.IsEmpty())
 		m_csCommandTimeout = COMMAND_TIMEOUT_DEFAULT;
-	pMap->Lookup( _T( "ON"), m_csDownloadOn);
+	pMap->Lookup(_T("ON"), m_csDownloadOn);
 	writeConfig();
 	delete pMapArray;
 	pMapArray = NULL;
-	
+
 	// Now get each package information
 	pMapArray = m_pPrologResp->getDownloadPackages();
-	for (nPack=0; (pMapArray!=NULL) && (nPack<pMapArray->GetCount()); nPack++)
+	for (nPack = 0; (pMapArray != NULL) && (nPack<pMapArray->GetCount()); nPack++)
 	{
 		if (((pMap = pMapArray->GetAt(nPack)) == NULL) || pMap->IsEmpty())
 			continue;
 		csId.Empty();
-		pMap->Lookup( _T( "ID"), csId);
+		pMap->Lookup(_T("ID"), csId);
 		// Try to find if package was not previously downloaded, parsing package history file
 		CString csHistBuf;
 		BOOL	bAlreadySetup = FALSE;
 		cFileHistory.SeekToBegin();
-		while (cFileHistory.ReadPackage( csHistBuf))
+		while (cFileHistory.ReadPackage(csHistBuf))
 		{
-			if( csHistBuf.Find( csId) != -1 )
+			if (csHistBuf.Find(csId) != -1)
 			{
 				// Package ID found in history
 				bAlreadySetup = TRUE;
 				break;
 			}
 		}
-		pOptDownloadPackage = new COptDownloadPackage( this);
-		pOptDownloadPackage->setId( csId);
+		pOptDownloadPackage = new COptDownloadPackage(this);
+		pOptDownloadPackage->setId(csId);
 		// If CERT_PATH or CERT_FILE option is provided
 		csValue.Empty();
-		pMap->Lookup( _T( "CERT_PATH"), csValue);
-		pOptDownloadPackage->setCertPath( csValue);
+		pMap->Lookup(_T("CERT_PATH"), csValue);
+		pOptDownloadPackage->setCertPath(csValue);
 		csValue.Empty();
-		pMap->Lookup( _T( "CERT_FILE"), csValue);
-		pOptDownloadPackage->setCertFile( csValue);
+		pMap->Lookup(_T("CERT_FILE"), csValue);
+		pOptDownloadPackage->setCertFile(csValue);
 		// Set URL where to download INFO metadata
 		csValue.Empty();
-		pMap->Lookup( _T( "INFO_LOC"), csValue);
-		pOptDownloadPackage->setInfoLocation( csValue);
+		pMap->Lookup(_T("INFO_LOC"), csValue);
+		pOptDownloadPackage->setInfoLocation(csValue);
 		// Set URL where to download fragment
 		csValue.Empty();
-		pMap->Lookup( _T( "PACK_LOC"), csValue);
-		pOptDownloadPackage->setPackLocation( csValue);
+		pMap->Lookup(_T("PACK_LOC"), csValue);
+		pOptDownloadPackage->setPackLocation(csValue);
 		// Set if we have to force package setup, even if already installed
 		csValue.Empty();
-		pMap->Lookup( _T( "FORCE"), csValue);
-		pOptDownloadPackage->setForce( csValue);
+		pMap->Lookup(_T("FORCE"), csValue);
+		pOptDownloadPackage->setForce(csValue);
 		// Set if we have to schedule package setup at specified date
 		csValue.Empty();
-		pMap->Lookup( _T( "SCHEDULE"), csValue);
-		pOptDownloadPackage->setSchedule( csValue);
+		pMap->Lookup(_T("SCHEDULE"), csValue);
+		pOptDownloadPackage->setSchedule(csValue);
 		// Set post execution command if package action succeeded
 		csValue.Empty();
-		pMap->Lookup( _T( "POSTCMD"), csValue);
-		pOptDownloadPackage->setPostCmd( csValue);
-		if (bAlreadySetup && !pOptDownloadPackage->isForced())				
+		pMap->Lookup(_T("POSTCMD"), csValue);
+		pOptDownloadPackage->setPostCmd(csValue);
+		if (bAlreadySetup && !pOptDownloadPackage->isForced())
 		{
 			// Package ID found in history, do not download
-			m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Will not download package <%s>, already in the package history"), csId);
-			sendMessage( csId, SUCCESS_ALREADY_SETUP);
+			m_pLogger->log(LOG_PRIORITY_NOTICE, _T("DOWNLOAD => Will not download package <%s>, already in the package history"), csId);
+			sendMessage(csId, SUCCESS_ALREADY_SETUP);
 			// Delete already download directory if needed 
 			pOptDownloadPackage->clean();
 			delete pOptDownloadPackage;
@@ -180,54 +180,54 @@ BOOL CCapDownload::retrievePackages()
 		{
 			// Package not already downloaded, or setup forced, put it in the download queue
 			if (pOptDownloadPackage->isForced())
-				m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Package <%s> forced, ignoring package history check"), csId);
+				m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Package <%s> forced, ignoring package history check"), csId);
 			m_tPackages.Add(pOptDownloadPackage);
 		}
-	}	
+	}
 	cFileHistory.Close();
 	delete pMapArray;
 	// Cleaning file history for duplicates
-	switch (CFilePackageHistory::CleanDuplicates( getPackageHistoryFilename()))
+	switch (CFilePackageHistory::CleanDuplicates(getPackageHistoryFilename()))
 	{
 	case 1:
-		m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Package history file successfully cleaned for duplicate IDs"));
+		m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Package history file successfully cleaned for duplicate IDs"));
 		break;
 	case 2:
-		m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Package history file cleaning not required"));
+		m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Package history file cleaning not required"));
 		break;
 	default:
-		m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Failed to clean Package history file for duplicate IDs"));
+		m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Failed to clean Package history file for duplicate IDs"));
 		break;
 	}
 
 	// Now, prepare directories and download instructions for download tool
-	for (nPack=0; nPack<m_tPackages.GetSize(); nPack++)
+	for (nPack = 0; nPack<m_tPackages.GetSize(); nPack++)
 	{
-		pOptDownloadPackage = (COptDownloadPackage*) (m_tPackages[nPack]);
+		pOptDownloadPackage = (COptDownloadPackage*)(m_tPackages[nPack]);
 		// Check if package is not expired
-		if (pOptDownloadPackage->isExpired( m_csDownloadTimeout))
+		if (pOptDownloadPackage->isExpired(m_csDownloadTimeout))
 		{
-			ULONG ulNow = time( NULL);
-			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Package <%s> timed out (now:%lu, since:%lu, Timeout:%s)"), pOptDownloadPackage->getId(), ulNow, (ULONG) pOptDownloadPackage->getTimeStamp(), m_csDownloadTimeout);
-			if (sendMessage( pOptDownloadPackage->getId(), ERR_TIMEOUT))
+			ULONG ulNow = time(NULL);
+			m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Package <%s> timed out (now:%lu, since:%lu, Timeout:%s)"), pOptDownloadPackage->getId(), ulNow, (ULONG)pOptDownloadPackage->getTimeStamp(), m_csDownloadTimeout);
+			if (sendMessage(pOptDownloadPackage->getId(), ERR_TIMEOUT))
 				// Server successfully notified => remove package
 				if (!pOptDownloadPackage->clean())
-					m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to remove timed out package <%s>"), pOptDownloadPackage->getId());
+					m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Failed to remove timed out package <%s>"), pOptDownloadPackage->getId());
 		}
 		else
 		{
 			// Check if package not already added to download queue
-			if (pOptDownloadPackage->makeDirectory() && !fileExists( pOptDownloadPackage->getLocalMetadataFilename()))
+			if (pOptDownloadPackage->makeDirectory() && !fileExists(pOptDownloadPackage->getLocalMetadataFilename()))
 			{
 				// Download metadata from deployment server
 				if (pOptDownloadPackage->downloadInfoFile())
-					m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Package <%s> added to download queue"), pOptDownloadPackage->getId());
+					m_pLogger->log(LOG_PRIORITY_NOTICE, _T("DOWNLOAD => Package <%s> added to download queue"), pOptDownloadPackage->getId());
 				else
 					// Error dowloading metadata => remove package directory to avoid error message into download tool
 					pOptDownloadPackage->clean();
 			}
 			else
-				m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Package <%s> already in download queue, keeping on package"), pOptDownloadPackage->getId());
+				m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Package <%s> already in download queue, keeping on package"), pOptDownloadPackage->getId());
 		}
 	}
 	// Now, allow Download tool
@@ -241,15 +241,15 @@ BOOL CCapDownload::writeConfig()
 	CString csFileName;
 	BOOL	bResult = TRUE;
 
-	csFileName.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_CONFIG_FILENAME);
+	csFileName.Format(_T("%s\\%s"), getDownloadFolder(), OCS_CONFIG_FILENAME);
 
-	bResult = WritePrivateProfileString( OCS_AGENT_SECTION, _T( "FragLatency"), m_csDownloadFragLatency, csFileName);
-	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "CycleLatency"), m_csDownloadCycleLatency, csFileName);
-	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "PeriodLatency"), m_csDownloadPeriodLatency, csFileName);
-	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "PeriodLength"), m_csDownloadPeriodLength, csFileName);
-	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "Timeout"), m_csDownloadTimeout, csFileName);
-	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "CommandTimeout"), m_csCommandTimeout, csFileName);
-	bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "On"), m_csDownloadOn, csFileName);
+	bResult = WritePrivateProfileString(OCS_AGENT_SECTION, _T("FragLatency"), m_csDownloadFragLatency, csFileName);
+	bResult = bResult && WritePrivateProfileString(OCS_AGENT_SECTION, _T("CycleLatency"), m_csDownloadCycleLatency, csFileName);
+	bResult = bResult && WritePrivateProfileString(OCS_AGENT_SECTION, _T("PeriodLatency"), m_csDownloadPeriodLatency, csFileName);
+	bResult = bResult && WritePrivateProfileString(OCS_AGENT_SECTION, _T("PeriodLength"), m_csDownloadPeriodLength, csFileName);
+	bResult = bResult && WritePrivateProfileString(OCS_AGENT_SECTION, _T("Timeout"), m_csDownloadTimeout, csFileName);
+	bResult = bResult && WritePrivateProfileString(OCS_AGENT_SECTION, _T("CommandTimeout"), m_csCommandTimeout, csFileName);
+	bResult = bResult && WritePrivateProfileString(OCS_AGENT_SECTION, _T("On"), m_csDownloadOn, csFileName);
 	return bResult;
 }
 
@@ -258,69 +258,69 @@ BOOL CCapDownload::launch()
 	CExecCommand cmProcess;
 	CString csCmd;
 
-	if( m_csDownloadOn ==  _T( "0"))
+	if (m_csDownloadOn == _T("0"))
 	{
-		m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Download disabled by server"));
+		m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Download disabled by server"));
 		return TRUE;
 	}
 	// Launch download tool with agent provided command line args
-	csCmd.Format( _T( "\"%s\\download.exe\" %s"), getInstallFolder(), AfxGetApp()->m_lpCmdLine);
-	if (cmProcess.execNoWait( csCmd, getDataFolder()) != EXEC_SUCCESSFULL)
+	csCmd.Format(_T("\"%s\\download.exe\" %s"), getInstallFolder(), AfxGetApp()->m_lpCmdLine);
+	if (cmProcess.execNoWait(csCmd, getDataFolder()) != EXEC_SUCCESSFULL)
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Can't create OCS Inventory NG Download process (%s)"), cmProcess.getOutput());
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Can't create OCS Inventory NG Download process (%s)"), cmProcess.getOutput());
 		return FALSE;
 	}
-	m_pLogger->log(LOG_PRIORITY_NOTICE,  _T( "DOWNLOAD => Download and setup tool successfully started"));
+	m_pLogger->log(LOG_PRIORITY_NOTICE, _T("DOWNLOAD => Download and setup tool successfully started"));
 	return TRUE;
-} 
+}
 
-BOOL CCapDownload::sendMessage( LPCTSTR lpstrPackID, LPCTSTR lpstrCode)
+BOOL CCapDownload::sendMessage(LPCTSTR lpstrPackID, LPCTSTR lpstrCode)
 {
 	CConfig				*pAgentConfig = getAgentConfig();
 	CComProvider		*pProvider = getComServerProvider();
 	CServerConfig		*pServerConfig = pProvider->newConfig();
 	CConnexionAbstract	*pConnexion = NULL;
 
-	ASSERT( lpstrPackID);
-	ASSERT( lpstrCode);
-	ASSERT( pAgentConfig);
-	ASSERT( pProvider);
-	ASSERT( pServerConfig);
+	ASSERT(lpstrPackID);
+	ASSERT(lpstrCode);
+	ASSERT(pAgentConfig);
+	ASSERT(pProvider);
+	ASSERT(pServerConfig);
 
 	// Create provider connection object using default Provider configuration
-	if ((pConnexion = pProvider->newConnexion( pServerConfig)) == NULL)
+	if ((pConnexion = pProvider->newConnexion(pServerConfig)) == NULL)
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed creating connection for Communication Provider <%s>"), pAgentConfig->getCommunicationProvider());
-		pProvider->deleteConfig( pServerConfig);
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Failed creating connection for Communication Provider <%s>"), pAgentConfig->getCommunicationProvider());
+		pProvider->deleteConfig(pServerConfig);
 		return FALSE;
 	}
 	// Download metadata info file
-	m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Sending result code request <%s> for package <%s>"), lpstrCode, lpstrPackID);
+	m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Sending result code request <%s> for package <%s>"), lpstrCode, lpstrPackID);
 	CDownloadRequest	cRequest;
 	CDownloadResponse*	pResponse = NULL;
 	// Send the download request
-	cRequest.setPackageResult( lpstrPackID, lpstrCode);
-	pResponse = new CDownloadResponse( pConnexion->sendRequest( &cRequest));
-	pResponse->setErrorStatus( pConnexion->getErrorStatus());
-	pResponse->setErrorString( pConnexion->getErrorString());
+	cRequest.setPackageResult(lpstrPackID, lpstrCode);
+	pResponse = new CDownloadResponse(pConnexion->sendRequest(&cRequest));
+	pResponse->setErrorStatus(pConnexion->getErrorStatus());
+	pResponse->setErrorString(pConnexion->getErrorString());
 	if (pResponse->isSuccess())
 	{
-		m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Result code request successfully sent"));
+		m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Result code request successfully sent"));
 		cRequest.setSuccess();
 	}
 	else
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to send result code request for package <%s> (%s)"), lpstrPackID, pResponse->getErrorString());
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Failed to send result code request for package <%s> (%s)"), lpstrPackID, pResponse->getErrorString());
 		delete pResponse;
-		pProvider->deleteConnexion( pConnexion);
-		pProvider->deleteConfig( pServerConfig);
+		pProvider->deleteConnexion(pConnexion);
+		pProvider->deleteConfig(pServerConfig);
 		return FALSE;
 	}
 	delete pResponse;
-	m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Unloading communication provider"));
+	m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Unloading communication provider"));
 	// Use provider to delete connexion and server config
-	pProvider->deleteConnexion( pConnexion);
-	pProvider->deleteConfig( pServerConfig);
+	pProvider->deleteConnexion(pConnexion);
+	pProvider->deleteConfig(pServerConfig);
 
 	return TRUE;
 
@@ -331,44 +331,44 @@ BOOL CCapDownload::checkOcsAgentSetupResult()
 	CString csFile, csCode = ERR_DONE_FAILED, csID;
 	CStdioFile myFile;
 
-	csFile.Format( _T( "%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
-	if (!fileExists( csFile))
+	csFile.Format(_T("%s\\%s"), getDownloadFolder(), OCS_AGENT_SETUP_DONE);
+	if (!fileExists(csFile))
 		// No OCS Agent Setup done file
 		return TRUE;
-	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Found OCS Inventory Agent Setup result file <%s>"), csFile);
+	m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Found OCS Inventory Agent Setup result file <%s>"), csFile);
 	// Open OCS Agent Setup done file to read exit code and package ID
 	try
 	{
-		if (!myFile.Open( csFile, CFile::modeRead|CFile::typeText|CFile::shareDenyNone))
+		if (!myFile.Open(csFile, CFile::modeRead | CFile::typeText | CFile::shareDenyNone))
 			return FALSE;
 		// First line contains result code and seconf line contains package ID
-		myFile.ReadString( csCode);
-		myFile.ReadString( csID);
+		myFile.ReadString(csCode);
+		myFile.ReadString(csID);
 		myFile.Close();
 	}
-	catch( CException *pEx)
+	catch (CException *pEx)
 	{
 		pEx->Delete();
 		myFile.Abort();
-		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed reading OCS Inventory Agent Setup result file <%s>"), csFile);
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Failed reading OCS Inventory Agent Setup result file <%s>"), csFile);
 		return FALSE;
 	}
 	if (csID.IsEmpty())
 	{
 		// Upgrading from agent 1.X or previous to 2.0.0.22 ?
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Found result code <%s> for OCS Inventory Agent Setup package but no package ID specified, so remove all packages to avoid running Agent setup in loop !"), csCode);
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Found result code <%s> for OCS Inventory Agent Setup package but no package ID specified, so remove all packages to avoid running Agent setup in loop !"), csCode);
 		COptDownloadPackage::cleanAll();
 		return FALSE;
 	}
 	// All informations available => copy result file to Package directory
-	csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), csID, OCS_DOWNLOAD_DONE);
-	if (!CopyFile( myFile.GetFilePath(), csFile, FALSE))
+	csFile.Format(_T("%s\\%s\\%s"), getDownloadFolder(), csID, OCS_DOWNLOAD_DONE);
+	if (!CopyFile(myFile.GetFilePath(), csFile, FALSE))
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to copy result code for OCS Inventory Agent Setup package to file <%s>"), csFile);
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Failed to copy result code for OCS Inventory Agent Setup package to file <%s>"), csFile);
 		return FALSE;
 	}
-	DeleteFile( myFile.GetFilePath());
-	m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Validated result code <%s> for OCS Inventory Agent Setup package <%s>"), csCode, csID);
+	DeleteFile(myFile.GetFilePath());
+	m_pLogger->log(LOG_PRIORITY_NOTICE, _T("DOWNLOAD => Validated result code <%s> for OCS Inventory Agent Setup package <%s>"), csCode, csID);
 	return TRUE;
 }
 
@@ -377,50 +377,50 @@ BOOL CCapDownload::checkOcsAgentSetupResult()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-COptDownloadPackage::COptDownloadPackage( CCapDownload * pC)
+COptDownloadPackage::COptDownloadPackage(CCapDownload * pC)
 {
-	pM=pC; 
-	m_pLogger=getOcsLogger();
+	pM = pC;
+	m_pLogger = getOcsLogger();
 };
 
 
-void COptDownloadPackage::setId( LPCTSTR lpstrId)
+void COptDownloadPackage::setId(LPCTSTR lpstrId)
 {
 	m_csId = lpstrId;
 }
 
-void COptDownloadPackage::setCertPath( LPCTSTR lpstrCertPath)
+void COptDownloadPackage::setCertPath(LPCTSTR lpstrCertPath)
 {
 	m_csCertPath = lpstrCertPath;
 	// Expand INSTALL_PATH if needed
-	m_csCertPath.Replace(  _T( "INSTALL_PATH"),  getDataFolder());
-	m_csCertPath.Replace(  _T( "/"),  _T( "\\") );
+	m_csCertPath.Replace(_T("INSTALL_PATH"), getDataFolder());
+	m_csCertPath.Replace(_T("/"), _T("\\"));
 }
 
-void COptDownloadPackage::setCertFile( LPCTSTR lpstrCertFile)
+void COptDownloadPackage::setCertFile(LPCTSTR lpstrCertFile)
 {
 	m_csCertFile = lpstrCertFile;
 	// Expand INSTALL_PATH if needed
-	m_csCertFile.Replace(  _T( "INSTALL_PATH"),  getDataFolder());
-	m_csCertFile.Replace(  _T( "/"),  _T( "\\") );
+	m_csCertFile.Replace(_T("INSTALL_PATH"), getDataFolder());
+	m_csCertFile.Replace(_T("/"), _T("\\"));
 }
 
-void COptDownloadPackage::setInfoLocation( LPCTSTR lpstrInfoLoc)
+void COptDownloadPackage::setInfoLocation(LPCTSTR lpstrInfoLoc)
 {
-	m_csRemoteInfoLoc.Format( _T( "https://%s/%s/%s"), lpstrInfoLoc, m_csId, OCS_DOWNLOAD_METADATA);
-	m_csLocalInfoLoc.Format( _T( "%s\\%s\\%s\\%s"), getDataFolder(), OCS_DOWNLOAD_FOLDER, m_csId, OCS_DOWNLOAD_METADATA);
+	m_csRemoteInfoLoc.Format(_T("https://%s/%s/%s"), lpstrInfoLoc, m_csId, OCS_DOWNLOAD_METADATA);
+	m_csLocalInfoLoc.Format(_T("%s\\%s\\%s\\%s"), getDataFolder(), OCS_DOWNLOAD_FOLDER, m_csId, OCS_DOWNLOAD_METADATA);
 }
 
-void COptDownloadPackage::setPackLocation( LPCTSTR lpstrPackLoc)
+void COptDownloadPackage::setPackLocation(LPCTSTR lpstrPackLoc)
 {
 	m_csRemotePackLoc = lpstrPackLoc;
-	m_csLocalPackLoc.Format( _T( "%s\\%s\\%s"), getDataFolder(), OCS_DOWNLOAD_FOLDER, m_csId);
+	m_csLocalPackLoc.Format(_T("%s\\%s\\%s"), getDataFolder(), OCS_DOWNLOAD_FOLDER, m_csId);
 }
 
 void COptDownloadPackage::setForce(LPCTSTR lpstrForce)
 {
 	if (lpstrForce)
-		m_bForce = (_ttoi( lpstrForce) == 1);
+		m_bForce = (_ttoi(lpstrForce) == 1);
 	else
 		m_bForce = FALSE;
 }
@@ -430,16 +430,16 @@ void COptDownloadPackage::setSchedule(LPCTSTR lpstrSchedule)
 	m_csSchedule = lpstrSchedule;
 }
 
-void COptDownloadPackage::setPostCmd( LPCTSTR lpstrCmd)
+void COptDownloadPackage::setPostCmd(LPCTSTR lpstrCmd)
 {
 	m_csPostCmd = lpstrCmd;
 }
 
 BOOL COptDownloadPackage::makeDirectory()
 {
-	if (!directoryCreate( m_csLocalPackLoc))
+	if (!directoryCreate(m_csLocalPackLoc))
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Cannot create package <%s> directory (%s)"), m_csId, LookupError( GetLastError()));
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Cannot create package <%s> directory (%s)"), m_csId, LookupError(GetLastError()));
 		return FALSE;
 	}
 	return TRUE;
@@ -491,170 +491,170 @@ int COptDownloadPackage::downloadInfoFile()
 	CComProvider		*pProvider = getComServerProvider();
 	CServerConfig		*pServerConfig = pProvider->newConfig();
 	CConnexionAbstract	*pConnexion = NULL;
-	TCHAR				szDummy[_MAX_PATH+1];
+	TCHAR				szDummy[_MAX_PATH + 1];
 
-	ASSERT( pAgentConfig);
-	ASSERT( pProvider);
-	ASSERT( pServerConfig);
+	ASSERT(pAgentConfig);
+	ASSERT(pProvider);
+	ASSERT(pServerConfig);
 
 	// Create provider connection object using default Provider configuration
-	if ((pConnexion = pProvider->newConnexion( pServerConfig)) == NULL)
+	if ((pConnexion = pProvider->newConnexion(pServerConfig)) == NULL)
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed creating connection for Communication Provider <%s>"), pAgentConfig->getCommunicationProvider());
-		pProvider->deleteConfig( pServerConfig);
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Failed creating connection for Communication Provider <%s>"), pAgentConfig->getCommunicationProvider());
+		pProvider->deleteConfig(pServerConfig);
 		return FALSE;
 	}
 	// Download metadata info file
-	m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Metadata file <info> for package <%s> is located at <%s>"), m_csId, getRemoteMetadataURL());
-	if (!pConnexion->getFile( getRemoteMetadataURL(), getLocalMetadataFilename()))
+	m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Metadata file <info> for package <%s> is located at <%s>"), m_csId, getRemoteMetadataURL());
+	if (!pConnexion->getFile(getRemoteMetadataURL(), getLocalMetadataFilename()))
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to download Metadata file <%s> to <%s>"), getRemoteMetadataURL(), getLocalMetadataFilename());
-		pProvider->deleteConnexion( pConnexion);
-		pProvider->deleteConfig( pServerConfig);
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Failed to download Metadata file <%s> to <%s>"), getRemoteMetadataURL(), getLocalMetadataFilename());
+		pProvider->deleteConnexion(pConnexion);
+		pProvider->deleteConfig(pServerConfig);
 		return FALSE;
 	}
-	m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Unloading communication provider"));
+	m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Unloading communication provider"));
 	// Use provider to delete connexion and server config
-	pProvider->deleteConnexion( pConnexion);
-	pProvider->deleteConfig( pServerConfig);
+	pProvider->deleteConnexion(pConnexion);
+	pProvider->deleteConfig(pServerConfig);
 
 	// Open metadata file to add fragment location
 	CString csBuffer;
 	CMarkup xml;
-	if(!xml.LoadFile( getLocalMetadataFilename()))
+	if (!xml.LoadFile(getLocalMetadataFilename()))
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR,  _T( "DOWNLOAD => Cannot read or parse Metadata file <%s>"), getLocalMetadataFilename());
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Cannot read or parse Metadata file <%s>"), getLocalMetadataFilename());
 		return FALSE;
 	}
 	// Add fragment location to meta data
-	xml.FindFirstElem( _T( "DOWNLOAD"));
-	xml.SetAttrib( _T( "LOC"), m_csRemotePackLoc);
+	xml.FindFirstElem(_T("DOWNLOAD"));
+	xml.SetAttrib(_T("LOC"), m_csRemotePackLoc);
 	// Add package schedule to meta data
-	xml.SetAttrib( _T( "SCHEDULE"), m_csSchedule);
+	xml.SetAttrib(_T("SCHEDULE"), m_csSchedule);
 	// Add post execution command to meta data
-	xml.SetAttrib( _T( "POSTCMD"), m_csPostCmd);
+	xml.SetAttrib(_T("POSTCMD"), m_csPostCmd);
 	// Write meta data file
-	if (!xml.SaveFile( getLocalMetadataFilename()))
+	if (!xml.SaveFile(getLocalMetadataFilename()))
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't update Metadata file <%s>"), getLocalMetadataFilename());
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Can't update Metadata file <%s>"), getLocalMetadataFilename());
 		return FALSE;
 	}
 	// Compute digest on meta data and add it to Registry
-	if (!fileDigest( getLocalMetadataFilename(), csBuffer))
+	if (!fileDigest(getLocalMetadataFilename(), csBuffer))
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't register package <%s> into Registry"), m_csId);
-		DeleteFile( getLocalMetadataFilename());
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Can't register package <%s> into Registry"), m_csId);
+		DeleteFile(getLocalMetadataFilename());
 		return FALSE;
 	}
-	if (!regAddPackageDigest( m_csId, csBuffer))
+	if (!regAddPackageDigest(m_csId, csBuffer))
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't register package <%s> into Registry"), m_csId);
-		DeleteFile( getLocalMetadataFilename());
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Can't register package <%s> into Registry"), m_csId);
+		DeleteFile(getLocalMetadataFilename());
 		return FALSE;
 	}
 	// Now create a timestamp 
-	csBuffer.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csId, OCS_DOWNLOAD_TIMESTAMP);
-	if (!fileExists( csBuffer))
+	csBuffer.Format(_T("%s\\%s\\%s"), getDownloadFolder(), m_csId, OCS_DOWNLOAD_TIMESTAMP);
+	if (!fileExists(csBuffer))
 	{
-		_ltot( time( NULL), szDummy, 10);
-		if (!WriteTextToFile( szDummy, csBuffer))
-			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Can't create timestamp file <%s>"), csBuffer);
+		_ltot(time(NULL), szDummy, 10);
+		if (!WriteTextToFile(szDummy, csBuffer))
+			m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Can't create timestamp file <%s>"), csBuffer);
 	}
 	else
-		m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "DOWNLOAD => Timestamp file <%s> already exists"), csBuffer);
-	m_pLogger->log(LOG_PRIORITY_DEBUG,  _T( "DOWNLOAD => Retrieve info file...OK (pack %s)"), m_csId );
-    return TRUE;
+		m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Timestamp file <%s> already exists"), csBuffer);
+	m_pLogger->log(LOG_PRIORITY_DEBUG, _T("DOWNLOAD => Retrieve info file...OK (pack %s)"), m_csId);
+	return TRUE;
 }
 
-BOOL COptDownloadPackage::regAddPackageDigest( LPCTSTR lpstrPackID, LPCTSTR lpstrDigest)
+BOOL COptDownloadPackage::regAddPackageDigest(LPCTSTR lpstrPackID, LPCTSTR lpstrDigest)
 {
 	HKEY  hKey;
 	DWORD dwValue;
 
 	if ((lpstrPackID == NULL) || (lpstrDigest == NULL))
 		return FALSE;
-	if (RegCreateKeyEx( HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, NULL, REG_OPTION_NON_VOLATILE,
-						KEY_WRITE, NULL, &hKey, &dwValue) != ERROR_SUCCESS) 
+	if (RegCreateKeyEx(HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, NULL, REG_OPTION_NON_VOLATILE,
+		KEY_WRITE, NULL, &hKey, &dwValue) != ERROR_SUCCESS)
 		return FALSE;
-	dwValue = _tcslen( lpstrDigest)*sizeof( TCHAR);
-	if (RegSetValueEx( hKey, lpstrPackID, 0, REG_SZ, (LPBYTE) lpstrDigest, dwValue) != ERROR_SUCCESS)
+	dwValue = _tcslen(lpstrDigest)*sizeof(TCHAR);
+	if (RegSetValueEx(hKey, lpstrPackID, 0, REG_SZ, (LPBYTE)lpstrDigest, dwValue) != ERROR_SUCCESS)
 	{
-		RegCloseKey( hKey); 
+		RegCloseKey(hKey);
 		return FALSE;
 	}
-	RegCloseKey( hKey); 
+	RegCloseKey(hKey);
 	return TRUE;
 }
 
-BOOL COptDownloadPackage::regDeletePackageDigest( LPCTSTR lpstrPackID)
+BOOL COptDownloadPackage::regDeletePackageDigest(LPCTSTR lpstrPackID)
 {
 	HKEY  hKey;
 
-	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, OCS_DOWNLOAD_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
 		return FALSE;
-	if (RegDeleteValue( hKey, lpstrPackID) != ERROR_SUCCESS)
+	if (RegDeleteValue(hKey, lpstrPackID) != ERROR_SUCCESS)
 	{
-		RegCloseKey( hKey);
+		RegCloseKey(hKey);
 		return FALSE;
 	}
-	RegCloseKey( hKey);
+	RegCloseKey(hKey);
 	return TRUE;
 }
 
-BOOL COptDownloadPackage::deletePackageScheduler( LPCTSTR lpstrPackID)
+BOOL COptDownloadPackage::deletePackageScheduler(LPCTSTR lpstrPackID)
 {
 	HKEY  hKey;
 
-	if (RegOpenKeyEx( HKEY_LOCAL_MACHINE, OCS_SCHEDULE_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, OCS_SCHEDULE_REGISTRY, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
 		return FALSE;
-	if (RegDeleteValue( hKey, lpstrPackID) != ERROR_SUCCESS)
+	if (RegDeleteValue(hKey, lpstrPackID) != ERROR_SUCCESS)
 	{
-		RegCloseKey( hKey);
+		RegCloseKey(hKey);
 		return FALSE;
 	}
-	RegCloseKey( hKey);
+	RegCloseKey(hKey);
 	return TRUE;
 }
 
-BOOL COptDownloadPackage::isExpired( LPCTSTR csTimeOut)
+BOOL COptDownloadPackage::isExpired(LPCTSTR csTimeOut)
 {
 	time_t	tTimeNow;
-	UINT	uTimeOut = _ttol( csTimeOut);
+	UINT	uTimeOut = _ttol(csTimeOut);
 	CString csFile;
 
 	// Check if timestamp exist first
-	csFile.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csId, OCS_DOWNLOAD_TIMESTAMP);
-	if (!fileExists( csFile))
+	csFile.Format(_T("%s\\%s\\%s"), getDownloadFolder(), m_csId, OCS_DOWNLOAD_TIMESTAMP);
+	if (!fileExists(csFile))
 		// Timestamp does not exist, so not expired
 		return FALSE;
 	// Timestamp exists, verify expiration
-	tTimeNow = time( NULL);
-	return (((tTimeNow - getTimeStamp())/86400) >  uTimeOut);
+	tTimeNow = time(NULL);
+	return (((tTimeNow - getTimeStamp()) / 86400) >  uTimeOut);
 }
 
 BOOL COptDownloadPackage::clean()
 {
-	return clean( m_csId);
+	return clean(m_csId);
 }
 
-BOOL COptDownloadPackage::clean( LPCTSTR lpstrID)
+BOOL COptDownloadPackage::clean(LPCTSTR lpstrID)
 {
 	CString csPath;
 
-	ASSERT( lpstrID);
+	ASSERT(lpstrID);
 
 	// Delete tmp path folder where package was unzipped (not an eror if not existing)
-	if (GetTempPath( _MAX_PATH, csPath.GetBufferSetLength( _MAX_PATH+1)) == 0)
+	if (GetTempPath(_MAX_PATH, csPath.GetBufferSetLength(_MAX_PATH + 1)) == 0)
 		return FALSE;
 	csPath.ReleaseBuffer();
-	csPath.AppendFormat( _T( "\\%s.OCS"), lpstrID);
-	directoryDelete( csPath);
+	csPath.AppendFormat(_T("\\%s.OCS"), lpstrID);
+	directoryDelete(csPath);
 	// Delete scheuler if needed
-	deletePackageScheduler( lpstrID);
+	deletePackageScheduler(lpstrID);
 	// Now, really delete package directory and registry signature
-	csPath.Format( _T( "%s\\%s"), getDownloadFolder(), lpstrID);
-	regDeletePackageDigest( lpstrID);
-	return (directoryDelete( csPath));
+	csPath.Format(_T("%s\\%s"), getDownloadFolder(), lpstrID);
+	regDeletePackageDigest(lpstrID);
+	return (directoryDelete(csPath));
 }
 
 time_t COptDownloadPackage::getTimeStamp()
@@ -668,15 +668,15 @@ time_t COptDownloadPackage::getTimeStamp()
 	try
 	{
 		// Load "since" file content
-		csFilename.Format( _T( "%s\\%s\\%s"), getDownloadFolder(), m_csId, OCS_DOWNLOAD_TIMESTAMP);
-		if (!LoadFileToText( csTimestamp, csFilename))
+		csFilename.Format(_T("%s\\%s\\%s"), getDownloadFolder(), m_csId, OCS_DOWNLOAD_TIMESTAMP);
+		if (!LoadFileToText(csTimestamp, csFilename))
 		{
 			m_tTimePack = 0;
 			return m_tTimePack;
 		}
-		m_tTimePack = (time_t) _ttol( csTimestamp);
+		m_tTimePack = (time_t)_ttol(csTimestamp);
 	}
-	catch( CException *pEx)
+	catch (CException *pEx)
 	{
 		pEx->Delete();
 		m_tTimePack = 0;
@@ -690,8 +690,8 @@ BOOL COptDownloadPackage::cleanAll()
 	CFileFind cFinder;
 	BOOL	bWorking;
 
-	csPath.Format( _T( "%s\\*.*"), getDownloadFolder());
-	bWorking = cFinder.FindFile( csPath);
+	csPath.Format(_T("%s\\*.*"), getDownloadFolder());
+	bWorking = cFinder.FindFile(csPath);
 	while (bWorking)
 	{
 		bWorking = cFinder.FindNextFile();
@@ -700,8 +700,8 @@ BOOL COptDownloadPackage::cleanAll()
 			continue;
 		// if it's a directory, delete corresponding package
 		if (cFinder.IsDirectory())
-			COptDownloadPackage::clean( cFinder.GetFileName());
-   }
-   cFinder.Close();
-   return TRUE;
+			COptDownloadPackage::clean(cFinder.GetFileName());
+	}
+	cFinder.Close();
+	return TRUE;
 }

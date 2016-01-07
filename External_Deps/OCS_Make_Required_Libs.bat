@@ -13,31 +13,31 @@ echo.
 Rem ========= UPDATE CONSTANTS BELOW TO MEET YOUR CONFIGURATION NEED =========  
 
 Rem Set path to MS Visual C++
-set VC_PATH=C:\Program Files\Microsoft Visual Studio 9.0\VC
+set VC_PATH=C:\Program Files (x86)\\Microsoft Visual Studio 12.0\VC
 
 Rem Set path to MS Windows SDK, needed to build cURL
-set WINDOWS_SDK_PATH="C:\Program Files\Microsoft SDKs\Windows\v6.0A"
+set WINDOWS_SDK_PATH="C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A"
 
 Rem Set path to Perl 5.6 or higher binary
-set PERL_PATH=c:\xampp\perl\bin
+set PERL_PATH=C:\Perl\bin
 
 Rem Set path to Zlib sources
-set ZLIB_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\zlib-1.2.8
+set ZLIB_PATH=C:\Users\Win-Agent\Desktop\WindowsAgent-master\External_Deps\zlib-1.2.8
 
 Rem Set path to OpenSSL sources
-set OPENSSL_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\openssl-1.0.0s
+set OPENSSL_PATH=C:\Users\Win-Agent\Desktop\WindowsAgent-master\External_Deps\openssl-1.0.0s
 
 Rem Set path to cURL sources
-set CURL_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\curl-7.45.0
+set CURL_PATH=C:\Users\Win-Agent\Desktop\WindowsAgent-master\External_Deps\curl-7.45.0
 
 Rem Set path to tinyXML sources
-SET XML_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\tinyxml
+SET XML_PATH=C:\Users\Win-Agent\Desktop\WindowsAgent-master\External_Deps\tinyxml
 
 Rem Set path to ZipArchive sources, for example
-SET ZIP_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\ZipArchive
+SET ZIP_PATH=C:\Users\Win-Agent\Desktop\WindowsAgent-master\External_Deps\ZipArchive
 
 Rem Set path to Net-SNMP sources, for example
-SET SNMP_PATH=D:\Developp\OCS Inventory NG\GitHub\WindowsAgent\External_Deps\net-snmp-5.7.3
+SET SNMP_PATH=C:\Users\Win-Agent\Desktop\WindowsAgent-master\External_Deps\net-snmp-5.7.3
 
 Rem ========= DO NOT MODIFY BELOW, UNTIL YOU KNOW WHAT YOU ARE DOING =========
 
@@ -78,7 +78,7 @@ echo *************************************************************************
 echo.
 cd "%OPENSSL_PATH%"
 Rem Configure OpenSSL for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
-perl.exe configure VC-WIN32 -D_BIND_TO_CURRENT_VCLIBS_VERSION
+perl.exe configure VC-WIN32 -D_BIND_TO_CURRENT_VCLIBS_VERSION -D_WINSOCK_DEPRECATED_NO_WARNINGS
 if ERRORLEVEL 1 goto ERROR
 Rem Prepare OpenSSL build for MS Visual C++
 call ms\do_ms.bat
@@ -121,7 +121,7 @@ nmake /NOLOGO /f Makefile.vc9 cfg=release-dll-ssl-dll-zlib-dll
 if ERRORLEVEL 1 goto ERROR
 Rem Insert manifest into DLL
 cd release-dll-ssl-dll-zlib-dll
-mt -manifest libcurl.dll.manifest -outputresource:libcurl.dll;2
+rem mt -manifest libcurl.dll.manifest -outputresource:libcurl.dll;2
 if ERRORLEVEL 1 goto ERROR
 
 Rem copy libs to use them in OCS

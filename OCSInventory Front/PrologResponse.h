@@ -43,6 +43,10 @@ public:
 	CMapStringToStringArray* getDownloadPackages();
 	CMapStringToStringArray* getDownloadParameters();
 
+	/* SNMP */
+	CMapStringToStringArray* getSnmpParameters();
+	BOOL isSnmpRequired();
+
 	/* Inventory */
 	BOOL	isInventoryRequired();
 

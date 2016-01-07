@@ -14,6 +14,7 @@
 
 #include "stdafx.h"
 #include "CapIpdiscover.h"
+#include "CapSnmp.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -338,6 +339,14 @@ void CCapIpdiscover::AddHostFound( LPCTSTR lpstrIP, LPCTSTR lpstrMac, LPCTSTR lp
 		pXml->AddChildElem( _T( "N"),lpstrHostName);
 	pXml->OutOfElem();
 	m_pLogger->log( LOG_PRIORITY_DEBUG,  _T( "IPDISCOVER => Computer found @IPv4:%s @MAC:%s NAME:%s"), lpstrIP, lpstrMac, lpstrHostName);
+	
+	std::ofstream snmplist;
+	snmplist.open("snmplist.txt", std::ios_base::app);
+	std::string IP = CT2A(lpstrIP);
+	std::string MAC = CT2A(lpstrMac);
+	snmplist << IP << " " << MAC << "\n";
+	snmplist.close();
+	
 }
 
 void CCapIpdiscover::ReportHostFailed( LPCTSTR lpstrMessage)

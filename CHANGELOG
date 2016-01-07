@@ -1,3 +1,14 @@
+EXPERIMENTAL (2.2Alpha)
+  * SNMP Support added and working
+  * Remove all deprecated dependencies (needed for Win XP)
+  * Remove all old VS Version support
+  * Solution now working on visual studio 2013 / 2015
+
+2.1.1.3
+  * Bug fixed
+  * Add better compat for newer windows versions
+  * Install pop now working as exepted
+
 2.1.1.1
   * Fix bug #1300172 WMI GetLoggedOnUser blocking and CPU full on OCS 2.1.0.3. Agent may sometimes produce 100% CPU during many minutes, when retrieving logged on users from WMI. Install these patches from Microsoft solves the problem:
 		For Windows 2003 SP2: http://support.microsoft.com/kb/2257980/en

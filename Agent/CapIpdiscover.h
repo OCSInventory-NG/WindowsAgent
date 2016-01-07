@@ -41,6 +41,8 @@
 
 #include "CapacityAbstract.h"
 #include <Afxmt.h>
+#include <iostream>
+#include <fstream>
 
 class CCapIpdiscover : public CCapacityAbstract
 {

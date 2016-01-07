@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8CD66811-C9A5-4C76-9938-1E046C2DFBAF}</ProjectGuid>
+    <RootNamespace>SysInfo</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\OcsWmi;..\External_Deps\openssl-1.0.0s\inc32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE;_BIND_TO_CURRENT_VCLIBS_VERSION;SYSINFO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>..\External_Deps\libeay32.lib;wbemuuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile />
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\OcsWmi;..\External_Deps\openssl-1.0.0s\inc32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE;_BIND_TO_CURRENT_VCLIBS_VERSION;SYSINFO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallingConvention>Cdecl</CallingConvention>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>..\External_Deps\libeay32.lib;wbemuuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile />
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="AccessLog.h" />
+    <ClInclude Include="bios.h" />
+    <ClInclude Include="Cpu.h" />
+    <ClInclude Include="CpuList.h" />
+    <ClInclude Include="DebugLog.h" />
+    <ClInclude Include="DetectVM.h" />
+    <ClInclude Include="DeviceProperties.h" />
+    <ClInclude Include="DiskInfo.h" />
+    <ClInclude Include="DMI.h" />
+    <ClInclude Include="Dtwinver.h" />
+    <ClInclude Include="EDID.h" />
+    <ClInclude Include="FileVersion.h" />
+    <ClInclude Include="InputDevice.h" />
+    <ClInclude Include="InputDeviceList.h" />
+    <ClInclude Include="IPHelper.h" />
+    <ClInclude Include="ISA_PNPID.h" />
+    <ClInclude Include="LogicalDrive.h" />
+    <ClInclude Include="LogicalDriveList.h" />
+    <ClInclude Include="Memory.h" />
+    <ClInclude Include="MemorySlot.h" />
+    <ClInclude Include="MemorySlotList.h" />
+    <ClInclude Include="Modem.h" />
+    <ClInclude Include="ModemList.h" />
+    <ClInclude Include="Monitor.h" />
+    <ClInclude Include="MonitorList.h" />
+    <ClInclude Include="NetworkAdapter.h" />
+    <ClInclude Include="NetworkAdapterList.h" />
+    <ClInclude Include="OcsCrypto.h" />
+    <ClInclude Include="OcsProcess.h" />
+    <ClInclude Include="Printer.h" />
+    <ClInclude Include="PrinterList.h" />
+    <ClInclude Include="Registry.h" />
+    <ClInclude Include="RegistryValue.h" />
+    <ClInclude Include="RegistryValueList.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="snmp.h" />
+    <ClInclude Include="SnmpAPI.h" />
+    <ClInclude Include="Software.h" />
+    <ClInclude Include="SoftwareList.h" />
+    <ClInclude Include="SoundDevice.h" />
+    <ClInclude Include="SoundDeviceList.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StoragePeripheral.h" />
+    <ClInclude Include="StoragePeripheralList.h" />
+    <ClInclude Include="SysInfo.h" />
+    <ClInclude Include="SysInfoClasses.h" />
+    <ClInclude Include="SystemController.h" />
+    <ClInclude Include="SystemControllerList.h" />
+    <ClInclude Include="SystemPort.h" />
+    <ClInclude Include="SystemPortList.h" />
+    <ClInclude Include="SystemSlot.h" />
+    <ClInclude Include="SystemSlotList.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="VideoAdapter.h" />
+    <ClInclude Include="VideoAdapterList.h" />
+    <ClInclude Include="VMSystem.h" />
+    <ClInclude Include="WindowsSocket.h" />
+    <ClInclude Include="Wmi.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SysInfo.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\SysInfo.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AccessLog.cpp" />
+    <ClCompile Include="bios.cpp" />
+    <ClCompile Include="Cpu.cpp" />
+    <ClCompile Include="CpuList.cpp" />
+    <ClCompile Include="DebugLog.cpp" />
+    <ClCompile Include="DetectVM.cpp" />
+    <ClCompile Include="DeviceProperties.cpp" />
+    <ClCompile Include="DiskInfo.cpp" />
+    <ClCompile Include="DMI.cpp" />
+    <ClCompile Include="Dtwinver.cpp" />
+    <ClCompile Include="EDID.cpp" />
+    <ClCompile Include="FileVersion.cpp" />
+    <ClCompile Include="InputDevice.cpp" />
+    <ClCompile Include="InputDeviceList.cpp" />
+    <ClCompile Include="IPHelper.cpp" />
+    <ClCompile Include="ISA_PNPID.cpp" />
+    <ClCompile Include="LogicalDrive.cpp" />
+    <ClCompile Include="LogicalDriveList.cpp" />
+    <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="MemorySlot.cpp" />
+    <ClCompile Include="MemorySlotList.cpp" />
+    <ClCompile Include="Modem.cpp" />
+    <ClCompile Include="ModemList.cpp" />
+    <ClCompile Include="Monitor.cpp" />
+    <ClCompile Include="MonitorList.cpp" />
+    <ClCompile Include="NetworkAdapter.cpp" />
+    <ClCompile Include="NetworkAdapterList.cpp" />
+    <ClCompile Include="OcsCrypto.cpp" />
+    <ClCompile Include="OcsProcess.cpp" />
+    <ClCompile Include="Printer.cpp" />
+    <ClCompile Include="PrinterList.cpp" />
+    <ClCompile Include="Registry.cpp" />
+    <ClCompile Include="RegistryValue.cpp" />
+    <ClCompile Include="RegistryValueList.cpp" />
+    <ClCompile Include="snmp.cpp" />
+    <ClCompile Include="SnmpAPI.cpp" />
+    <ClCompile Include="Software.cpp" />
+    <ClCompile Include="SoftwareList.cpp" />
+    <ClCompile Include="SoundDevice.cpp" />
+    <ClCompile Include="SoundDeviceList.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="StoragePeripheral.cpp" />
+    <ClCompile Include="StoragePeripheralList.cpp" />
+    <ClCompile Include="SysInfo.cpp" />
+    <ClCompile Include="SystemController.cpp" />
+    <ClCompile Include="SystemControllerList.cpp" />
+    <ClCompile Include="SystemPort.cpp" />
+    <ClCompile Include="SystemPortList.cpp" />
+    <ClCompile Include="SystemSlot.cpp" />
+    <ClCompile Include="SystemSlotList.cpp" />
+    <ClCompile Include="VideoAdapter.cpp" />
+    <ClCompile Include="VideoAdapterList.cpp" />
+    <ClCompile Include="VMSystem.cpp" />
+    <ClCompile Include="WindowsSocket.cpp" />
+    <ClCompile Include="Wmi.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OcsWmi\OcsWmi.vcxproj">
+      <Project>{08dcfaba-1b27-4850-b5bf-92929cfa75b1}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

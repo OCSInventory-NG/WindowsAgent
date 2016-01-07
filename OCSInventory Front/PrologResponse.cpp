@@ -93,9 +93,19 @@ BOOL CPrologResponse::isRegistryRequired()
 	return isActivatedOption( _T( "REGISTRY"));
 }
 
+BOOL CPrologResponse::isSnmpRequired()
+{
+	return isActivatedOption(_T("SNMP"));
+}
+
 CMapStringToStringArray* CPrologResponse::getRegistryParameters()
 {
 	return getOptionAttributes( _T( "REGISTRY"), _T( "REGTREE"), _T( "REGKEY"), _T( "NAME"), _T( ""));
+}
+
+CMapStringToStringArray* CPrologResponse::getSnmpParameters()
+{
+	return getOptionAttributes(_T("SNMP"), _T("TYPE"), _T("USERNAME"), _T("AUTHPASSWD"), _T("NAME"), _T("VERSION"), _T("AUTHKEY"), _T(""));
 }
 
 BOOL CPrologResponse::isIpdiscoverRequired()
