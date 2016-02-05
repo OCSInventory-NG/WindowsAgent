@@ -519,8 +519,8 @@ void COcsService::Run()
 			if (!runAgent( bNotifyInventory))
 			{
 				// Agent launch failed => do not wait for next prolog freq
-				// Try to launch it next WRITE_TTOWAIT_EACH, but if antother error occurs
-				// increase laucnh latency, and so on at each each error.
+				// Try to launch it next WRITE_TTOWAIT_EACH, but if another error occurs
+				// increase launch latency, and so on at each error.
 				nLatencyAgentLaunch = nLatencyAgentLaunch * 2;
 				if (nLatencyAgentLaunch > (m_iPrologFreq*PROLOG_FREQ_UNIT))
 					// At least, launch agent once a PROLOG_FREQ
