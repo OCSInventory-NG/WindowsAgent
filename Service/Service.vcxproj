@@ -153,9 +153,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\Agent\res\OCSInventory.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="Service.rc" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +175,9 @@
       <Project>{8cd66811-c9a5-4c76-9938-1e046c2dfbaf}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Agent\res\OCSInventory.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

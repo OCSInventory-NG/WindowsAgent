@@ -1106,7 +1106,7 @@ not_running:
 	File /oname=$PLUGINSDIR\proxy.ini "proxy.ini"
 	File /oname=$PLUGINSDIR\agent.ini "agent.ini"
 	File /oname=$PLUGINSDIR\local.ini "local.ini"
-	File /oname=$PLUGINSDIR\splash.bmp "banner-ocs.bmp"
+	File /oname=$PLUGINSDIR\splash.bmp "Banner-ocs.bmp"
 	File /oname=$PLUGINSDIR\SetACL.exe "SetACL.exe"
 	; Don't know
 	FileOpen $9 "ocsdat" r

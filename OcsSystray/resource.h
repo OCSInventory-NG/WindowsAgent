@@ -12,6 +12,7 @@
 #define IDS_SERVICE_STOPPING            134
 #define IDS_SERVICE_STOPPED             135
 #define IDS_START_INVENTORY_SUCCESSFULL 136
+#define IDI_ICON1                       136
 #define IDS_SHOW_INVENTORY_FAILED       137
 #define IDC_VERSION_SERVICE             1000
 #define IDC_VERSION_AGENT               1001
@@ -34,7 +35,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        136
+#define _APS_NEXT_RESOURCE_VALUE        137
 #define _APS_NEXT_COMMAND_VALUE         32775
 #define _APS_NEXT_CONTROL_VALUE         1010
 #define _APS_NEXT_SYMED_VALUE           103
