@@ -8,6 +8,9 @@ External_Deps/x64_OCS_Make_Required_Libs.bat
 /External_Deps/zlib-*
 OCSInventory.ncb
 OCSInventory.suo
+OCSInventory.opensdf
+OCSInventory.sdf
+OCSInventory.v12.suo
 *.aps
 *.lib
 *.user
@@ -17,9 +20,11 @@ Service/NTServiceMsg.h
 NSIS_agent_setup/OCS-NG-Windows-Agent-Setup.exe
 NSIS_agent_setup/OCS-NG-Windows-Agent-Setup.log
 NSIS_agent_setup/SetACL.exe
+logon/OcsLogon.exe
 ComHTTP/HTTP.APS
 
 # Ignore results from MS Visual Studio builds.
+/ipch/
 /debug/
 /Release/
 /Agent/Debug/
@@ -38,6 +43,8 @@ ComHTTP/HTTP.APS
 /OcsSystray/Release/
 /OcsWmi/Debug/
 /OcsWmi/Release/
+/OcsSnmp/Debug/
+/OcsSnmp/Release/
 /Service/Debug/
 /Service/Release/
 /SysInfo/Debug/
