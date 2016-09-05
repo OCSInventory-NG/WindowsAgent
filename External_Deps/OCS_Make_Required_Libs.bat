@@ -25,7 +25,7 @@ Rem Set path to Zlib sources
 set ZLIB_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\zlib-1.2.8
 
 Rem Set path to OpenSSL sources
-set OPENSSL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\openssl-1.0.0s
+set OPENSSL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\openssl-1.0.2h
 
 Rem Set path to cURL sources
 set CURL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\curl-7.48.0\src
@@ -78,11 +78,13 @@ echo *************************************************************************
 echo.
 cd "%OPENSSL_PATH%"
 Rem Configure OpenSSL for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
-perl.exe configure VC-WIN32 -D_BIND_TO_CURRENT_VCLIBS_VERSION -D_WINSOCK_DEPRECATED_NO_WARNINGS
+perl.exe configure no-asm VC-WIN32 -D_BIND_TO_CURRENT_VCLIBS_VERSION -D_WINSOCK_DEPRECATED_NO_WARNINGS
 if ERRORLEVEL 1 goto ERROR
 Rem Prepare OpenSSL build for MS Visual C++
-call ms\do_ms.bat
+call ms\do_nasm.bat
 if ERRORLEVEL 1 goto ERROR
+Rem Clean link form previous build
+nmake /NOLOGO -f ms\ntdll.mak clean
 Rem Build OpenSSL
 nmake /NOLOGO -f ms\ntdll.mak
 if ERRORLEVEL 1 goto ERROR
