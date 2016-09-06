@@ -174,6 +174,7 @@ BOOL COcsService::loadConfig()
 	m_iOldPrologFreq = GetPrivateProfileInt( OCS_SERVICE_SECTION, OCS_SERVICE_OLD_PROLOG_FREQ, DEFAULT_PROLOG_FREQ, csConfigFile);
 	m_iTToWait = GetPrivateProfileInt( OCS_SERVICE_SECTION, OCS_SERVICE_TTO_WAIT, -1, csConfigFile);
 	m_iWriteIniLatency = GetPrivateProfileInt( OCS_SERVICE_SECTION, _T( "WRITE_INI_LATENCY"), WRITE_TTOWAIT_EACH, csConfigFile);
+	m_iInventoryOnStatup = GetPrivateProfileInt(OCS_SERVICE_SECTION, OCS_SERVICE_INVENTORY_ON_STARTUP, INVENTORY_ON_STARTUP, csConfigFile);
 	return TRUE;
 }
 
@@ -202,6 +203,13 @@ BOOL COcsService::writeConfig( BOOL bFull)
 	{
 		csValue.Format( _T( "Failed to write new TTO Wait: %s"), LookupError( GetLastError())); 
 		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csValue);
+		bResult = FALSE;
+	}
+	csValue.Format(_T("%d"), m_iInventoryOnStatup);
+	if (!WritePrivateProfileString(OCS_SERVICE_SECTION, OCS_SERVICE_INVENTORY_ON_STARTUP, csValue, csConfigFile))
+	{
+		csValue.Format(_T("Failed to write new INVENTORY ON STARTUP Value : %s"), LookupError(GetLastError()));
+		LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csValue);
 		bResult = FALSE;
 	}
 	protectConfigFiles();
@@ -260,7 +268,7 @@ BOOL COcsService::OnInit()
 		writeConfig();
 	}
 	// Log service start
-	csMessage.Format( _T( "Service start parameters FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i"), m_iPrologFreq, m_iOldPrologFreq, m_iTToWait);
+	csMessage.Format(_T("Service start parameters FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i, INVENTORY_ON_STARTUP: %i"), m_iPrologFreq, m_iOldPrologFreq, m_iTToWait, m_iInventoryOnStatup);
 	LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
 	// Rotate log files
 	rotateLogs();
@@ -274,6 +282,15 @@ BOOL COcsService::OnInit()
 	// Portect OCS files to prevent delete
 	protectCommonFiles();
 	protectConfigFiles();
+	// Check if inventoryOnStartUp is enabled and launch an inventory if needed
+	if (m_iInventoryOnStatup)
+	{
+		csMessage.Format(_T("Inventory on startup is enabled, run agent."));
+		LogEvent(EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
+		runAgent();
+	}
+
+
 	return TRUE;
 }
 
@@ -528,7 +545,7 @@ void COcsService::Run()
 				bNotifyInventory = FALSE;
 				m_iOldPrologFreq = m_iPrologFreq;
 				writeConfig();
-				csStatus.Format( _T( "OCS Inventory NG Agent executed successfully.\n\nNew service parameters: FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i"), m_iPrologFreq, vOld, m_iTToWait);
+				csStatus.Format( _T( "OCS Inventory NG Agent executed successfully.\n\nNew service parameters: FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i, INVENTORY_ON_STARTUP: %i"), m_iPrologFreq, vOld, m_iTToWait, m_iInventoryOnStatup);
 				LogEvent(EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csStatus);
 			}
 		}
