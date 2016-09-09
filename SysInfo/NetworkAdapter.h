@@ -59,6 +59,8 @@ public: // Methods
 	LPCTSTR GetGateway();
 	// Return the adapter IP DCHP Server
 	LPCTSTR GetDhcpServer();
+	// Return the adapter MTU
+	LPCTSTR GetMtu();
 
 	//////////////////////////////////
 	// Set attributes values
@@ -79,6 +81,7 @@ public: // Methods
 	void SetIPNetMask( LPCTSTR lpstrNetMask);
 	void SetGateway( LPCTSTR lpstrGateway);
 	void SetDhcpServer( LPCTSTR lpstrDhcpServer);
+	void SetMtu( LPCTSTR lpstrMtu);
 
 	//////////////////////////////////
 	// Comparison operators
@@ -100,6 +103,7 @@ protected: // Attributes
 	CString	m_csIPNetMask;		// Network Adapter IP Net Mask if available (ex "255.255.255.0" or "Unavailable")
 	CString	m_csGateway;		// Network Adapter Gateways if available (ex "192.3.4.1" or "Unavailable")
 	CString m_csDhcpServer;		// Network Adapter DHCP server used if available (ex "192.3.4.1" or "Unavailable")
+	CString m_csMtu;			// Network Adapter Maximum transmission unit
 };
 #endif // !defined(AFX_NETWORKADAPTER_H__E2E36333_7E8A_11D5_B270_0040055338AF__INCLUDED_)
 

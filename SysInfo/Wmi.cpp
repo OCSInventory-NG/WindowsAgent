@@ -1065,14 +1065,16 @@ BOOL CWmi::GetNetworkAdapters(CNetworkAdapterList *pMyList)
 				myObject.SetGateway( csBuffer);
 				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DHCPServer"));
 				myObject.SetDhcpServer( csBuffer);
+				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue(_T("Setting"), _T("MTU"));
+				myObject.SetMtu(csBuffer);
 				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Status"));
 				myObject.SetStatus( csBuffer);
 				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "AdapterType"));
 				myObject.SetTypeMIB( csBuffer);
-				AddLog( _T( "\t\t<IfIndex: %ld><Type: %s><Description: %s><Speed: %s><MAC: %s><IP Address: %s><IP Subnet: %s><Gateway: %s><DHCP: %s><Status: %s><TypeMIB: %s>\n"), 
+				AddLog( _T( "\t\t<IfIndex: %ld><Type: %s><Description: %s><Speed: %s><MAC: %s><IP Address: %s><IP Subnet: %s><Gateway: %s><DHCP: %s><Status: %s><TypeMIB: %s><MTU: %s>\n"), 
 					myObject.GetIfIndex(), myObject.GetType(), myObject.GetDescription(), myObject.GetSpeed(),
 					myObject.GetMACAddress(), myObject.GetIPAddress(), myObject.GetIPNetMask(), myObject.GetGateway(), 
-					myObject.GetDhcpServer(), myObject.GetOperationalStatus(), myObject.GetTypeMIB());
+					myObject.GetDhcpServer(), myObject.GetOperationalStatus(), myObject.GetTypeMIB(), myObject.GetMtu());
 				if (!csMacAddress.IsEmpty())
 				{
 					// Skip adapters without MAC Address
