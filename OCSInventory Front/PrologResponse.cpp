@@ -50,6 +50,11 @@ CPrologResponse::CPrologResponse(CByteArray *rawResponse) : CResponseAbstract( r
 				m_csPrologFreq.Format( _T( "%lu"), DEFAULT_PROLOG_FREQ);
 			}
 		}
+		// Get INVENTORY_ON_STARTUP node under REPLY node
+		if (pXmlElement = m_cmXml.FindFirstElem(_T("INVENTORY_ON_STARTUP"), pXmlReply))
+		{
+			m_csInventoryOnStartup.Format(_T("%s"), m_cmXml.GetData(pXmlElement));
+		}
 	}
 }
 
@@ -81,6 +86,11 @@ BOOL CPrologResponse::isActivatedOption(CString option)
 LPCTSTR CPrologResponse::getPrologFreq()
 {
 	return m_csPrologFreq;
+}
+
+LPCTSTR CPrologResponse::getInventoryOnStartVal()
+{
+	return m_csInventoryOnStartup;
 }
 
 BOOL CPrologResponse::isInventoryRequired()

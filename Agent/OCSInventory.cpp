@@ -437,6 +437,13 @@ BOOL COCSInventoryApp::InitInstance()
 		else
 			m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "AGENT => Prolog Frequency set to %s hour(s)"), pPrologResp->getPrologFreq());
 
+		if (!WritePrivateProfileString(OCS_SERVICE_SECTION, OCS_SERVICE_INVENTORY_ON_STARTUP, pPrologResp->getInventoryOnStartVal(), m_pConfig->getConfigFile()))
+		{
+			m_pLogger->log(LOG_PRIORITY_ERROR, _T("AGENT => Failed to write inventory on startup value <%s>"), LookupError(GetLastError()));
+		}
+		else
+			m_pLogger->log(LOG_PRIORITY_DEBUG, _T("AGENT => Inventory on startup option set to %s "), pPrologResp->getInventoryOnStartVal());
+
 		if (pPrologResp->isInventoryRequired() || m_pConfig->isNotifyRequired() || m_pConfig->isForceInventoryRequired())
 		{
 			if (m_pConfig->isForceInventoryRequired())		
@@ -590,7 +597,6 @@ BOOL COCSInventoryApp::InitInstance()
 		*
 		****/
 		if (pPrologResp->isSnmpRequired()){
-			// Remove previous snmp list files
 			cCapSnmp.CallSnmp(pConnexion, m_pConfig);
 		}
 

@@ -25,7 +25,6 @@
 #define	OCS_SERVICE_RAND_FILE		_T( "rand")
 #define	OCS_SERVICE_TTO_WAIT		_T( "TTO_WAIT")
 #define	OCS_SERVICE_OLD_PROLOG_FREQ	_T( "OLD_PROLOG_FREQ")
-#define	OCS_SERVICE_INVENTORY_ON_STARTUP _T( "INVENTORY_ON_STARTUP")
 #define	RUN_OCS						_T( "ocsinventory.exe")
 #define	INVENTORY_ON_STARTUP		0 // 0 (no) by default
 #define	PROLOG_FREQ_UNIT			3600 // seconds

@@ -35,6 +35,8 @@
 #define	OCS_SERVICE_SECTION		_T( "OCS Inventory Service")
 // Current delay between 2 agent launch
 #define OCS_SERVICE_PROLOG_FREQ	 _T( "PROLOG_FREQ")
+// OCS INVENTORY ON STARTUP FEATURE
+#define	OCS_SERVICE_INVENTORY_ON_STARTUP _T( "INVENTORY_ON_STARTUP")
 // Set to 0 to display Systray icon, otherwise systray icon hidden
 #define OCS_SERVICE_HIDDEN		_T( "Hide")
 // Default communication provider DLL, based on libcurl
