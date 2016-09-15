@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{04364624-39D4-488D-A538-66CB442A5F0B}</ProjectGuid>
+    <RootNamespace>OCSInventoryFront</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\External_Deps\zlib-1.2.8;..\External_Deps\openssl-1.0.0s\inc32;..\External_Deps\tinyxml;../OcsWmi;..\Sysinfo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE;_BIND_TO_CURRENT_VCLIBS_VERSION;OCSINVENTORYFRONT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>..\External_Deps\zdll.lib;..\External_Deps\libeay32.lib;WtsApi32.lib;Userenv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile />
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalOptions>/NODEFAULTLIB:MSVCRT.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\External_Deps\zlib-1.2.8;..\External_Deps\openssl-1.0.0s\inc32;..\External_Deps\tinyxml;../OcsWmi;..\Sysinfo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE;_BIND_TO_CURRENT_VCLIBS_VERSION;OCSINVENTORYFRONT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallingConvention>Cdecl</CallingConvention>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>..\External_Deps\zdll.lib;..\External_Deps\libeay32.lib;WtsApi32.lib;Userenv.lib;mfcs120u.lib;MSVCRT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile />
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\External_Deps\tinyxml\tinystr.cpp" />
+    <ClCompile Include="..\External_Deps\tinyxml\tinyxml.cpp" />
+    <ClCompile Include="..\External_Deps\tinyxml\tinyxmlerror.cpp" />
+    <ClCompile Include="..\External_Deps\tinyxml\tinyxmlparser.cpp" />
+    <ClCompile Include="commonDownload.cpp" />
+    <ClCompile Include="ComProvider.cpp" />
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="ConnexionAbstract.cpp" />
+    <ClCompile Include="ConnexionLocal.cpp" />
+    <ClCompile Include="Deviceid.cpp" />
+    <ClCompile Include="DownloadRequest.cpp" />
+    <ClCompile Include="DownloadResponse.cpp" />
+    <ClCompile Include="ExecCommand.cpp" />
+    <ClCompile Include="FilePackageHistory.cpp" />
+    <ClCompile Include="flate.cpp" />
+    <ClCompile Include="InventoryRequest.cpp" />
+    <ClCompile Include="InventoryResponse.cpp" />
+    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="MapStringToStringArray.cpp" />
+    <ClCompile Include="Markup.cpp" />
+    <ClCompile Include="NotifyUser.cpp" />
+    <ClCompile Include="OCSInventory Front.cpp" />
+    <ClCompile Include="OCSInventoryState.cpp" />
+    <ClCompile Include="OcsUtils.cpp" />
+    <ClCompile Include="PrologRequest.cpp" />
+    <ClCompile Include="PrologResponse.cpp" />
+    <ClCompile Include="Request.cpp" />
+    <ClCompile Include="RequestAbstract.cpp" />
+    <ClCompile Include="Response.cpp" />
+    <ClCompile Include="ResponseAbstract.cpp" />
+    <ClCompile Include="ServerConfig.cpp" />
+    <ClCompile Include="Singleton.cpp" />
+    <ClCompile Include="SnmpRequest.cpp" />
+    <ClCompile Include="SnmpResponse.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="XMLInteract.cpp" />
+    <ClCompile Include="Zip.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\External_Deps\tinyxml\tinystr.h" />
+    <ClInclude Include="..\External_Deps\tinyxml\tinyxml.h" />
+    <ClInclude Include="ByteArrayStream.h" />
+    <ClInclude Include="commonDownload.h" />
+    <ClInclude Include="ComProvider.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="ConnexionAbstract.h" />
+    <ClInclude Include="ConnexionLocal.h" />
+    <ClInclude Include="Deviceid.h" />
+    <ClInclude Include="DownloadRequest.h" />
+    <ClInclude Include="DownloadResponse.h" />
+    <ClInclude Include="ExecCommand.h" />
+    <ClInclude Include="FilePackageHistory.h" />
+    <ClInclude Include="flate.h" />
+    <ClInclude Include="InventoryRequest.h" />
+    <ClInclude Include="InventoryResponse.h" />
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="MapStringToStringArray.h" />
+    <ClInclude Include="Markup.h" />
+    <ClInclude Include="NotifyUser.h" />
+    <ClInclude Include="OCSinventory Front Classes.h" />
+    <ClInclude Include="OCSInventory Front.h" />
+    <ClInclude Include="OCSInventoryState.h" />
+    <ClInclude Include="OcsUtils.h" />
+    <ClInclude Include="PrologRequest.h" />
+    <ClInclude Include="PrologResponse.h" />
+    <ClInclude Include="Provider Classes.h" />
+    <ClInclude Include="Request.h" />
+    <ClInclude Include="RequestAbstract.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Response.h" />
+    <ClInclude Include="ResponseAbstract.h" />
+    <ClInclude Include="ServerConfig.h" />
+    <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SnmpRequest.h" />
+    <ClInclude Include="SnmpResponse.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="XMLInteract.h" />
+    <ClInclude Include="Zip.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OCSInventory Front.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\OCSInventoryFront.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SysInfo\SysInfo.vcxproj">
+      <Project>{8cd66811-c9a5-4c76-9938-1e046c2dfbaf}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

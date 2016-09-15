@@ -16,13 +16,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (Neutral) resources
+// English resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -71,7 +69,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_OCSSYSTRAY_DIALOG, DIALOG
     BEGIN
@@ -95,7 +93,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU 
+IDR_MAINFRAME MENU
 BEGIN
     POPUP "OCS Inventory NG"
     BEGIN
@@ -114,12 +112,12 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "OCS Inventory NG Agent for Windows"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_FAILED_CONNECT_SERVICE "Failed connecting to %s...\n%s"
     IDS_FAILED_SEND_MESSAGE "Failed sending control message to %s...\n%s"
@@ -133,18 +131,16 @@ BEGIN
                             "Cannot display inventory informations !\n\nReason: %s"
 END
 
-#endif    // English (Neutral) resources
+#endif    // English resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Spanish (Neutral) resources
+// Spanish resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
-#ifdef _WIN32
 LANGUAGE LANG_SPANISH, SUBLANG_NEUTRAL
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -193,7 +189,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_OCSSYSTRAY_DIALOG, DIALOG
     BEGIN
@@ -217,7 +213,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU 
+IDR_MAINFRAME MENU
 BEGIN
     POPUP "OCS Inventory NG"
     BEGIN
@@ -236,12 +232,12 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "OCS Inventory NG Agent for Windows"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_FAILED_CONNECT_SERVICE "Error de conexión en %s...\n%s"
     IDS_FAILED_SEND_MESSAGE "Error de envio a %s...\n%s"
@@ -255,18 +251,16 @@ BEGIN
                             "No se puede mostrar la información del inventario ! Razón: %s"
 END
 
-#endif    // Spanish (Neutral) resources
+#endif    // Spanish resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// French (Neutral) resources
+// French resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
-#ifdef _WIN32
 LANGUAGE LANG_FRENCH, SUBLANG_NEUTRAL
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -315,7 +309,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_OCSSYSTRAY_DIALOG, DIALOG
     BEGIN
@@ -339,7 +333,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU 
+IDR_MAINFRAME MENU
 BEGIN
     POPUP "OCS Inventory NG"
     BEGIN
@@ -358,12 +352,12 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "OCS Inventory NG Agent for Windows"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_FAILED_CONNECT_SERVICE "Echec de connexion à %s...\n%s"
     IDS_FAILED_SEND_MESSAGE "Echec d'envoi d'un message de contrôle à %s...\n%s"
@@ -377,7 +371,7 @@ BEGIN
                             "Impossible d'afficher les informations d'inventaire !\n\nRaison: %s"
 END
 
-#endif    // French (Neutral) resources
+#endif    // French resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -385,10 +379,8 @@ END
 // Neutral (Default) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
-#ifdef _WIN32
 LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -447,10 +439,8 @@ IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ic
 // German (Germany) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
-#ifdef _WIN32
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -499,7 +489,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_OCSSYSTRAY_DIALOG, DIALOG
     BEGIN
@@ -523,7 +513,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU 
+IDR_MAINFRAME MENU
 BEGIN
     POPUP "OCS Inventory NG"
     BEGIN
@@ -542,12 +532,12 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "OCS Inventory NG Agent für Windows"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_FAILED_CONNECT_SERVICE 
                             "Konnte keine Verbindung herstellen zu %s...\n%s"
@@ -570,10 +560,17 @@ END
 // French (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
-#ifdef _WIN32
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 #pragma code_page(1252)
-#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "..\\agent\\res\\icon1.ico"
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

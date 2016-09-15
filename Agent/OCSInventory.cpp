@@ -18,7 +18,6 @@
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
-#include "vld.h"
 #endif
 
 // COCSInventoryApp
@@ -145,6 +144,7 @@ BOOL COCSInventoryApp::InitInstance()
 		// Capacities
 		CCapRegistry		cCapRegistry;
 		CCapIpdiscover		cCapIpdiscover;
+		CCapSnmp			cCapSnmp;
 		CCapDownload		cCapDownload;
 		CCapExecute			cCapExec;
 
@@ -376,6 +376,7 @@ BOOL COCSInventoryApp::InitInstance()
 		 *
 		 ****/
 		cCapRegistry.setProlog( pProlog);
+		cCapSnmp.setProlog(pProlog);
 		cCapIpdiscover.setProlog( pProlog);
 		cCapDownload.setProlog( pProlog);
 		cCapExec.setProlog( pProlog);
@@ -419,6 +420,7 @@ BOOL COCSInventoryApp::InitInstance()
 		 *
 		 ****/
 		cCapRegistry.setPrologResp( pPrologResp);
+		cCapSnmp.setPrologResp(pPrologResp);
 		cCapIpdiscover.setPrologResp( pPrologResp);
 		cCapDownload.setPrologResp( pPrologResp);
 		cCapExec.setPrologResp( pPrologResp);
@@ -435,6 +437,12 @@ BOOL COCSInventoryApp::InitInstance()
 		else
 			m_pLogger->log(LOG_PRIORITY_DEBUG, _T( "AGENT => Prolog Frequency set to %s hour(s)"), pPrologResp->getPrologFreq());
 
+		if (!WritePrivateProfileString(OCS_SERVICE_SECTION, OCS_SERVICE_INVENTORY_ON_STARTUP, pPrologResp->getInventoryOnStartVal(), m_pConfig->getConfigFile()))
+		{
+			m_pLogger->log(LOG_PRIORITY_ERROR, _T("AGENT => Failed to write inventory on startup value <%s>"), LookupError(GetLastError()));
+		}
+		else
+			m_pLogger->log(LOG_PRIORITY_DEBUG, _T("AGENT => Inventory on startup option set to %s "), pPrologResp->getInventoryOnStartVal());
 
 		if (pPrologResp->isInventoryRequired() || m_pConfig->isNotifyRequired() || m_pConfig->isForceInventoryRequired())
 		{
@@ -465,6 +473,7 @@ BOOL COCSInventoryApp::InitInstance()
 			{
 				cCapRegistry.setInventory( pInventory);
 				cCapIpdiscover.setInventory( pInventory);
+				cCapSnmp.setInventory(pInventory);
 				cCapDownload.setInventory( pInventory);
 				cCapExec.setInventory( pInventory);
 			}
@@ -474,6 +483,14 @@ BOOL COCSInventoryApp::InitInstance()
 			 *	Using capacities on inventory (not in notify mode)
 			 *
 			 ****/
+			if (pPrologResp->isSnmpRequired()){
+				// Remove previous snmp list files
+				remove("snmp.txt");
+				remove("snmp_com.txt");
+				remove("snmplist.txt");
+				cCapSnmp.RetrieveCommunities();
+			}
+
 			// Feed inventory with required registry keys (not in notify mode)
 			if (!m_pConfig->isNotifyRequired() && pPrologResp->isRegistryRequired())
 			{
@@ -499,10 +516,11 @@ BOOL COCSInventoryApp::InitInstance()
 
 				cCapIpdiscover.scanLocalNetwork();
 			}
+
 			// Script or binary plugins (not in notify mode)
 			if (!m_pConfig->isNotifyRequired())
 				cCapExec.executePlugins();
-			
+
 			/*****
 			 *
 			 *	Inventory hooks from Plugins
@@ -572,6 +590,17 @@ BOOL COCSInventoryApp::InitInstance()
 			if (pInventoryResponse != NULL)
 				delete pInventoryResponse;
 		}
+
+		/*****
+		*
+		*	SNMP handler
+		*
+		****/
+		if (pPrologResp->isSnmpRequired()){
+			cCapSnmp.CallSnmp(pConnexion, m_pConfig);
+		}
+
+
 		/*****
 		 *
 		 *	Download (not in notify mode)

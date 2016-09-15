@@ -26,6 +26,7 @@
 #define	OCS_SERVICE_TTO_WAIT		_T( "TTO_WAIT")
 #define	OCS_SERVICE_OLD_PROLOG_FREQ	_T( "OLD_PROLOG_FREQ")
 #define	RUN_OCS						_T( "ocsinventory.exe")
+#define	INVENTORY_ON_STARTUP		0 // 0 (no) by default
 #define	PROLOG_FREQ_UNIT			3600 // seconds
 #define	DEFAULT_PROLOG_FREQ			10	// * PROLOG_FREQ_UNIT
 #define	WRITE_TTOWAIT_EACH			60	// seconds
@@ -84,6 +85,7 @@ protected:
 	int			m_iPrologFreq;			// Time between 2 agent run
 	int			m_iOldPrologFreq;		// Last time between 2 agent run
 	int			m_iWriteIniLatency;		// Time between TTO_WAIT write to file to save it
+	int			m_iInventoryOnStatup;	// Inventory on ocs agent start-up
 	CObArray	m_tCommonHandles;		// Handle of OCS common files to protect them from being deleted
 	CObArray	m_tConfigHandles;		// Handle of OCS config files to protect them from being deleted
 };

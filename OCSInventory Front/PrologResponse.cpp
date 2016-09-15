@@ -50,6 +50,11 @@ CPrologResponse::CPrologResponse(CByteArray *rawResponse) : CResponseAbstract( r
 				m_csPrologFreq.Format( _T( "%lu"), DEFAULT_PROLOG_FREQ);
 			}
 		}
+		// Get INVENTORY_ON_STARTUP node under REPLY node
+		if (pXmlElement = m_cmXml.FindFirstElem(_T("INVENTORY_ON_STARTUP"), pXmlReply))
+		{
+			m_csInventoryOnStartup.Format(_T("%s"), m_cmXml.GetData(pXmlElement));
+		}
 	}
 }
 
@@ -83,6 +88,11 @@ LPCTSTR CPrologResponse::getPrologFreq()
 	return m_csPrologFreq;
 }
 
+LPCTSTR CPrologResponse::getInventoryOnStartVal()
+{
+	return m_csInventoryOnStartup;
+}
+
 BOOL CPrologResponse::isInventoryRequired()
 {
 	return m_bInventoryRequired;
@@ -93,9 +103,19 @@ BOOL CPrologResponse::isRegistryRequired()
 	return isActivatedOption( _T( "REGISTRY"));
 }
 
+BOOL CPrologResponse::isSnmpRequired()
+{
+	return isActivatedOption(_T("SNMP"));
+}
+
 CMapStringToStringArray* CPrologResponse::getRegistryParameters()
 {
 	return getOptionAttributes( _T( "REGISTRY"), _T( "REGTREE"), _T( "REGKEY"), _T( "NAME"), _T( ""));
+}
+
+CMapStringToStringArray* CPrologResponse::getSnmpParameters()
+{
+	return getOptionAttributes(_T("SNMP"), _T("TYPE"), _T("USERNAME"), _T("AUTHPASSWD"), _T("NAME"), _T("VERSION"), _T("AUTHKEY"), _T(""));
 }
 
 BOOL CPrologResponse::isIpdiscoverRequired()

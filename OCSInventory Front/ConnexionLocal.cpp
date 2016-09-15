@@ -41,7 +41,7 @@ CConnexionLocal::~CConnexionLocal()
 }
 
 /* Generate the inventory request to a local file */
-CByteArray * CConnexionLocal::sendRequest( CRequestAbstract *pRequest)
+CByteArray * CConnexionLocal::sendRequest(CRequestAbstract *pRequest)
 {
 	ASSERT( pRequest);
 

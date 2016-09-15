@@ -657,6 +657,7 @@ BOOL CXMLInteract::UpdateNetworks( CNetworkAdapterList &myNetworkList)
 				m_pXml->AddChildElem( _T( "IPGATEWAY"), cObject.GetGateway());
 				m_pXml->AddChildElem( _T( "IPSUBNET"), cObject.GetNetNumber());
 				m_pXml->AddChildElem( _T( "IPDHCP"), cObject.GetDhcpServer());
+				m_pXml->AddChildElem( _T( "MTU"), cObject.GetMtu());
 			m_pXml->OutOfElem();		
 			if (pos != NULL)
 				cObject = myNetworkList.GetNext( pos);

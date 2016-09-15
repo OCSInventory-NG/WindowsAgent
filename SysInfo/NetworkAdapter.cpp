@@ -97,6 +97,11 @@ LPCTSTR CNetworkAdapter::GetDhcpServer()
 	return m_csDhcpServer;
 }
 
+LPCTSTR CNetworkAdapter::GetMtu()
+{
+	return m_csMtu;
+}
+
 LONG CNetworkAdapter::GetIfIndex()
 {
 	return m_lIndex;
@@ -253,6 +258,12 @@ void CNetworkAdapter::SetDhcpServer( LPCTSTR lpstrDhcpServer)
 	StrForSQL( m_csDhcpServer);
 }
 
+void CNetworkAdapter::SetMtu(LPCTSTR lpstrMtu)
+{
+	m_csMtu = lpstrMtu;
+	StrForSQL(m_csMtu);
+}
+
 void CNetworkAdapter::SetIfIndex( LONG lIndex)
 {
 	m_lIndex = lIndex;
@@ -273,6 +284,7 @@ void CNetworkAdapter::Clear()
 	m_csIPNetMask.Empty();	
 	m_csGateway.Empty();	
 	m_csDhcpServer.Empty();	
+	m_csMtu.Empty();
 }
 
 int CNetworkAdapter::operator==(CNetworkAdapter cObject) const
@@ -289,5 +301,6 @@ int CNetworkAdapter::operator==(CNetworkAdapter cObject) const
 	(m_csIPAddr == cObject.GetIPAddress()) &&	
 	(m_csIPNetMask == cObject.GetIPNetMask()) &&
 	(m_csGateway == cObject.GetGateway()) &&
-	(m_csDhcpServer == cObject.GetDhcpServer()));
+	(m_csDhcpServer == cObject.GetDhcpServer()) && 
+	(m_csMtu == cObject.GetMtu()));
 }

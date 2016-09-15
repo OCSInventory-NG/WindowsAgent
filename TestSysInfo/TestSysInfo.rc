@@ -19,10 +19,8 @@
 // Neutral (Default) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
-#ifdef _WIN32
 LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -94,7 +92,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_TESTSYSINFO_DIALOG, DIALOG
     BEGIN
@@ -123,10 +121,18 @@ IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ic
 // French (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
-#ifdef _WIN32
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 #pragma code_page(1252)
-#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "C:\\Users\\user-win-dev\\Documents\\GitHub\\WindowsAgent\\NSIS_agent_setup\\install-ocs.ico"
+IDI_ICON2               ICON                    "C:\\Users\\user-win-dev\\Documents\\GitHub\\WindowsAgent\\Agent\\res\\OCSInventory.ico"
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

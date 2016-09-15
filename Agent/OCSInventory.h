@@ -32,6 +32,7 @@
 #include "ComProvider.h"
 #include "CapRegistry.h"
 #include "CapIpdiscover.h"
+#include "CapSnmp.h"
 #include "CapDownload.h"
 #include "CapExecute.h"
 #include "NotifyUser.h"

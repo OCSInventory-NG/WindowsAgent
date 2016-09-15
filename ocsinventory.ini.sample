@@ -45,4 +45,5 @@ ProxyUser=
 ProxyPwd=
 
 [OCS Inventory Service]
+INVENTORY_ON_STARTUP=1
 PROLOG_FREQ=1

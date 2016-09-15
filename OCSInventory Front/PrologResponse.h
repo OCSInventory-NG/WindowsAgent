@@ -33,6 +33,7 @@ public:
 	
 	/* General options */
 	LPCTSTR getPrologFreq();
+	LPCTSTR getInventoryOnStartVal();
 	
 	/* Registry */
 	BOOL	isRegistryRequired();
@@ -42,6 +43,10 @@ public:
 	BOOL isDownloadRequired();
 	CMapStringToStringArray* getDownloadPackages();
 	CMapStringToStringArray* getDownloadParameters();
+
+	/* SNMP */
+	CMapStringToStringArray* getSnmpParameters();
+	BOOL isSnmpRequired();
 
 	/* Inventory */
 	BOOL	isInventoryRequired();
@@ -66,6 +71,8 @@ private: // Attributes
 	CMarkup m_xml;
 	// Prolog frequency
 	CString m_csPrologFreq;
+	// Inventory on start up
+	CString m_csInventoryOnStartup;
 	// Inventory order
 	BOOL m_bInventoryRequired;
 
