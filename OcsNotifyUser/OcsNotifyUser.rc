@@ -16,13 +16,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (Neutral) resources
+// English resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -76,7 +74,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_WAIT_SETUP_DIALOG, DIALOG
     BEGIN
@@ -110,13 +108,13 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_AUTO_VALIDATE_STRING "AUTOMATICALLY VALIDATING IN %s SECONDS"
     IDS_WAIT_SETUP_STRING   "Your keyboard and mouse are locked while Setup is running.\n\nPlease wait... "
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_CANCEL_STRING       "Cancel"
     IDS_DELAY_STRING        "Later..."
@@ -124,23 +122,21 @@ BEGIN
     IDS_REBOOT_REQUIRED_STRING "COMPUTER REBOOT REQUIRED"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
 END
 
-#endif    // English (Neutral) resources
+#endif    // English resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Spanish (Neutral) resources
+// Spanish resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
-#ifdef _WIN32
 LANGUAGE LANG_SPANISH, SUBLANG_NEUTRAL
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -194,7 +190,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_DOWNLOAD_DIALOG, DIALOG
     BEGIN
@@ -228,13 +224,13 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_AUTO_VALIDATE_STRING "Validación automática en %s segundos"
     IDS_WAIT_SETUP_STRING   "Su teclado y ratón están bloqueados durante la instalación.\n\nPor favor, espere... "
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_CANCEL_STRING       "Cancelar"
     IDS_DELAY_STRING        "Más tarde..."
@@ -242,23 +238,21 @@ BEGIN
     IDS_REBOOT_REQUIRED_STRING "COMPUTADORA SE REQUIERE REINICIAR"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
 END
 
-#endif    // Spanish (Neutral) resources
+#endif    // Spanish resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// French (Neutral) resources
+// French resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
-#ifdef _WIN32
 LANGUAGE LANG_FRENCH, SUBLANG_NEUTRAL
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -312,7 +306,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_WAIT_SETUP_DIALOG, DIALOG
     BEGIN
@@ -346,13 +340,13 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_AUTO_VALIDATE_STRING "VALIDATION AUTOMATIQUE DANS %s SECONDES"
     IDS_WAIT_SETUP_STRING   "Votre clavier et votre souris sont bloquÃ©s durant l'installation.\n\nVeuillez patienter... "
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_CANCEL_STRING       "Annuler"
     IDS_DELAY_STRING        "Plus tard..."
@@ -360,12 +354,12 @@ BEGIN
     IDS_REBOOT_REQUIRED_STRING "REDEMARRAGE DE L'ORDINATEUR REQUIS"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
 END
 
-#endif    // French (Neutral) resources
+#endif    // French resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -373,10 +367,8 @@ END
 // Neutral (Default) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
-#ifdef _WIN32
 LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -393,8 +385,8 @@ IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ic
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,1,1,3
- PRODUCTVERSION 2,1,1,3
+ FILEVERSION 2,3,0,0
+ PRODUCTVERSION 2,3,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -412,13 +404,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory NG User Notification Provider"
             VALUE "CompanyName", "OCS Inventory NG"
             VALUE "FileDescription", "OCS Inventory NG User Notification Provider"
-            VALUE "FileVersion", "2, 1, 1, 3"
+            VALUE "FileVersion", "2.3.0.0"
             VALUE "InternalName", "OcsNotifyUser.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OcsNotifyUser.exe"
             VALUE "ProductName", "OCS Inventory NG Windows Agent"
-            VALUE "ProductVersion", "2, 1, 1, 3"
+            VALUE "ProductVersion", "2.3.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -435,10 +427,8 @@ END
 // German (Germany) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
-#ifdef _WIN32
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -492,7 +482,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_WAIT_SETUP_DIALOG, DIALOG
     BEGIN
@@ -526,13 +516,13 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_AUTO_VALIDATE_STRING "Wird automatisch in %s Sekunden gestartet!"
     IDS_WAIT_SETUP_STRING   "Ihre Maus und Tastatur sind gesperrt, solange die Installation ausgeführt wird.\n\nBitte warten... "
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_CANCEL_STRING       "Abbrechen"
     IDS_DELAY_STRING        "Später ausführen!"
@@ -540,7 +530,7 @@ BEGIN
     IDS_REBOOT_REQUIRED_STRING "NEUSTART DES COMPUTERS ERFORDERLICH"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
 END
@@ -553,10 +543,8 @@ END
 // French (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
-#ifdef _WIN32
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

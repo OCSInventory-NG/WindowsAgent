@@ -178,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Agent\res\OCSInventory.ico" />
+    <Image Include="..\NSIS_agent_setup\OCSInventory.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
