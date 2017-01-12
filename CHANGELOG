@@ -1,4 +1,23 @@
-2.3.0.0
+2.3.0.0 
+  * Improve inventoried data 
+  * Fix crash in some cases on snmp scan
+  * Update openssl to be compliant with TLS 1.2 
+  * Update project to newer versions of visual studio 
+  * Add MTU data on network cards 
+  * Update icons / images to the new graphics chart 
+  * Simplify project to make contribution easier
+  * Polish SNMP code
+  * Clean code and version number
+  * Update agent design (icones / systray / bannner)
+  * Update librairies
+  * Update projects code for developpers (easier to make it work)
+  * vc++ dll are now fully based on vcredist 2013
+  * SNMP Support added and working
+  * Remove all deprecated dependencies (needed for Win XP)
+  * Remove all old VS Version support
+  * Solution now working on visual studio 2013 / 2015
+
+2.3.0.0 RC
   * Improve inventoried data 
   * Fix crash in some cases on snmp scan
   * Update openssl to be compliant with TLS 1.2 
