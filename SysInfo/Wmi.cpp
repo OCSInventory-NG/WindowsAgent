@@ -1958,7 +1958,7 @@ BOOL CWmi::GetSystemSlots(CSystemSlotList *pMyList)
 				myObject.SetShared( dwValue);
 				// Device is OK
 				pMyList->AddTail( myObject);
-				AddLog( _T( "\t\t<Name: %s><Description: %s><Slot: %s><Usage: %s><Status: %s><Shared: %s>\n"), 
+				AddLog( _T( "\t\t<Name: %s><Description: %s><Slot: %s><Usage: %s><Shared: %s>\n"), 
 					myObject.GetName(), myObject.GetDescription(), myObject.GetSlotDesignation(), myObject.GetUsage(),
 					myObject.IsShared()?_T("Yes"):_T("No"));
 				uIndex ++;
