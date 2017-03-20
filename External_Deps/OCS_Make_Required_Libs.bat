@@ -22,13 +22,13 @@ Rem Set path to Perl 5.6 or higher binary
 set PERL_PATH=C:\Perl\bin
 
 Rem Set path to Zlib sources
-set ZLIB_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\zlib-1.2.8
+set ZLIB_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\zlib-1.2.11
 
 Rem Set path to OpenSSL sources
-set OPENSSL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\openssl-1.0.2h
+set OPENSSL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\openssl-1.0.2k
 
 Rem Set path to cURL sources
-set CURL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\curl-7.48.0\src
+set CURL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\curl-7.53.1\src
 
 Rem Set path to tinyXML sources
 SET XML_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\tinyxml

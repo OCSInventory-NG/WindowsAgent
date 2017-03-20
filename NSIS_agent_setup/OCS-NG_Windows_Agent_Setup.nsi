@@ -1593,13 +1593,13 @@ Section "OCS Inventory Agent" SEC03
         ;Call Write_Log
   	    ;strcpy $installSatus ":("
 	    ;clearerrors
-	    File "C:\Windows\System32\msvcp120.dll"
+	    File "C:\Windows\System32\msvcp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying msvcp120.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\msvcr120.dll"
+	    File "C:\Windows\System32\msvcr140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying msvcr120.dll $\r$\n"
         Call Write_Log
@@ -1612,25 +1612,25 @@ Section "OCS Inventory Agent" SEC03
         ;Call Write_Log
   	    ;strcpy $installSatus ":("
 	    ;clearerrors
-	    File "C:\Windows\System32\mfc120.dll"
+	    File "C:\Windows\System32\mfc140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfc120.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\mfc120u.dll"
+	    File "C:\Windows\System32\mfc140u.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfc120u.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\mfcm120.dll"
+	    File "C:\Windows\System32\mfcm140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm120.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\mfcm120u.dll"
+	    File "C:\Windows\System32\mfcm140u.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm120u.dll $\r$\n"
         Call Write_Log

@@ -23,7 +23,7 @@
 REQUIREMENTS
 ============
 
-- Microsoft Visual C++ 2013 SP1 or higher
+- Microsoft Visual C++ 2015 SP1 or higher
 - Perl 5.8 or newer for building dependencies (you can use XAMPP perl addon)
 - Source code exported from GitHub.
   git clone https://github.com/OCSInventory-NG/WindowsAgent.git
@@ -34,11 +34,11 @@ BUILDING DEPENDENCIES
 
 OCS Inventory NG Agent for Windows needs following libraries:
 
-- zlib 1.2.8 or newer (www.zlib.net)
-- openssl 1.0.0n or newer (www.openssl.org)
-- curl 7.37.1 or newer (http://curl.haxx.se/)
+- zlib 1.2.11 or newer (www.zlib.net)
+- openssl 1.0.2k or newer (www.openssl.org)
+- curl 7.53.1 or newer (http://curl.haxx.se/)
 - tinyXML 2.6.2 or newer (http://www.sourceforge.net/projects/tinyxml/)
-- net-snmp 5.7 or newer (http://www.net-snmp.org/)
+- net-snmp 5.7.3 or newer (http://www.net-snmp.org/)
 - ZipArchive GPL Edition 4.0.1 or newer (http://www.artpol-software.com)
 
 Uncompress sources of these libraries into directory "External_Deps" to create
@@ -61,7 +61,7 @@ Save and build to create unicode DLL for ZipArchive Library.
 
 Script for building dependency automatically fixes cURL and net-snmp Makefiles for Visual C++ 2013,
 by adding "/D_BIND_TO_CURRENT_VCLIBS_VERSION" to the CFLAGS. As is, libcurl and net-snmp
-DLL will be bound to latest Visual C++ 2008 SP1 CRT versions.
+DLL will be bound to latest Visual C++ 2015 SP1 CRT versions.
 
 For Zlib, OpenSSL and TinyXML, compiling using _BIND_TO_CURRENT_VCLIBS_VERSION
 preprocessor define is done through the call of build file "OCS_Make_Required_Libs.bat".
@@ -76,11 +76,11 @@ Edit script "OCS_Make_Required_Libs.bat" to meet your need, especially
 - Set path to Perl 5.6 or higher binary, for example
   set PERL_PATH=C:\xampp\perl\bin
 - Set path to Zlib sources, for example
-  set ZLIB_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\zlib-1.2.5
+  set ZLIB_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\zlib-1.2.11
 - Set path to OpenSSL sources, for example
-  set OPENSSL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\openssl-1.0.0
+  set OPENSSL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\openssl-1.0.2k
 - Set path to cURL sources, for example
-  set CURL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\curl-7.20.1
+  set CURL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\curl-7.53.1
 - Set path to tinyXML sources, for example
   set XML_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\tinyxml
 - Set path to ZipArchive sources, for example
