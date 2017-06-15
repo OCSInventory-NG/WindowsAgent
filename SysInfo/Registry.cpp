@@ -3711,6 +3711,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 					A = A % 24;
 				}
 				DecodedKey[i] = KeyChars[A];
+				Last=A;
 			}
 
 			if (isWin8 = 1)
