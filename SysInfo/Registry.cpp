@@ -3715,10 +3715,10 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 
 			if (isWin8 = 1)
 			{
-				for( i=0; i<4; i++ ){
+				for( i=0; i<Last; i++ ){
 					DecodedKey[i] = DecodedKey[i+1];
 				}
-				DecodedKey[4]='N';
+				DecodedKey[Last]='N';
 							
 				if (Last = 0){
 					for( i=24; i>=1; i-- ){
