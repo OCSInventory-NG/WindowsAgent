@@ -249,23 +249,3 @@ CMapStringToStringArray* CPrologResponse::getOptionAttributes(CString option,...
 		return NULL;
 	}
 }
-
-BOOL CPrologResponse::getSupportLog( CString &csSupportMessage)
-{
-	TiXmlElement *pXmlReply, 
-				 *pXmlElement;
-
-	m_cmXml.ResetPos();
-	// Search REPLY node under document node
-	pXmlReply = m_cmXml.FindFirstElem( _T( "REPLY"));
-	// Search SUPPORT_LOG node under REPLY node
-	if (pXmlElement = m_cmXml.FindFirstElem( _T( "SUPPORT_LOG"), pXmlReply))
-	{
-		csSupportMessage = m_cmXml.GetData( pXmlElement);
-		if (!csSupportMessage.IsEmpty())
-			// There is a support log
-			return TRUE;
-	}
-	// No support log message
-	return FALSE;
-}
