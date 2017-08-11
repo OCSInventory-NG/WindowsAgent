@@ -26,7 +26,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -112,7 +112,7 @@
       <MkTypLibCompatible>false</MkTypLibCompatible>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\External_Deps\openssl-1.0.2k\inc32;..\External_Deps\curl-7.53.1\include;..\External_Deps\tinyxml;..\OCSInventory Front;..\OcsWmi;..\SysInfo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\External_Deps\openssl-1.0.2k\inc32;..\External_Deps\curl-7.54.0\include;..\External_Deps\tinyxml;..\OCSInventory Front;..\OcsWmi;..\SysInfo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE;_BIND_TO_CURRENT_VCLIBS_VERSION;OCS_PROVIDER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader />

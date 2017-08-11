@@ -17,7 +17,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -134,7 +134,6 @@
     <Link>
       <OutputFile>../Release/Plugins/OCSPlugin_Example.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>C:\Program Files\Vieux Microsoft SDK\Lib;..\include\zlib;..\include\openssl\lib\VC;..\ocsinventory front\debug;../sysinfo/release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile />
       <ProgramDatabaseFile>.\Release/OCSPlugin_Example.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
