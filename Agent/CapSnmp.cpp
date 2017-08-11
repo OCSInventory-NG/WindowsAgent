@@ -44,8 +44,6 @@ CCapSnmp::~CCapSnmp()
 
 void CCapSnmp::CallSnmp(CConnexionAbstract	*pConnexion, CConfig *m_pConfig){
 
-	
-
 	// Phases objects
 	CString csMessage;
 	CSnmpRequest	*pSnmp = NULL;
