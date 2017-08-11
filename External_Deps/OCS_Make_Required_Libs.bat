@@ -28,7 +28,7 @@ Rem Set path to OpenSSL sources
 set OPENSSL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\openssl-1.0.2k
 
 Rem Set path to cURL sources
-set CURL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\curl-7.53.1\src
+set CURL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\curl-7.54.0\src
 
 Rem Set path to tinyXML sources
 SET XML_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\tinyxml
@@ -45,6 +45,8 @@ Rem Ensure MS Visual C++ environnement is set
 call "%VC_PATH%\VCVARSALL.BAT"
 Rem Add perl to PATH
 set PATH=%PATH%;%PERL_PATH%
+
+goto comment
 
 title OCS Inventory NG Agent for Windows - Building Zlib DLL...
 echo.
@@ -102,8 +104,8 @@ copy ssleay32.dll ..\..\..\Debug
 copy libeay32.dll ..\..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
-
 cd ..\..
+
 title OCS Inventory NG Agent for Windows - Building cURL DLL...
 echo.
 echo *************************************************************************
@@ -115,11 +117,12 @@ echo.
 cd "%CURL_PATH%"
 Rem Disable LDAP support, not needed in OCS Inventory NG Agent
 set WINDOWS_SSPI=0
-cd ..\lib
+cd ..\winbuild
 Rem Fix cURL DLL config for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
-perl.exe -pi.bak -e "s# /DBUILDING_LIBCURL# /DBUILDING_LIBCURL /D_BIND_TO_CURRENT_VCLIBS_VERSION#g" Makefile.vc12
+Rem perl.exe -pi.bak -e "s# /DBUILDING_LIBCURL# /DBUILDING_LIBCURL /D_BIND_TO_CURRENT_VCLIBS_VERSION#g" Makefile.vc12
 Rem Build cURL dll using OpenSSL Dlls and Zlib dll
-nmake /NOLOGO /f Makefile.vc12 cfg=release-dll-ssl-dll-zlib-dll
+Rem nmake /NOLOGO /f Makefile.vc12 cfg=release-dll-ssl-dll-zlib-dll
+nmake /f Makefile.vc mode=dll VC=12 ENABLE_SSPI=NO ENABLE_IPV6=NO
 if ERRORLEVEL 1 goto ERROR
 Rem Insert manifest into DLL
 cd release-dll-ssl-dll-zlib-dll
@@ -133,6 +136,9 @@ copy "libcurl.dll" ..\..\..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
 cd ..\..\..
+
+:comment
+
 title OCS Inventory NG Agent for Windows - Building Net-SNMP DLL...
 echo.
 echo *************************************************************************
