@@ -3657,6 +3657,17 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 	char KeyChars[24] = {'B','C','D','F','G','H','J','K','M','P','Q','R','T','V','W','X','Y','2','3','4','6','7','8','9'};
 	char Result[30];
 
+	int isWin8;
+	int Last;
+	
+	//Get OS Version
+	OSVERSIONINFO osVersion;
+
+	ZeroMemory(&osVersion, sizeof(OSVERSIONINFO));
+	osVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+	GetVersionEx(&osVersion);
+
 	CString csKeyPath, csValueName, csValue4Name;
 
 	// Registry access variables
@@ -3695,6 +3706,13 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 			// We need 15 bytes from $35 in BinaryKey
 			memcpy( BinaryKey, &Data[0x34], sizeof(BinaryKey));
 
+			//For Windows 8 and +
+			if ((osVersion.dwMajorVersion == 6) && (osVersion.dwMinorVersion >= 2) || (osVersion.dwMajorVersion == 10))
+			{
+				isWin8 = (BinaryKey[14] / 6) & 1;
+				BinaryKey[14] = ((BinaryKey[14] & 0xF7) | ((isWin8 & 2) * 4));
+			}
+
 			for( i=24; i>=0; i-- ){
 				A = 0;
 				// decoding the current symbol
@@ -3704,8 +3722,31 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 					A = A % 24;
 				}
 				DecodedKey[i] = KeyChars[A];
+
+				Last = A;
 			}
 
+			//For Windows 8 and +
+			if ((osVersion.dwMajorVersion >= 6) && (osVersion.dwMinorVersion >= 2) || (osVersion.dwMajorVersion == 10))
+			{
+				if (isWin8 = 1)
+				{
+					for (i = 0; i < Last; i++)
+					{
+						DecodedKey[i] = DecodedKey[i + 1];
+					}
+					DecodedKey[Last] = 'N';
+
+					if (Last = 0)
+					{
+						for (i = 24; i >= 1; i--)
+						{
+							DecodedKey[i] = DecodedKey[i - 1];
+						}
+						DecodedKey[0] = 'N';
+					}
+				}
+			}
 			
 			j=0;
 			for( i=0; i<25; i++ ){
