@@ -15,7 +15,7 @@
 #include "stdafx.h"
 #include "CapSnmp.h"
 #include "ExecCommand.h"
-#include "SnmpRequest.h"
+#include "SnmpQuery.h"
 #include "SnmpResponse.h"
 
 #ifdef _DEBUG
@@ -46,7 +46,7 @@ void CCapSnmp::CallSnmp(CConnexionAbstract	*pConnexion, CConfig *m_pConfig){
 
 	// Phases objects
 	CString csMessage;
-	CSnmpRequest	*pSnmp = NULL;
+	CSnmpQuery	*pSnmp = NULL;
 	CSnmpResponse	*pSnmpResponse = NULL;
 	int m_nExitCode = OCS_APP_NO_ERROR;
 
@@ -56,7 +56,7 @@ void CCapSnmp::CallSnmp(CConnexionAbstract	*pConnexion, CConfig *m_pConfig){
 	*
 	****/
 	m_pLogger->log(LOG_PRIORITY_NOTICE, _T("SNMP => Launch snmp scan"));
-	pSnmp = new CSnmpRequest(m_pConfig->isNotifyRequired());
+	pSnmp = new CSnmpQuery(m_pConfig->isNotifyRequired());
 
 	/*****
 	*

@@ -21,11 +21,11 @@
 #include "OCSInventory Front Classes.h"
 #include "RequestAbstract.h"
 
-class OCSINVENTORYFRONT_API CSnmpRequest : public CRequestAbstract
+class OCSINVENTORYFRONT_API CSnmpQuery : public CRequestAbstract
 {
 public:
-	CSnmpRequest(BOOL);
-	~CSnmpRequest(void);
+	CSnmpQuery(BOOL);
+	~CSnmpQuery(void);
 
 	// Do some action when request successfully executed
 	void setSuccess();
