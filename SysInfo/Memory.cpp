@@ -18,6 +18,7 @@
 #include "Winbase.h" 
 #include "SysInfoClasses.h"
 #include "Memory.h"
+#include <VersionHelpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,17 +56,13 @@ CMemory::~CMemory()
 
 void CMemory::determineMemory(void)
 {
-	OSVERSIONINFO	osVersion;
-
-	osVersion.dwOSVersionInfoSize = sizeof( OSVERSIONINFO);
-	if (!GetVersionEx( &osVersion))
+	if (!IsWindowsVistaOrGreater())
 	{
 		// Unable to know if it is W2K or higher
 		determineMemory9X_NT();
 		return;
 	}
-	if ((osVersion.dwPlatformId == VER_PLATFORM_WIN32_NT) &&
-		(osVersion.dwMajorVersion >= 5))
+	if (IsWindowsVistaOrGreater())
 	{
 		// Windows 2K or higher => use MEMORYSTATUSEX
 		if (!determineMemory2K())

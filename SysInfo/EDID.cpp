@@ -17,6 +17,7 @@
 #include "SysInfo.h"
 #include "DebugLog.h"
 #include "ISA_PNPID.h"
+#include <VersionHelpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -45,12 +46,8 @@ BOOL (WINAPI *lpfnSetupDiDestroyDeviceInfoList) ( HDEVINFO DeviceInfoSet);
 
 CEdid::CEdid()
 {
-	OSVERSIONINFO	osVersion;
-
-	osVersion.dwOSVersionInfoSize = sizeof( OSVERSIONINFO);
-	if (GetVersionEx( &osVersion))
-		m_bIsWin2K = (osVersion.dwPlatformId == VER_PLATFORM_WIN32_NT) &&
-				  (osVersion.dwMajorVersion >= 5);
+	if (IsWindowsVistaOrGreater())
+		m_bIsWin2K = TRUE;
 	else
 		// Failed so assume 9X based
 		m_bIsWin2K = FALSE;

@@ -19,6 +19,7 @@
 #include "dtwinver.h"
 #include <TlHelp32.h>
 #include "DebugLog.h"
+#include <VersionHelpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -814,13 +815,11 @@ BOOL CSysInfo::getLastLoggedUser(CString &csLastLoggedUser)
 
 BOOL CSysInfo::getInstalledApplications(CSoftwareList *pList, BOOL hkcu)
 {
-	OSVERSIONINFO	osVersion;
 	BOOL			bIsNT6orHigher = FALSE;
 
-	osVersion.dwOSVersionInfoSize = sizeof( OSVERSIONINFO);
-	if (GetVersionEx( &osVersion))
+	if (IsWindowsVistaOrGreater())
 	{
-		bIsNT6orHigher = (osVersion.dwPlatformId == VER_PLATFORM_WIN32_NT) && (osVersion.dwMajorVersion >= 6);
+		bIsNT6orHigher = TRUE;
 	}
 	// Use registry
 	m_registryInfo.SetAddressWidthOS( getAddressWidthOS());
