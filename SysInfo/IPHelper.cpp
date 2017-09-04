@@ -79,6 +79,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 						csDhcpServer,
 						csBuffer;
 	BYTE				pDescription[MAXLEN_IFDESCR + 10];
+	char				str[INET_ADDRSTRLEN];
 
 
 	AddLog(_T("IpHlpAPI GetNetworkAdapters...\n"));
@@ -303,7 +304,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 							// Get NetMask
 							ifIndex = pIPAddrTable->table[0].dwIndex;
 							IPAddr.S_un.S_addr = (u_long)pIPAddrTable->table[0].dwMask;
-							csSubnet = inet_ntoa(IPAddr);
+							csSubnet = inet_ntop(AF_INET, &IPAddr, str, INET_ADDRSTRLEN);
 						}
 						else {
 							if (pIPAddrTable)

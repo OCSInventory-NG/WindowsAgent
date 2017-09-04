@@ -20,6 +20,7 @@
 #include <Snmp.h>
 #include "SnmpAPI.h"
 #include "SNMP.h"
+#include <ws2tcpip.h>
 
 
 #ifdef _DEBUG
@@ -95,6 +96,8 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
     RFC1157VarBind		varBind[6];
     AsnInteger			errorStatus;
     AsnInteger			errorIndex;
+
+	char				str[INET_ADDRSTRLEN];
 
 	// Reset network adapter list content
 	while (!(pList->GetCount() == 0))
@@ -426,13 +429,13 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
 				in_addr ipa;
 				ULONG   ipAdr, ipMsk, nbRez;		
 				CString csRez;
-					
-				ipAdr = ntohl( inet_addr( GetAnsiFromTString( csAddress.GetBuffer())));
-				ipMsk = ntohl( inet_addr( GetAnsiFromTString( csBuffer)));
-				nbRez = ipAdr & ipMsk ;
+				
+				inet_pton(AF_INET, GetAnsiFromTString(csAddress.GetBuffer()), &ipAdr);
+				inet_pton(AF_INET, GetAnsiFromTString(csBuffer), &ipMsk);
+				nbRez = htonl(ipAdr & ipMsk) ;
 
 				ipa.S_un.S_addr = htonl(nbRez);
-				csRez = inet_ntoa(ipa);
+				csRez = inet_ntop(AF_INET, &ipa, str, INET_ADDRSTRLEN);
 
 				pList->SetIpAddrEntry( varBind[0].value.asnValue.number,
 									   csAddress, csBuffer, csRez);
