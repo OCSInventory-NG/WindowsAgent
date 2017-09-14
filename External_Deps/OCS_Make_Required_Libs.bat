@@ -22,7 +22,7 @@ Rem Set path to Perl 5.6 or higher binary
 set PERL_PATH=C:\Perl\bin
 
 Rem Set path to Zlib sources
-set ZLIB_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\zlib-1.2.11
+set ZLIB_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\zlib-1.2.8
 
 Rem Set path to OpenSSL sources
 set OPENSSL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\openssl-1.0.2k
