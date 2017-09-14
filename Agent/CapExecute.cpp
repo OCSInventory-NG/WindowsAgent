@@ -32,10 +32,10 @@ CCapExecute::~CCapExecute(void)
 
 BOOL CCapExecute::executePlugins( LPCTSTR lpstrPath)
 {
-	return (execute( TRUE, lpstrPath) && execute( FALSE, lpstrPath));
+	return (execute(VBS, lpstrPath) && execute(PWSHELL, lpstrPath));
 }
 
-BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
+BOOL CCapExecute::execute( const int bScript, LPCTSTR lpstrPath)
 {
 	CString	csPath,
 			csCommand,
@@ -56,10 +56,14 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 			// Use provided path to search for plugins
 			csPath = lpstrPath;
 		// Search for DLL into path
-		if (bScript)
+		if (bScript == PWSHELL)
 		{
-			m_pLogger->log( LOG_PRIORITY_DEBUG,  _T( "EXECUTABLE PLUGIN => Searching for VBS script(s) in folder <%s>"), csPath);
-			csCommand.Format( _T( "%s\\*.vbs"), csPath);
+			m_pLogger->log( LOG_PRIORITY_DEBUG,  _T( "EXECUTABLE PLUGIN => Searching for PS1 script(s) in folder <%s>"), csPath);
+			csCommand.Format( _T( "%s\\*.ps1"), csPath);
+		}
+		else if (bScript == VBS){
+			m_pLogger->log(LOG_PRIORITY_DEBUG, _T("EXECUTABLE PLUGIN => Searching for VBS script(s) in folder <%s>"), csPath);
+			csCommand.Format(_T("%s\\*.vbs"), csPath);
 		}
 		else
 		{
@@ -76,10 +80,16 @@ BOOL CCapExecute::execute( BOOL bScript, LPCTSTR lpstrPath)
 			csOutputFile.Format( _T( "%s\\%s.xml"), getDataFolder(), cFinder.GetFileName());
 			cmProcess.setOutputFile( csOutputFile);
 			// Execute script
-			if (bScript)
-				csCommand.Format( _T( "cscript /nologo \"%s\""), cFinder.GetFilePath());
-			else
-				csCommand.Format( _T( "\"%s\""), cFinder.GetFilePath());
+			if (bScript == PWSHELL){
+				csCommand.Format(_T("Powershell.exe -File %s"), cFinder.GetFilePath());
+			}
+			else if (bScript == VBS){
+				csCommand.Format(_T("cscript /nologo \"%s\""), cFinder.GetFilePath());
+			}
+			else{
+				csCommand.Format(_T("\"%s\""), cFinder.GetFilePath());
+			}
+
 			switch (cmProcess.execWait( csCommand, csPath))
 			{
 			case EXEC_ERROR_START_COMMAND:

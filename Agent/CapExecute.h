@@ -18,6 +18,10 @@
 #pragma once
 #include "CapacityAbstract.h"
 
+// Define plugins execute code number
+#define VBS 1
+#define PWSHELL 2
+
 class CCapExecute : public CCapacityAbstract
 {
 public:
@@ -30,7 +34,7 @@ public:
 protected:
 	// Execute VBS scripts find into plugins directory if bScript = TRUE
 	// Execute executable files find into plugins directory if bScript = FALSE
-	BOOL execute( BOOL bScript, LPCTSTR lpstrPath = NULL);
+	BOOL execute( const int bScript, LPCTSTR lpstrPath = NULL);
 
 	// Encode file to UTF-8
 	BOOL encodeFileToUTF8( LPCTSTR lpstrFile);
