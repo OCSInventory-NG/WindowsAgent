@@ -189,7 +189,7 @@ BOOL CNTService::IsEventViewerSupportInstalled()
 
 BOOL CNTService::Install( LPCTSTR lpstrDescription, LPCTSTR lpstrDependancies)
 {
-    TCHAR szFilePath[_MAX_PATH+1];
+    TCHAR szFilePath[_MAX_PATH+2];
 	CString csKey;
 	HKEY hKey;
 
@@ -200,8 +200,12 @@ BOOL CNTService::Install( LPCTSTR lpstrDescription, LPCTSTR lpstrDependancies)
     if (!hSCM) 
 		return FALSE;
     // Get the executable file path
-    if (::GetModuleFileName( NULL, szFilePath, sizeof( szFilePath)) == 0)
+    DWORD len = ::GetModuleFileName( NULL, szFilePath + 1, _MAX_PATH)
+    if (len == 0 || len == _MAX_PATH)
 		return FALSE;
+    // add quotes for the case path contains a space (see CreateService doc)
+    szFilePath[0] = szFilePath[len + 1] = TEXT('\"');
+    szFilePath[len + 2] = 0;
     // Create the service
     SC_HANDLE hService = ::CreateService(hSCM,
                                          m_csServiceName,			// Service key name
