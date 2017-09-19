@@ -200,7 +200,7 @@ BOOL CNTService::Install( LPCTSTR lpstrDescription, LPCTSTR lpstrDependancies)
     if (!hSCM) 
 		return FALSE;
     // Get the executable file path
-    DWORD len = ::GetModuleFileName( NULL, szFilePath + 1, _MAX_PATH)
+    DWORD len = ::GetModuleFileName( NULL, szFilePath + 1, _MAX_PATH);
     if (len == 0 || len == _MAX_PATH)
 		return FALSE;
     // add quotes for the case path contains a space (see CreateService doc)
