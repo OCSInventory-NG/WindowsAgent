@@ -60,7 +60,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	PMIB_IPADDRTABLE	pIPAddrTable;
 	DWORD				dwSize = 0;
 	DWORD				dwRetVal = 0;
-	IN_ADDR				IPAddr;
+	IN_ADDR				IPAddr, IPAddrBis, ipa;
 	DWORD				ifIndex;
 	PIP_ADAPTER_ADDRESSES	pAdresses = NULL, pAdapterAddr = NULL;
 	PIP_ADAPTER_UNICAST_ADDRESS		pUnicast = NULL;
@@ -74,12 +74,17 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	CString				csMAC,
 						csAddress,
 						csSubnet,
+						csSubnetNetwork,
 						csAddressIp,
 						csGateway,
 						csDhcpServer,
 						csBuffer;
 	BYTE				pDescription[MAXLEN_IFDESCR + 10];
-	char				str[INET_ADDRSTRLEN];
+	char				str[INET_ADDRSTRLEN],
+						bufferstr[INET_ADDRSTRLEN],
+						bufferRez[INET_ADDRSTRLEN];
+	ULONG				ipAdr, ipMsk, nbRez;
+
 
 
 	AddLog(_T("IpHlpAPI GetNetworkAdapters...\n"));
@@ -304,7 +309,17 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 							// Get NetMask
 							ifIndex = pIPAddrTable->table[0].dwIndex;
 							IPAddr.S_un.S_addr = (u_long)pIPAddrTable->table[0].dwMask;
+							IPAddrBis.S_un.S_addr = (u_long)pIPAddrTable->table[0].dwAddr;
 							csSubnet = inet_ntop(AF_INET, &IPAddr, str, INET_ADDRSTRLEN);
+							csAddressIp = inet_ntop(AF_INET, &IPAddrBis, bufferstr, INET_ADDRSTRLEN);
+
+							inet_pton(AF_INET, bufferstr, &ipAdr);
+							inet_pton(AF_INET, str, &ipMsk);
+							nbRez = htonl(ipAdr & ipMsk);
+
+							ipa.S_un.S_addr = htonl(nbRez);
+							csSubnetNetwork = inet_ntop(AF_INET, &ipa, bufferRez, INET_ADDRSTRLEN);
+							cAdapter.SetNetNumber(csSubnetNetwork);
 						}
 						else {
 							if (pIPAddrTable)
