@@ -1,3 +1,10 @@
+2.3.1.0
+  * Update deprecated functions
+  * Add PowerShell support for plugins
+  * Update projects debug configuration
+  * Fix Windows 8 and 10 product key inventory
+  * Fix quote directory Service path
+  
 2.3.0.0 
   * Improve inventoried data 
   * Fix crash in some cases on snmp scan
