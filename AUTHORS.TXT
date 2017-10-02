@@ -24,3 +24,4 @@
 - Pierre Lemmet
 - Didier Liroulet
 - Gilles Dubois
+- Charlene Auger
