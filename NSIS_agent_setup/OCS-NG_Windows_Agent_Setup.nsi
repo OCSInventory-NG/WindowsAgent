@@ -827,17 +827,17 @@ Function InstallService
 	    ; check if NT service was previously installed
         services::IsServiceInstalled "${PRODUCT_SERVICE_NAME}"
         Pop $R0
-        ${If} "$R0" == "Yes"
-            StrCpy $logBuffer "Yes$\r$\nNothing to do to register ${PRODUCT_SERVICE_NAME} into Windows Service Manager.$\r$\n"
-            Call Write_Log
-        ${Else}
+        ; ${If} "$R0" == "Yes"
+        ;    StrCpy $logBuffer "Yes$\r$\nNothing to do to register ${PRODUCT_SERVICE_NAME} into Windows Service Manager.$\r$\n"
+        ;    Call Write_Log
+        ; ${Else}
             StrCpy $logBuffer "No$\r$\nRegistering ${PRODUCT_SERVICE_NAME} into Windows Service Manager..."
             Call Write_Log
     	    nsExec::ExecToLog "$INSTDIR\OcsService.exe -install"
     	    Pop $R0
 	        StrCpy $logBuffer "Result: $R0.$\r$\n"
 	        Call Write_Log
-        ${EndIf}
+        ; ${EndIf}
     ${EndIf}
 	; Restore used register
 	Pop $R0
