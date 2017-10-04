@@ -837,7 +837,7 @@ Function InstallService
     	    Pop $R0
 	        StrCpy $logBuffer "Result: $R0.$\r$\n"
 	        Call Write_Log
-        ${EndIf}
+        ; ${EndIf}
     ${EndIf}
 	; Restore used register
 	Pop $R0
