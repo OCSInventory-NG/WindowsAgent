@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Agent\res\OCSInventory.ico" />
+    <Image Include="..\NSIS_agent_setup\install-ocs.ico" />
     <Image Include="res\TestSysInfo.ico" />
   </ItemGroup>
   <ItemGroup>

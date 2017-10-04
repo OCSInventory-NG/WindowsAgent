@@ -159,6 +159,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\agent\res\icon1.ico" />
     <Image Include="..\Agent\res\OCSInventory.ico" />
   </ItemGroup>
   <ItemGroup>
