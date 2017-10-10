@@ -800,45 +800,37 @@ FunctionEnd
 Function InstallService
 	; Save used register
 	Push $R0
-	; Check if NT service is required
-	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 7" "State"
-	${If} $R0 == "1"
-        ; Service must not be installed
-	    StrCpy $logBuffer "Checking if service ${PRODUCT_SERVICE_NAME} is registered into Windows Service Manager..."
-	    Call Write_Log
-	    ; check if NT service was previously installed
+        ; check if NT service was previously installed
+	StrCpy $logBuffer "Checking if service ${PRODUCT_SERVICE_NAME} is registered into Windows Service Manager..."
+	Call Write_Log
         services::IsServiceInstalled "${PRODUCT_SERVICE_NAME}"
         Pop $R0
         ${If} "$R0" == "Yes"
-            StrCpy $logBuffer "Yes$\r$\n[/NO_SERVICE] used, so unregistering ${PRODUCT_SERVICE_NAME} from Windows Service Manager..."
+            StrCpy $logBuffer "Yes$\r$\nService is installed, so unregistering ${PRODUCT_SERVICE_NAME} from Windows Service Manager..."
             Call Write_Log
 	        nsExec::ExecToLog "$INSTDIR\OcsService.exe -uninstall"
 	        Pop $R0
 	        StrCpy $logBuffer "Result: $R0.$\r$\n"
 	        Call Write_Log
         ${Else}
-            StrCpy $logBuffer "No$\r$\n[/NO_SERVICE] used, so no need to register ${PRODUCT_SERVICE_NAME} into Windows Service Manager.$\r$\n"
+            StrCpy $logBuffer "No$\r$\nNo service installed, so no need to unregister ${PRODUCT_SERVICE_NAME} from Windows Service Manager.$\r$\n"
             Call Write_Log
         ${EndIf}
-    ${Else}
-        ; Service is required
-	    StrCpy $logBuffer "Checking if service ${PRODUCT_SERVICE_NAME} is registered into Windows Service Manager..."
-	    Call Write_Log
-	    ; check if NT service was previously installed
-        services::IsServiceInstalled "${PRODUCT_SERVICE_NAME}"
-        Pop $R0
-        ${If} "$R0" == "Yes"
-            StrCpy $logBuffer "Yes$\r$\nNothing to do to register ${PRODUCT_SERVICE_NAME} into Windows Service Manager.$\r$\n"
+	; Check if NT service is required
+	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 7" "State"
+	${If} $R0 == "1"
+        ; Service must not be installed
+            StrCpy $logBuffer "[/NO_SERVICE] used, so no need to register ${PRODUCT_SERVICE_NAME} into Windows Service Manager.$\r$\n"
             Call Write_Log
         ${Else}
-            StrCpy $logBuffer "No$\r$\nRegistering ${PRODUCT_SERVICE_NAME} into Windows Service Manager..."
+        ; Service is required
+            StrCpy $logBuffer "Registering ${PRODUCT_SERVICE_NAME} into Windows Service Manager..."
             Call Write_Log
     	    nsExec::ExecToLog "$INSTDIR\OcsService.exe -install"
     	    Pop $R0
 	        StrCpy $logBuffer "Result: $R0.$\r$\n"
 	        Call Write_Log
         ${EndIf}
-    ${EndIf}
 	; Restore used register
 	Pop $R0
 FunctionEnd
