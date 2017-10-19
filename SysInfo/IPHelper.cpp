@@ -173,6 +173,13 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	for (dwIndex = 0; dwIndex < pIfTable->dwNumEntries; dwIndex++)
 	{
 		pIfEntry = (MIB_IFROW *)&(pIfTable->table[dwIndex]);
+
+		// next entry if MAC empty
+		if (pIfEntry->bPhysAddr[0] == 0 && pIfEntry->bPhysAddr[1] == 0 &&
+			pIfEntry->bPhysAddr[2] == 0 && pIfEntry->bPhysAddr[3] == 0 &&
+			pIfEntry->bPhysAddr[4] == 0 && pIfEntry->bPhysAddr[5] == 0)
+			continue;
+
 		if (pIfEntry->dwType != IF_TYPE_SOFTWARE_LOOPBACK)
 		{
 			//if Network card is desabled
