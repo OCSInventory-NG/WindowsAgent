@@ -216,16 +216,15 @@ void CNetworkAdapter::SetIpHelperStatus( LONG lOperStatus)
 {
 	switch (lOperStatus)
 	{
-	case MIB_IF_OPER_STATUS_NON_OPERATIONAL:
-	case MIB_IF_OPER_STATUS_UNREACHABLE:
-	case MIB_IF_OPER_STATUS_DISCONNECTED:
+	case IfOperStatusDormant:
+	case IfOperStatusNotPresent:
+	case IfOperStatusDown:
 		m_csOperStatus = _T( "Down");
 		break;
-	case MIB_IF_OPER_STATUS_CONNECTING:
+	case IfOperStatusTesting:
 		m_csOperStatus = _T( "Testing");
 		break;
-	case MIB_IF_OPER_STATUS_CONNECTED:
-	case MIB_IF_OPER_STATUS_OPERATIONAL:
+	case IfOperStatusUp:
 		m_csOperStatus = _T( "Up");
 		break;
 	default: // Unknown
