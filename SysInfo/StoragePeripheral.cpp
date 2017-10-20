@@ -14,6 +14,7 @@
 
 #include "stdafx.h"
 #include "StoragePeripheral.h"
+#include <VersionHelpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -141,42 +142,71 @@ void CStoragePeripheral::SetSN( LPCTSTR lpstrSN)
 	char	myCar;
 
 	m_csSN.Empty();
-	if (is_hex( lpstrSN))
+
+	if (IsWindows8OrGreater())
 	{
-		// Each serial number character is coded in ASCII hexadecimal value using 2 bytes, so we have to decode it
-		for (size_t i=0; (i<STORAGE_MAX_LENGTH_SERIAL) && ((i*2)<_tcslen( lpstrSN)); i++) 
+		if (is_hex(lpstrSN))
 		{
-			csSubString.Empty();
-			csSubString.Format( _T( "%.02s"), lpstrSN+2*i);
-			myCar = (char) _tcstol( csSubString, &pStopChar, 16);
-			m_csSN.AppendFormat( _T( "%c"), myCar);
+			// Each serial number character is coded in ASCII hexadecimal value using 2 bytes, so we have to decode it
+			for (size_t i = 0; (i<STORAGE_MAX_LENGTH_SERIAL) && ((i * 2)<_tcslen(lpstrSN)); i++)
+			{
+				csSubString.Empty();
+				csSubString.Format(_T("%.02s"), lpstrSN + 2 * i);
+				myCar = (char)_tcstol(csSubString, &pStopChar, 16);
+				m_csSN.AppendFormat(_T("%c"), myCar);
+			}
+			// Permute low order and high order characters if serial length is multiple of 2
+			for (int i = 0; (i<m_csSN.GetLength()) && (m_csSN.GetLength() % 2 == 0); i += 2)
+			{
+				cPermute = m_csSN.GetAt(i);
+				m_csSN.SetAt(i, m_csSN.GetAt(i + 1));
+				m_csSN.SetAt(i + 1, cPermute);
+			}
+			StrForSQL(m_csSN);
+			if (is_printable(m_csSN))
+				// Hex decode successful
+				return;
 		}
-		// Permute low order and high order characters if serial length is multiple of 2
-		for (int i=0; (i<m_csSN.GetLength()) && (m_csSN.GetLength() % 2 == 0); i+=2)
+		// Not hex encoded (or hex decode failed), ensure printable
+		if (is_printable(lpstrSN))
+			// Serial length seems good, assume well formatted
+			m_csSN = lpstrSN;
+		else
 		{
-			cPermute = m_csSN.GetAt( i);
-			m_csSN.SetAt( i, m_csSN.GetAt( i+1));
-			m_csSN.SetAt( i+1, cPermute);
+			// Not printable, hex encode it
+			m_csSN.Empty();
+			for (UINT uIndex = 0; uIndex<_tcslen(lpstrSN); uIndex++)
+			{
+				m_csSN.AppendFormat(_T("%02x"), lpstrSN[uIndex]);
+			}
 		}
-		StrForSQL( m_csSN);
-		if (is_printable( m_csSN))
-			// Hex decode successful
-			return;
+		StrForSQL(m_csSN);
 	}
-	// Not hex encoded (or hex decode failed), ensure printable
-	if (is_printable( lpstrSN))
-		// Serial length seems good, assume well formatted
-		m_csSN = lpstrSN;
-	else
+	if(!IsWindows8OrGreater()) 
 	{
-		// Not printable, hex encode it
-		m_csSN.Empty();
-		for (UINT uIndex = 0; uIndex<_tcslen(lpstrSN); uIndex++)
+		if ((lpstrSN != NULL) && (_tcslen(lpstrSN) > STORAGE_MAX_LENGTH_SERIAL))
 		{
-			m_csSN.AppendFormat( _T( "%02x"), lpstrSN[uIndex]);
+			// Each serial number character is coded in ASCII hexadecimal value using 2 bytes, so we have to decode it
+			for (size_t i = 0; (i<STORAGE_MAX_LENGTH_SERIAL) && ((i * 2)<_tcslen(lpstrSN)); i++)
+			{
+				csSubString.Empty();
+				csSubString.Format(_T("%.02s"), lpstrSN + 2 * i);
+				myCar = (char)_tcstol(csSubString, &pStopChar, 16);
+				m_csSN.AppendFormat(_T("%c"), myCar);
+			}
+			// Permute low order and high order characters if serial length is multiple of 2
+			for (int i = 0; (i<m_csSN.GetLength()) && (m_csSN.GetLength() % 2 == 0); i += 2)
+			{
+				cPermute = m_csSN.GetAt(i);
+				m_csSN.SetAt(i, m_csSN.GetAt(i + 1));
+				m_csSN.SetAt(i + 1, cPermute);
+			}
 		}
+		else
+			// Serial length seems good, assume well formatted
+			m_csSN = lpstrSN;
+		StrForSQL(m_csSN);
 	}
-	StrForSQL( m_csSN);
 }
 
 BOOL CStoragePeripheral::IsValidSN( LPCTSTR lpstrSN)
@@ -236,24 +266,24 @@ BOOL CStoragePeripheral::is_hex( LPCTSTR lpstrString)
 	DWORD_PTR dw;
 	TCHAR ch; // !!!
 
-	return (1 == _stscanf( lpstrString, TEXT("&#37;x%c"), &dw, &ch));
+	return (1 == _stscanf(lpstrString, TEXT("&#37;x%c"), &dw, &ch));
 }
 
 BOOL CStoragePeripheral::is_printable( CString myString)
 {
 	BOOL  bPrintable = TRUE;
 	static CStringA csAnsi;
-	CT2W			pszA( myString);
+	CT2W			pszA(myString);
 
 	// Convert to Ansi, and avoid producing "(null)" string we converting
 	if (!myString.IsEmpty() && (myString.GetLength() > 0))
 		csAnsi = pszA;
 	else
 		csAnsi.Empty();
-	
-	for (int i=0; i<csAnsi.GetLength(); i++)
+
+	for (int i = 0; i < csAnsi.GetLength(); i++)
 	{
-		if (!isprint( csAnsi.GetAt( i)))
+		if (!isprint(csAnsi.GetAt(i)))
 			bPrintable = FALSE;
 	}
 	return bPrintable;
