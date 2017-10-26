@@ -52,21 +52,21 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 {
 	HINSTANCE			hDll;
 	DWORD				(WINAPI *lpfnGetAdaptersAddresses)(ULONG family, ULONG flags, PVOID reserved, PIP_ADAPTER_ADDRESSES myInfo, DWORD *size);
+	DWORD				(WINAPI *lpfnGetIfTable2Ex)(MIB_IF_TABLE_LEVEL Level, PMIB_IF_TABLE2 *pIfTable);
 	PMIB_IF_TABLE2		pIfTable;
 	PMIB_IF_ROW2		pIfEntry;
 	PMIB_IPADDRTABLE	pIPAddrTable;
-	DWORD				dwSize = 0;
+	DWORD				dwSize = 0, size = 0, dwSizeBis = 0;
 	DWORD				dwRetVal = 0;
 	IN_ADDR				IPAddr, IPAddrBis, ipa;
 	DWORD				ifIndex;
-	PIP_ADAPTER_ADDRESSES	pAdresses = NULL, pAdapterAddr = NULL;
+	PIP_ADAPTER_ADDRESSES	pAdresses, pAdressesBis, pAdapterAddr = NULL;
 	PIP_ADAPTER_UNICAST_ADDRESS		pUnicast = NULL;
 	SOCKET_ADDRESS		*pDhcp;
 	PIP_ADAPTER_GATEWAY_ADDRESS		pGateway = NULL;
 	ULONG				ulLength = 0;
 	UINT				uIndex = 0;
 	ULONG				dwIndex;
-	DWORD				rv = NULL, size = NULL;
 	CNetworkAdapter		cAdapter;
 	CString				csMAC,
 						csAddress,
@@ -82,8 +82,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	ULONG				ipAdr, 
 						ipMsk, 
 						nbRez;
-
-
+	
 
 
 	AddLog(_T("IpHlpAPI GetNetworkAdapters...\n"));
@@ -99,6 +98,14 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		return FALSE;
 	}
 
+	if ((*(FARPROC*)&lpfnGetIfTable2Ex = GetProcAddress(hDll, "GetIfTable2Ex")) == NULL)
+	{
+		// Tell the user that we could not find a usable IpHlpAPI DLL.                                  
+		FreeLibrary(hDll);
+		AddLog(_T("IpHlpAPI GetNetworkAdapters: Failed because unable to load <iphlpapi.dll> !\n"));
+		return FALSE;
+	}
+
 	if ((*(FARPROC*)&lpfnGetAdaptersAddresses = GetProcAddress(hDll, "GetAdaptersAddresses")) == NULL)
 	{
 		// Tell the user that we could not find a usable IpHlpAPI DLL.                                  
@@ -109,25 +116,213 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 
 	// Call GetIfTable to get memory size
 	AddLog(_T("IpHlpAPI GetNetworkAdapters: Calling GetIfTable to determine network adapter properties..."));
-	pIfTable = NULL;
-	ulLength = 0;
 
-	// Allocate memory for our pointers.
-	pIfTable = (PMIB_IF_TABLE2)malloc(sizeof(PMIB_IF_TABLE2));
-	if (pIfTable == NULL) 
+	//call GetIfTable2Ex
+	switch (lpfnGetIfTable2Ex(MibIfTableRaw, &pIfTable)) 
 	{
-		printf("Error allocating memory needed to call GetIfTable\n");
+	case NO_ERROR:
+		break;
+	case ERROR_NOT_SUPPORTED:
+		FreeMibTable(pIfTable);
+		FreeLibrary(hDll);
+		AddLog(_T("Failed because OS not support GetIfTable2Ex API function !\n"));
+		return FALSE;
+	case ERROR_BUFFER_OVERFLOW:
+	case ERROR_INSUFFICIENT_BUFFER:
+		FreeMibTable(pIfTable);
+		FreeLibrary(hDll);
+		AddLog(_T("Failed because OS not support GetIfTable2Ex API function !\n"));
+		return FALSE;
+	default:
+		FreeMibTable(pIfTable);
+		FreeLibrary(hDll);
+		AddLog(_T("Failed because unknown error !\n"));
 		return FALSE;
 	}
 
-	// Make an initial call to GetIfTable to get the
-	// necessary size into dwSize
-	if (GetIfTable2Ex(MibIfTableRaw, &pIfTable) == ERROR_INSUFFICIENT_BUFFER) 
+	// Call GetAdptersAddresses with length to 0 to get size of required buffer
+	AddLog(_T("OK\nIpHlpAPI GetNetworkAdapters: Calling GetAdapterAddresses to determine IP Infos..."));
+	pAdresses = NULL;
+	dwSize = 0;
+
+	switch (lpfnGetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, NULL, pAdresses, &dwSize))
 	{
-		free(hDll);
-		free(pIfTable);
+	case NO_ERROR: // No error => no adapters
+	case ERROR_NO_DATA:
+		FreeMibTable(pIfTable);
+		FreeLibrary(hDll);
+		AddLog(_T("Failed because no network adapters !\n"));
+		return FALSE;
+	case ERROR_NOT_SUPPORTED: // Not supported
+		FreeMibTable(pIfTable);
+		FreeLibrary(hDll);
+		AddLog(_T("Failed because OS not support GetAdapterAddresses API function !\n"));
+		return FALSE;
+	case ERROR_BUFFER_OVERFLOW: // We must allocate memory
+		break;
+	default:
+		FreeMibTable(pIfTable);
+		FreeLibrary(hDll);
+		AddLog(_T("Failed because unknown error !\n"));
 		return FALSE;
 	}
+
+	if ((pAdresses = (PIP_ADAPTER_ADDRESSES)malloc(dwSize + 1)) == NULL)
+	{
+		FreeMibTable(pIfTable);
+		FreeLibrary(hDll);
+		AddLog(_T("Failed because memory error !\n"));
+		return FALSE;
+	}
+
+	// Recall GetAdptersAddresses
+	switch (lpfnGetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, NULL, pAdresses, &dwSize))
+	{
+	case 0: // No error
+		break;
+	case ERROR_NO_DATA: // No adapters
+		FreeMibTable(pIfTable);
+		free(pAdresses);
+		FreeLibrary(hDll);
+		AddLog(_T("Failed because no network adapters !\n"));
+		return FALSE;
+	case ERROR_NOT_SUPPORTED: // Not supported
+		FreeMibTable(pIfTable);
+		free(pAdresses);
+		FreeLibrary(hDll);
+		AddLog(_T("Failed because OS not support GetAdapterAddresses API function !\n"));
+		return FALSE;
+	case ERROR_BUFFER_OVERFLOW: // We have allocated needed memory, but not sufficient
+		FreeMibTable(pIfTable);
+		free(pAdresses);
+		FreeLibrary(hDll);
+		AddLog(_T("Failed because memory error !\n"));
+		return FALSE;
+	default:
+		FreeMibTable(pIfTable);
+		free(pAdresses);
+		FreeLibrary(hDll);
+		AddLog(_T("Failed because unknown error !\n"));
+		return FALSE;
+	}
+
+	// Call GetAdptersAddresses with length to 0 to get size of required buffer
+	AddLog(_T("OK\nIpHlpAPI GetNetworkAdapters: Calling GetAdapterAddresses to determine IP Gateway..."));
+	pAdressesBis = NULL;
+
+switch (lpfnGetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_GATEWAYS, NULL, pAdressesBis, &size))
+{
+case NO_ERROR: // No error => no adapters
+case ERROR_NO_DATA:
+	FreeMibTable(pIfTable);
+	free(pAdresses);
+	FreeLibrary(hDll);
+	AddLog(_T("Failed because no network adapters !\n"));
+	return FALSE;
+case ERROR_NOT_SUPPORTED: // Not supported
+	FreeMibTable(pIfTable);
+	free(pAdresses);
+	FreeLibrary(hDll);
+	AddLog(_T("Failed because OS not support GetAdapterAddresses API function !\n"));
+	return FALSE;
+case ERROR_BUFFER_OVERFLOW: // We must allocate memory
+	break;
+default:
+	FreeMibTable(pIfTable);
+	free(pAdresses);
+	FreeLibrary(hDll);
+	AddLog(_T("Failed because unknown error !\n"));
+	return FALSE;
+}
+
+if ((pAdressesBis = (PIP_ADAPTER_ADDRESSES)malloc(size + 1)) == NULL)
+{
+	FreeMibTable(pIfTable);
+	free(pAdresses);
+	FreeLibrary(hDll);
+	AddLog(_T("Failed because memory error !\n"));
+	return FALSE;
+}
+
+// Recall GetAdptersAddresses
+switch (lpfnGetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_GATEWAYS, NULL, pAdressesBis, &size))
+{
+case 0: // No error
+	break;
+case ERROR_NO_DATA: // No adapters
+	FreeMibTable(pIfTable);
+	free(pAdressesBis);
+	free(pAdresses);
+	FreeLibrary(hDll);
+	AddLog(_T("Failed because no network adapters !\n"));
+	return FALSE;
+case ERROR_NOT_SUPPORTED: // Not supported
+	FreeMibTable(pIfTable);
+	free(pAdressesBis);
+	free(pAdresses);
+	FreeLibrary(hDll);
+	AddLog(_T("Failed because OS not support GetAdaptersInfo API function !\n"));
+	return FALSE;
+case ERROR_BUFFER_OVERFLOW: // We have allocated needed memory, but not sufficient
+	FreeMibTable(pIfTable);
+	free(pAdressesBis);
+	free(pAdresses);
+	FreeLibrary(hDll);
+	AddLog(_T("Failed because memory error !\n"));
+	return FALSE;
+default:
+	FreeMibTable(pIfTable);
+	free(pAdressesBis);
+	free(pAdresses);
+	FreeLibrary(hDll);
+	AddLog(_T("Failed because unknown error !\n"));
+	return FALSE;
+}
+
+/*pIPAddrTable = (MIB_IPADDRTABLE *)malloc(sizeof(MIB_IPADDRTABLE));
+if (pIPAddrTable == NULL)
+{
+	FreeMibTable(pIfTable);
+	free(pAdresses);
+	free(pAdressesBis);
+	FreeLibrary(hDll);
+	AddLog(_T("Failed because memory error !\n"));
+	return FALSE;
+}
+else
+{*/
+	// Make an initial call to GetIpAddrTable to get the
+	// necessary size into the dwSize variable
+	if (GetIpAddrTable(pIPAddrTable, &dwSizeBis, 0) == ERROR_INSUFFICIENT_BUFFER)
+	{
+		free(pIPAddrTable);
+		pIPAddrTable = (MIB_IPADDRTABLE *)malloc(dwSizeBis);
+	}
+	if (pIPAddrTable == NULL)
+	{
+		FreeMibTable(pIfTable);
+		free(pAdresses);
+		free(pAdressesBis);
+		FreeLibrary(hDll);
+		AddLog(_T("Memory allocation failed for GetIpAddrTable\n"));
+		return FALSE;
+	}
+//}
+if (GetIpAddrTable(pIPAddrTable, &dwSizeBis, 0) == NO_ERROR)
+{
+
+}
+else
+{
+	if (pIPAddrTable)
+		AddLog(_T("Call to GetIpAddrTable failed with error %d.\n", dwRetVal));
+	free(pIPAddrTable);
+	FreeMibTable(pIfTable);
+	free(pAdresses);
+	free(pAdressesBis);
+	FreeLibrary(hDll);
+	return FALSE;
+}
 	
 	WSAData d;
 	if (WSAStartup(MAKEWORD(2, 2), &d) != 0) 
@@ -135,8 +330,6 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	}
 
 	// Call GetIfTable2Ex for each interface
-	if (GetIfTable2Ex(MibIfTableRaw, &pIfTable) == NO_ERROR && pIfTable) 
-	{
 		for (dwIndex = 0; dwIndex < pIfTable->NumEntries; dwIndex++)
 		{
 			pIfEntry = (MIB_IF_ROW2 *)&(pIfTable->Table[dwIndex]);
@@ -193,25 +386,6 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 					// Get the status
 					cAdapter.SetIpHelperStatus(pIfEntry->OperStatus);
 
-					//Call GetAdapterAddresses for prefix informations
-					pAdresses = (PIP_ADAPTER_ADDRESSES)malloc(size);
-					if (pAdresses)
-					{
-						rv = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, NULL, NULL, &size);
-						if (rv != ERROR_BUFFER_OVERFLOW)
-						{
-							AddLog(_T("GetAdaptersAddresses() failed..."));
-							return FALSE;
-						}
-						pAdresses = (PIP_ADAPTER_ADDRESSES)malloc(size);
-						rv = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, NULL, pAdresses, &size);
-						if (rv != ERROR_SUCCESS)
-						{
-							AddLog(_T("GetAdaptersAddresses() failed..."));
-							free(pAdresses);
-							return FALSE;
-						}
-					}
 					// Now parse the Adapter addresses
 					for (pAdapterAddr = pAdresses; pAdapterAddr != NULL; pAdapterAddr = pAdapterAddr->Next)
 					{
@@ -242,41 +416,15 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 									memset(buf3, 0, BUFSIZ);
 									getnameinfo(pDhcp->lpSockaddr, pDhcp->iSockaddrLength, buf3, sizeof(buf3), NULL, 0, NI_NUMERICHOST);
 									cAdapter.SetDhcpServer(CA2W(buf3));
+									delete pDhcp;
 								}
 							}
 						}
 					}
 					// End For each interface
-
-					// Free memory
-					free(pAdresses);
-
-					pAdresses = NULL;
 					pAdapterAddr = NULL;
-					rv = NULL;
-					size = NULL;
 
-					//Make an other call for GetAdapterAddresses for get Gateway
-					pAdresses = (PIP_ADAPTER_ADDRESSES)malloc(size);
-					if (pAdresses)
-					{
-						rv = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_GATEWAYS, NULL, NULL, &size);
-						if (rv != ERROR_BUFFER_OVERFLOW)
-						{
-							AddLog(_T("GetAdaptersAddresses() failed..."));
-							return FALSE;
-						}
-						pAdresses = (PIP_ADAPTER_ADDRESSES)malloc(size);
-						rv = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_GATEWAYS, NULL, pAdresses, &size);
-						if (rv != ERROR_SUCCESS)
-						{
-							AddLog(_T("GetAdaptersAddresses() failed..."));
-							free(pAdresses);
-							return FALSE;
-						}
-					}
-
-					for (pAdapterAddr = pAdresses; pAdapterAddr != NULL; pAdapterAddr = pAdapterAddr->Next)
+					for (pAdapterAddr = pAdressesBis; pAdapterAddr != NULL; pAdapterAddr = pAdapterAddr->Next)
 					{
 						if (pIfEntry->InterfaceIndex == pAdapterAddr->IfIndex)
 						{
@@ -293,32 +441,10 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 								}
 
 								//Get subnet Mask
-								pIPAddrTable = (MIB_IPADDRTABLE *)malloc(sizeof(MIB_IPADDRTABLE));
-								if (pIPAddrTable == NULL)
-								{
-									return FALSE;
-								}
-								else
-								{
-									dwSize = 0;
-									// Make an initial call to GetIpAddrTable to get the
-									// necessary size into the dwSize variable
-									if (GetIpAddrTable(pIPAddrTable, &dwSize, 0) ==
-										ERROR_INSUFFICIENT_BUFFER)
-									{
-										free(pIPAddrTable);
-										pIPAddrTable = (MIB_IPADDRTABLE *)malloc(dwSize);
-
-									}
-									if (pIPAddrTable == NULL)
-									{
-										AddLog(_T("Memory allocation failed for GetIpAddrTable\n"));
-										return FALSE;
-									}
-								}
+								
 								// Make a second call to GetIpAddrTable to get the
 								// actual data we want
-								if ((dwRetVal = GetIpAddrTable(pIPAddrTable, &dwSize, 0)) == NO_ERROR)
+								if (pIPAddrTable != NULL)
 								{
 									// Get NetMask
 									ifIndex = pIPAddrTable->table[0].dwIndex;
@@ -335,13 +461,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 									csSubnetNetwork = inet_ntop(AF_INET, &ipa, bufferRez, INET_ADDRSTRLEN);
 									cAdapter.SetNetNumber(csSubnetNetwork);
 								}
-								else
-								{
-									if (pIPAddrTable)
-										AddLog(_T("Call to GetIpAddrTable failed with error %d.\n", dwRetVal));
-									free(pIPAddrTable);
-									return FALSE;
-								}
+								
 								cAdapter.SetIPNetMask(csSubnet);
 
 								pList->AddTail(cAdapter);
@@ -352,17 +472,19 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 				}
 			}
 		}
-	}
+	
 	
 	// Free memory
 	free(pIPAddrTable);
-	free(pIfTable);
+	FreeMibTable(pIfTable);
 	free(pAdresses);
-
+	free(pAdressesBis);
+	pAdapterAddr = NULL;
 	// Unload library
 	FreeLibrary(hDll);
 
 	WSACleanup();
+	
 
 	AddLog(_T("OK\n"));
 	if (uIndex > 0)
