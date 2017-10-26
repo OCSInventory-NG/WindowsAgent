@@ -279,7 +279,7 @@ default:
 	return FALSE;
 }
 
-/*pIPAddrTable = (MIB_IPADDRTABLE *)malloc(sizeof(MIB_IPADDRTABLE));
+pIPAddrTable = (MIB_IPADDRTABLE *)malloc(sizeof(MIB_IPADDRTABLE));
 if (pIPAddrTable == NULL)
 {
 	FreeMibTable(pIfTable);
@@ -290,7 +290,7 @@ if (pIPAddrTable == NULL)
 	return FALSE;
 }
 else
-{*/
+{
 	// Make an initial call to GetIpAddrTable to get the
 	// necessary size into the dwSize variable
 	if (GetIpAddrTable(pIPAddrTable, &dwSizeBis, 0) == ERROR_INSUFFICIENT_BUFFER)
@@ -307,7 +307,7 @@ else
 		AddLog(_T("Memory allocation failed for GetIpAddrTable\n"));
 		return FALSE;
 	}
-//}
+}
 if (GetIpAddrTable(pIPAddrTable, &dwSizeBis, 0) == NO_ERROR)
 {
 
