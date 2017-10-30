@@ -15,6 +15,7 @@
 #include "stdafx.h"
 #include "SysInfo.h"
 #include "DebugLog.h"
+#include <VersionHelpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -3659,14 +3660,6 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 
 	int isWin8;
 	int Last;
-	
-	//Get OS Version
-	OSVERSIONINFO osVersion;
-
-	ZeroMemory(&osVersion, sizeof(OSVERSIONINFO));
-	osVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-	GetVersionEx(&osVersion);
 
 	CString csKeyPath, csValueName, csValue4Name;
 
@@ -3707,7 +3700,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 			memcpy( BinaryKey, &Data[0x34], sizeof(BinaryKey));
 
 			//For Windows 8 and +
-			if ((osVersion.dwMajorVersion == 6) && (osVersion.dwMinorVersion >= 2) || (osVersion.dwMajorVersion == 10))
+			if (IsWindows8OrGreater())
 			{
 				isWin8 = (BinaryKey[14] / 6) & 1;
 				BinaryKey[14] = ((BinaryKey[14] & 0xF7) | ((isWin8 & 2) * 4));
@@ -3727,7 +3720,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 			}
 
 			//For Windows 8 and +
-			if ((osVersion.dwMajorVersion >= 6) && (osVersion.dwMinorVersion >= 2) || (osVersion.dwMajorVersion == 10))
+			if (IsWindows8OrGreater())
 			{
 				if (isWin8 = 1)
 				{
