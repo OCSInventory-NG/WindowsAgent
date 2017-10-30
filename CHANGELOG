@@ -1,3 +1,9 @@
+2.3.1.1
+  * Fix memory leak
+  * Add Network disconnected status on inventory
+  * Fix bug encoded translation WMI S/N Windows 7
+  * Update Network adapter's description to support unicode characters
+
 2.3.1.0
   * Update deprecated functions
   * Add PowerShell support for plugins

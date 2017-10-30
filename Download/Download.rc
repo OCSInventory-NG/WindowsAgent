@@ -28,8 +28,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,3,1,0
- PRODUCTVERSION 2,3,1,0
+ FILEVERSION 2,3,1,1
+ PRODUCTVERSION 2,3,1,1
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -47,13 +47,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory NG Package Download and Setup Tool"
             VALUE "CompanyName", "OCS Inventory NG"
             VALUE "FileDescription", "OCS Inventory NG Package Download and Setup Tool"
-            VALUE "FileVersion", "2.3.1.0"
+            VALUE "FileVersion", "2.3.1.1"
             VALUE "InternalName", "Download.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "Download.exe"
             VALUE "ProductName", "OCS Inventory NG Windows Agent"
-            VALUE "ProductVersion", "2.3.1.0"
+            VALUE "ProductVersion", "2.3.1.1"
         END
     END
     BLOCK "VarFileInfo"
