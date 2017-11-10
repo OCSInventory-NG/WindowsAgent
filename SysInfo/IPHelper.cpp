@@ -56,10 +56,9 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	PMIB_IF_TABLE2		pIfTable;
 	PMIB_IF_ROW2		pIfEntry;
 	PMIB_IPADDRTABLE	pIPAddrTable;
-	DWORD				dwSize = 0, 
-						size = 0, 
-						dwSizeBis = 0, 
-						ifIndex;
+	DWORD				dwSize = 0,
+						size = 0,
+						dwSizeBis = 0;
 	IN_ADDR				IPAddr, 
 						IPAddrBis, 
 						ipa;
@@ -74,7 +73,8 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 						ipAdr,
 						ipMsk,
 						nbRez;
-	UINT				uIndex = 0;
+	UINT				uIndex = 0,
+						ifIndex;
 	CNetworkAdapter		cAdapter;
 	CString				csMAC,
 						csAddress,
@@ -357,7 +357,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 				cAdapter.SetTypeMIB(GetIfType(pIfEntry->Type));
 				// Get the description;
 				cAdapter.SetDescription(pIfEntry->Description);
-				// Get MAC Address 
+				// Get MAC Address
 				csMAC.Format(_T("%02X:%02X:%02X:%02X:%02X:%02X"),
 					pIfEntry->PhysicalAddress[0], pIfEntry->PhysicalAddress[1],
 					pIfEntry->PhysicalAddress[2], pIfEntry->PhysicalAddress[3],
@@ -455,22 +455,24 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 								
 							// Make a second call to GetIpAddrTable to get the
 							// actual data we want
-							if (pIPAddrTable != NULL)
+							for (ifIndex = 0; ifIndex < (UINT)pIPAddrTable->dwNumEntries; ifIndex++)
 							{
-								// Get NetMask
-								ifIndex = pIPAddrTable->table[0].dwIndex;
-								IPAddr.S_un.S_addr = (u_long)pIPAddrTable->table[0].dwMask;
-								IPAddrBis.S_un.S_addr = (u_long)pIPAddrTable->table[0].dwAddr;
-								csSubnet = inet_ntop(AF_INET, &IPAddr, str, INET_ADDRSTRLEN);
-								csAddressIp = inet_ntop(AF_INET, &IPAddrBis, bufferstr, INET_ADDRSTRLEN);
+								if (pIfEntry->InterfaceIndex == pIPAddrTable->table[ifIndex].dwIndex)
+								{
+									// Get NetMask
+									IPAddr.S_un.S_addr = (u_long)pIPAddrTable->table[ifIndex].dwMask;
+									IPAddrBis.S_un.S_addr = (u_long)pIPAddrTable->table[ifIndex].dwAddr;
+									csSubnet = inet_ntop(AF_INET, &IPAddr, str, INET_ADDRSTRLEN);
+									csAddressIp = inet_ntop(AF_INET, &IPAddrBis, bufferstr, INET_ADDRSTRLEN);
 
-								inet_pton(AF_INET, bufferstr, &ipAdr);
-								inet_pton(AF_INET, str, &ipMsk);
-								nbRez = htonl(ipAdr & ipMsk);
+									inet_pton(AF_INET, bufferstr, &ipAdr);
+									inet_pton(AF_INET, str, &ipMsk);
+									nbRez = htonl(ipAdr & ipMsk);
 
-								ipa.S_un.S_addr = htonl(nbRez);
-								csSubnetNetwork = inet_ntop(AF_INET, &ipa, bufferRez, INET_ADDRSTRLEN);
-								cAdapter.SetNetNumber(csSubnetNetwork);
+									ipa.S_un.S_addr = htonl(nbRez);
+									csSubnetNetwork = inet_ntop(AF_INET, &ipa, bufferRez, INET_ADDRSTRLEN);
+									cAdapter.SetNetNumber(csSubnetNetwork);
+								}
 							}
 								
 							cAdapter.SetIPNetMask(csSubnet);
