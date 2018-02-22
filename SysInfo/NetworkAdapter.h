@@ -68,7 +68,7 @@ public: // Methods
 
 	void SetNetNumber( LPCTSTR nbr);
 	void SetIfIndex( LONG lIndex);
-	void SetDescription( LPCTSTR lpstrDescription);
+	void SetDescription( CString lpstrDescription);
 	void SetType( LPCTSTR lpstrType);
 	void SetTypeMIB( LPCTSTR lpstrMIBType);
 	void SetSpeed( ULONG lSpeed);
