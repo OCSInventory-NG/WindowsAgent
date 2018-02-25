@@ -43,7 +43,7 @@ public: // Methods
 	LONG GetTotalMB();
 	// Return the letter associated by the OS to the logical drive (A, C, D...)
 	LPCTSTR GetDriveLetter();
-	// Return the operating system volum name of the logical drive
+	// Return the operating system volume name of the logical drive
 	LPCTSTR GetVolumName();
 	// Return the drive type the logical drive (Hard drive, CD-rom...)
 	LPCTSTR GetDriveType();
@@ -67,7 +67,7 @@ public: // Methods
 	void SetTotalSize( LONG lSize);
 	void SetFreeSpace( LONG lFree);
 	void SetFilesNumber( LONG lNum);
-	// Retrieve all others logical drive informations
+	// Retrieve all other logical drive information
 	BOOL RetrieveDriveInfo( LPCTSTR lpstrDrive);
 
 	//////////////////////////////////

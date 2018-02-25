@@ -139,7 +139,7 @@ static char THIS_FILE[] = __FILE__;
 #define NT_SYSTEM_PORT_DESCRIPTION_VALUE		_T( "DriverDesc")
 #define NT_SYSTEM_PORT_TYPE_VALUE				_T( "PortSubClass")
 
-// Defines for retrieving system controlers from NT registry
+// Defines for retrieving system controllers from NT registry
 #define NT_CONTROLER_FLOPPY_KEY					_T( "SYSTEM\\CurrentControlSet\\Control\\Class\\{4D36E969-E325-11CE-BFC1-08002BE10318}")
 #define NT_CONTROLER_FLOPPY_MANUFACTURER_VALUE	_T( "ProviderName")
 #define NT_CONTROLER_FLOPPY_NAME_VALUE			_T( "DriverDesc")
@@ -221,7 +221,7 @@ static char THIS_FILE[] = __FILE__;
 #define NT_MODEM_DESCRIPTION_VALUE				_T( "DriverDesc")
 #define NT_MODEM_TYPE_VALUE						_T( "AttachedTo")
 
-// Defines for retrieving if it is notbook from NT registry
+// Defines for retrieving if it is a notebook from NT registry
 #define NT_NOTEBOOK_KEY							_T( "SYSTEM\\CurrentControlSet\\Control\\Class\\{72631E54-78A4-11D0-BCF7-00AA00B7B32A}")
 
 // Defines for retrieving installed apps from 9X/Me registry
@@ -1250,7 +1250,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 				dwIndexGroup = 0;
 				while ((lResult = RegEnumKeyEx( hKeyGroup, dwIndexGroup, szDeviceName, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
 				{
-					// For each service, enumerate propertie keys
+					// For each service, enumerate property keys
 					szDeviceName[dwLength] = 0;
 					csSubKey.Format( _T( "%s\\%s\\%s"), NT_ENUM_KEY, szGroupName, szDeviceName);
 					if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
@@ -1354,7 +1354,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 									myObject.SetScreenResolution( csResolution);
 									AddLog( _T( "\t\t<Description: %s><VideoProcessor: %s><Memory: %s><Resolution: %s>\n"), 
 										myObject.GetName(), myObject.GetChipset(), myObject.GetMemory(), myObject.GetScreenResolution());
-									// Add the device to the adapter lis
+									// Add the device to the adapter list
 									if (bHaveToStore)
 									{
 										pList->AddTail( myObject);
@@ -1451,7 +1451,7 @@ BOOL CRegistry::GetVideoAdaptersXP(CVideoAdapterList *pList)
 				dwIndexGroup = 0;
 				while ((lResult = RegEnumKeyEx( hKeyGroup, dwIndexGroup, szDeviceName, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
 				{
-					// For each device, get propertie keys
+					// For each device, get property keys
 					szDeviceName[dwLength] = 0;
 					csSubKey.Format( _T( "%s\\%s\\%s"), XP_ENUM_KEY, szGroupName, szDeviceName);
 					if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyProperty) == ERROR_SUCCESS)
@@ -1506,7 +1506,7 @@ BOOL CRegistry::GetVideoAdaptersXP(CVideoAdapterList *pList)
 						myObject.SetScreenResolution( csResolution);
 						AddLog( _T( "\t\t<Description: %s><VideoProcessor: %s><Memory: %s><Resolution: %s>\n"), 
 							myObject.GetName(), myObject.GetChipset(), myObject.GetMemory(), myObject.GetScreenResolution());
-						// Add the device to the adapter lis
+						// Add the device to the adapter list
 						if (bHaveToStore)
 						{
 							pList->AddTail( myObject);
@@ -1898,7 +1898,7 @@ BOOL CRegistry::GetMonitorsNT(CMonitorList *pList)
 				csModel = NOT_AVAILABLE;
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_MONITOR_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2042,7 +2042,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_FLOPPY_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2086,7 +2086,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_FLOPPY_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_FLOPPY_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2159,7 +2159,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_IDE_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2203,7 +2203,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_IDE_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_IDE_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2276,7 +2276,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_SCSI_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2320,7 +2320,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_SCSI_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_SCSI_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2393,7 +2393,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_INFRARED_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2437,7 +2437,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_INFRARED_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_INFRARED_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2521,7 +2521,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_USB_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2565,7 +2565,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_USB_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_USB_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2649,7 +2649,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_IEEE1394_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2693,7 +2693,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_IEEE1394_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_IEEE1394_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2766,7 +2766,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_PCMCIA_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2810,7 +2810,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_PCMCIA_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_PCMCIA_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2947,7 +2947,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 						csName = NOT_AVAILABLE; 
 						csDescription = NOT_AVAILABLE; 
 						csType = NOT_AVAILABLE; 
-						// Read the manufactuer
+						// Read the manufacturer
 						if (GetValue( hKeyObject, NT_STORAGE_FLOPPY_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 						{
 							bHaveToStore = TRUE;
@@ -3077,7 +3077,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 				dwIndexEnumBus = 0;
 				while ((lResult = RegEnumKeyEx( hKeyEnumBus, dwIndexEnumBus, szSubKey, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
 				{
-					// For each object, Try to open the SCSI traget key
+					// For each object, Try to open the SCSI target key
 					szSubKey[dwLength] = 0;
 					bHaveToStore = FALSE;
 					csSubKeyTarget.Format( _T( "%s\\%s"), csSubKeyBus, szSubKey);
@@ -3088,7 +3088,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 						dwIndexEnumTarget = 0;
 						while ((lResult = RegEnumKeyEx( hKeyEnumTarget, dwIndexEnumTarget, szKey, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
 						{
-							// For each object, Try to open the SCSI traget key
+							// For each object, Try to open the SCSI target key
 							szKey[dwLength] = 0;
 							bHaveToStore = FALSE;
 							csSubKeyLogical.Format( _T( "%s\\%s"), csSubKeyTarget, szKey);
@@ -3110,7 +3110,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 										csName = NOT_AVAILABLE; 
 										csDescription = NOT_AVAILABLE; 
 										csType = NOT_AVAILABLE; 
-										// Read the manufactuer
+										// Read the manufacturer
 										if (GetValue( hKeyObject, NT_STORAGE_OTHER_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 										{
 											bHaveToStore = TRUE;
@@ -3691,7 +3691,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 		return FALSE;
 	}
 
-	//Requete registry
+	//Query registry
 	if( RegOpenKeyEx( m_hKey, csKeyPath, 0, KEY_READ|KEY_WOW64_64KEY, &InfoKey ) == ERROR_SUCCESS )
 	{
 		if( RegQueryValueEx(InfoKey, csValueName, NULL, &InfoType, Data, &dwDataSize) == ERROR_SUCCESS )
@@ -3981,7 +3981,7 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 				csDescription = NOT_AVAILABLE; 
 				csPointingType = NOT_AVAILABLE; 
 				csPointingInterface = NOT_AVAILABLE; 
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_INPUT_KEYBOARD_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -4098,7 +4098,7 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 				csDescription = NOT_AVAILABLE; 
 				csPointingType = NOT_AVAILABLE; 
 				csPointingInterface = NOT_AVAILABLE; 
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_INPUT_KEYBOARD_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;

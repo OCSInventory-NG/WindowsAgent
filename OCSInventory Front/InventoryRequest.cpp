@@ -243,7 +243,7 @@ BOOL CInventoryRequest::isStateChanged()
 	CCpuList			m_plugCpuList;
 	// List of Input devices infos from EXE/VBS plugin
 	CInputDeviceList	m_plugInputList;
-	// List of Logical Drives (Volum name, File system, Total size, Free space...) from EXE/VBS plugin
+	// List of Logical Drives (Volume name, File system, Total size, Free space...) from EXE/VBS plugin
 	CLogicalDriveList	m_plugDriveList;
 	// List of Memory slots from EXE/VBS plugin
 	CMemorySlotList		m_plugMemoryList;
@@ -263,7 +263,7 @@ BOOL CInventoryRequest::isStateChanged()
 	CSoundDeviceList	m_plugSoundList;
 	// List of Storage devices (Floppy disk, IDE Disk, SCSI Disk, CD-Rom...) from EXE/VBS plugin
 	CStoragePeripheralList m_plugStorageList;
-	// List of System Controlers (Floppy, IDE, SCSI, USB, IEEE1394, PCMCIA, SATA) from EXE/VBS plugin
+	// List of System Controllers (Floppy, IDE, SCSI, USB, IEEE1394, PCMCIA, SATA) from EXE/VBS plugin
 	CSystemControllerList m_plugSystemControllerList;
 	// List of System Slots (PCI, AGP...) from EXE/VBS plugin
 	CSystemSlotList		m_plugSlotList;
@@ -706,9 +706,9 @@ BOOL CInventoryRequest::runInventory()
 	else
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %d system slot(s) found"),
 					  m_SlotList.GetCount());
-	// Get System controlers
+	// Get System controllers
 	if (!m_pSysInfo->getSystemControllers( &m_SystemControllerList))
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve system controlers"));
+		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve system controllers"));
 	else
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %d system controller(s) found"),
 					  m_SystemControllerList.GetCount());

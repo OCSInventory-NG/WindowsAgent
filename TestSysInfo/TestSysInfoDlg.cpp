@@ -2587,7 +2587,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Video Controlers infos"));
+	SysInfoLog( _T( "Video Controllers info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CVideoAdapter myVideo;
 	pos = m_VideoList.GetHeadPosition();
@@ -2613,7 +2613,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		}
 	}
 	SysInfoLog( _T( ""));
-	str.Format( _T( "Video Controlers Hash: %s"), m_VideoList.GetHash());
+	str.Format( _T( "Video Controllers Hash: %s"), m_VideoList.GetHash());
 	SysInfoLog( str);
 
 
@@ -2786,7 +2786,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "System Controlers infos"));
+	SysInfoLog( _T( "System Controllers info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CSystemController myController;
 	pos = m_SystemControllerList.GetHeadPosition();
@@ -2816,7 +2816,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		}
 	}
 	SysInfoLog( _T( ""));
-	str.Format( _T( "System Controlers Hash: %s"), m_SystemControllerList.GetHash());
+	str.Format( _T( "System Controllers Hash: %s"), m_SystemControllerList.GetHash());
 	SysInfoLog( str);
 
 
@@ -3222,7 +3222,7 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	// Get System Slots
 	if (!mySysInfo.getSystemSlots( &m_SlotList))
 		AfxMessageBox( _T( "Failed to get System slots informations !"));
-	// Get System controlers
+	// Get System controllers
 	if (!mySysInfo.getSystemControllers( &m_SystemControllerList))
 		AfxMessageBox( _T( "Failed to get System Controllers informations !"));
 	// Get Physical storage devices

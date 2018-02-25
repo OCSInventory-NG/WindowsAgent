@@ -62,7 +62,7 @@ protected:
 	CSoundDeviceList m_SoundList;
 	// List of Storage devices (Floppy disk, IDE Disk, SCSI Disk, CD-Rom...)
 	CStoragePeripheralList m_StorageList;
-	// List of System Controlers (Floppy, IDE, SCSI, USB, IEEE1394, PCMCIA, SATA)
+	// List of System Controllers (Floppy, IDE, SCSI, USB, IEEE1394, PCMCIA, SATA)
 	CSystemControllerList m_SystemControllerList;
 	// List of System Slots (PCI, AGP...)
 	CSystemSlotList m_SlotList;

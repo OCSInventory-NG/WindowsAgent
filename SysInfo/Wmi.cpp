@@ -1948,7 +1948,7 @@ BOOL CWmi::GetSystemSlots(CSystemSlotList *pMyList)
 				myObject.SetDescription( csBuffer);
 				csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "SlotDesignation"));
 				myObject.SetSlotDesignation( csBuffer);
-				// TODO Validate working on ALL compuer
+				// TODO Validate working on ALL computers
 				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "CurrentUsage"));
 				myObject.SetUsage( dwValue);
 				// End TODO
@@ -2169,7 +2169,7 @@ BOOL CWmi::GetMemorySlots(CMemorySlotList *pMyList)
 			// One Physical Memory Array object may include one or more Physical Memory objects
 			while (m_dllWMI.MoveNextEnumClassObject())
 			{
-				// The value MemoryDevices indicates the number of Physical Memory object in the array
+				// The value MemoryDevices indicates the number of Physical Memory objects in the array
 				dwValue = m_dllWMI.GetClassObjectDwordValue( _T( "MemoryDevices"));
 				while( nbFilled < dwValue ) {
 					myObject.SetCaption( _T(""));

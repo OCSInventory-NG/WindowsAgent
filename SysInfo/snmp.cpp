@@ -273,12 +273,12 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
 	varBind[4].name = MIB_NULL;
 	varBind[5].name = MIB_NULL;
 
-    // Copy in the OID to find the number of entries in the Inteface table
+    // Copy in the OID to find the number of entries in the Interface table
     varBindList.len = 1;        // Only retrieving one item
     SNMP_oidcpy(&varBind[0].name, &MIB_ifEntryNumber);
     ret = m_Query(ASN_RFC1157_GETNEXTREQUEST, &varBindList, &errorStatus, &errorIndex);
 
-    // Copy in the OID to retrieve interface properties in the Inteface table
+    // Copy in the OID to retrieve interface properties in the Interface table
 	varBindList.len = 6;
     // Copy in the OID of ifType, the type of interface
     SNMP_oidcpy(&varBind[0].name, &MIB_ifEntryType);
@@ -362,7 +362,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
         }
     }
 	while (!ret);
-	// Stop only on an error.  An error will occur when we go exhaust
+	// Stop only on an error.  An error will occur when we exhaust
 	// the list of interfaces to be examined
     // Free the bindings
     SNMP_FreeVarBind(&varBind[0]);
@@ -443,7 +443,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
         }
     }
 	while (!ret);
-	// Stop only on an error.  An error will occur when we go exhaust
+	// Stop only on an error.  An error will occur when we exhaust
 	// the list of interfaces to be examined
     // Free the bindings
     SNMP_FreeVarBind(&varBind[0]);
@@ -513,7 +513,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
         }
     }
 	while (!ret);
-	// Stop only on an error.  An error will occur when we go exhaust
+	// Stop only on an error.  An error will occur when we exhaust
 	// the list of interfaces to be examined
     // Free the bindings
     SNMP_FreeVarBind(&varBind[0]);

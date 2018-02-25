@@ -158,8 +158,8 @@ protected: // Attributes
 	ULONG	m_ulSwapSize;		// Swap Size of the device
 	CString	m_csIPAddress;		// IP Address of the device if available (ex "192.3.4.1" or "Unavailable")
 	CString	m_csLastCheckDate;	// Last check date when reading from CSV
-	CString	m_csExecutionDuration; // Excution duration in string format
-	CString	m_csLoggedOnUser;	// Logged on username when device have been checked
+	CString	m_csExecutionDuration; // Execution duration in string format
+	CString	m_csLoggedOnUser;	// Logged on username when device has been checked
 	CString m_csLastLoggedUser; // Last user who'd been logged in
 	CString	m_csDescription;	// Description extracted from OS
 	CString	m_csDomain;			// NT Domain name or workgroup
