@@ -223,7 +223,7 @@ BOOL CXMLInteract::UpdateDrives( CLogicalDriveList &myDriveList)
 				m_pXml->AddChildElem( _T( "TOTAL"), cObject.GetTotalMB());
 				m_pXml->AddChildElem( _T( "FREE"), cObject.GetFreeMB());
 				m_pXml->AddChildElem( _T( "NUMFILES"), cObject.GetFilesNumber());
-				m_pXml->AddChildElem( _T( "VOLUMN"), cObject.GetVolumName());
+				m_pXml->AddChildElem( _T( "VOLUMEN"), cObject.GetVolumeName());
 			m_pXml->OutOfElem();		
 			if (pos != NULL)
 				cObject = myDriveList.GetNext( pos);
@@ -266,8 +266,8 @@ BOOL CXMLInteract::ReadDrives( CLogicalDriveList &myDriveList)
 			pXmlElement = m_pXml->FindFirstElem( _T( "NUMFILES"), pXml);
 			if (m_pXml->GetData( pXmlElement))
 				cObject.SetFilesNumber( _ttol( m_pXml->GetData( pXmlElement)));
-			pXmlElement = m_pXml->FindFirstElem( _T( "VOLUMN"), pXml);
-			cObject.SetVolumName( m_pXml->GetData( pXmlElement));
+			pXmlElement = m_pXml->FindFirstElem( _T( "VOLUMEN"), pXml);
+			cObject.SetVolumeName( m_pXml->GetData( pXmlElement));
 			myDriveList.AddTail( cObject);
 			pXml = m_pXml->FindNextElem( _T( "DRIVES"));
 		}

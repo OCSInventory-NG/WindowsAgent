@@ -48,9 +48,9 @@ LPCTSTR CLogicalDrive::GetDriveType()
 	return m_csDriveType;
 }
 
-LPCTSTR CLogicalDrive::GetVolumName()
+LPCTSTR CLogicalDrive::GetVolumeName()
 {
-	return m_csVolumName;
+	return m_csVolumeName;
 }
 
 LPCTSTR CLogicalDrive::GetDriveLetter()
@@ -103,26 +103,26 @@ BOOL CLogicalDrive::RetrieveDriveInfo( LPCTSTR lpstrDrive)
 			if (GetVolumeInformation( lpstrDrive, strName, dwName, NULL, &dwMaximumComponentLength, &dwFSFlags, strFSName, dwFSName))
 			{
 				// OK
-				m_csVolumName = strName;
+				m_csVolumeName = strName;
 				m_csFileSystem = strFSName;
 			}
 			else
 			{
 				// Error
-				m_csVolumName = NOT_AVAILABLE;
+				m_csVolumeName = NOT_AVAILABLE;
 				m_csFileSystem = NOT_AVAILABLE;
 			}
 			break;
 		case DRIVE_REMOVABLE :	// Removable Drive
 			SetType( DRIVE_REMOVABLE);
 			bIsLocalDrive = FALSE;
-			m_csVolumName = NOT_AVAILABLE;
+			m_csVolumeName = NOT_AVAILABLE;
 			m_csFileSystem = NOT_AVAILABLE;
 			break;
 		case DRIVE_CDROM:		// CD-Rom drive
 			SetType( DRIVE_CDROM);
 			bIsLocalDrive = FALSE;
-			m_csVolumName = NOT_AVAILABLE;
+			m_csVolumeName = NOT_AVAILABLE;
 			m_csFileSystem = NOT_AVAILABLE;
 			break;
 		case DRIVE_REMOTE :		// Network drive
@@ -140,10 +140,10 @@ BOOL CLogicalDrive::RetrieveDriveInfo( LPCTSTR lpstrDrive)
 			csDrive.Remove( '\\');
 			if (WNetGetConnection( csDrive, strRemoteShare, &dwRemoteShare) == NO_ERROR)
 				// OK
-				m_csVolumName.Format( _T( "%s"), strRemoteShare);
+				m_csVolumeName.Format( _T( "%s"), strRemoteShare);
 			else
 				// Error
-				m_csVolumName.Format( _T( "%s"), NOT_AVAILABLE);
+				m_csVolumeName.Format( _T( "%s"), NOT_AVAILABLE);
 			break;
 		case DRIVE_RAMDISK:		// RAM Disk
 			SetType( DRIVE_RAMDISK);
@@ -152,32 +152,32 @@ BOOL CLogicalDrive::RetrieveDriveInfo( LPCTSTR lpstrDrive)
 			if (GetVolumeInformation( lpstrDrive, strName, dwName, NULL, &dwMaximumComponentLength, &dwFSFlags, strFSName, dwFSName))
 			{
 				// OK
-				m_csVolumName = strName;
+				m_csVolumeName = strName;
 				m_csFileSystem = strFSName;
 			}
 			else
 			{
 				// Error
-				m_csVolumName = NOT_AVAILABLE;
+				m_csVolumeName = NOT_AVAILABLE;
 				m_csFileSystem = NOT_AVAILABLE;
 			}
 			break;
 		case DRIVE_NO_ROOT_DIR:	// Disk does not have root dir
 			SetType( DRIVE_NO_ROOT_DIR);
 			bIsLocalDrive = FALSE;
-			m_csVolumName = NOT_AVAILABLE;
+			m_csVolumeName = NOT_AVAILABLE;
 			m_csFileSystem = NOT_AVAILABLE;
 			break;
 		case DRIVE_UNKNOWN:
 			SetType( DRIVE_UNKNOWN);
 			bIsLocalDrive = FALSE;
-			m_csVolumName = NOT_AVAILABLE;
+			m_csVolumeName = NOT_AVAILABLE;
 			m_csFileSystem = NOT_AVAILABLE;
 			break;
 		default :				// Unknown
 			SetDriveType( NOT_AVAILABLE);
 			bIsLocalDrive = FALSE;
-			m_csVolumName = NOT_AVAILABLE;
+			m_csVolumeName = NOT_AVAILABLE;
 			m_csFileSystem = NOT_AVAILABLE;
 			break;
 		}
@@ -196,7 +196,7 @@ BOOL CLogicalDrive::RetrieveDriveInfo( LPCTSTR lpstrDrive)
 	StrForSQL( m_csDriveLetter);
 	StrForSQL( m_csDriveType);
 	StrForSQL( m_csFileSystem);
-	StrForSQL( m_csVolumName);
+	StrForSQL( m_csVolumeName);
 	// Return TRUE if this is a hard drive
 	return bIsLocalDrive;
 }
@@ -244,10 +244,10 @@ void CLogicalDrive::SetType( DWORD dwType)
 	StrForSQL( m_csDriveType);
 }
 
-void CLogicalDrive::SetVolumName( LPCTSTR lpstrVolumn)
+void CLogicalDrive::SetVolumeName( LPCTSTR lpstrVolumeName)
 {
-	m_csVolumName = lpstrVolumn;
-	StrForSQL( m_csVolumName);
+	m_csVolumeName = lpstrVolumeName;
+	StrForSQL( m_csVolumeName);
 }
 
 void CLogicalDrive::SetFileSystem( LPCTSTR lpstrFileSystem)
@@ -414,7 +414,7 @@ ULONG CLogicalDrive::RetrieveFreeSpace(LPCTSTR lpstrDrive)
 void CLogicalDrive::Clear()
 {
 	m_csDriveType.Empty();	
-	m_csVolumName.Empty();	
+	m_csVolumeName.Empty();
 	m_csFileSystem.Empty();	
 	m_csDriveLetter.Empty();
 	m_lTotalSize = 0;	
@@ -425,7 +425,7 @@ void CLogicalDrive::Clear()
 int CLogicalDrive::operator==(CLogicalDrive cObject) const
 {
 	return ((m_csDriveType == cObject.GetDriveType()) &&	
-		(m_csVolumName == cObject.GetVolumName()) &&
+		(m_csVolumeName == cObject.GetVolumeName()) &&
 		(m_csFileSystem == cObject.GetFileSystem()) &&
 		(m_lTotalSize == cObject.GetTotalMB()) &&
 		(m_lFreeSpace == cObject.GetFreeMB()) &&
