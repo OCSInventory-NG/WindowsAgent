@@ -36,7 +36,7 @@ protected:
 	HICON m_hIcon;
 	// General device properties
 	CDeviceProperties m_Device;
-	// BIOS informations
+	// BIOS information
 	CBios		 m_BIOS;
 	// List of CPU infos
 	CCpuList m_CpuList;

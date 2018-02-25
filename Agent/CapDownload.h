@@ -28,7 +28,7 @@ public: // Methods
 	CCapDownload();
 	virtual ~CCapDownload();
 
-	// Get download package informations from server
+	// Get download package information from server
 	BOOL retrievePackages();
 	// Write download tool general configuration parameters
 	BOOL writeConfig();

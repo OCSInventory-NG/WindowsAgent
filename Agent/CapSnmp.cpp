@@ -312,7 +312,7 @@ void CCapSnmp::PrinterModule(CString Community, CString IP, CMarkup *Xml){
 	CExecCommand cmProcess;
 	CString csCmd;
 
-	// Printer basics informations
+	// Printer basic information
 	CStringArray printer_oids;
 	printer_oids.Add(_T("1.3.6.1.2.1.43.5.1.1.16.1"));
 	printer_oids.Add(_T("1.3.6.1.2.1.43.5.1.1.17.1"));

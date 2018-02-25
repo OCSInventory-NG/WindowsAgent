@@ -117,7 +117,7 @@ BOOL CInventoryRequest::final()
 
 	if (m_bNotify)
 	{
-		// Notify mode => Only send minimum network informations
+		// Notify mode => Only send minimum network information
 		getXmlPointerRequest();
 		// Save inventory state only for Network adapters
 		m_pState->SetNetworks( m_NetworkList.GetHash());
@@ -193,7 +193,7 @@ BOOL CInventoryRequest::final()
 		// Update Registry values
 		bSuccess = bSuccess && m_pTheDB->UpdateRegistryValues( m_RegistryList);
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update %u Registry Value(s)"), m_RegistryList.GetCount());
-		// Update Administrative Informations
+		// Update Administrative Information
 		csFilename.Format( _T("%s\\%s"), getDataFolder(), OCS_ACCOUNTINFO_FILENAME);
 		bSuccess = bSuccess && m_pTheDB->UpdateAccountInfo( csFilename);
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => XML Update Administrative Information(s)"));
@@ -237,7 +237,7 @@ BOOL CInventoryRequest::isStateChanged()
 {
 	CString				csHash, csPlugHash;
 	ULONG				ulChecksum = 0;
-	// BIOS informations from EXE/VBS plugin
+	// BIOS information from EXE/VBS plugin
 	CBios				m_plugBIOS;
 	// List of CPU infos from EXE/VBS plugin
 	CCpuList			m_plugCpuList;
@@ -629,7 +629,7 @@ BOOL CInventoryRequest::runInventory()
 	// Last logged on user
 	m_pSysInfo->getLastLoggedUser( cs1);
 	m_Device.SetLastLoggedUser( cs1);
-	// Get OS informations and device type (windows station or windows server)
+	// Get OS information and device type (windows station or windows server)
 	if (!m_pSysInfo->getOS( cs1, cs2, cs3, cs4, cs5))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve Operating System"));
 	else
@@ -661,7 +661,7 @@ BOOL CInventoryRequest::runInventory()
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => User domain is <%s>"), 
 					cs1);
 	m_Device.SetUserDomain( cs1);
-	// Get BIOS informations
+	// Get BIOS information
 	if (!m_pSysInfo->getBiosInfo( &m_BIOS))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve BIOS"));
 	else
@@ -676,9 +676,9 @@ BOOL CInventoryRequest::runInventory()
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %lu processor(s) %s at %s MHz"),
 					  dwValue, cs1, cs2);
 	m_Device.SetProcessor( cs1, cs2, dwValue);
-	// Get memory informations
+	// Get memory information
 	if (!m_pSysInfo->getMemory( &ulPhysicalMemory, &ulSwapSize))
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve memory informations from OS"));
+		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve memory information from OS"));
 	else
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => OS Memory %lu MB, OS Swap size %lu MB"),
 					  ulPhysicalMemory, ulSwapSize);
@@ -733,19 +733,19 @@ BOOL CInventoryRequest::runInventory()
 	else
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %d modem(s) found"),
 					  m_ModemList.GetCount());
-	// Get network adapter(s) hardware and IP informations
+	// Get network adapter(s) hardware and IP information
 	if (!m_pSysInfo->getNetworkAdapters( &m_NetworkList))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve network adapters"));
 	else
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %d network adapter(s) found"),
 					  m_NetworkList.GetCount());
-	// Get Printer(s) informations
+	// Get Printer(s) information
 	if (!m_pSysInfo->getPrinters( &m_PrinterList))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve system printers"));
 	else
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => %d system printer(s) found"),
 					  m_PrinterList.GetCount());
-	// Get Video adapter(s) informations
+	// Get Video adapter(s) information
 	if (!m_pSysInfo->getVideoAdapters( &m_VideoList))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve video adapters"));
 	else

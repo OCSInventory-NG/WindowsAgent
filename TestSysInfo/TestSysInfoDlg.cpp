@@ -3182,9 +3182,9 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	if (!mySysInfo.getLastLoggedUser( cs1))
 		AfxMessageBox( _T( "Failed to get last logged on username !"));
 	m_Device.SetLastLoggedUser( cs1);
-	// Get OS informations and device type (windows station or windows server)
+	// Get OS information and device type (windows station or windows server)
 	if (!mySysInfo.getOS( cs1, cs2, cs3, cs4, cs5))
-		AfxMessageBox( _T( "Failed to get OS informations !"));
+		AfxMessageBox( _T( "Failed to get OS information !"));
 	m_Device.SetOS( cs1, cs2, cs3);
 	m_Device.SetDescription (cs4);
 	m_Device.SetAddressWidthOS( mySysInfo.getAddressWidthOS());
@@ -3194,73 +3194,73 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	cSoftOS.SetMemoryAddressWidth( mySysInfo.getAddressWidthOS());
 	// Get NT Domain or Workgroup
 	if (!mySysInfo.getDomainOrWorkgroup( cs1))
-		AfxMessageBox( _T( "Failed to get Domain or Workgroup informations !"));
+		AfxMessageBox( _T( "Failed to get Domain or Workgroup information !"));
 	m_Device.SetDomainOrWorkgroup( cs1);
 	// Get NT user Domain
 	if (!mySysInfo.getUserDomain( cs1))
-		AfxMessageBox( _T( "Failed to get User Domain informations !"));
+		AfxMessageBox( _T( "Failed to get User Domain information !"));
 	m_Device.SetUserDomain( cs1);
-	// Get BIOS informations
+	// Get BIOS information
 	if (!mySysInfo.getBiosInfo( &m_BIOS))
-		AfxMessageBox( _T( "Failed to get BIOS informations !"));
+		AfxMessageBox( _T( "Failed to get BIOS information !"));
 	// Get Processor infos (0 means error)
 	if ((dwValue = mySysInfo.getProcessors( cs1, cs2, &m_CpuList)) == 0)
-		AfxMessageBox( _T( "Failed to get Processors informations !"));
+		AfxMessageBox( _T( "Failed to get Processors information !"));
 	m_Device.SetProcessor( cs1, cs2, dwValue);
-	// Get memory informations
+	// Get memory information
 	if (!mySysInfo.getMemory( &ulPhysicalMemory, &ulSwapSize))
-		AfxMessageBox( _T( "Failed to get Memory informations !"));
+		AfxMessageBox( _T( "Failed to get Memory information !"));
 	m_Device.SetMemory( ulPhysicalMemory, ulSwapSize);
 	if (!mySysInfo.getMemorySlots( &m_MemoryList))
-		AfxMessageBox( _T( "Failed to get Memory Slots informations !"));
+		AfxMessageBox( _T( "Failed to get Memory Slots information !"));
 	// Get Input Devices
 	if (!mySysInfo.getInputDevices( &m_InputList))
-		AfxMessageBox( _T( "Failed to get Input Devices informations !"));
+		AfxMessageBox( _T( "Failed to get Input Devices information !"));
 	// Get System ports
 	if (!mySysInfo.getSystemPorts( &m_PortList))
-		AfxMessageBox( _T( "Failed to get System Ports informations !"));
+		AfxMessageBox( _T( "Failed to get System Ports information !"));
 	// Get System Slots
 	if (!mySysInfo.getSystemSlots( &m_SlotList))
-		AfxMessageBox( _T( "Failed to get System slots informations !"));
+		AfxMessageBox( _T( "Failed to get System slots information !"));
 	// Get System controllers
 	if (!mySysInfo.getSystemControllers( &m_SystemControllerList))
-		AfxMessageBox( _T( "Failed to get System Controllers informations !"));
+		AfxMessageBox( _T( "Failed to get System Controllers information !"));
 	// Get Physical storage devices
 	if (!mySysInfo.getStoragePeripherals( &m_StorageList))
-		AfxMessageBox( _T( "Failed to get Physical Storages informations !"));
+		AfxMessageBox( _T( "Failed to get Physical Storages information !"));
 	// Get Logical Drives
 	if (!mySysInfo.getLogicalDrives( &m_DriveList))
-		AfxMessageBox( _T( "Failed to get Logical Drives informations !"));
+		AfxMessageBox( _T( "Failed to get Logical Drives information !"));
 	// Get Sound Devices
 	if (!mySysInfo.getSoundDevices( &m_SoundList))
-		AfxMessageBox( _T( "Failed to get Sound Devices informations !"));
+		AfxMessageBox( _T( "Failed to get Sound Devices information !"));
 	// Get Modems
 	if (!mySysInfo.getModems( &m_ModemList))
-		AfxMessageBox( _T( "Failed to get Modems informations !"));
-	// Get network adapter(s) hardware and IP informations
+		AfxMessageBox( _T( "Failed to get Modems information !"));
+	// Get network adapter(s) hardware and IP information
 	if (!mySysInfo.getNetworkAdapters( &m_NetworkList))
-		AfxMessageBox( _T( "Failed to get Network Adapters informations !"));
-	// Get Printer(s) informations
+		AfxMessageBox( _T( "Failed to get Network Adapters information !"));
+	// Get Printer(s) information
 	if (!mySysInfo.getPrinters( &m_PrinterList))
-		AfxMessageBox( _T( "Failed to get Printers informations !"));
-	// Get Video adapter(s) informations
+		AfxMessageBox( _T( "Failed to get Printers information !"));
+	// Get Video adapter(s) information
 	if (!mySysInfo.getVideoAdapters( &m_VideoList))
-		AfxMessageBox( _T( "Failed to get Video Adapters informations !"));
+		AfxMessageBox( _T( "Failed to get Video Adapters information !"));
 	if (!mySysInfo.getMonitors( &m_MonitorList))
-		AfxMessageBox( _T( "Failed to get Monitors informations !"));
+		AfxMessageBox( _T( "Failed to get Monitors information !"));
 	// Get the primary local IP Address 
 	m_Device.SetIPAddress( mySysInfo.getLocalIP());
 	// Get Windows registration infos
 	if (!mySysInfo.getWindowsRegistration( cs1, cs2, cs3))
-		AfxMessageBox( _T( "Failed to get Windows Registration informations !"));
+		AfxMessageBox( _T( "Failed to get Windows Registration information !"));
 	m_Device.SetWindowsRegistration( cs1, cs2, cs3);
 	// Get Windows product key
 	if (!mySysInfo.getWindowsProductKey( cs1))
-		AfxMessageBox( _T( "Failed to get Windows Product Key informations !"));
+		AfxMessageBox( _T( "Failed to get Windows Product Key information !"));
 	m_Device.SetWindowsProductKey( cs1);
 	// Get Software list
 	if (!mySysInfo.getInstalledApplications( &m_SoftwareList, TRUE))
-		AfxMessageBox( _T( "Failed to get Installed Softwares informations !"));
+		AfxMessageBox( _T( "Failed to get Installed Softwares information !"));
 	m_SoftwareList.AddTail( cSoftOS);
 	// Get UUID
 	if (!mySysInfo.getUUID( cs1))

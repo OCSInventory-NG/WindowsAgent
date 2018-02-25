@@ -100,7 +100,7 @@ public: // Methods
 	LPCTSTR getProxy();
 	// Return the proxy port
 	UINT	getProxyPort();
-	// Set proxy informations
+	// Set proxy information
 	void setProxyType( UINT uProxyType = OCS_HTTP_PROXY_TYPE_HTTP);
 	void setProxy( LPCTSTR lpstrServerName);
 	void setProxyPort( UINT uPort = OCS_HTTP_DEFAULT_PORT);

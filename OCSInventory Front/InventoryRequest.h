@@ -30,7 +30,7 @@ class OCSINVENTORYFRONT_API CInventoryRequest : public CRequestAbstract
 public: //Methods
 
 	//Standards constructor and destructor
-	// Optionnally, enable notify mode to send only important informations changes, such as IP informations
+	// Optionally, enable notify mode to send only important information changes, such as IP information
 	CInventoryRequest( BOOL bNotify = FALSE);
 	virtual ~CInventoryRequest();
 
@@ -45,7 +45,7 @@ public: //Attributes
 	CXMLInteract		*m_pTheDB;			
 	// General device properties
 	CDeviceProperties m_Device;
-	// BIOS informations
+	// BIOS information
 	CBios		 m_BIOS;
 	// List of CPU infos
 	CCpuList m_CpuList;

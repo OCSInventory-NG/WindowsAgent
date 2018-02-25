@@ -10,7 +10,7 @@
 
 setcompressor /SOLID lzma
 
-; Version informations
+; Version information
 !define PRODUCT_NAME "OCS Inventory NG Logon Installer"
 !define PRODUCT_VERSION "2.3.1.1"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"

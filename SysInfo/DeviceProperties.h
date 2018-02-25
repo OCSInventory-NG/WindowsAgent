@@ -10,7 +10,7 @@
 
 // DeviceProperties.h: interface for the CDeviceProperties class.
 //
-// Class storing informations about Hardware and OS of a device
+// Class storing information about Hardware and OS of a device
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -101,11 +101,11 @@ public:
 	void SetDeviceID( LPCTSTR lpstrDeviceID);
 	// Set the device NetBIOS name
 	void SetDeviceName( LPCTSTR lpstrName);
-	// Set the operating system informations
+	// Set the operating system information
 	void SetOS( LPCTSTR lpstrName, LPCTSTR lpstrVersion, LPCTSTR lpstrComment);
 	// Set OS memory addressing bits (32 bits, 64 bits...)
 	void SetAddressWidthOS( UINT uBits = 32);
-	// Set the processors informations
+	// Set the processor information
 	void SetProcessor( LPCTSTR lpstrName, LPCTSTR lpstrSpeed, DWORD dwNumber);
 	// Set the physical and paging file size in mega bytes
 	void SetMemory( ULONG ulPhysical, ULONG ulPageFile);
@@ -127,9 +127,9 @@ public:
 	void SetDomainOrWorkgroup( LPCTSTR lpstrDomain);
 	// Set the NT User Domain
 	void SetUserDomain( LPCTSTR lpstrUserDomain);
-	// Set informations about Windows registration
+	// Set information about Windows registration
 	void SetWindowsRegistration( LPCTSTR lpstrCompany, LPCTSTR lpstrOwner, LPCTSTR lpstrProductID);
-	// Set informations about Windows key
+	// Set information about Windows key
 	void SetWindowsProductKey( LPCTSTR lpstrProductKey);
 	// Set computer or VM UUID
 	void SetUUID( LPCTSTR lpstrUUID);

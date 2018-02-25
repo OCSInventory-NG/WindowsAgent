@@ -454,7 +454,7 @@ BOOL CRegistry::Disconnect()
 
 BOOL CRegistry::GetBiosInfo( CBios *pMyBios)
 {
-	// Try to get BIOS Informations info from the registry
+	// Try to get BIOS Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -769,7 +769,7 @@ BOOL CRegistry::GetBiosInfoVista( CBios *pMyBios)
 
 BOOL CRegistry::IsNotebook()
 {
-	// Try to get Battery Informations info from the registry
+	// Try to get Battery Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -1568,7 +1568,7 @@ BOOL CRegistry::GetSoundDevices(CSoundDeviceList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get Sound Devices Informations info from the registry
+	// Try to get Sound Devices Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -1707,7 +1707,7 @@ BOOL CRegistry::GetModems(CModemList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get Modems Informations info from the registry
+	// Try to get Modems Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -1846,7 +1846,7 @@ BOOL CRegistry::GetMonitors(CMonitorList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get Monitors Informations info from the registry
+	// Try to get Monitors Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -1985,7 +1985,7 @@ BOOL CRegistry::GetSystemControllers(CSystemControllerList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get system Controllers Informations info from the registry
+	// Try to get system Controllers Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -2871,7 +2871,7 @@ BOOL CRegistry::GetStoragePeripherals(CStoragePeripheralList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get Storage Peripherals Informations info from the registry
+	// Try to get Storage Peripherals Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3254,7 +3254,7 @@ BOOL CRegistry::GetRegistryApplications(CSoftwareList *pList, BOOL hkcu)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get BIOS Informations info from the registry
+	// Try to get BIOS Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3496,7 +3496,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 
 BOOL CRegistry::GetDeviceDescription( CString &csDescription)
 {
-	// Try to get Modems Informations info from the registry
+	// Try to get Modems Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3539,7 +3539,7 @@ BOOL CRegistry::GetDeviceDescriptionNT( CString &csDescription)
 
 BOOL CRegistry::GetDomainOrWorkgroup(CString &csDomain)
 {
-	// Try to get Modems Informations info from the registry
+	// Try to get Modems Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3775,7 +3775,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 
 BOOL CRegistry::GetLoggedOnUser(CString &csUser)
 {
-	// Try to get Modems Informations info from the registry
+	// Try to get Modems Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3923,7 +3923,7 @@ BOOL CRegistry::GetInputDevices(CInputDeviceList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get system Controllers Informations info from the registry
+	// Try to get system Controllers Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -4203,7 +4203,7 @@ BOOL CRegistry::GetSystemPorts(CSystemPortList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get system ports Informations info from the registry
+	// Try to get system ports Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:

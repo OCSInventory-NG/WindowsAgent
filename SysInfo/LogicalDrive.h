@@ -10,7 +10,7 @@
 
 // LogicalDrive.h: interface for the CLogicalDrive class.
 //
-// Class storing informations about one computer logical drive.
+// Class storing information about one computer logical drive.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -53,7 +53,7 @@ public: // Methods
 	LONG GetFilesNumber();
 	// Return a string containing percantage of free space
 	LPCTSTR GetPercentFree();
-	// Format informations in a XML string
+	// Format information in a XML string
 
 	//////////////////////////////////
 	// Set attributes values

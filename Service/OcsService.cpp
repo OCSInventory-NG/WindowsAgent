@@ -684,7 +684,7 @@ BOOL COcsService::OnUserControl( DWORD dwOpcode)
         return TRUE;
     case OCS_SERVICE_CONTROL_SHOW_INVENTORY:
         // Show inventory using XSLT
-		LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, _T( "User manually ask displaying local inventory informations"));
+		LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, _T( "User manually ask displaying local inventory information"));
 		showInventory();
         return TRUE;
     default:
@@ -707,12 +707,12 @@ BOOL COcsService::showInventory()
 		// Create inventory
 		if ((pRequest = new CInventoryRequest()) == NULL)
 		{
-			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to retrieve inventory informations"));
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to retrieve inventory information"));
 			return FALSE;
 		}
 		if (!pRequest->final())
 		{
-			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to generate XML of inventory informations"));
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to generate XML of inventory information"));
 			delete pRequest;
 			return FALSE;
 		}
@@ -724,14 +724,14 @@ BOOL COcsService::showInventory()
 		csXsl.Format( "\n<?xml-stylesheet type=\"text/xsl\" href=\"%s\\OCS-Transform.xsl\" ?>", GetAnsiFromUnicode( getInstallFolder()));
 		if ((nIndex = csXml.Find( "?>")) == -1)
 		{
-			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to add XSL stylesheet to inventory informations"));
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to add XSL stylesheet to inventory information"));
 			return FALSE;
 		}
 		csXml.Insert( nIndex+2, csXsl);
 		// Write XML to data directory
 		if (!WriteVoidToFile( csXml, csXml.GetLength(), csFile))
 		{
-			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to write XML inventory informations to file"));
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to write XML inventory information to file"));
 			return FALSE;
 		}
 		return TRUE;
@@ -739,7 +739,7 @@ BOOL COcsService::showInventory()
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "An unknown error occurred while trying to generate inventory informations"));
+		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "An unknown error occurred while trying to generate inventory information"));
 		return FALSE;
 	}
 }

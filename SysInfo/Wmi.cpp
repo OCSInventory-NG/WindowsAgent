@@ -219,7 +219,7 @@ BOOL CWmi::GetBiosInfo(CBios *pMyBios)
 		return bResult;
 
 	pMyBios->Set( NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
-	// GET BIOS Informations
+	// GET BIOS Information
 	if (GetBios( csManufacturer, csBiosVer, csRdate, csSN))
 	{
 		pMyBios->SetBiosManufacturer( csManufacturer);
@@ -269,7 +269,7 @@ BOOL CWmi::GetBios( CString &csVendor, CString &csVersion, CString &csDate, CStr
 	if (!m_bConnected)
 		return FALSE;
 	
-	// GET BIOS Informations
+	// GET BIOS Information
 	AddLog( _T( "WMI GetBiosInfo: Trying to find Win32_Bios WMI objects...\n"));
 	try
 	{
@@ -316,7 +316,7 @@ BOOL CWmi::GetSystemInformation( CString &csVendor, CString &csModel)
 	if (!m_bConnected)
 		return FALSE;
 	
-	// GET BIOS Informations
+	// GET BIOS Information
 	AddLog( _T( "WMI GetSystemInformation: Trying to find Win32_ComputerSystem WMI objects...\n"));
 	try
 	{
@@ -356,7 +356,7 @@ BOOL CWmi::GetBaseBoard( CString &csVendor, CString &csProduct, CString &csSN)
 	if (!m_bConnected)
 		return FALSE;
 	
-	// GET BIOS Informations
+	// GET BIOS Information
 	AddLog( _T( "WMI GetBaseBoard: Trying to find Win32_BaseBoard WMI objects...\n"));
 	try
 	{
@@ -397,7 +397,7 @@ BOOL CWmi::GetSystemEnclosure( CString &csVendor, CString &csType, CString &csSN
 	if (!m_bConnected)
 		return FALSE;
 	
-	// GET BIOS Informations
+	// GET BIOS Information
 	AddLog( _T( "WMI GetSystemEnclosure: Trying to find Win32_SystemEnclosure WMI objects...\n"));
 	try
 	{
@@ -2470,7 +2470,7 @@ BOOL CWmi::GetUUID( CString &csUUID)
 	if (!m_bConnected)
 		return FALSE;
 	
-	// GET BIOS Informations
+	// GET BIOS Information
 	AddLog( _T( "WMI GetUUID: Trying to find Win32_ComputerSystemProduct WMI objects...\n"));
 	try
 	{
