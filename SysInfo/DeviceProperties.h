@@ -27,7 +27,7 @@ class SYSINFO_API CDeviceProperties
 // Methods
 public:
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CDeviceProperties();
 	virtual ~CDeviceProperties();

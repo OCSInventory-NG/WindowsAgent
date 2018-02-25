@@ -24,7 +24,7 @@ class SYSINFO_API CStoragePeripheralList : public CList<CStoragePeripheral, CSto
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CStoragePeripheralList();
 	virtual ~CStoragePeripheralList();

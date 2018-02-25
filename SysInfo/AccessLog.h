@@ -24,7 +24,7 @@ class SYSINFO_API CAccessLog
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CAccessLog();
 	virtual ~CAccessLog();

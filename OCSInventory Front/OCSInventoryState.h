@@ -51,7 +51,7 @@ class OCSINVENTORYFRONT_API COCSInventoryState
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	COCSInventoryState();
 	virtual ~COCSInventoryState();

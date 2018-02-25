@@ -24,7 +24,7 @@ class SYSINFO_API CBios
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CBios();
 	virtual ~CBios();

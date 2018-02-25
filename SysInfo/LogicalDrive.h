@@ -26,7 +26,7 @@ class SYSINFO_API CLogicalDrive
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CLogicalDrive();
 	virtual ~CLogicalDrive();

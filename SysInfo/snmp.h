@@ -24,7 +24,7 @@ class SYSINFO_API CSNMP
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CSNMP();
 	virtual ~CSNMP();

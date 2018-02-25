@@ -25,7 +25,7 @@ class SYSINFO_API CSoftware
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CSoftware();
 	virtual ~CSoftware();

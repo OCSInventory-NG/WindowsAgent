@@ -29,7 +29,7 @@ class CXMLInteract
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CXMLInteract(){};
 	CXMLInteract( CMarkup* );

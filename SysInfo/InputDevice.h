@@ -28,7 +28,7 @@ class SYSINFO_API CInputDevice
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CInputDevice();
 	virtual ~CInputDevice();

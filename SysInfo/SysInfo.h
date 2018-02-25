@@ -91,7 +91,7 @@ class SYSINFO_API CSysInfo
 public: // Methods
 	BOOL getWindowsProductKey(CString &productKey);
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 
 	// Create a CSysInfo object, enabling or not logging into lpstrFolder or current one

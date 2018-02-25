@@ -24,7 +24,7 @@ class SYSINFO_API CVideoAdapterList : public CList<CVideoAdapter, CVideoAdapter&
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CVideoAdapterList();
 	virtual ~CVideoAdapterList();

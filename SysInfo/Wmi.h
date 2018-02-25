@@ -24,7 +24,7 @@ class SYSINFO_API CWmi
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CWmi();
 	virtual ~CWmi();

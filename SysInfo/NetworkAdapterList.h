@@ -23,7 +23,7 @@ class SYSINFO_API CNetworkAdapterList : public CList<CNetworkAdapter, CNetworkAd
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CNetworkAdapterList();
 	virtual ~CNetworkAdapterList();
