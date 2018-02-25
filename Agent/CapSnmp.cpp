@@ -434,7 +434,7 @@ void CCapSnmp::TraysModule(CString Community, CString IP, CMarkup *Xml){
 	CString csCmd;
 	std::string line;
 
-	// trayinfos
+	// trayinfo
 	CStringArray trays_oids;
 	trays_oids.Add(_T("1.3.6.1.2.1.43.8.2.1.13"));
 	trays_oids.Add(_T("1.3.6.1.2.1.43.8.2.1.18"));
@@ -487,7 +487,7 @@ void CCapSnmp::CartridgesModule(CString Community, CString IP, CMarkup *Xml){
 	CString csCmd;
 	std::string line;
 
-	// trayinfos
+	// trayinfo
 	CStringArray cartridges_oids;
 	cartridges_oids.Add(_T("1.3.6.1.2.1.43.11.1.1.6"));
 	cartridges_oids.Add(_T("1.3.6.1.2.1.43.11.1.1.5"));
@@ -600,7 +600,7 @@ void CCapSnmp::ScanPhysicalModule(CString Community, CString IP, CMarkup *Xml, C
 	CString csCmd;
 	std::string line;
 
-	// trayinfos
+	// trayinfo
 	CStringArray phys_oids;
 	phys_oids.Add(_T("1.3.6.1.2.1.47.1.1.1.1.2."));
 	phys_oids.Add(_T("1.3.6.1.2.1.47.1.1.1.1.7."));

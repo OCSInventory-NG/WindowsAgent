@@ -83,7 +83,7 @@ public: // Methods
 	// Set attributes values
 	//////////////////////////////////
 
-	// Clear infos
+	// Clear info
 	void Clear();
 
 	void SetHardware( LPCTSTR lpstrValue);

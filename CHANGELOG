@@ -164,7 +164,7 @@
 2.0.2, aka 2.0.2.0
   * Fix Bug #872768: Crash in Registry.cpp - "Run-Time Check Failure #2 - Stack around the variable 'lpstrData' was corrupted."
   * Ensure all array and objects are correctly freed
-  * Fix Bug #859574: Switch to WMI to retrieve Bios infos even if DMI access is successful, but serial or model is not valid
+  * Fix Bug #859574: Switch to WMI to retrieve Bios info even if DMI access is successful, but serial or model is not valid
   * Fix Bug #435068: Do not register multiple time a monitor with the same serial
   * Fix Bug #860466: Propagate inherited permissions from $AppData\OCS Inventory NG\Agent to Download directory
 2.0.1, aka 2.0.1.0
@@ -202,7 +202,7 @@
   * Fix memory leak bug #765893 in service
   * Delete Ocs_Contact.exe when upgrading from agent 1.x
   * Do not start download when agent is launched in NOTIFY mode
-  * Do use link speed in network adapter hash computation, because with wireless, speed may changes, but not the other infos.
+  * Do use link speed in network adapter hash computation, because with wireless, speed may changes, but not the other info.
 2.0 rc4 aka 2.0.0.16
   * Fix bug when using agent 4061 to download and setup agent 2.0        
   * Fix bug #742372 when writing XML produced by plugins to log. So, changes ExecCommand output grab to Ansi instead of Unicode, and disable printing XML

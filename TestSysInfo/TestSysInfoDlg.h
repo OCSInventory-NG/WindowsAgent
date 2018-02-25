@@ -38,9 +38,9 @@ protected:
 	CDeviceProperties m_Device;
 	// BIOS information
 	CBios		 m_BIOS;
-	// List of CPU infos
+	// List of CPU info
 	CCpuList m_CpuList;
-	// List of Input devices infos
+	// List of Input devices info
 	CInputDeviceList m_InputList;
 	// List of Logical Drives (Volum name, File system, Total size, Free space...)
 	CLogicalDriveList m_DriveList;
@@ -54,7 +54,7 @@ protected:
 	CNetworkAdapterList m_NetworkList;
 	// List of Printers
 	CPrinterList m_PrinterList;
-	// List of Device registry values infos
+	// List of Device registry values info
 	CRegistryValueList m_RegistryList;
 	// List of Software
 	CSoftwareList m_SoftwareList;

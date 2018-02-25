@@ -1295,7 +1295,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 								else
 									AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
 													   csSubKey, NT_ENUM_SERVICE_VALUE);
-								// We know the service name => get the Graphic Adapter infos
+								// We know the service name => get the Graphic Adapter info
 								RegCloseKey( hKeyProperty);
 								csSubKey.Format( _T( "%s\\%s\\%s"), NT_SERVICES_KEY, csServiceName, NT_SERVICE_DEVICE_KEY);
 								csAdapterName = NOT_AVAILABLE;

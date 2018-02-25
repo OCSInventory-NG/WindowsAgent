@@ -571,7 +571,7 @@ BOOL COcsService::isInventoryStateChanged()
 			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Failed to load/parse last inventory state"));
 			return FALSE;
 		}
-		// Get network adapter infos
+		// Get network adapter info
 		mySysInfo.getNetworkAdapters( &myList);
 		// Checking if networks changes
 		csBuffer = myList.GetHash();

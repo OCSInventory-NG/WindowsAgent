@@ -333,7 +333,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
                         varBind[1].value.asnValue.address.stream[3],
                         varBind[1].value.asnValue.address.stream[4],
                         varBind[1].value.asnValue.address.stream[5]);
-				// We can save the infos
+				// We can save the info
 				csBuffer.Empty();
 				for ( UINT uChar=0; uChar < varBind[3].value.asnValue.string.length; uChar++)
 					csBuffer.AppendFormat( _T( "%c"), varBind[3].value.asnValue.string.stream[uChar]);
@@ -344,7 +344,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
 				cAdapter.SetSpeed( speed);
 				cAdapter.SetMACAddress( csAddress);
 				cAdapter.SetStatus( varBind[5].value.asnValue.number);
-				// IP infos not available => we get them later
+				// IP info not available => we get them later
 				cAdapter.SetIPAddress( _T(""));
 				cAdapter.SetIPNetMask( _T(""));
 				AddLog( _T( "\tSNMP IfAddrEntry index=%ld, Description=%s, Type=%s, MIB Type=%s, Speed=%lu B/s, @ MAC=%s, Status=%s\n"),
@@ -410,7 +410,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
                 && (varBind[1].value.asnValue.address.stream != NULL) 
                 && (varBind[2].value.asnValue.address.stream != NULL)) 
 			{
-				// We can save the infos
+				// We can save the info
 				csAddress.Format( _T( "%d.%d.%d.%d"),
                         varBind[1].value.asnValue.address.stream[0],
                         varBind[1].value.asnValue.address.stream[1],
@@ -498,7 +498,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
 				&& (varBind[2].value.asnValue.address.stream[2] == 0)
 				&& (varBind[2].value.asnValue.address.stream[3] == 0)) 
 			{
-				// We can save the infos
+				// We can save the info
 				csAddress.Format( _T( "%d.%d.%d.%d"),
                         varBind[1].value.asnValue.address.stream[0],
                         varBind[1].value.asnValue.address.stream[1],

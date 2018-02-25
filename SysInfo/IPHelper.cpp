@@ -151,7 +151,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	}
 
 	// Call GetAdptersAddresses with length to 0 to get size of required buffer
-	AddLog(_T("OK\nIpHlpAPI GetNetworkAdapters: Calling GetAdapterAddresses to determine IP Infos..."));
+	AddLog(_T("OK\nIpHlpAPI GetNetworkAdapters: Calling GetAdapterAddresses to determine IP Info..."));
 	pAdresses = NULL;
 	dwSize = 0;
 

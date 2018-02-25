@@ -32,7 +32,7 @@ CInventoryResponse::CInventoryResponse(CByteArray *rawResponse) : CResponseAbstr
 	CString csName, csValue;
 	TiXmlElement *pXmlReply, *pXmlAccount, *pXmlElement;
 
-	// Parse Account Infos updates
+	// Parse Account Info updates
 	m_cmXml.ResetPos();
 	if (pXmlReply = m_cmXml.FindFirstElem( _T( "REPLY")))
 	{
@@ -45,9 +45,9 @@ CInventoryResponse::CInventoryResponse(CByteArray *rawResponse) : CResponseAbstr
 			pXmlElement = m_cmXml.FindFirstElem( _T( "KEYVALUE"), pXmlAccount);
 			csValue = m_cmXml.GetData( pXmlElement);
 			if (getAgentConfig()->writeAccountInfos( csName, csValue))
-				pLogger->log( LOG_PRIORITY_NOTICE, _T( "ADMIN INFOS => Couple ( %s <=> %s ) added to configuration file"), csName, csValue);
+				pLogger->log( LOG_PRIORITY_NOTICE, _T( "ADMIN INFO => Couple ( %s <=> %s ) added to configuration file"), csName, csValue);
 			else
-				pLogger->log( LOG_PRIORITY_ERROR, _T( "ADMIN INFOS => Failed to add couple ( %s <=> %s ) to configuration file <%s>"), csName, csValue, LookupError( GetLastError()));
+				pLogger->log( LOG_PRIORITY_ERROR, _T( "ADMIN INFO => Failed to add couple ( %s <=> %s ) to configuration file <%s>"), csName, csValue, LookupError( GetLastError()));
 			// Search next ACCOUNTINFO node
 			pXmlAccount = m_cmXml.FindNextElem( _T( "ACCOUNTINFO"), pXmlAccount);
 		}

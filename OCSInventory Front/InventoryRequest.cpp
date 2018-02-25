@@ -239,9 +239,9 @@ BOOL CInventoryRequest::isStateChanged()
 	ULONG				ulChecksum = 0;
 	// BIOS information from EXE/VBS plugin
 	CBios				m_plugBIOS;
-	// List of CPU infos from EXE/VBS plugin
+	// List of CPU info from EXE/VBS plugin
 	CCpuList			m_plugCpuList;
-	// List of Input devices infos from EXE/VBS plugin
+	// List of Input devices info from EXE/VBS plugin
 	CInputDeviceList	m_plugInputList;
 	// List of Logical Drives (Volume name, File system, Total size, Free space...) from EXE/VBS plugin
 	CLogicalDriveList	m_plugDriveList;
@@ -255,7 +255,7 @@ BOOL CInventoryRequest::isStateChanged()
 	CNetworkAdapterList m_plugNetworkList;
 	// List of Printers from EXE/VBS plugin
 	CPrinterList		m_plugPrinterList;
-	// List of Device registry values infos from EXE/VBS plugin
+	// List of Device registry values info from EXE/VBS plugin
 	CRegistryValueList	m_plugRegistryList;
 	// List of Software from EXE/VBS plugin
 	CSoftwareList		m_plugSoftwareList;
@@ -669,7 +669,7 @@ BOOL CInventoryRequest::runInventory()
 					  m_BIOS.GetSystemManufacturer(), m_BIOS.GetSystemModel(), m_BIOS.GetSystemSerialNumber(),
 					  m_BIOS.GetBiosManufacturer(), m_BIOS.GetBiosDate(), m_BIOS.GetBiosVersion(),
 					  m_BIOS.GetMotherboardManufacturer(), m_BIOS.GetMotherboardModel(), m_BIOS.GetMotherboardSerialNumber());
-	// Get Processor infos (0 means error)
+	// Get Processor info (0 means error)
 	if (!(dwValue = m_pSysInfo->getProcessors( cs1, cs2, &m_CpuList)))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve processor(s)"));
 	else
@@ -760,7 +760,7 @@ BOOL CInventoryRequest::runInventory()
 	m_Device.SetIPAddress( m_pSysInfo->getLocalIP());
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Default IPv4 address is <%s>"),
 				  m_Device.GetIPAddress());
-	// Get Windows registration infos
+	// Get Windows registration info
 	if (!m_pSysInfo->getWindowsRegistration( cs1, cs2, cs3))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve system registration"));
 	else
@@ -865,7 +865,7 @@ LONG CInventoryRequest::SearchFilesInDirectory(LPCTSTR lpstrDir, LPCTSTR lpstrEx
 				{
 					// This is an apps to search
 					if (!getFileVersion( cFinder.GetFilePath(), csPublisher, csName, csVersion, csComment, csLanguage))
-						// Unable to get version infos => use filename
+						// Unable to get version info => use filename
 						csName = cFinder.GetFileName();
 					StrForSQL( csName);
 					if (csName.IsEmpty())
