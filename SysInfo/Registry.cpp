@@ -3496,7 +3496,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 
 BOOL CRegistry::GetDeviceDescription( CString &csDescription)
 {
-	// Try to get Modems Information from the registry
+	// Try to get Device Description Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3539,7 +3539,7 @@ BOOL CRegistry::GetDeviceDescriptionNT( CString &csDescription)
 
 BOOL CRegistry::GetDomainOrWorkgroup(CString &csDomain)
 {
-	// Try to get Modems Information from the registry
+	// Try to get Domain or Workgroup Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3775,7 +3775,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 
 BOOL CRegistry::GetLoggedOnUser(CString &csUser)
 {
-	// Try to get Modems Information from the registry
+	// Try to get Logged On User Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
