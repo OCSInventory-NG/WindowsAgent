@@ -489,7 +489,7 @@ BOOL COCSInventoryApp::InitInstance()
 			// Feed inventory with required registry keys (not in notify mode)
 			if (!m_pConfig->isNotifyRequired() && pPrologResp->isRegistryRequired())
 			{
-				m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT =>  Communication Server ask for Registry Query"));
+				m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT =>  Communication Server asks for Registry Query"));
 				cCapRegistry.retrieveKeys();
 			}
 			// Ipdiscover (not in notify mode)
@@ -501,7 +501,7 @@ BOOL COCSInventoryApp::InitInstance()
 					m_pLogger->log(LOG_PRIORITY_NOTICE, _T( "AGENT => IpDiscover required by /IPDISC on network %s"), m_pConfig->getIpDiscoverNetwork());
 				}
 				else
-					m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT => Communication Server ask for IpDiscover"));
+					m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT => Communication Server asks for IpDiscover"));
 
 				if (m_pConfig->isIpDiscoverLatencyProvided())
 				{
@@ -603,7 +603,7 @@ BOOL COCSInventoryApp::InitInstance()
 		 ****/
 		if (!m_pConfig->isNotifyRequired() && pPrologResp->isDownloadRequired())
 		{
-			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT =>  Communication Server ask for Package Download"));
+			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT =>  Communication Server asked for Package Download"));
 			// Check if OCS Agent Setup was previously downloaded and run
 			// This is a special work because OCS Agent Setup kill download process. So we lose package info
 			// such as package ID and temporary unzip folder. As a workaround, Agent setup create a result file 
