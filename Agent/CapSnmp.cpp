@@ -39,7 +39,7 @@ CCapSnmp::~CCapSnmp()
 }
 
 //////////////////////////////////////////////////////////////////////
-// Call OcsSnmp.exe with ipdiscover statment
+// Call OcsSnmp.exe with ipdiscover statement
 //////////////////////////////////////////////////////////////////////
 
 void CCapSnmp::CallSnmp(CConnexionAbstract	*pConnexion, CConfig *m_pConfig){
@@ -658,7 +658,7 @@ void CCapSnmp::ScanPhysicalModule(CString Community, CString IP, CMarkup *Xml, C
 }
 
 //////////////////////////////////////////////////////////////////////
-// Call OcsSnmp.exe with ipdiscover statment using custom mibs
+// Call OcsSnmp.exe with ipdiscover statement using custom mibs
 //////////////////////////////////////////////////////////////////////
 
 void CCapSnmp::CallCustomMibs(std::string IpAddr, std::string Community){
