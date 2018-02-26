@@ -135,13 +135,13 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	case ERROR_NOT_SUPPORTED:
 		FreeMibTable(pIfTable);
 		FreeLibrary(hDll);
-		AddLog(_T("Failed because OS not support GetIfTable2Ex API function !\n"));
+		AddLog(_T("Failed because OS does not support GetIfTable2Ex API function !\n"));
 		return FALSE;
 	case ERROR_BUFFER_OVERFLOW:
 	case ERROR_INSUFFICIENT_BUFFER:
 		FreeMibTable(pIfTable);
 		FreeLibrary(hDll);
-		AddLog(_T("Failed because OS not support GetIfTable2Ex API function !\n"));
+		AddLog(_T("Failed because OS does not support GetIfTable2Ex API function !\n"));
 		return FALSE;
 	default:
 		FreeMibTable(pIfTable);
@@ -151,7 +151,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	}
 
 	// Call GetAdptersAddresses with length to 0 to get size of required buffer
-	AddLog(_T("OK\nIpHlpAPI GetNetworkAdapters: Calling GetAdapterAddresses to determine IP Infos..."));
+	AddLog(_T("OK\nIpHlpAPI GetNetworkAdapters: Calling GetAdapterAddresses to determine IP Info..."));
 	pAdresses = NULL;
 	dwSize = 0;
 
@@ -166,7 +166,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	case ERROR_NOT_SUPPORTED: // Not supported
 		FreeMibTable(pIfTable);
 		FreeLibrary(hDll);
-		AddLog(_T("Failed because OS not support GetAdapterAddresses API function !\n"));
+		AddLog(_T("Failed because OS does not support GetAdapterAddresses API function !\n"));
 		return FALSE;
 	case ERROR_BUFFER_OVERFLOW: // We must allocate memory
 		break;
@@ -200,7 +200,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		FreeMibTable(pIfTable);
 		free(pAdresses);
 		FreeLibrary(hDll);
-		AddLog(_T("Failed because OS not support GetAdapterAddresses API function !\n"));
+		AddLog(_T("Failed because OS does not support GetAdapterAddresses API function !\n"));
 		return FALSE;
 	case ERROR_BUFFER_OVERFLOW: // We have allocated needed memory, but not sufficient
 		FreeMibTable(pIfTable);
@@ -233,7 +233,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		FreeMibTable(pIfTable);
 		free(pAdresses);
 		FreeLibrary(hDll);
-		AddLog(_T("Failed because OS not support GetAdapterAddresses API function !\n"));
+		AddLog(_T("Failed because OS does not support GetAdapterAddresses API function !\n"));
 		return FALSE;
 	case ERROR_BUFFER_OVERFLOW: // We must allocate memory
 		break;
@@ -254,7 +254,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		return FALSE;
 	}
 
-	// Recall GetAdptersAddresses
+	// Recall GetAdaptersAddresses
 	switch (lpfnGetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_GATEWAYS, NULL, pAdressesBis, &size))
 	{
 	case 0: // No error
@@ -271,7 +271,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		free(pAdressesBis);
 		free(pAdresses);
 		FreeLibrary(hDll);
-		AddLog(_T("Failed because OS not support GetAdaptersInfo API function !\n"));
+		AddLog(_T("Failed because OS does not support GetAdaptersInfo API function !\n"));
 		return FALSE;
 	case ERROR_BUFFER_OVERFLOW: // We have allocated needed memory, but not sufficient
 		FreeMibTable(pIfTable);
@@ -346,7 +346,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		pIfEntry = (MIB_IF_ROW2 *)&(pIfTable->Table[dwIndex]);
 		if (pIfEntry->Type != IF_TYPE_SOFTWARE_LOOPBACK)
 		{
-			//if Network card is desabled
+			//if Network card is disabled
 			if (pIfEntry->OperStatus == IfOperStatusDown && pIfEntry->TransmitLinkSpeed != NULL)
 			{
 				// Get the Index

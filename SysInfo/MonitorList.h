@@ -23,7 +23,7 @@ class SYSINFO_API CMonitorList : public CList<CMonitor, CMonitor&>
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CMonitorList();
 	virtual ~CMonitorList();

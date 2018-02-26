@@ -24,7 +24,7 @@ class SYSINFO_API CCpu
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CCpu();
 	virtual ~CCpu();

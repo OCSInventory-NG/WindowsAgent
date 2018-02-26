@@ -24,7 +24,7 @@ class SYSINFO_API CMonitor
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CMonitor();
 	virtual ~CMonitor();

@@ -10,7 +10,7 @@
 
 // DeviceProperties.h: interface for the CDeviceProperties class.
 //
-// Class storing informations about Hardware and OS of a device
+// Class storing information about Hardware and OS of a device
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -27,7 +27,7 @@ class SYSINFO_API CDeviceProperties
 // Methods
 public:
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CDeviceProperties();
 	virtual ~CDeviceProperties();
@@ -101,11 +101,11 @@ public:
 	void SetDeviceID( LPCTSTR lpstrDeviceID);
 	// Set the device NetBIOS name
 	void SetDeviceName( LPCTSTR lpstrName);
-	// Set the operating system informations
+	// Set the operating system information
 	void SetOS( LPCTSTR lpstrName, LPCTSTR lpstrVersion, LPCTSTR lpstrComment);
 	// Set OS memory addressing bits (32 bits, 64 bits...)
 	void SetAddressWidthOS( UINT uBits = 32);
-	// Set the processors informations
+	// Set the processor information
 	void SetProcessor( LPCTSTR lpstrName, LPCTSTR lpstrSpeed, DWORD dwNumber);
 	// Set the physical and paging file size in mega bytes
 	void SetMemory( ULONG ulPhysical, ULONG ulPageFile);
@@ -127,9 +127,9 @@ public:
 	void SetDomainOrWorkgroup( LPCTSTR lpstrDomain);
 	// Set the NT User Domain
 	void SetUserDomain( LPCTSTR lpstrUserDomain);
-	// Set informations about Windows registration
+	// Set information about Windows registration
 	void SetWindowsRegistration( LPCTSTR lpstrCompany, LPCTSTR lpstrOwner, LPCTSTR lpstrProductID);
-	// Set informations about Windows key
+	// Set information about Windows key
 	void SetWindowsProductKey( LPCTSTR lpstrProductKey);
 	// Set computer or VM UUID
 	void SetUUID( LPCTSTR lpstrUUID);
@@ -158,8 +158,8 @@ protected: // Attributes
 	ULONG	m_ulSwapSize;		// Swap Size of the device
 	CString	m_csIPAddress;		// IP Address of the device if available (ex "192.3.4.1" or "Unavailable")
 	CString	m_csLastCheckDate;	// Last check date when reading from CSV
-	CString	m_csExecutionDuration; // Excution duration in string format
-	CString	m_csLoggedOnUser;	// Logged on username when device have been checked
+	CString	m_csExecutionDuration; // Execution duration in string format
+	CString	m_csLoggedOnUser;	// Logged on username when device has been checked
 	CString m_csLastLoggedUser; // Last user who'd been logged in
 	CString	m_csDescription;	// Description extracted from OS
 	CString	m_csDomain;			// NT Domain name or workgroup

@@ -24,7 +24,7 @@ class SYSINFO_API CSoundDeviceList : public CList<CSoundDevice, CSoundDevice&>
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CSoundDeviceList();
 	virtual ~CSoundDeviceList();

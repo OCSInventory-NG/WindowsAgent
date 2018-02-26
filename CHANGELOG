@@ -77,7 +77,7 @@
   * Better handling of potentially not well formatted data, to avoid application crash
 2.1.0.2
   * Add detection of Smartcard readers as input devices
-  * Update XSL to display CPU table into systray applet "show computer informations"
+  * Update XSL to display CPU table into systray applet "show computer information"
   * Fix bug #980740 : try to UTF-8 encode VBS output if XML loading fails, then try to reload XML
   * Fix bug #820218: Truncate out of bound characters in adapter description
   * Fix bug #1252671: Unhandled mismatch when OcsLogon.exe launcher looks for the installed OCS Agent through Active Directory GPO
@@ -99,14 +99,14 @@
   * Fix bug #1104071: use WMI to query memory bank if DMI fails
   * Fix bug #1079151: unregister old agent 1.X service (instead of only stopping it) before installling new agent 2.X service.
   * Add ability to run command after package execution, like REBOOT, SHUTDOWN...
-  * Add CPU Socket and CPU status informations
+  * Add CPU Socket and CPU status information
   * Add agent ability to force package reinstall, and support for package setup schedule
   * Fix bug #1086324: download.exe crashes when NOTIFY_TIMEOUT is not set. So ensure value is provided
   * Fix bug #1086972: Windows Agent 2.0.5.3 does not inventory any BIOS information - 2.0.5.2 does
   * Include latest list of PNPID vendors, for EDID monitors (see http://www.vesa.org/vesa-standards/standards-faq/))
   * Allow using HTML formatting for deployment notification, pre and post package execution
   * Workaround bug #1048955: Restrict German language to German/Germany locale
-  * Fix bug #1034821: Also compute checksum for plugin output, to allow detecting changes when plugin update standard inventory informations like software
+  * Fix bug #1034821: Also compute checksum for plugin output, to allow detecting changes when plugin update standard inventory information like software
   * Try to utf-8 encode VBS or EXE plugin output if XML parsing fails, then try again to parse
   * Fix bug #1049864: When agent load configuration, it now really uses authRequired and proxyauthRequired values, and not set them to FALSE by default
   * Fix bug #1045784: Ensure timestamp exists before verify expiration
@@ -164,7 +164,7 @@
 2.0.2, aka 2.0.2.0
   * Fix Bug #872768: Crash in Registry.cpp - "Run-Time Check Failure #2 - Stack around the variable 'lpstrData' was corrupted."
   * Ensure all array and objects are correctly freed
-  * Fix Bug #859574: Switch to WMI to retrieve Bios infos even if DMI access is successful, but serial or model is not valid
+  * Fix Bug #859574: Switch to WMI to retrieve Bios info even if DMI access is successful, but serial or model is not valid
   * Fix Bug #435068: Do not register multiple time a monitor with the same serial
   * Fix Bug #860466: Propagate inherited permissions from $AppData\OCS Inventory NG\Agent to Download directory
 2.0.1, aka 2.0.1.0
@@ -202,7 +202,7 @@
   * Fix memory leak bug #765893 in service
   * Delete Ocs_Contact.exe when upgrading from agent 1.x
   * Do not start download when agent is launched in NOTIFY mode
-  * Do use link speed in network adapter hash computation, because with wireless, speed may changes, but not the other infos.
+  * Do use link speed in network adapter hash computation, because with wireless, speed may changes, but not the other info.
 2.0 rc4 aka 2.0.0.16
   * Fix bug when using agent 4061 to download and setup agent 2.0        
   * Fix bug #742372 when writing XML produced by plugins to log. So, changes ExecCommand output grab to Ansi instead of Unicode, and disable printing XML
@@ -234,7 +234,7 @@
   * Replace N/A default value by empty string
   * Allow CA Bundle using relative path to OCS data folder
   * Upgrade libcurl to 7.21.3
-  * Bug #704043:Ensure setup only runs on Windows 2000 and higher, and use Günter Knauf libcurl 7.21.3 binary distribution for Windows 2000 target only.  
+  * Bug #704043:Ensure setup only runs on Windows 2000 and higher, and use Gï¿½nter Knauf libcurl 7.21.3 binary distribution for Windows 2000 target only.  
   * Fix setup bug when agent series 4000 installed, but never launched (no data file) 
   * Fix encryption/decryption methods, not really working before :(
   * Fix bug appending plugin XML to the inventory XML       

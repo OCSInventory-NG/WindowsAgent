@@ -25,7 +25,7 @@ class SYSINFO_API CSoftware
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CSoftware();
 	virtual ~CSoftware();
@@ -52,7 +52,7 @@ public: // Methods
 	LPCTSTR GetLanguage();
 	// Get the app filename
 	LPCTSTR GetFilename();
-	// Get the app filezie
+	// Get the app filesize
 	ULONG GetFilesize();
 	// Is app extracted from registry
 	BOOL IsFromRegistry();
@@ -88,7 +88,7 @@ public: // Methods
 	void SetFilename( LPCTSTR lpstrFilename);
 	// Set the app filesize
 	void SetFilesize( ULONG ulSize);
-	// Set the installation date, and insert '/' to format it as YYYY/MM/DD f asked
+	// Set the installation date, and insert '/' to format it as YYYY/MM/DD if asked
 	void SetInstallDate( LPCTSTR lpstrDate, BOOL bFormat = FALSE);
 	// Set Memory Address Width (32/64 bits)
 	void SetMemoryAddressWidth( DWORD dwWidth);

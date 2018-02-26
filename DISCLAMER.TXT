@@ -1,5 +1,5 @@
-This version of the agent windows is totaly experimental, USE IT AT YOUR OWN RISK.
+This version of the agent windows is totally experimental, USE IT AT YOUR OWN RISK.
 Even if a lot of tests have been performed on this version some things can be buggy or some lack of functionality.
 
-This version can be driven by the community if you want to help us improve this version don't hesitate and send a message to contact@ocsinventory-ng.org or with git hub issue system.
+This version can be driven by the community. If you want to help us improve this version don't hesitate and send a message to contact@ocsinventory-ng.org or with git hub issue system.
 
