@@ -24,7 +24,7 @@ class SYSINFO_API CWmi
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CWmi();
 	virtual ~CWmi();
@@ -82,7 +82,7 @@ protected: // Methods
 
 protected: // Attributes
 	COcsWmi m_dllWMI;	// Class to access WMI
-	BOOL m_bConnected;	// Are we already connected to WMI namespace
+	BOOL m_bConnected;	// Do we are already connected to WMI namespace
 };
 #endif // !defined(AFX_WMI_H__73831499_4F80_4168_AB5B_6CB71A878DE1__INCLUDED_)
 

@@ -24,7 +24,7 @@ class SYSINFO_API CNetworkAdapter
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CNetworkAdapter();
 	virtual ~CNetworkAdapter();

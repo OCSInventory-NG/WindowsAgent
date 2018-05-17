@@ -57,7 +57,7 @@ History: PJN / 24-02-1997 A number of updates including support for NT 3.1,
          PJN / 13-12-2001 1. Major upgrade. Now 16 bit DOS path can return as much information as native Win32 code. 
                           This is achieved by spawning off the Win32 utility WriteVer with a special command line option.
                           Please note that if you intend deploying Dtwinver then you must now ship the writever.exe file
-                          in addition to linking in the Dtwinver code into your application. Also this utility needs
+                          in addition to linking in the Dtwinver code into your application. Also this utilty needs
                           to be in the path or current directory when the Dtwinver code is executing. Thanks to Chaz Angell
                           for prompted me into finding a solution for this last major item missing in Dtwinver.
          PJN / 30-12-2002 1. Provided an update CE workspace to work correctly in eMbedded Visual C++ v3. All build configurations
@@ -1179,7 +1179,7 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
         if (osviex.wSuiteMask & VER_SUITE_WH_SERVER)
           lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_HOME_SERVER;
 
-        //Explicitly map the Win32 wProductType to our own values
+        //Explicitely map the Win32 wProductType to our own values
         switch (osviex.wProductType)
         {
           case VER_NT_WORKSTATION:
@@ -1276,7 +1276,7 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
         lpVersionInformation->dwEmulatedBuildNumber = LOWORD(osvi.dwBuildNumber); //ignore HIWORD
         _tcscpy(lpVersionInformation->szEmulatedCSDVersion, osvi.szCSDVersion);
     
-        //Explicitly map the win32 dwPlatformId to our own values
+        //Explicitely map the win32 dwPlatformId to our own values 
         //Also work out the various service packs which are installed
         if (osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
         {
@@ -1555,7 +1555,7 @@ BOOL COSVersion::GetVersion(LPOS_VERSION_INFO lpVersionInformation)
         lpVersionInformation->dwUnderlyingBuildNumber = LOWORD(osvi.dwBuildNumber); //ignore HIWORD
         _fstrcpy(lpVersionInformation->szUnderlyingCSDVersion, osvi.szCSDVersion);
        
-        //Explicitly map the win32 dwPlatformId to our own values
+        //Explicitely map the win32 dwPlatformId to our own values
         if (osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
         {
           lpVersionInformation->UnderlyingPlatform = Windows9x;
@@ -1891,7 +1891,7 @@ BOOL COSVersion::GetInfoBySpawingWriteVer(COSVersion::LPOS_VERSION_INFO lpVersio
   szCommandLine[0] = '\0';
   sprintf(szCommandLine, "WriteVer.exe %s", pszTempFilename);
 
-  //Try to spawn out writever utility
+  //Try to spawn out writever utilty
   if (system(szCommandLine) != -1)
   {           
     //Open the file we need                 
@@ -1990,7 +1990,7 @@ void COSVersion::GetWinInfo()
   BYTE MajorVer;
   BYTE MinorVer;
 
-  //use some inline assembly to determine if Windows is
+  //use some inline assembly to determine if Windows if
   //running and what version is active
   _asm
   {
@@ -2419,7 +2419,7 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
     }
     case PRODUCT_SB_SOLUTION_SERVER_EM:
     {
-      //Not really sure what "PRODUCT_SB_SOLUTION_SERVER_EM" is, we just treat it as PRODUCT_SB_SOLUTION_SERVER
+      //Note really sure what "PRODUCT_SB_SOLUTION_SERVER_EM", we just treat it as PRODUCT_SB_SOLUTION_SERVER
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_STORAGE_SERVER;
       lpVersionInformation->dwSuiteMask2 |= COSVERSION_SUITE2_STORAGE_SERVER_ESSENTIALS;
       break;
@@ -2636,19 +2636,19 @@ void COSVersion::GetProductInfo(LPOS_VERSION_INFO lpVersionInformation)
     }
     case PRODUCT_ESSENTIALBUSINESS_SERVER_MGMTSVC:
     {
-      //Not really sure what "PRODUCT_ESSENTIALBUSINESS_SERVER_MGMTSVC" is, we just treat it as PRODUCT_ESSENTIALBUSINESS_SERVER_MGMT
+      //Note really sure what "PRODUCT_ESSENTIALBUSINESS_SERVER_MGMTSVC", we just treat it as PRODUCT_ESSENTIALBUSINESS_SERVER_MGMT 
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MANAGEMENT;
       break;
     }
     case PRODUCT_ESSENTIALBUSINESS_SERVER_ADDL:
     {
-      //Not really sure what "PRODUCT_ESSENTIALBUSINESS_SERVER_ADDL" is, we just treat it as COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MESSAGING. It probably refers to the cancelled EBS R2 release
+      //Note really sure what "PRODUCT_ESSENTIALBUSINESS_SERVER_ADDL", we just treat it as COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MESSAGING. It probably refers to the cancelled EBS R2 release
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MESSAGING;
       break;
     }
     case PRODUCT_ESSENTIALBUSINESS_SERVER_ADDLSVC:
     {
-      //Not really sure what "PRODUCT_ESSENTIALBUSINESS_SERVER_ADDLSVC" is, we just treat it as COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MESSAGING. It probably refers to the cancelled EBS R2 release
+      //Note really sure what "PRODUCT_ESSENTIALBUSINESS_SERVER_ADDLSVC", we just treat it as COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MESSAGING. It probably refers to the cancelled EBS R2 release
       lpVersionInformation->dwSuiteMask |= COSVERSION_SUITE_ESSENTIAL_BUSINESS_SERVER_MESSAGING;
       break;
     }

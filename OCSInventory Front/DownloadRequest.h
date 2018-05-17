@@ -29,7 +29,7 @@ public:
 
 	// Do some action when request successfully executed
 	void setSuccess();
-	// Set package execution result code and optionally command ouput
+	// Set package execution result code and optionnally command ouput
 	BOOL setPackageResult( LPCTSTR lpstrPackID, LPCTSTR lpstrCode, LPCTSTR lpstrOutput = NULL);
 };
 

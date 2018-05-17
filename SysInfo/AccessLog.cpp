@@ -85,7 +85,7 @@ BOOL CAccessLog::CheckRunningProcesses(LPCTSTR lpstrProcessesNames, CString &csP
 {
 	CString strHeadings = lpstrProcessesNames;
 	int		nPos;
-	// Search the lpstrProcessNames string for each process name, comma separated
+	// Serach the lpstrProcessNames string for each process names, comma separated
 	while ((nPos = strHeadings.Find(_T(","))) != -1)
 	{
 		CString strItem;

@@ -23,7 +23,7 @@ class SYSINFO_API CRegistryValueList : public CList<CRegistryValue, CRegistryVal
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CRegistryValueList();
 	virtual ~CRegistryValueList();

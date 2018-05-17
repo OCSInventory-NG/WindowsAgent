@@ -23,7 +23,7 @@ class SYSINFO_API CModemList : public CList<CModem, CModem&>
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CModemList();
 	virtual ~CModemList();

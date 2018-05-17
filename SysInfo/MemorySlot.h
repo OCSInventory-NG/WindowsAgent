@@ -23,7 +23,7 @@ class SYSINFO_API CMemorySlot
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CMemorySlot();
 	virtual ~CMemorySlot();

@@ -23,7 +23,7 @@ class SYSINFO_API CVideoAdapter
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CVideoAdapter();
 	virtual ~CVideoAdapter();

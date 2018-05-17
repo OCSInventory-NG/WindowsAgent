@@ -360,7 +360,7 @@ BOOL CCapDownload::checkOcsAgentSetupResult()
 		COptDownloadPackage::cleanAll();
 		return FALSE;
 	}
-	// All information available => copy result file to Package directory
+	// All informations available => copy result file to Package directory
 	csFile.Format(_T("%s\\%s\\%s"), getDownloadFolder(), csID, OCS_DOWNLOAD_DONE);
 	if (!CopyFile(myFile.GetFilePath(), csFile, FALSE))
 	{

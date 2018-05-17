@@ -16,7 +16,7 @@ class SYSINFO_API CFileVersion
 { 
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
     CFileVersion();
 

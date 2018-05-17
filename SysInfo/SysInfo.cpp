@@ -641,7 +641,7 @@ BOOL CSysInfo::getUserName(CString &csUserName)
 		For Winows 2008 : http://support.microsoft.com/kb/2464876/en
 		For windows 2008 R2: http://support.microsoft.com/kb/2465990/en
 
-	Anyway, I advise to run all this KB to fix WMI performance or errors:
+	Anyway, I advice to run all this KB to fix WMI performance or errors:
 	http://support.microsoft.com/kb/2591403
 
 	See https://bugs.launchpad.net/ocsinventory-windows-agent/+bug/1300172
@@ -730,7 +730,7 @@ BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
 		FreeLibrary( hAdv);
 		return FALSE;
 	}
-	// Trying to find explorer.exe in snapshot
+	// Trying to find explorer.exe into snapshot
 	if( !pProcess32First( hSnapshot, &pe) )
 	{
 		AddLog( _T( "\tProcess32First failed with error <%i> !\n"), GetLastError());
@@ -782,7 +782,7 @@ BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
 		FreeLibrary( hAdv);
 		return FALSE;
 	}
-	// Lookup user account running explorer.exe process
+	// Lokkup user account running explorer.exe process
 	if( !pLookupAccountSid( NULL, ((TOKEN_USER*)&szTokenInformation)->User.Sid, szUserName, &dwName, szReferencedDomainName, &dwReferencedDomainName, &peUse ) )
 	{
 		AddLog( _T( "\tLookupAccountSid failed with error <%i>\n"), GetLastError());
@@ -825,7 +825,7 @@ BOOL CSysInfo::getInstalledApplications(CSoftwareList *pList, BOOL hkcu)
 	m_registryInfo.SetAddressWidthOS( getAddressWidthOS());
 	if (bIsNT6orHigher)
 	{
-		// Under Vista, 2008 or higher, Registry does not include Hotfix
+		// Under Vista, 2008 or higher, Registry do not include Hotfix
 		// We have to also query WMI for Hotfixes
 		if (m_registryInfo.GetRegistryApplications( pList, hkcu))
 		{

@@ -29,10 +29,10 @@ public:
 	// Must be called before any Hash operation
 	BOOL HashInit();
 	// Compute Hash on NULL terminated string
-	// Can be called as many times as you want
+	// Can be called as many time as you want
 	BOOL HashUpdate( LPCTSTR pData);
-	// Compute Hash on pData which has length of ulLength
-	// Can be called as many times as you want
+	// Compute Hash on pData which have length of ulLength
+	// Can be called as many time as you want
 	BOOL HashUpdate( LPCVOID pData, ULONG ulLength);
 	// Finalize Hash and return in csHash computed hash in hex format
 	// Return NULL if error

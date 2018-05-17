@@ -23,7 +23,7 @@ class SYSINFO_API CSystemControllerList : public CList<CSystemController, CSyste
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CSystemControllerList();
 	virtual ~CSystemControllerList();

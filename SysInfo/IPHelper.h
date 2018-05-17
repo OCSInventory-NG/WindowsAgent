@@ -24,7 +24,7 @@ class SYSINFO_API CIPHelper
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CIPHelper();
 	virtual ~CIPHelper();

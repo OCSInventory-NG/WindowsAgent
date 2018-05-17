@@ -11,7 +11,7 @@
 // XMLInteract.h: interface for the CXMLInteract class.
 //
 // Storage class using CStdioFile class to load from and store
-// information to XML.
+// informations to XML.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -29,7 +29,7 @@ class CXMLInteract
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CXMLInteract(){};
 	CXMLInteract( CMarkup* );
@@ -116,12 +116,12 @@ public: // Methods
 	// Return TRUE if they are successfully updated
 	BOOL ReadVideos( CVideoAdapterList &myVideoList);
 	BOOL UpdateVideos( CVideoAdapterList &myVideoList);
-	// Write Administrative information from file in XML document
+	// Write Administrative informations from file in XML document
 	// Return TRUE if they are successfully updated
 	BOOL UpdateAccountInfo( LPCTSTR lpstrAccountFile);
 
 protected: // Methods
-	// Read Administrative information from old INI format and add them to XML
+	// Read Administrative informations from old INI format and add them to XML
 	BOOL UpdateAccountInfoOldFormat( CMarkup *pXml, LPCTSTR lpstrAccountFile);
 protected: // Attributes
 	CMarkup *m_pXml;				// Pointer to xml of the inventory

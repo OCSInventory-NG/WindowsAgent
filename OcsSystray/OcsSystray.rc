@@ -59,7 +59,7 @@ BEGIN
     LTEXT           "OCS Inventory NG Agent for Windows",IDC_STATIC,42,7,218,8
     LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
     CTEXT           "<Browser location>",IDC_BROWSER,13,55,572,316,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_STATICEDGE
-    GROUPBOX        "Inventory information for computer...",IDC_STATIC,7,41,584,335
+    GROUPBOX        "Inventory informations for computer...",IDC_STATIC,7,41,584,335
 END
 
 
@@ -100,7 +100,7 @@ BEGIN
         MENUITEM "OCS Inventory NG Agent for Windows", IDC_SYSTRAY_DISPLAY, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "&Run OCS Inventory NG Agent now", IDC_SYSTRAY_RUN_AGENT
-        MENUITEM "&Show inventory information", IDC_SYSTRAY_SHOW_INVENTORY
+        MENUITEM "&Show inventory informations", IDC_SYSTRAY_SHOW_INVENTORY
         MENUITEM SEPARATOR
         MENUITEM "&Exit",                       IDOK
     END
@@ -128,7 +128,7 @@ BEGIN
     IDS_START_INVENTORY_SUCCESSFULL 
                             "Start inventory notification successfully sent to OCS Inventory NG Service"
     IDS_SHOW_INVENTORY_FAILED 
-                            "Cannot display inventory information !\n\nReason: %s"
+                            "Cannot display inventory informations !\n\nReason: %s"
 END
 
 #endif    // Anglais resources
@@ -157,16 +157,16 @@ BEGIN
     LTEXT           "Agente OCS Inventory NG para Windows",IDC_STATIC,42,7,218,8
     LTEXT           "Visita http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
     GROUPBOX        "Estado del servicio OCS Inventory NG",IDC_STATIC,7,41,287,30
-    LTEXT           "El servicio estï¿½ en marcha...",IDC_SERVICE_STATUS,35,55,252,8
+    LTEXT           "El servicio está en marcha...",IDC_SERVICE_STATUS,35,55,252,8
     GROUPBOX        "Componentes del OCS Inventory NG",IDC_STATIC,7,75,287,124
-    LTEXT           "Versiï¿½n del servicio xx.xx.xx.xx",IDC_VERSION_SERVICE,35,95,252,8
-    LTEXT           "Versiï¿½n del Agente xx.xx.xx.xx",IDC_VERSION_AGENT,35,107,252,8
-    LTEXT           "Versiï¿½n de descarga xx.xx.xx.xx",IDC_VERSION_DOWNLOAD,35,119,252,8
-    LTEXT           "Versiï¿½n de Framework xx.xx.xx.xx",IDC_VERSION_FRAMEWORK,35,131,252,8
-    LTEXT           "Versiï¿½n de Sysinfo xx.xx.xx.xx",IDC_VERSION_SYSINFO,35,143,252,8
-    LTEXT           "Versiï¿½n de WMI xx.xx.xx.xx",IDC_VERSION_WMI,35,155,252,8
-    LTEXT           "Versiï¿½n de ComProvider xx.xx.xx.xx",IDC_VERSION_COM_PROVIDER,35,167,252,8
-    LTEXT           "Versiï¿½n de Notification Provider xx.xx.xx.xx",IDC_VERSION_NOTIFICATION,35,179,252,8
+    LTEXT           "Versión del servicio xx.xx.xx.xx",IDC_VERSION_SERVICE,35,95,252,8
+    LTEXT           "Versión del Agente xx.xx.xx.xx",IDC_VERSION_AGENT,35,107,252,8
+    LTEXT           "Versión de descarga xx.xx.xx.xx",IDC_VERSION_DOWNLOAD,35,119,252,8
+    LTEXT           "Versión de Framework xx.xx.xx.xx",IDC_VERSION_FRAMEWORK,35,131,252,8
+    LTEXT           "Versión de Sysinfo xx.xx.xx.xx",IDC_VERSION_SYSINFO,35,143,252,8
+    LTEXT           "Versión de WMI xx.xx.xx.xx",IDC_VERSION_WMI,35,155,252,8
+    LTEXT           "Versión de ComProvider xx.xx.xx.xx",IDC_VERSION_COM_PROVIDER,35,167,252,8
+    LTEXT           "Versión de Notification Provider xx.xx.xx.xx",IDC_VERSION_NOTIFICATION,35,179,252,8
 END
 
 IDD_SHOW_INVENTORY_DIALOG DIALOGEX 0, 0, 600, 400
@@ -179,7 +179,7 @@ BEGIN
     LTEXT           "Agente OCS Inventory NG para Windows",IDC_STATIC,42,7,218,8
     LTEXT           "Visita http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
     CTEXT           "<Browser location>",IDC_BROWSER,13,55,572,316,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_STATICEDGE
-    GROUPBOX        "Informaciï¿½n del Inventory para el ordenador...",IDC_STATIC,7,41,584,335
+    GROUPBOX        "Información del Inventory para el ordenador...",IDC_STATIC,7,41,584,335
 END
 
 
@@ -220,7 +220,7 @@ BEGIN
         MENUITEM "Agente OCS Inventory NG para Windows", IDC_SYSTRAY_DISPLAY, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "&Ejecuta el Agente OCS Inventory NG ahora", IDC_SYSTRAY_RUN_AGENT
-        MENUITEM "&Muestra informaciï¿½n del inventario", IDC_SYSTRAY_SHOW_INVENTORY
+        MENUITEM "&Muestra información del inventario", IDC_SYSTRAY_SHOW_INVENTORY
         MENUITEM SEPARATOR
         MENUITEM "&Salir",                      IDOK
     END
@@ -239,16 +239,16 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_FAILED_CONNECT_SERVICE "Error de conexiï¿½n en %s...\n%s"
+    IDS_FAILED_CONNECT_SERVICE "Error de conexión en %s...\n%s"
     IDS_FAILED_SEND_MESSAGE "Error de envio a %s...\n%s"
-    IDS_SERVICE_STARTING    "%s estï¿½ empezando..."
-    IDS_SERVICE_STARTED     "%s estï¿½ activo..."
-    IDS_SERVICE_STOPPING    "%s estï¿½ parando..."
-    IDS_SERVICE_STOPPED     "%s estï¿½ parado..."
+    IDS_SERVICE_STARTING    "%s está empezando..."
+    IDS_SERVICE_STARTED     "%s está activo..."
+    IDS_SERVICE_STOPPING    "%s está parando..."
+    IDS_SERVICE_STOPPED     "%s está parado..."
     IDS_START_INVENTORY_SUCCESSFULL 
-                            "La notificaciï¿½n de inicio de inventario se ha mandado correctamente al Servicio OCS Inventory NG"
+                            "La notificación de inicio de inventario se ha mandado correctamente al Servicio OCS Inventory NG"
     IDS_SHOW_INVENTORY_FAILED 
-                            "No se puede mostrar la informaciï¿½n del inventario ! Razï¿½n: %s"
+                            "No se puede mostrar la información del inventario ! Razón: %s"
 END
 
 #endif    // Espagnol resources
@@ -256,7 +256,7 @@ END
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Franï¿½ais resources
+// Français resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_NEUTRAL
@@ -277,7 +277,7 @@ BEGIN
     LTEXT           "OCS Inventory NG Agent for Windows",IDC_STATIC,42,7,218,8
     LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
     GROUPBOX        "Etat du service OCS Inventory NG",IDC_STATIC,7,41,287,30
-    LTEXT           "Le Service est dï¿½marrï¿½...",IDC_SERVICE_STATUS,35,55,252,8
+    LTEXT           "Le Service est démarré...",IDC_SERVICE_STATUS,35,55,252,8
     GROUPBOX        "Composants OCS Inventory NG",IDC_STATIC,7,75,287,124
     LTEXT           "Service Version xx.xx.xx.xx",IDC_VERSION_SERVICE,35,95,252,8
     LTEXT           "Agent Version xx.xx.xx.xx",IDC_VERSION_AGENT,35,107,252,8
@@ -339,7 +339,7 @@ BEGIN
     BEGIN
         MENUITEM "OCS Inventory NG Agent for Windows", IDC_SYSTRAY_DISPLAY, GRAYED
         MENUITEM SEPARATOR
-        MENUITEM "&Exï¿½cuter l'agent OCS Inventory NG maintenant", IDC_SYSTRAY_RUN_AGENT
+        MENUITEM "&Exécuter l'agent OCS Inventory NG maintenant", IDC_SYSTRAY_RUN_AGENT
         MENUITEM "&Afficher les informations d'inventaire", IDC_SYSTRAY_SHOW_INVENTORY
         MENUITEM SEPARATOR
         MENUITEM "&Quitter",                    IDOK
@@ -359,24 +359,24 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_FAILED_CONNECT_SERVICE "Echec de connexion ï¿½ %s...\n%s"
-    IDS_FAILED_SEND_MESSAGE "Echec d'envoi d'un message de contrï¿½le ï¿½ %s...\n%s"
-    IDS_SERVICE_STARTING    "%s est en cours de dï¿½marrage..."
-    IDS_SERVICE_STARTED     "%s est dï¿½marrï¿½..."
-    IDS_SERVICE_STOPPING    "%s est en cours d'arrï¿½t..."
-    IDS_SERVICE_STOPPED     "%s est arrï¿½tï¿½..."
+    IDS_FAILED_CONNECT_SERVICE "Echec de connexion à %s...\n%s"
+    IDS_FAILED_SEND_MESSAGE "Echec d'envoi d'un message de contrôle à %s...\n%s"
+    IDS_SERVICE_STARTING    "%s est en cours de démarrage..."
+    IDS_SERVICE_STARTED     "%s est démarré..."
+    IDS_SERVICE_STOPPING    "%s est en cours d'arrêt..."
+    IDS_SERVICE_STOPPED     "%s est arrété..."
     IDS_START_INVENTORY_SUCCESSFULL 
-                            "La notification de dï¿½marrage d'inventaire a ï¿½tï¿½ envoyï¿½e avec succï¿½s au service OCS Inventory NG"
+                            "La notification de démarrage d'inventaire a été envoyée avec succès au service OCS Inventory NG"
     IDS_SHOW_INVENTORY_FAILED 
                             "Impossible d'afficher les informations d'inventaire !\n\nRaison: %s"
 END
 
-#endif    // Franï¿½ais resources
+#endif    // Français resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Neutre (Par dï¿½faut) resources
+// Neutre (Par défaut) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
 LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
@@ -431,7 +431,7 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ico"
-#endif    // Neutre (Par dï¿½faut) resources
+#endif    // Neutre (Par défaut) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -449,12 +449,12 @@ LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 
 IDD_OCSSYSTRAY_DIALOG DIALOGEX 0, 0, 301, 232
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "OCS Inventory NG Agent fï¿½r Windows"
+CAPTION "OCS Inventory NG Agent für Windows"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDCANCEL,111,205,80,20
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
-    LTEXT           "OCS Inventory NG Agent fï¿½r Windows",IDC_STATIC,42,7,218,8
+    LTEXT           "OCS Inventory NG Agent für Windows",IDC_STATIC,42,7,218,8
     LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
     GROUPBOX        "OCS Inventory NG Dienst Status",IDC_STATIC,7,41,287,30
     LTEXT           "Dienst ist gestartet...",IDC_SERVICE_STATUS,35,55,252,8
@@ -471,15 +471,15 @@ END
 
 IDD_SHOW_INVENTORY_DIALOG DIALOGEX 0, 0, 600, 400
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "OCS Inventory NG Agent fï¿½r Windows"
+CAPTION "OCS Inventory NG Agent für Windows"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "&OK",IDCANCEL,274,380,50,14
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
-    LTEXT           "OCS Inventory NG Agent fï¿½r Windows",IDC_STATIC,42,7,218,8
+    LTEXT           "OCS Inventory NG Agent für Windows",IDC_STATIC,42,7,218,8
     LTEXT           "Visit http://www.ocsinventory-ng.org",IDC_WEB_URL,42,20,218,8
     CTEXT           "<Browser location>",IDC_BROWSER,13,55,572,316,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_STATICEDGE
-    GROUPBOX        "Inventarisierungs-Informationen fï¿½r Computer...",IDC_STATIC,7,41,584,335
+    GROUPBOX        "Inventarisierungs-Informationen für Computer...",IDC_STATIC,7,41,584,335
 END
 
 
@@ -517,7 +517,7 @@ IDR_MAINFRAME MENU
 BEGIN
     POPUP "OCS Inventory NG"
     BEGIN
-        MENUITEM "OCS Inventory NG Agent fï¿½r Windows", IDC_SYSTRAY_DISPLAY, GRAYED
+        MENUITEM "OCS Inventory NG Agent für Windows", IDC_SYSTRAY_DISPLAY, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "&Jetzt OCS Inventory NG Agent starten", IDC_SYSTRAY_RUN_AGENT
         MENUITEM "&Zeige Inventarisierungs-Informationen", IDC_SYSTRAY_SHOW_INVENTORY
@@ -534,7 +534,7 @@ END
 
 STRINGTABLE
 BEGIN
-    AFX_IDS_APP_TITLE       "OCS Inventory NG Agent fï¿½r Windows"
+    AFX_IDS_APP_TITLE       "OCS Inventory NG Agent für Windows"
 END
 
 STRINGTABLE
@@ -549,7 +549,7 @@ BEGIN
     IDS_START_INVENTORY_SUCCESSFULL 
                             "Die Inventarisierungsaufforderung wurde erfolgreich an den Dienst OCS Inventory NG gesendet"
     IDS_SHOW_INVENTORY_FAILED 
-                            "Die Inventarisierungsinformationen kï¿½nnen nicht angezeigt werden! Der Grund ist: %s"
+                            "Die Inventarisierungsinformationen können nicht angezeigt werden! Der Grund ist: %s"
 END
 
 #endif    // Allemand (Allemagne) resources
@@ -557,7 +557,7 @@ END
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Franï¿½ais (France) resources
+// Français (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
@@ -610,7 +610,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Franï¿½ais (France) resources
+#endif    // Français (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

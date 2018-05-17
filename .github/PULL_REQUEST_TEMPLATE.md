@@ -20,10 +20,10 @@ Put here all the related issues link
 ## Test environment
 If some tests has been already made, please give us your test environment' specs
 
-#### General information
+#### General informations
 Operating system :  
 
-#### OCS Inventory information
+#### OCS Inventory informations
 Windows agent version :
 
 ## Deploy Notes

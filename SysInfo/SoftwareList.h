@@ -23,7 +23,7 @@ class SYSINFO_API CSoftwareList : public CList<CSoftware, CSoftware&>
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CSoftwareList();
 	virtual ~CSoftwareList();

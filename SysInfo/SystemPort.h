@@ -26,7 +26,7 @@ class SYSINFO_API CSystemPort
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CSystemPort();
 	virtual ~CSystemPort();

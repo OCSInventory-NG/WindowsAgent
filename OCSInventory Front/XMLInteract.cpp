@@ -922,11 +922,11 @@ BOOL CXMLInteract::UpdateAccountInfo( LPCTSTR lpstrAccountFile)
 	{
 		// Get size of Admininfo.conf file
 		if (!fileExists( lpstrAccountFile))
-			// If admin file does not exist, return TRUE because assuming first run or no admin info
+			// If admin file does not exist, return TRUE because assuming first run or no admin infos
 			return TRUE;
 		if (!myXmlAccount.LoadFile( lpstrAccountFile))
 		{
-			// Old format admin info file ???
+			// Old format admin infos file ???
 			if (UpdateAccountInfoOldFormat( &myXmlAccount, lpstrAccountFile))
 			{
 				// Yes, so save in new format

@@ -10,7 +10,7 @@
 
 // LogicalDrive.h: interface for the CLogicalDrive class.
 //
-// Class storing information about one computer logical drive.
+// Class storing informations about one computer logical drive.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -26,7 +26,7 @@ class SYSINFO_API CLogicalDrive
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CLogicalDrive();
 	virtual ~CLogicalDrive();
@@ -43,7 +43,7 @@ public: // Methods
 	LONG GetTotalMB();
 	// Return the letter associated by the OS to the logical drive (A, C, D...)
 	LPCTSTR GetDriveLetter();
-	// Return the operating system volume name of the logical drive
+	// Return the operating system volum name of the logical drive
 	LPCTSTR GetVolumName();
 	// Return the drive type the logical drive (Hard drive, CD-rom...)
 	LPCTSTR GetDriveType();
@@ -53,7 +53,7 @@ public: // Methods
 	LONG GetFilesNumber();
 	// Return a string containing percantage of free space
 	LPCTSTR GetPercentFree();
-	// Format information in a XML string
+	// Format informations in a XML string
 
 	//////////////////////////////////
 	// Set attributes values
@@ -67,7 +67,7 @@ public: // Methods
 	void SetTotalSize( LONG lSize);
 	void SetFreeSpace( LONG lFree);
 	void SetFilesNumber( LONG lNum);
-	// Retrieve all other logical drive information
+	// Retrieve all others logical drive informations
 	BOOL RetrieveDriveInfo( LPCTSTR lpstrDrive);
 
 	//////////////////////////////////

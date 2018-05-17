@@ -273,12 +273,12 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
 	varBind[4].name = MIB_NULL;
 	varBind[5].name = MIB_NULL;
 
-    // Copy in the OID to find the number of entries in the Interface table
+    // Copy in the OID to find the number of entries in the Inteface table
     varBindList.len = 1;        // Only retrieving one item
     SNMP_oidcpy(&varBind[0].name, &MIB_ifEntryNumber);
     ret = m_Query(ASN_RFC1157_GETNEXTREQUEST, &varBindList, &errorStatus, &errorIndex);
 
-    // Copy in the OID to retrieve interface properties in the Interface table
+    // Copy in the OID to retrieve interface properties in the Inteface table
 	varBindList.len = 6;
     // Copy in the OID of ifType, the type of interface
     SNMP_oidcpy(&varBind[0].name, &MIB_ifEntryType);
@@ -333,7 +333,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
                         varBind[1].value.asnValue.address.stream[3],
                         varBind[1].value.asnValue.address.stream[4],
                         varBind[1].value.asnValue.address.stream[5]);
-				// We can save the info
+				// We can save the infos
 				csBuffer.Empty();
 				for ( UINT uChar=0; uChar < varBind[3].value.asnValue.string.length; uChar++)
 					csBuffer.AppendFormat( _T( "%c"), varBind[3].value.asnValue.string.stream[uChar]);
@@ -344,7 +344,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
 				cAdapter.SetSpeed( speed);
 				cAdapter.SetMACAddress( csAddress);
 				cAdapter.SetStatus( varBind[5].value.asnValue.number);
-				// IP info not available => we get them later
+				// IP infos not available => we get them later
 				cAdapter.SetIPAddress( _T(""));
 				cAdapter.SetIPNetMask( _T(""));
 				AddLog( _T( "\tSNMP IfAddrEntry index=%ld, Description=%s, Type=%s, MIB Type=%s, Speed=%lu B/s, @ MAC=%s, Status=%s\n"),
@@ -362,7 +362,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
         }
     }
 	while (!ret);
-	// Stop only on an error.  An error will occur when we exhaust
+	// Stop only on an error.  An error will occur when we go exhaust
 	// the list of interfaces to be examined
     // Free the bindings
     SNMP_FreeVarBind(&varBind[0]);
@@ -410,7 +410,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
                 && (varBind[1].value.asnValue.address.stream != NULL) 
                 && (varBind[2].value.asnValue.address.stream != NULL)) 
 			{
-				// We can save the info
+				// We can save the infos
 				csAddress.Format( _T( "%d.%d.%d.%d"),
                         varBind[1].value.asnValue.address.stream[0],
                         varBind[1].value.asnValue.address.stream[1],
@@ -443,7 +443,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
         }
     }
 	while (!ret);
-	// Stop only on an error.  An error will occur when we exhaust
+	// Stop only on an error.  An error will occur when we go exhaust
 	// the list of interfaces to be examined
     // Free the bindings
     SNMP_FreeVarBind(&varBind[0]);
@@ -498,7 +498,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
 				&& (varBind[2].value.asnValue.address.stream[2] == 0)
 				&& (varBind[2].value.asnValue.address.stream[3] == 0)) 
 			{
-				// We can save the info
+				// We can save the infos
 				csAddress.Format( _T( "%d.%d.%d.%d"),
                         varBind[1].value.asnValue.address.stream[0],
                         varBind[1].value.asnValue.address.stream[1],
@@ -513,7 +513,7 @@ BOOL CSNMP::GetNetworkAdapters(CNetworkAdapterList *pList)
         }
     }
 	while (!ret);
-	// Stop only on an error.  An error will occur when we exhaust
+	// Stop only on an error.  An error will occur when we go exhaust
 	// the list of interfaces to be examined
     // Free the bindings
     SNMP_FreeVarBind(&varBind[0]);

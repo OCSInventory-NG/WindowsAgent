@@ -30,7 +30,7 @@ class OCSINVENTORYFRONT_API CInventoryRequest : public CRequestAbstract
 public: //Methods
 
 	//Standards constructor and destructor
-	// Optionally, enable notify mode to send only important information changes, such as IP information
+	// Optionnally, enable notify mode to send only important informations changes, such as IP informations
 	CInventoryRequest( BOOL bNotify = FALSE);
 	virtual ~CInventoryRequest();
 
@@ -45,13 +45,13 @@ public: //Attributes
 	CXMLInteract		*m_pTheDB;			
 	// General device properties
 	CDeviceProperties m_Device;
-	// BIOS information
+	// BIOS informations
 	CBios		 m_BIOS;
-	// List of CPU info
+	// List of CPU infos
 	CCpuList m_CpuList;
-	// List of Input devices info
+	// List of Input devices infos
 	CInputDeviceList m_InputList;
-	// List of Logical Drives (Volume name, File system, Total size, Free space...)
+	// List of Logical Drives (Volum name, File system, Total size, Free space...)
 	CLogicalDriveList m_DriveList;
 	// List of Memory slots
 	CMemorySlotList m_MemoryList;
@@ -63,7 +63,7 @@ public: //Attributes
 	CNetworkAdapterList m_NetworkList;
 	// List of Printers
 	CPrinterList m_PrinterList;
-	// List of Device registry values info
+	// List of Device registry values infos
 	CRegistryValueList m_RegistryList;
 	// List of Software
 	CSoftwareList m_SoftwareList;
@@ -71,7 +71,7 @@ public: //Attributes
 	CSoundDeviceList m_SoundList;
 	// List of Storage devices (Floppy disk, IDE Disk, SCSI Disk, CD-Rom...)
 	CStoragePeripheralList m_StorageList;
-	// List of System Controllers (Floppy, IDE, SCSI, USB, IEEE1394, PCMCIA, SATA)
+	// List of System Controlers (Floppy, IDE, SCSI, USB, IEEE1394, PCMCIA, SATA)
 	CSystemControllerList m_SystemControllerList;
 	// List of System Slots (PCI, AGP...)
 	CSystemSlotList m_SlotList;

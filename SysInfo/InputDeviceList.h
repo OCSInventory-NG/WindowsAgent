@@ -23,7 +23,7 @@ class SYSINFO_API CInputDeviceList : public CList<CInputDevice, CInputDevice&>
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CInputDeviceList();
 	virtual ~CInputDeviceList();

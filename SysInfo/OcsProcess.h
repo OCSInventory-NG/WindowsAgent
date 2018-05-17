@@ -24,7 +24,7 @@ class CProcess
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CProcess();
 	virtual ~CProcess();

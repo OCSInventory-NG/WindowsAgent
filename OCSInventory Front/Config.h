@@ -135,7 +135,7 @@ public: // Methods
 	void setForceInventoryRequired( BOOL bForce = TRUE);
 	// Does we have to generate a new Device Unique ID (/UID)
 	void setNewUID( BOOL bNew = TRUE);
-	// Enable agent to notify inventory change of important information
+	// Enable agent to notify inventory change of important informations
 	void setNotify( BOOL bNotify = FALSE);
 	// Set if IpDiscover force for network with /IPDISC:network
 	void setIpDiscoverRequired(LPCTSTR lpstrNetwork = NULL);

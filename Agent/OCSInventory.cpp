@@ -605,7 +605,7 @@ BOOL COCSInventoryApp::InitInstance()
 		{
 			m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "AGENT =>  Communication Server asked for Package Download"));
 			// Check if OCS Agent Setup was previously downloaded and run
-			// This is a special work because OCS Agent Setup kill download process. So we lose package info
+			// This is a special work because OCS Agent Setup kill download process. So we loose package infos
 			// such as package ID and temporary unzip folder. As a workaround, Agent setup create a result file 
 			// OCSNG-Windows-Agent-Setup_done into Agent's download folder to store package ID and result.  
 			// We have to read this file if exists, and move result file to package directory 

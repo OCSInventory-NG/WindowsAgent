@@ -24,7 +24,7 @@ class SYSINFO_API CWindowsSocket
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CWindowsSocket();
 	virtual ~CWindowsSocket();

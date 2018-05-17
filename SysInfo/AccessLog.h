@@ -24,7 +24,7 @@ class SYSINFO_API CAccessLog
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CAccessLog();
 	virtual ~CAccessLog();
@@ -56,7 +56,7 @@ public: // Methods
 	void SetLogonDate( COleDateTime &dtDate);
 	// Set process status string
 	void SetProcessesStatus( LPCTSTR lpstrProcess);
-	// Retrieve the information for the current Device
+	// Retrieve the informations for the current Device
 	BOOL Retrieve( LPCTSTR lpstrUserID, LPCTSTR lpstrProcessesNames);
 
 	//////////////////////////////////

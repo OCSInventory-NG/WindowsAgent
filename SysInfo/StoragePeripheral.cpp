@@ -275,7 +275,7 @@ BOOL CStoragePeripheral::is_printable( CString myString)
 	static CStringA csAnsi;
 	CT2W			pszA(myString);
 
-	// Convert to Ansi, and avoid producing "(null)" string when converting
+	// Convert to Ansi, and avoid producing "(null)" string we converting
 	if (!myString.IsEmpty() && (myString.GetLength() > 0))
 		csAnsi = pszA;
 	else

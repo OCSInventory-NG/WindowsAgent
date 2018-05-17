@@ -72,7 +72,7 @@ BOOL CMonitorList::AddUniqueSerial( CMonitor &myMonitor)
 	csSN = myMonitor.GetSerial();
 	if (!csSN.IsEmpty())
 	{
-		// There is a valid serial number => try to see if not already registered
+		// There is a a valid serial number => try to see if not already registered
 		pos = GetHeadPosition();
 		bContinue = (pos != NULL);
 		if (bContinue)

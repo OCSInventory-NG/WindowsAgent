@@ -24,7 +24,7 @@ class SYSINFO_API CModem
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CModem();
 	virtual ~CModem();

@@ -23,7 +23,7 @@ class SYSINFO_API CLogicalDriveList : public CList<CLogicalDrive, CLogicalDrive&
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CLogicalDriveList();
 	virtual ~CLogicalDriveList();

@@ -23,7 +23,7 @@ class CDownloadDlg : public CDialog
 public:
 	CDownloadDlg(CWnd* pParent = NULL);	// standard constructor
 
-	// Set package information
+	// Set package informations
 	// Is user allowed to abort action
 	void setAbortAllowed( BOOL bAbort = FALSE);
 	// Is user allowed to delay action

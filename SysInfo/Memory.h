@@ -24,7 +24,7 @@ class SYSINFO_API CMemory
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
    CMemory();
    CMemory( const CMemory& source);

@@ -73,7 +73,7 @@ protected:
 	BOOL isInventoryStateChanged();
 	// Launch OCS Inventory Agent, using notify mode or not
 	BOOL runAgent( BOOL bNotify = FALSE);
-	// Show inventory information
+	// Show inventory informations
 	BOOL showInventory();
 	// Rotate log files from data folder
 	BOOL rotateLogs();

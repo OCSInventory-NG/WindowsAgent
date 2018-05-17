@@ -24,7 +24,7 @@ class SYSINFO_API CBios
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CBios();
 	virtual ~CBios();
@@ -69,7 +69,7 @@ public: // Methods
 	// Set attributes values
 	//////////////////////////////////
 
-	// Clear BIOS info
+	// Clear BIOS infos
 	void Clear();
 	// Set all BIOSInfo attributes
 	void Set( LPCTSTR lpstrSystemManufacturer, LPCTSTR lpstrSystemModel, LPCTSTR lpstrSystemSerialNumber, LPCTSTR lpstrMachineType,

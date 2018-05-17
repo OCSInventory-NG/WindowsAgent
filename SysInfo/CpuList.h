@@ -23,7 +23,7 @@ class SYSINFO_API CCpuList : public CList<CCpu, CCpu&>
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CCpuList();
 	virtual ~CCpuList();

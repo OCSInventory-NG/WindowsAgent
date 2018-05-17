@@ -31,7 +31,7 @@ class SYSINFO_API CRegistryValue
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CRegistryValue();
 	virtual ~CRegistryValue();

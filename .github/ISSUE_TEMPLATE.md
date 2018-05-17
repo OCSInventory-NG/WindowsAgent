@@ -1,9 +1,9 @@
 *It's hard to solve a problem when important details are missing, that why we added this template, to help you and us.*
 
-### General information
+### General informations
 Operating system :  
 
-### OCS Inventory information
+### OCS Inventory informations
 Windows agent version : 
 
 ### Problem's description

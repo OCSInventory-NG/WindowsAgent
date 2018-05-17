@@ -25,7 +25,7 @@ class SYSINFO_API CStoragePeripheral
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard constructor/destructor
+	// Standard contructor/destructor
 	//////////////////////////////////
 	CStoragePeripheral();
 	virtual ~CStoragePeripheral();
