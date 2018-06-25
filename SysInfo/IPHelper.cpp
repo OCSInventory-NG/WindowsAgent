@@ -66,8 +66,10 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 						ipa;
 	PIP_ADAPTER_ADDRESSES	pAdresses, 
 							pAdressesBis, 
-							pAdapterAddr = NULL;
+							pAdapterAddr = NULL,
+							pAdapterAddrBis = NULL;
 	PIP_ADAPTER_UNICAST_ADDRESS		pUnicast = NULL;
+	PIP_ADAPTER_PREFIX	pPrefix = NULL;
 	SOCKET_ADDRESS		*pDhcp;
 	PIP_ADAPTER_GATEWAY_ADDRESS		pGateway = NULL;
 	ULONG				ulLength = 0,
@@ -83,11 +85,12 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 						csSubnet,
 						csSubnetNetwork,
 						csAddressIp,
-						csGateway,
-						csDhcpServer;
+						csDescription,
+						csPrefixLength;
 	char				str[INET_ADDRSTRLEN],
 						bufferstr[INET_ADDRSTRLEN],
 						bufferRez[INET_ADDRSTRLEN];
+	auto				family = NULL;
 
 
 	AddLog(_T("IpHlpAPI GetNetworkAdapters...\n"));
@@ -157,7 +160,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	pAdresses = NULL;
 	dwSize = 0;
 
-	switch (lpfnGetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, NULL, pAdresses, &dwSize))
+	switch (lpfnGetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, pAdresses, &dwSize))
 	{
 	case NO_ERROR: // No error => no adapters
 	case ERROR_NO_DATA:
@@ -188,7 +191,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	}
 
 	// Recall GetAdptersAddresses
-	switch (lpfnGetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_PREFIX, NULL, pAdresses, &dwSize))
+	switch (lpfnGetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, pAdresses, &dwSize))
 	{
 	case 0: // No error
 		break;
@@ -222,7 +225,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	AddLog(_T("OK\nIpHlpAPI GetNetworkAdapters: Calling GetAdapterAddresses to determine IP Gateway..."));
 	pAdressesBis = NULL;
 
-	switch (lpfnGetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_GATEWAYS, NULL, pAdressesBis, &size))
+	switch (lpfnGetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_GATEWAYS, NULL, pAdressesBis, &size))
 	{
 	case NO_ERROR: // No error => no adapters
 	case ERROR_NO_DATA:
@@ -256,8 +259,9 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		return FALSE;
 	}
 
-	// Recall GetAdaptersAddresses
-	switch (lpfnGetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_GATEWAYS, NULL, pAdressesBis, &size))
+
+	// Recall GetAdptersAddresses
+	switch (lpfnGetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_GATEWAYS, NULL, pAdressesBis, &size))
 	{
 	case 0: // No error
 		break;
@@ -380,25 +384,6 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 			}
 			else if (pIfEntry->OperStatus == IfOperStatusUp)
 			{
-				// Get the Index
-				cAdapter.SetIfIndex(pIfEntry->InterfaceIndex);
-				// Get the type
-				cAdapter.SetType(GetAdapterType(pIfEntry->Type));
-				// Get the MIB type
-				cAdapter.SetTypeMIB(GetIfType(pIfEntry->Type));
-				// Get the description
-				cAdapter.SetDescription(pIfEntry->Description);
-				// Get MAC Address 
-				csMAC.Format(_T("%02X:%02X:%02X:%02X:%02X:%02X"),
-					pIfEntry->PhysicalAddress[0], pIfEntry->PhysicalAddress[1],
-					pIfEntry->PhysicalAddress[2], pIfEntry->PhysicalAddress[3],
-					pIfEntry->PhysicalAddress[4], pIfEntry->PhysicalAddress[5]);
-				cAdapter.SetMACAddress(csMAC);
-				// Get the Speed
-				cAdapter.SetSpeed(pIfEntry->TransmitLinkSpeed);
-				// Get the status
-				cAdapter.SetIpHelperStatus(pIfEntry->OperStatus);
-
 				// Now parse the Adapter addresses
 				for (pAdapterAddr = pAdresses; pAdapterAddr != NULL; pAdapterAddr = pAdapterAddr->Next)
 				{
@@ -411,78 +396,175 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 							{
 								if (pUnicast)
 								{
-									char buf2[BUFSIZ];
-									int family = pUnicast->Address.lpSockaddr->sa_family;
-									memset(buf2, 0, BUFSIZ);
-									getnameinfo(pUnicast->Address.lpSockaddr, pUnicast->Address.iSockaddrLength, buf2, sizeof(buf2), NULL, 0, NI_NUMERICHOST);
-									cAdapter.SetIPAddress(CA2W(buf2));
-								}
-							}
+									family = pUnicast->Address.lpSockaddr->sa_family;
+									// Get the Index
+									cAdapter.SetIfIndex(pIfEntry->InterfaceIndex);
+									// Get the type
+									cAdapter.SetType(GetAdapterType(pIfEntry->Type));
+									// Get the MIB type
+									cAdapter.SetTypeMIB(GetIfType(pIfEntry->Type));
+									// Get MAC Address 
+									csMAC.Format(_T("%02X:%02X:%02X:%02X:%02X:%02X"),
+										pIfEntry->PhysicalAddress[0], pIfEntry->PhysicalAddress[1],
+										pIfEntry->PhysicalAddress[2], pIfEntry->PhysicalAddress[3],
+										pIfEntry->PhysicalAddress[4], pIfEntry->PhysicalAddress[5]);
+									cAdapter.SetMACAddress(csMAC);
+									// Get the Speed
+									cAdapter.SetSpeed(pIfEntry->TransmitLinkSpeed);
+									// Get the status
+									cAdapter.SetIpHelperStatus(pIfEntry->OperStatus);
 
-							//Get DHCP server address
-							pDhcp = new SOCKET_ADDRESS;
-							*pDhcp = pAdapterAddr->Dhcpv4Server;
-							if (pDhcp)
-							{
-								char buf3[BUFSIZ];
-								int family = pDhcp->lpSockaddr->sa_family;
-								memset(buf3, 0, BUFSIZ);
-								getnameinfo(pDhcp->lpSockaddr, pDhcp->iSockaddrLength, buf3, sizeof(buf3), NULL, 0, NI_NUMERICHOST);
-								cAdapter.SetDhcpServer(CA2W(buf3));
-								delete pDhcp;
+									if (AF_INET == family)
+									{
+										csDescription = pIfEntry->Description;
+										// Get the description
+										cAdapter.SetDescription(csDescription);
+
+										// IPV4
+										char buf2[BUFSIZ];
+										memset(buf2, 0, BUFSIZ);
+										getnameinfo(pUnicast->Address.lpSockaddr, pUnicast->Address.iSockaddrLength, buf2, sizeof(buf2), NULL, 0, NI_NUMERICHOST);
+										cAdapter.SetIPAddress(CA2W(buf2));
+
+										//Get DHCP server address
+										pDhcp = new SOCKET_ADDRESS;
+										*pDhcp = pAdapterAddr->Dhcpv4Server;
+										if (pDhcp)
+										{
+											char buf3[BUFSIZ];
+											memset(buf3, 0, BUFSIZ);
+											getnameinfo(pDhcp->lpSockaddr, pDhcp->iSockaddrLength, buf3, sizeof(buf3), NULL, 0, NI_NUMERICHOST);
+											cAdapter.SetDhcpServer(CA2W(buf3));
+											delete pDhcp;
+										}
+
+										// Now parse the Adapter addresses
+										for (pAdapterAddrBis = pAdressesBis; pAdapterAddrBis != NULL; pAdapterAddrBis = pAdapterAddrBis->Next)
+										{
+											if (pIfEntry->InterfaceIndex == pAdapterAddrBis->IfIndex)
+											{
+												//Get gateway
+												for (pGateway = pAdapterAddrBis->FirstGatewayAddress; pGateway != NULL; pGateway = pGateway->Next)
+												{
+													if (pGateway)
+													{
+														family = pGateway->Address.lpSockaddr->sa_family;
+														if (AF_INET == family)
+														{
+															char buf4[BUFSIZ];
+															memset(buf4, 0, BUFSIZ);
+															getnameinfo(pGateway->Address.lpSockaddr, pGateway->Address.iSockaddrLength, buf4, sizeof(buf4), NULL, 0, NI_NUMERICHOST);
+															cAdapter.SetGateway(CA2W(buf4));
+															//Get subnet Mask
+															// Make a second call to GetIpAddrTable to get the
+															// actual data we want
+															for (ifIndex = 0; ifIndex < (UINT)pIPAddrTable->dwNumEntries; ifIndex++)
+															{
+																if (pIfEntry->InterfaceIndex == pIPAddrTable->table[ifIndex].dwIndex)
+																{
+																	// Get NetMask
+																	IPAddr.S_un.S_addr = (u_long)pIPAddrTable->table[ifIndex].dwMask;
+																	IPAddrBis.S_un.S_addr = (u_long)pIPAddrTable->table[ifIndex].dwAddr;
+																	csSubnet = inet_ntop(AF_INET, &IPAddr, str, INET_ADDRSTRLEN);
+																	csAddressIp = inet_ntop(AF_INET, &IPAddrBis, bufferstr, INET_ADDRSTRLEN);
+
+																	inet_pton(AF_INET, bufferstr, &ipAdr);
+																	inet_pton(AF_INET, str, &ipMsk);
+																	nbRez = htonl(ipAdr & ipMsk);
+
+																	ipa.S_un.S_addr = htonl(nbRez);
+																	csSubnetNetwork = inet_ntop(AF_INET, &ipa, bufferRez, INET_ADDRSTRLEN);
+																	cAdapter.SetNetNumber(csSubnetNetwork);
+																}
+															}
+															cAdapter.SetIPNetMask(csSubnet);
+														}
+													}
+												}
+											}
+										}
+										pAdapterAddrBis = NULL;
+										pList->AddTail(cAdapter);
+									}
+									else if (AF_INET6 == family)
+									{
+										// IPv6
+										SOCKADDR_IN6* ipv6 = reinterpret_cast<SOCKADDR_IN6*>(pUnicast->Address.lpSockaddr);
+										char ipv6_buffer[INET6_ADDRSTRLEN] = { 0 };
+										inet_ntop(AF_INET6, &(ipv6->sin6_addr), ipv6_buffer, INET6_ADDRSTRLEN);
+										csAddressIp.Format(_T("%s"), CA2W(ipv6_buffer));
+
+										if (csAddressIp.Mid(0, 2) != _T("fe"))
+										{
+											cAdapter.SetIPAddress(CA2W(ipv6_buffer));
+
+											csDescription.Format(_T("%s %s"), pIfEntry->Description, _T("(IPV6)"));
+											// Get the description
+											cAdapter.SetDescription(csDescription);
+
+											// IPv6
+											SOCKADDR_IN6* ipv6 = reinterpret_cast<SOCKADDR_IN6*>(pUnicast->Address.lpSockaddr);
+											char ipv6_buffer[INET6_ADDRSTRLEN] = { 0 };
+											inet_ntop(AF_INET6, &(ipv6->sin6_addr), ipv6_buffer, INET6_ADDRSTRLEN);
+											cAdapter.SetIPAddress(CA2W(ipv6_buffer));
+
+											//Get prefix
+											pPrefix = pAdapterAddr->FirstPrefix;
+
+											if (pPrefix)
+											{
+												char buf_prefix[BUFSIZ];
+												memset(buf_prefix, 0, BUFSIZ);
+												getnameinfo(pPrefix->Address.lpSockaddr, pPrefix->Address.iSockaddrLength, buf_prefix, sizeof(buf_prefix), NULL, 0, NI_NUMERICHOST);
+												cAdapter.SetNetNumber(CA2W(buf_prefix));
+
+												csPrefixLength.Format(_T("%d"), pPrefix->PrefixLength);
+												cAdapter.SetIPNetMask(csPrefixLength);
+											}
+
+											//Get DHCP server address
+											pDhcp = new SOCKET_ADDRESS;
+											*pDhcp = pAdapterAddr->Dhcpv6Server;
+											if (pDhcp)
+											{
+												char buf3[BUFSIZ];
+												memset(buf3, 0, BUFSIZ);
+												getnameinfo(pDhcp->lpSockaddr, pDhcp->iSockaddrLength, buf3, sizeof(buf3), NULL, 0, NI_NUMERICHOST);
+												cAdapter.SetDhcpServer(CA2W(buf3));
+												delete pDhcp;
+											}
+
+											// Now parse the Adapter addresses
+											for (pAdapterAddrBis = pAdressesBis; pAdapterAddrBis != NULL; pAdapterAddrBis = pAdapterAddrBis->Next)
+											{
+												if (pIfEntry->InterfaceIndex == pAdapterAddrBis->IfIndex)
+												{
+													//Get gateway
+													for (pGateway = pAdapterAddrBis->FirstGatewayAddress; pGateway != NULL; pGateway = pGateway->Next)
+													{
+														if (pGateway)
+														{
+															family = pGateway->Address.lpSockaddr->sa_family;
+															if (AF_INET6 == family)
+															{
+																SOCKADDR_IN6* gateway = reinterpret_cast<SOCKADDR_IN6*>(pGateway->Address.lpSockaddr);
+																char gateway_buffer[INET6_ADDRSTRLEN] = { 0 };
+																inet_ntop(AF_INET6, &(gateway->sin6_addr), gateway_buffer, INET6_ADDRSTRLEN);
+																cAdapter.SetGateway(CA2W(gateway_buffer));
+															}
+														}
+													}
+												}
+											}
+											pAdapterAddrBis = NULL;
+											pList->AddTail(cAdapter);
+										}
+									}
+								}
 							}
 						}
 					}
-				}
-				// End For each interface
-				pAdapterAddr = NULL;
-
-				for (pAdapterAddr = pAdressesBis; pAdapterAddr != NULL; pAdapterAddr = pAdapterAddr->Next)
-				{
-					if (pIfEntry->InterfaceIndex == pAdapterAddr->IfIndex)
-					{
-						//Get gateway
-						for (pGateway = pAdapterAddr->FirstGatewayAddress; pGateway != NULL; pGateway = pGateway->Next)
-						{
-							if (pGateway)
-							{
-								char buf4[BUFSIZ];
-								int family = pGateway->Address.lpSockaddr->sa_family;
-								memset(buf4, 0, BUFSIZ);
-								getnameinfo(pGateway->Address.lpSockaddr, pGateway->Address.iSockaddrLength, buf4, sizeof(buf4), NULL, 0, NI_NUMERICHOST);
-								cAdapter.SetGateway(CA2W(buf4));
-							}
-
-							//Get subnet Mask
-								
-							// Make a second call to GetIpAddrTable to get the
-							// actual data we want
-							for (ifIndex = 0; ifIndex < (UINT)pIPAddrTable->dwNumEntries; ifIndex++)
-							{
-								if (pIfEntry->InterfaceIndex == pIPAddrTable->table[ifIndex].dwIndex)
-								{
-									// Get NetMask
-									IPAddr.S_un.S_addr = (u_long)pIPAddrTable->table[ifIndex].dwMask;
-									IPAddrBis.S_un.S_addr = (u_long)pIPAddrTable->table[ifIndex].dwAddr;
-									csSubnet = inet_ntop(AF_INET, &IPAddr, str, INET_ADDRSTRLEN);
-									csAddressIp = inet_ntop(AF_INET, &IPAddrBis, bufferstr, INET_ADDRSTRLEN);
-
-									inet_pton(AF_INET, bufferstr, &ipAdr);
-									inet_pton(AF_INET, str, &ipMsk);
-									nbRez = htonl(ipAdr & ipMsk);
-
-									ipa.S_un.S_addr = htonl(nbRez);
-									csSubnetNetwork = inet_ntop(AF_INET, &ipa, bufferRez, INET_ADDRSTRLEN);
-									cAdapter.SetNetNumber(csSubnetNetwork);
-								}
-							}
-								
-							cAdapter.SetIPNetMask(csSubnet);
-
-							pList->AddTail(cAdapter);
-							uIndex++;
-						}
-					}
+					uIndex++;
 				}
 			}
 		}
@@ -495,6 +577,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 	free(pAdresses);
 	free(pAdressesBis);
 	pAdapterAddr = NULL;
+	pAdapterAddrBis = NULL;
 	// Unload library
 	FreeLibrary(hDll);
 
