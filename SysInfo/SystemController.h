@@ -32,7 +32,7 @@ class SYSINFO_API CSystemController
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CSystemController();
 	virtual ~CSystemController();

@@ -180,7 +180,7 @@ public:
 	// Connect to SetupAPI on specified host (NULL for localhost)
 	// WARNING : only Windows 2K or later is supported for remote operations
 	BOOL Connect( LPCTSTR lpstrDevice = NULL);
-	// Get monitor informations from EDID standard
+	// Get monitor information from EDID standard
 	BOOL GetMonitors( CMonitorList *pMyList);
 	// Disconnect from SetupAPI
 	BOOL Disconnect();

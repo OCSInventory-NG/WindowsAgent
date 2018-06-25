@@ -73,7 +73,7 @@ public:
   /**
    * Exec command in the directory path. Make sure that the
    * executable is either in the path or specify the full path.
-   * Wait for command AND ALL others threads/processes it may launch to finish.
+   * Wait for command AND ALL other threads/processes it may launch to finish.
    * In this case, we try get exit code, but NOT stdout and stderr
    * Return EXEC_SUCCESSFULL if all successful
    *        EXEC_ERROR_START_COMMAND if start command error

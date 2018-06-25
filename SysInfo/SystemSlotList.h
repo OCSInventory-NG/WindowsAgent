@@ -23,7 +23,7 @@ class SYSINFO_API CSystemSlotList : public CList<CSystemSlot, CSystemSlot&>
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CSystemSlotList();
 	virtual ~CSystemSlotList();

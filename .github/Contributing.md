@@ -21,18 +21,18 @@
 5. Push to the branch: `git push origin my-new-feature`
 6. Submit a pull request !
 
-## Pull Request Informations
+## Pull Request Information
 
 When contributing, please open an issue before or contact the team using mail. This will prevent all the duplicate of work.
 Also, check if your contribution is not already in the roadmap or affiliated to an issue.
 
 If you are contributing on a small scale (translation, a few line modification), you don't need open an issue or contact the team but you will need to explain what you've done in the Pull Request comment and provide as accurate commit messages as possible.
-Cf. Commits Messages Name Informations
+Cf. Commits Messages Name Information
 
 If you need to discuss about a big change or need some help of our team during the development of your contribution,
 we can use other communication method like Telegram, IRC, Skype.
 
-## Commits Messages Name Informations
+## Commits Messages Name Information
 
 Try to create as accurate as possible commit messages.
 This will help us to speed up the review process and to reduce the misunderstanding (which can lead to a Pull Request to be rejected)

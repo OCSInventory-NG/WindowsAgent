@@ -24,7 +24,7 @@ class SYSINFO_API CSoundDevice
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CSoundDevice();
 	virtual ~CSoundDevice();

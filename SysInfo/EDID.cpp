@@ -225,7 +225,7 @@ BOOL CEdid::ParseEDID(LPBYTE lpByte, Standard_EDID &myEDID)
 	// 4 Detailed_Timing_Descriptions
 	memcpy( &(myEDID.Detailed_Timing_Description1), &(tmpEDID.Detailed_Timing_Description1), 72);
 
-	// Others values
+	// Other values
 	myEDID.DPMS_Flags = tmpEDID.DPMS_Flags;
 	myEDID.EDID_ID_Code = tmpEDID.EDID_ID_Code;
 	myEDID.EDID_Revision = tmpEDID.EDID_Revision;

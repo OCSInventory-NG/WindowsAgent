@@ -15,6 +15,7 @@
 #include "stdafx.h"
 #include "Deviceid.h"
 #include "OcsUTils.h"
+#include "IPHelper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -72,7 +73,7 @@ CString CDeviceid::getMacs()
 	CString				csMacConcat;
 
 	m_csMacConcat.Empty();
-	if (!cSysinfo.getNetworkAdapters( &cNetworkAdapterList ))
+	if (!CIPHelper::GetNetworkAdaptersJustMAC(&cNetworkAdapterList))
 		return m_csMacConcat;
 
 	position = cNetworkAdapterList.GetHeadPosition();

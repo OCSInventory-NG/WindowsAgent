@@ -51,7 +51,7 @@ class OCSINVENTORYFRONT_API COCSInventoryState
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	COCSInventoryState();
 	virtual ~COCSInventoryState();
@@ -83,7 +83,7 @@ public: // Methods
 	// Set attributes values
 	//////////////////////////////////
 
-	// Clear infos
+	// Clear info
 	void Clear();
 
 	void SetHardware( LPCTSTR lpstrValue);
@@ -114,9 +114,9 @@ public: // Methods
 	BOOL WriteToFile( LPCTSTR lpstrFilename, LPCTSTR lpstrSection = OCS_STATE_STANDARD_SECTION);
 
 protected: // Methods
-	// Format informations in a XML string
+	// Format information in a XML string
 	BOOL FormatXML( CMarkup* pXml, LPCTSTR lpstrSection = OCS_STATE_STANDARD_SECTION);
-	// Read informations in a XML string
+	// Read information in a XML string
 	BOOL ParseFromXML( CMarkup* pXml, LPCTSTR lpstrSection = OCS_STATE_STANDARD_SECTION);
 
 protected: // Attributes
