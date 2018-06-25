@@ -23,7 +23,7 @@ class SYSINFO_API CNetworkAdapterList : public CList<CNetworkAdapter, CNetworkAd
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CNetworkAdapterList();
 	virtual ~CNetworkAdapterList();
@@ -41,7 +41,7 @@ public: // Methods
 	// Set the gateway for the adapter lIfIndex in the list
 	BOOL SetIpRouteEntry( LONG lIfIndex, LPCTSTR lpstrGateway);
 	// Didier LIROULET 2005-10-17 END
-	// Set the adapter infos IP @, net mask, gateways and DCHP server by the adapter MAC @ in the list
+	// Set the adapter info IP @, net mask, gateways and DCHP server by the adapter MAC @ in the list
 	BOOL SetIpAddrEntry(LPCTSTR lpstrMAC, LPCTSTR lpstrIPAddr, LPCTSTR lpstrIPNetMask, LPCTSTR lpstrGateway, LPCTSTR lpstrDhcpServer, LPCTSTR lpstrNetNumber);
 	// Get hash code of data, to determine if changed since last inventory
 	LPCTSTR GetHash();

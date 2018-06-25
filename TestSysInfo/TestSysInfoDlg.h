@@ -36,11 +36,11 @@ protected:
 	HICON m_hIcon;
 	// General device properties
 	CDeviceProperties m_Device;
-	// BIOS informations
+	// BIOS information
 	CBios		 m_BIOS;
-	// List of CPU infos
+	// List of CPU info
 	CCpuList m_CpuList;
-	// List of Input devices infos
+	// List of Input devices info
 	CInputDeviceList m_InputList;
 	// List of Logical Drives (Volum name, File system, Total size, Free space...)
 	CLogicalDriveList m_DriveList;
@@ -54,7 +54,7 @@ protected:
 	CNetworkAdapterList m_NetworkList;
 	// List of Printers
 	CPrinterList m_PrinterList;
-	// List of Device registry values infos
+	// List of Device registry values info
 	CRegistryValueList m_RegistryList;
 	// List of Software
 	CSoftwareList m_SoftwareList;
@@ -62,7 +62,7 @@ protected:
 	CSoundDeviceList m_SoundList;
 	// List of Storage devices (Floppy disk, IDE Disk, SCSI Disk, CD-Rom...)
 	CStoragePeripheralList m_StorageList;
-	// List of System Controlers (Floppy, IDE, SCSI, USB, IEEE1394, PCMCIA, SATA)
+	// List of System Controllers (Floppy, IDE, SCSI, USB, IEEE1394, PCMCIA, SATA)
 	CSystemControllerList m_SystemControllerList;
 	// List of System Slots (PCI, AGP...)
 	CSystemSlotList m_SlotList;

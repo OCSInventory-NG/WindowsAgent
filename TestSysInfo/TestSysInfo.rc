@@ -16,7 +16,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Neutre (Par défaut) resources
+// Neutre (Par dï¿½faut) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
 LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,3,1,0
- PRODUCTVERSION 2,3,1,0
+ FILEVERSION 2,3,1,1
+ PRODUCTVERSION 2,3,1,1
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -67,16 +67,16 @@ BEGIN
     BEGIN
         BLOCK "040004b0"
         BEGIN
-            VALUE "Comments", "OCS Inventory NG System Informations Testing tool"
+            VALUE "Comments", "OCS Inventory NG System Information Testing tool"
             VALUE "CompanyName", "OCS Inventory NG"
-            VALUE "FileDescription", "OCS Inventory NG System Informations Testing tool"
-            VALUE "FileVersion", "2.3.1.0"
+            VALUE "FileDescription", "OCS Inventory NG System Information Testing tool"
+            VALUE "FileVersion", "2.3.1.1"
             VALUE "InternalName", "TestSysInfo.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "TestSysInfo.exe"
             VALUE "ProductName", "OCS Inventory NG Windows Agent"
-            VALUE "ProductVersion", "2.3.1.0"
+            VALUE "ProductVersion", "2.3.1.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -113,12 +113,12 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ico"
-#endif    // Neutre (Par défaut) resources
+#endif    // Neutre (Par dï¿½faut) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Français (France) resources
+// Franï¿½ais (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
@@ -172,7 +172,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Français (France) resources
+#endif    // Franï¿½ais (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

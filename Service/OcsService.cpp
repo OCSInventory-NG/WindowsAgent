@@ -519,8 +519,8 @@ void COcsService::Run()
 			if (!runAgent( bNotifyInventory))
 			{
 				// Agent launch failed => do not wait for next prolog freq
-				// Try to launch it next WRITE_TTOWAIT_EACH, but if antother error occurs
-				// increase laucnh latency, and so on at each each error.
+				// Try to launch it next WRITE_TTOWAIT_EACH, but if another error occurs
+				// increase launch latency, and so on at each error.
 				nLatencyAgentLaunch = nLatencyAgentLaunch * 2;
 				if (nLatencyAgentLaunch > (m_iPrologFreq*PROLOG_FREQ_UNIT))
 					// At least, launch agent once a PROLOG_FREQ
@@ -571,7 +571,7 @@ BOOL COcsService::isInventoryStateChanged()
 			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Failed to load/parse last inventory state"));
 			return FALSE;
 		}
-		// Get network adapter infos
+		// Get network adapter info
 		mySysInfo.getNetworkAdapters( &myList);
 		// Checking if networks changes
 		csBuffer = myList.GetHash();
@@ -684,7 +684,7 @@ BOOL COcsService::OnUserControl( DWORD dwOpcode)
         return TRUE;
     case OCS_SERVICE_CONTROL_SHOW_INVENTORY:
         // Show inventory using XSLT
-		LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, _T( "User manually ask displaying local inventory informations"));
+		LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, _T( "User manually ask displaying local inventory information"));
 		showInventory();
         return TRUE;
     default:
@@ -707,12 +707,12 @@ BOOL COcsService::showInventory()
 		// Create inventory
 		if ((pRequest = new CInventoryRequest()) == NULL)
 		{
-			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to retrieve inventory informations"));
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to retrieve inventory information"));
 			return FALSE;
 		}
 		if (!pRequest->final())
 		{
-			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to generate XML of inventory informations"));
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to generate XML of inventory information"));
 			delete pRequest;
 			return FALSE;
 		}
@@ -724,14 +724,14 @@ BOOL COcsService::showInventory()
 		csXsl.Format( "\n<?xml-stylesheet type=\"text/xsl\" href=\"%s\\OCS-Transform.xsl\" ?>", GetAnsiFromUnicode( getInstallFolder()));
 		if ((nIndex = csXml.Find( "?>")) == -1)
 		{
-			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to add XSL stylesheet to inventory informations"));
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to add XSL stylesheet to inventory information"));
 			return FALSE;
 		}
 		csXml.Insert( nIndex+2, csXsl);
 		// Write XML to data directory
 		if (!WriteVoidToFile( csXml, csXml.GetLength(), csFile))
 		{
-			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to write XML inventory informations to file"));
+			LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "Unable to write XML inventory information to file"));
 			return FALSE;
 		}
 		return TRUE;
@@ -739,7 +739,7 @@ BOOL COcsService::showInventory()
 	catch (CException *pEx)
 	{
 		pEx->Delete();
-		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "An unknown error occurred while trying to generate inventory informations"));
+		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, _T( "An unknown error occurred while trying to generate inventory information"));
 		return FALSE;
 	}
 }

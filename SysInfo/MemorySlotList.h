@@ -24,7 +24,7 @@ class SYSINFO_API CMemorySlotList : public CList<CMemorySlot, CMemorySlot&>
 public: // Methods
 	ULONG GetTotalMemory();
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CMemorySlotList();
 	virtual ~CMemorySlotList();

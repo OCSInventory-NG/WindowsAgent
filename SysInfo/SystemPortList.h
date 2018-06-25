@@ -23,7 +23,7 @@ class SYSINFO_API CSystemPortList : public CList<CSystemPort, CSystemPort&>
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CSystemPortList();
 	virtual ~CSystemPortList();

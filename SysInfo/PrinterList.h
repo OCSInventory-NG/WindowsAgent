@@ -24,7 +24,7 @@ class SYSINFO_API CPrinterList : public CList<CPrinter, CPrinter&>
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CPrinterList();
 	virtual ~CPrinterList();

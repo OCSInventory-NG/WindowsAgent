@@ -24,7 +24,7 @@ class SYSINFO_API CPrinter
 {
 public: // Methods
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 	CPrinter();
 	virtual ~CPrinter();

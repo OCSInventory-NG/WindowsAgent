@@ -167,7 +167,7 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 		return ;
 	}
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "BIOS infos"));
+	m_List.AddString( _T( "BIOS info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	myDMI.GetBios( csVendor, csVersion, csDate);
 	str.Format( _T( "Vendor: %s"), csVendor);
@@ -179,7 +179,7 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 
 	m_List.AddString( _T( ""));
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "System infos"));
+	m_List.AddString( _T( "System info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	myDMI.GetSystemInformation( csVendor, csModel, csSN);
 	str.Format( _T( "Vendor: %s"), csVendor);
@@ -191,7 +191,7 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 
 	m_List.AddString( _T( ""));
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Base Board infos"));
+	m_List.AddString( _T( "Base Board info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	myDMI.GetBaseBoard( csVendor, csModel, csVersion, csSN, csAssetTag);
 	str.Format( _T( "Vendor: %s"), csVendor);
@@ -207,7 +207,7 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 
 	m_List.AddString( _T( ""));
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "System Enclosure infos"));
+	m_List.AddString( _T( "System Enclosure info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	myDMI.GetSystemEnclosure( csVendor, csType, csSN, csAssetTag);
 	str.Format( _T( "Vendor: %s"), csVendor);
@@ -231,7 +231,7 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "System Slots infos"));
+	SysInfoLog( _T( "System Slots info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	myDMI.GetSystemSlots( &m_SlotList);
 	CSystemSlot mySlot;
@@ -268,7 +268,7 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "System Port infos"));
+	SysInfoLog( _T( "System Port info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	myDMI.GetSystemPorts( &m_PortList);
 	CSystemPort myPort;
@@ -300,7 +300,7 @@ void CTestSysInfoDlg::OnBnClickedSmbios()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Memory Slots infos"));
+	SysInfoLog( _T( "Memory Slots info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	myDMI.GetMemorySlots( &m_MemoryList);
 	CMemorySlot myMemSlot;
@@ -366,7 +366,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 		return ;
 	}
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "System Enclosure infos"));
+	m_List.AddString( _T( "System Enclosure info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_SystemEnclosure")))
 	{
@@ -409,7 +409,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Computer System infos"));
+	m_List.AddString( _T( "Computer System info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_ComputerSystem")))
 	{
@@ -436,7 +436,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Computer System Product infos"));
+	m_List.AddString( _T( "Computer System Product info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_ComputerSystemProduct")))
 	{
@@ -471,7 +471,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Base board infos"));
+	m_List.AddString( _T( "Base board info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_BaseBoard")))
 	{
@@ -502,7 +502,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "BIOS infos"));
+	m_List.AddString( _T( "BIOS info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_BIOS")))
 	{
@@ -545,7 +545,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "PhysicalMemory infos"));
+	m_List.AddString( _T( "PhysicalMemory info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_PhysicalMemory")))
 	{
@@ -611,7 +611,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "PhysicalMemoryArray infos"));
+	m_List.AddString( _T( "PhysicalMemoryArray info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_PhysicalMemoryArray")))
 	{
@@ -670,7 +670,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "System Slot infos"));
+	m_List.AddString( _T( "System Slot info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_SystemSlot")))
 	{
@@ -733,7 +733,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Battery infos"));
+	m_List.AddString( _T( "Battery info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_Battery")))
 	{
@@ -772,7 +772,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "PortableBattery infos"));
+	m_List.AddString( _T( "PortableBattery info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_PortableBattery")))
 	{
@@ -844,7 +844,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Processor infos"));
+	m_List.AddString( _T( "Processor info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_Processor")))
 	{
@@ -923,7 +923,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "MotherBoard Device infos"));
+	m_List.AddString( _T( "MotherBoard Device info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_MotherboardDevice")))
 	{
@@ -962,7 +962,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "OnBoard Device infos"));
+	m_List.AddString( _T( "OnBoard Device info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_OnBoardDevice")))
 	{
@@ -1001,7 +1001,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Video Controller infos"));
+	m_List.AddString( _T( "Video Controller info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_VideoController")))
 	{
@@ -1040,7 +1040,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Desktop Monitor infos"));
+	m_List.AddString( _T( "Desktop Monitor info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_DesktopMonitor")))
 	{
@@ -1081,7 +1081,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Serial Port infos"));
+	m_List.AddString( _T( "Serial Port info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_SerialPort")))
 	{
@@ -1120,7 +1120,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Parallel Port infos"));
+	m_List.AddString( _T( "Parallel Port info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_ParallelPort")))
 	{
@@ -1159,7 +1159,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( " Port Connector infos"));
+	m_List.AddString( _T( " Port Connector info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_PortConnector")))
 	{
@@ -1202,7 +1202,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( " Keyboard infos"));
+	m_List.AddString( _T( " Keyboard info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_Keyboard")))
 	{
@@ -1245,7 +1245,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( " Pointing Device infos"));
+	m_List.AddString( _T( " Pointing Device info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_PointingDevice")))
 	{
@@ -1296,7 +1296,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Floppy Controller infos"));
+	m_List.AddString( _T( "Floppy Controller info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_FloppyController")))
 	{
@@ -1335,7 +1335,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "IDE Controller infos"));
+	m_List.AddString( _T( "IDE Controller info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_IDEController")))
 	{
@@ -1374,7 +1374,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "SCSI Controller infos"));
+	m_List.AddString( _T( "SCSI Controller info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_SCSIController")))
 	{
@@ -1421,7 +1421,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "InfraRed Controller infos"));
+	m_List.AddString( _T( "InfraRed Controller info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_InfraredDevice")))
 	{
@@ -1460,7 +1460,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "USB Controller infos"));
+	m_List.AddString( _T( "USB Controller info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_USBController")))
 	{
@@ -1499,7 +1499,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "IEEE 1394 Controller infos"));
+	m_List.AddString( _T( "IEEE 1394 Controller info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_1394Controller")))
 	{
@@ -1538,7 +1538,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "PCMCIA Controller infos"));
+	m_List.AddString( _T( "PCMCIA Controller info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_PCMCIAController")))
 	{
@@ -1577,7 +1577,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Floppy Drives infos"));
+	m_List.AddString( _T( "Floppy Drives info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_FloppyDrive")))
 	{
@@ -1627,7 +1627,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Disk Drives infos"));
+	m_List.AddString( _T( "Disk Drives info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_DiskDrive")))
 	{
@@ -1714,7 +1714,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "CD-ROM Drives infos"));
+	m_List.AddString( _T( "CD-ROM Drives info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_CDROMDrive")))
 	{
@@ -1768,7 +1768,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Tape Drives infos"));
+	m_List.AddString( _T( "Tape Drives info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_TapeDrive")))
 	{
@@ -1822,7 +1822,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Sound Device infos"));
+	m_List.AddString( _T( "Sound Device info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_SoundDevice")))
 	{
@@ -1857,7 +1857,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Network Adapter infos"));
+	m_List.AddString( _T( "Network Adapter info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_NetworkAdapterSetting")))
 	{
@@ -1948,7 +1948,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Telephony Modem infos"));
+	m_List.AddString( _T( "Telephony Modem info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_POTSModem")))
 	{
@@ -1991,7 +1991,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Logical Drives infos"));
+	m_List.AddString( _T( "Logical Drives info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_LogicalDisk")))
 	{
@@ -2038,7 +2038,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Printer infos"));
+	m_List.AddString( _T( "Printer info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_Printer")))
 	{
@@ -2100,7 +2100,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "OS infos"));
+	m_List.AddString( _T( "OS info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_OperatingSystem")))
 	{
@@ -2179,7 +2179,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Domain infos"));
+	m_List.AddString( _T( "Domain info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_NTDomain")))
 	{
@@ -2230,7 +2230,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Services infos"));
+	m_List.AddString( _T( "Services info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_Service")))
 	{
@@ -2281,7 +2281,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Scheduled Job infos"));
+	m_List.AddString( _T( "Scheduled Job info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_ScheduledJob")))
 	{
@@ -2328,7 +2328,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 	}
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Hot fix infos"));
+	m_List.AddString( _T( "Hot fix info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_QuickFixEngineering")))
 	{
@@ -2380,7 +2380,7 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 
 
 	m_List.AddString( _T( "------------------------------------------------------"));
-	m_List.AddString( _T( "Software infos"));
+	m_List.AddString( _T( "Software info"));
 	m_List.AddString( _T( "------------------------------------------------------"));
 	if (myWmiDll.BeginEnumClassObject( _T( "Win32_Product")))
 	{
@@ -2460,7 +2460,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 	runSysInfo();
 	m_List.ResetContent();
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "BIOS infos"));
+	SysInfoLog( _T( "BIOS info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	str.Format( _T( "System Manufacturer: %s"), m_BIOS.GetSystemManufacturer());
 	SysInfoLog( str);
@@ -2484,7 +2484,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Processors infos"));
+	SysInfoLog( _T( "Processors info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	str.Format( _T( "Number of Processors: %u"), m_Device.GetNumberOfProcessors());
 	SysInfoLog( str);
@@ -2495,7 +2495,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "CPU List infos"));
+	SysInfoLog( _T( "CPU List info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CCpu myCpu;
 	pos = m_CpuList.GetHeadPosition();
@@ -2547,7 +2547,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Memory Slots infos"));
+	SysInfoLog( _T( "Memory Slots info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CMemorySlot myMemSlot;
 	pos = m_MemoryList.GetHeadPosition();
@@ -2587,7 +2587,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Video Controlers infos"));
+	SysInfoLog( _T( "Video Controllers info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CVideoAdapter myVideo;
 	pos = m_VideoList.GetHeadPosition();
@@ -2613,13 +2613,13 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		}
 	}
 	SysInfoLog( _T( ""));
-	str.Format( _T( "Video Controlers Hash: %s"), m_VideoList.GetHash());
+	str.Format( _T( "Video Controllers Hash: %s"), m_VideoList.GetHash());
 	SysInfoLog( str);
 
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Desktop Monitors infos"));
+	SysInfoLog( _T( "Desktop Monitors info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CMonitor myMonitor;
 	pos = m_MonitorList.GetHeadPosition();
@@ -2653,7 +2653,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Sound Devices infos"));
+	SysInfoLog( _T( "Sound Devices info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CSoundDevice mySound;
 	pos = m_SoundList.GetHeadPosition();
@@ -2683,7 +2683,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "System Slots infos"));
+	SysInfoLog( _T( "System Slots info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CSystemSlot mySlot;
 	pos = m_SlotList.GetHeadPosition();
@@ -2719,7 +2719,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "System Port infos"));
+	SysInfoLog( _T( "System Port info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CSystemPort myPort;
 	pos = m_PortList.GetHeadPosition();
@@ -2751,7 +2751,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Input Devices infos"));
+	SysInfoLog( _T( "Input Devices info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CInputDevice myInput;
 	pos = m_InputList.GetHeadPosition();
@@ -2786,7 +2786,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "System Controlers infos"));
+	SysInfoLog( _T( "System Controllers info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CSystemController myController;
 	pos = m_SystemControllerList.GetHeadPosition();
@@ -2816,13 +2816,13 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		}
 	}
 	SysInfoLog( _T( ""));
-	str.Format( _T( "System Controlers Hash: %s"), m_SystemControllerList.GetHash());
+	str.Format( _T( "System Controllers Hash: %s"), m_SystemControllerList.GetHash());
 	SysInfoLog( str);
 
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Storage Peripherals infos"));
+	SysInfoLog( _T( "Storage Peripherals info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CStoragePeripheral myStorage;
 	pos = m_StorageList.GetHeadPosition();
@@ -2862,7 +2862,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Network Adapters infos"));
+	SysInfoLog( _T( "Network Adapters info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CNetworkAdapter myNetwork;
 	pos = m_NetworkList.GetHeadPosition();
@@ -2906,7 +2906,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Telephony Modems infos"));
+	SysInfoLog( _T( "Telephony Modems info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CModem myModem;
 	pos = m_ModemList.GetHeadPosition();
@@ -2938,7 +2938,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Logical Drive infos"));
+	SysInfoLog( _T( "Logical Drive info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CLogicalDrive myDrive;
 	pos = m_DriveList.GetHeadPosition();
@@ -2974,7 +2974,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Printers infos"));
+	SysInfoLog( _T( "Printers info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CPrinter myPrinter;
 	pos = m_PrinterList.GetHeadPosition();
@@ -3016,7 +3016,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Physical or VM infos"));
+	SysInfoLog( _T( "Physical or VM info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	str.Format( _T( "UUID: %s"), m_Device.GetUUID());
 	SysInfoLog( str);
@@ -3027,7 +3027,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "OS infos"));
+	SysInfoLog( _T( "OS info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	str.Format( _T( "Name: %s"), m_Device.GetOSName());
 	SysInfoLog( str);
@@ -3055,7 +3055,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 
 	SysInfoLog( _T( ""));
 	SysInfoLog( _T( "------------------------------------------------------"));
-	SysInfoLog( _T( "Registered Applications infos"));
+	SysInfoLog( _T( "Registered Applications info"));
 	SysInfoLog( _T( "------------------------------------------------------"));
 	CSoftware myApp;
 	pos = m_SoftwareList.GetHeadPosition();
@@ -3182,9 +3182,9 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	if (!mySysInfo.getLastLoggedUser( cs1))
 		AfxMessageBox( _T( "Failed to get last logged on username !"));
 	m_Device.SetLastLoggedUser( cs1);
-	// Get OS informations and device type (windows station or windows server)
+	// Get OS information and device type (windows station or windows server)
 	if (!mySysInfo.getOS( cs1, cs2, cs3, cs4, cs5))
-		AfxMessageBox( _T( "Failed to get OS informations !"));
+		AfxMessageBox( _T( "Failed to get OS information !"));
 	m_Device.SetOS( cs1, cs2, cs3);
 	m_Device.SetDescription (cs4);
 	m_Device.SetAddressWidthOS( mySysInfo.getAddressWidthOS());
@@ -3194,73 +3194,73 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	cSoftOS.SetMemoryAddressWidth( mySysInfo.getAddressWidthOS());
 	// Get NT Domain or Workgroup
 	if (!mySysInfo.getDomainOrWorkgroup( cs1))
-		AfxMessageBox( _T( "Failed to get Domain or Workgroup informations !"));
+		AfxMessageBox( _T( "Failed to get Domain or Workgroup information !"));
 	m_Device.SetDomainOrWorkgroup( cs1);
 	// Get NT user Domain
 	if (!mySysInfo.getUserDomain( cs1))
-		AfxMessageBox( _T( "Failed to get User Domain informations !"));
+		AfxMessageBox( _T( "Failed to get User Domain information !"));
 	m_Device.SetUserDomain( cs1);
-	// Get BIOS informations
+	// Get BIOS information
 	if (!mySysInfo.getBiosInfo( &m_BIOS))
-		AfxMessageBox( _T( "Failed to get BIOS informations !"));
-	// Get Processor infos (0 means error)
+		AfxMessageBox( _T( "Failed to get BIOS information !"));
+	// Get Processor info (0 means error)
 	if ((dwValue = mySysInfo.getProcessors( cs1, cs2, &m_CpuList)) == 0)
-		AfxMessageBox( _T( "Failed to get Processors informations !"));
+		AfxMessageBox( _T( "Failed to get Processors information !"));
 	m_Device.SetProcessor( cs1, cs2, dwValue);
-	// Get memory informations
+	// Get memory information
 	if (!mySysInfo.getMemory( &ulPhysicalMemory, &ulSwapSize))
-		AfxMessageBox( _T( "Failed to get Memory informations !"));
+		AfxMessageBox( _T( "Failed to get Memory information !"));
 	m_Device.SetMemory( ulPhysicalMemory, ulSwapSize);
 	if (!mySysInfo.getMemorySlots( &m_MemoryList))
-		AfxMessageBox( _T( "Failed to get Memory Slots informations !"));
+		AfxMessageBox( _T( "Failed to get Memory Slots information !"));
 	// Get Input Devices
 	if (!mySysInfo.getInputDevices( &m_InputList))
-		AfxMessageBox( _T( "Failed to get Input Devices informations !"));
+		AfxMessageBox( _T( "Failed to get Input Devices information !"));
 	// Get System ports
 	if (!mySysInfo.getSystemPorts( &m_PortList))
-		AfxMessageBox( _T( "Failed to get System Ports informations !"));
+		AfxMessageBox( _T( "Failed to get System Ports information !"));
 	// Get System Slots
 	if (!mySysInfo.getSystemSlots( &m_SlotList))
-		AfxMessageBox( _T( "Failed to get System slots informations !"));
-	// Get System controlers
+		AfxMessageBox( _T( "Failed to get System slots information !"));
+	// Get System controllers
 	if (!mySysInfo.getSystemControllers( &m_SystemControllerList))
-		AfxMessageBox( _T( "Failed to get System Controllers informations !"));
+		AfxMessageBox( _T( "Failed to get System Controllers information !"));
 	// Get Physical storage devices
 	if (!mySysInfo.getStoragePeripherals( &m_StorageList))
-		AfxMessageBox( _T( "Failed to get Physical Storages informations !"));
+		AfxMessageBox( _T( "Failed to get Physical Storages information !"));
 	// Get Logical Drives
 	if (!mySysInfo.getLogicalDrives( &m_DriveList))
-		AfxMessageBox( _T( "Failed to get Logical Drives informations !"));
+		AfxMessageBox( _T( "Failed to get Logical Drives information !"));
 	// Get Sound Devices
 	if (!mySysInfo.getSoundDevices( &m_SoundList))
-		AfxMessageBox( _T( "Failed to get Sound Devices informations !"));
+		AfxMessageBox( _T( "Failed to get Sound Devices information !"));
 	// Get Modems
 	if (!mySysInfo.getModems( &m_ModemList))
-		AfxMessageBox( _T( "Failed to get Modems informations !"));
-	// Get network adapter(s) hardware and IP informations
+		AfxMessageBox( _T( "Failed to get Modems information !"));
+	// Get network adapter(s) hardware and IP information
 	if (!mySysInfo.getNetworkAdapters( &m_NetworkList))
-		AfxMessageBox( _T( "Failed to get Network Adapters informations !"));
-	// Get Printer(s) informations
+		AfxMessageBox( _T( "Failed to get Network Adapters information !"));
+	// Get Printer(s) information
 	if (!mySysInfo.getPrinters( &m_PrinterList))
-		AfxMessageBox( _T( "Failed to get Printers informations !"));
-	// Get Video adapter(s) informations
+		AfxMessageBox( _T( "Failed to get Printers information !"));
+	// Get Video adapter(s) information
 	if (!mySysInfo.getVideoAdapters( &m_VideoList))
-		AfxMessageBox( _T( "Failed to get Video Adapters informations !"));
+		AfxMessageBox( _T( "Failed to get Video Adapters information !"));
 	if (!mySysInfo.getMonitors( &m_MonitorList))
-		AfxMessageBox( _T( "Failed to get Monitors informations !"));
+		AfxMessageBox( _T( "Failed to get Monitors information !"));
 	// Get the primary local IP Address 
 	m_Device.SetIPAddress( mySysInfo.getLocalIP());
-	// Get Windows registration infos
+	// Get Windows registration info
 	if (!mySysInfo.getWindowsRegistration( cs1, cs2, cs3))
-		AfxMessageBox( _T( "Failed to get Windows Registration informations !"));
+		AfxMessageBox( _T( "Failed to get Windows Registration information !"));
 	m_Device.SetWindowsRegistration( cs1, cs2, cs3);
 	// Get Windows product key
 	if (!mySysInfo.getWindowsProductKey( cs1))
-		AfxMessageBox( _T( "Failed to get Windows Product Key informations !"));
+		AfxMessageBox( _T( "Failed to get Windows Product Key information !"));
 	m_Device.SetWindowsProductKey( cs1);
 	// Get Software list
 	if (!mySysInfo.getInstalledApplications( &m_SoftwareList, TRUE))
-		AfxMessageBox( _T( "Failed to get Installed Softwares informations !"));
+		AfxMessageBox( _T( "Failed to get Installed Softwares information !"));
 	m_SoftwareList.AddTail( cSoftOS);
 	// Get UUID
 	if (!mySysInfo.getUUID( cs1))

@@ -81,9 +81,9 @@ LPCTSTR CLogicalDrive::GetPercentFree()
 
 BOOL CLogicalDrive::RetrieveDriveInfo( LPCTSTR lpstrDrive)
 {
-	BOOL	bIsLocalDrive;				// TRUE is logical drive is a hard drive
-	TCHAR	strName[255];				// Volum Name buffer
-	DWORD	dwName = 255;				// Max size of Volum Name buffer
+	BOOL	bIsLocalDrive;				// TRUE if logical drive is a hard drive
+	TCHAR	strName[255];				// Volume Name buffer
+	DWORD	dwName = 255;				// Max size of Volume Name buffer
 	TCHAR	strFSName[255];				// FS name buffer
 	DWORD	dwFSName = 255;				// Max size of FS Name buffer
 	DWORD	dwMaximumComponentLength;	// Max filename length for this FS

@@ -91,7 +91,7 @@ class SYSINFO_API CSysInfo
 public: // Methods
 	BOOL getWindowsProductKey(CString &productKey);
 	//////////////////////////////////
-	// Standard contructor/destructor
+	// Standard constructor/destructor
 	//////////////////////////////////
 
 	// Create a CSysInfo object, enabling or not logging into lpstrFolder or current one
@@ -112,7 +112,7 @@ public: // Methods
 	// Memory information
 	BOOL getMemory( ULONG *m_ulPhysicalMemory, ULONG *m_ulSwapSize);
 
-	// Hardware informations
+	// Hardware information
 	BOOL getBiosInfo( CBios *pMyBios);
 	BOOL getInputDevices( CInputDeviceList *pList);
 	LPCTSTR getLocalIP();
@@ -133,17 +133,17 @@ public: // Methods
 	BOOL getWindowsRegistration( CString &csCompany, CString &csOwner, CString &csProductID);
 	BOOL isNotebook();
 
-	// User informations
+	// User information
 	BOOL getUserName( CString &csUserName);
 	BOOL getUserNameFromExplorerProcess( CString &csUserName); 
 
 	// Last user logged in the system
 	BOOL getLastLoggedUser( CString &csLastLoggedUser);
 
-	// Software informations
+	// Software information
 	BOOL getInstalledApplications( CSoftwareList *pList, BOOL hkcu);
 
-	// Registry informations
+	// Registry information
 	BOOL getRegistryValue( UINT uKeyTree, LPCTSTR lpstrSubKey, LPCTSTR lpstrValue, CString &csResult);
 	BOOL getRegistryMultipleValues( LPCTSTR lpstrQueryName, UINT uKeyTree, LPCTSTR lpstrSubKey, CRegistryValueList *pMyList);
 
@@ -151,11 +151,11 @@ public: // Methods
 	BOOL getUUID( CString &csUUID);
 
 protected: // Attributes
-	SYSTEM_INFO m_SystemInfo;	// System informations
-	CWmi		m_wmiInfo;		// Class to get informations from WMI
-	CDMI		m_dmiInfo;		// Class to get informations from SMBIOS/DMI
-	CRegistry	m_registryInfo;	// Class to get informations from registry
-	CWindowsSocket	m_Sock;		// Class to get informations from Windows Sockets
+	SYSTEM_INFO m_SystemInfo;	// System information
+	CWmi		m_wmiInfo;		// Class to get information from WMI
+	CDMI		m_dmiInfo;		// Class to get information from SMBIOS/DMI
+	CRegistry	m_registryInfo;	// Class to get information from registry
+	CWindowsSocket	m_Sock;		// Class to get information from Windows Sockets
 	DWORD		m_dwAddressWidth;// OS Address Width (32, 64 bits)
 };
 

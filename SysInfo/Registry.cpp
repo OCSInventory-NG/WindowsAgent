@@ -15,6 +15,7 @@
 #include "stdafx.h"
 #include "SysInfo.h"
 #include "DebugLog.h"
+#include <VersionHelpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -138,7 +139,7 @@ static char THIS_FILE[] = __FILE__;
 #define NT_SYSTEM_PORT_DESCRIPTION_VALUE		_T( "DriverDesc")
 #define NT_SYSTEM_PORT_TYPE_VALUE				_T( "PortSubClass")
 
-// Defines for retrieving system controlers from NT registry
+// Defines for retrieving system controllers from NT registry
 #define NT_CONTROLER_FLOPPY_KEY					_T( "SYSTEM\\CurrentControlSet\\Control\\Class\\{4D36E969-E325-11CE-BFC1-08002BE10318}")
 #define NT_CONTROLER_FLOPPY_MANUFACTURER_VALUE	_T( "ProviderName")
 #define NT_CONTROLER_FLOPPY_NAME_VALUE			_T( "DriverDesc")
@@ -220,7 +221,7 @@ static char THIS_FILE[] = __FILE__;
 #define NT_MODEM_DESCRIPTION_VALUE				_T( "DriverDesc")
 #define NT_MODEM_TYPE_VALUE						_T( "AttachedTo")
 
-// Defines for retrieving if it is notbook from NT registry
+// Defines for retrieving if it is a notebook from NT registry
 #define NT_NOTEBOOK_KEY							_T( "SYSTEM\\CurrentControlSet\\Control\\Class\\{72631E54-78A4-11D0-BCF7-00AA00B7B32A}")
 
 // Defines for retrieving installed apps from 9X/Me registry
@@ -453,7 +454,7 @@ BOOL CRegistry::Disconnect()
 
 BOOL CRegistry::GetBiosInfo( CBios *pMyBios)
 {
-	// Try to get BIOS Informations info from the registry
+	// Try to get BIOS Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -768,7 +769,7 @@ BOOL CRegistry::GetBiosInfoVista( CBios *pMyBios)
 
 BOOL CRegistry::IsNotebook()
 {
-	// Try to get Battery Informations info from the registry
+	// Try to get Battery Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -1249,7 +1250,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 				dwIndexGroup = 0;
 				while ((lResult = RegEnumKeyEx( hKeyGroup, dwIndexGroup, szDeviceName, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
 				{
-					// For each service, enumerate propertie keys
+					// For each service, enumerate property keys
 					szDeviceName[dwLength] = 0;
 					csSubKey.Format( _T( "%s\\%s\\%s"), NT_ENUM_KEY, szGroupName, szDeviceName);
 					if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyObject) == ERROR_SUCCESS)
@@ -1294,7 +1295,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 								else
 									AddLog( _T( "\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
 													   csSubKey, NT_ENUM_SERVICE_VALUE);
-								// We know the service name => get the Graphic Adapter infos
+								// We know the service name => get the Graphic Adapter info
 								RegCloseKey( hKeyProperty);
 								csSubKey.Format( _T( "%s\\%s\\%s"), NT_SERVICES_KEY, csServiceName, NT_SERVICE_DEVICE_KEY);
 								csAdapterName = NOT_AVAILABLE;
@@ -1353,7 +1354,7 @@ BOOL CRegistry::GetVideoAdaptersNT_2K(CVideoAdapterList *pList)
 									myObject.SetScreenResolution( csResolution);
 									AddLog( _T( "\t\t<Description: %s><VideoProcessor: %s><Memory: %s><Resolution: %s>\n"), 
 										myObject.GetName(), myObject.GetChipset(), myObject.GetMemory(), myObject.GetScreenResolution());
-									// Add the device to the adapter lis
+									// Add the device to the adapter list
 									if (bHaveToStore)
 									{
 										pList->AddTail( myObject);
@@ -1450,7 +1451,7 @@ BOOL CRegistry::GetVideoAdaptersXP(CVideoAdapterList *pList)
 				dwIndexGroup = 0;
 				while ((lResult = RegEnumKeyEx( hKeyGroup, dwIndexGroup, szDeviceName, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
 				{
-					// For each device, get propertie keys
+					// For each device, get property keys
 					szDeviceName[dwLength] = 0;
 					csSubKey.Format( _T( "%s\\%s\\%s"), XP_ENUM_KEY, szGroupName, szDeviceName);
 					if (RegOpenKeyEx( m_hKey, csSubKey, 0, KEY_READ|KEY_WOW64_64KEY, &hKeyProperty) == ERROR_SUCCESS)
@@ -1505,7 +1506,7 @@ BOOL CRegistry::GetVideoAdaptersXP(CVideoAdapterList *pList)
 						myObject.SetScreenResolution( csResolution);
 						AddLog( _T( "\t\t<Description: %s><VideoProcessor: %s><Memory: %s><Resolution: %s>\n"), 
 							myObject.GetName(), myObject.GetChipset(), myObject.GetMemory(), myObject.GetScreenResolution());
-						// Add the device to the adapter lis
+						// Add the device to the adapter list
 						if (bHaveToStore)
 						{
 							pList->AddTail( myObject);
@@ -1567,7 +1568,7 @@ BOOL CRegistry::GetSoundDevices(CSoundDeviceList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get Sound Devices Informations info from the registry
+	// Try to get Sound Devices Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -1706,7 +1707,7 @@ BOOL CRegistry::GetModems(CModemList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get Modems Informations info from the registry
+	// Try to get Modems Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -1845,7 +1846,7 @@ BOOL CRegistry::GetMonitors(CMonitorList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get Monitors Informations info from the registry
+	// Try to get Monitors Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -1897,7 +1898,7 @@ BOOL CRegistry::GetMonitorsNT(CMonitorList *pList)
 				csModel = NOT_AVAILABLE;
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_MONITOR_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -1984,7 +1985,7 @@ BOOL CRegistry::GetSystemControllers(CSystemControllerList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get system Controllers Informations info from the registry
+	// Try to get system Controllers Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -2041,7 +2042,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_FLOPPY_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2085,7 +2086,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_FLOPPY_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_FLOPPY_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2158,7 +2159,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_IDE_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2202,7 +2203,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_IDE_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_IDE_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2275,7 +2276,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_SCSI_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2319,7 +2320,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_SCSI_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_SCSI_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2392,7 +2393,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_INFRARED_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2436,7 +2437,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_INFRARED_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_INFRARED_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2520,7 +2521,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_USB_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2564,7 +2565,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_USB_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_USB_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2648,7 +2649,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_IEEE1394_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2692,7 +2693,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_IEEE1394_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_IEEE1394_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2765,7 +2766,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 				csCaption = NOT_AVAILABLE; 
 				csDescription = NOT_AVAILABLE; 
 				csVersion = NOT_AVAILABLE;
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_CONTROLER_PCMCIA_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2809,7 +2810,7 @@ BOOL CRegistry::GetSystemControllersNT(CSystemControllerList *pList)
 									   csSubKey, NT_CONTROLER_PCMCIA_DESCRIPTION_VALUE);
 					csDescription = NOT_AVAILABLE; 
 				}
-				// Read the verion
+				// Read the version
 				if (GetValue( hKeyObject, NT_CONTROLER_PCMCIA_VERSION_VALUE, csVersion) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -2870,7 +2871,7 @@ BOOL CRegistry::GetStoragePeripherals(CStoragePeripheralList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get Storage Peripherals Informations info from the registry
+	// Try to get Storage Peripherals Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -2946,7 +2947,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 						csName = NOT_AVAILABLE; 
 						csDescription = NOT_AVAILABLE; 
 						csType = NOT_AVAILABLE; 
-						// Read the manufactuer
+						// Read the manufacturer
 						if (GetValue( hKeyObject, NT_STORAGE_FLOPPY_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 						{
 							bHaveToStore = TRUE;
@@ -3076,7 +3077,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 				dwIndexEnumBus = 0;
 				while ((lResult = RegEnumKeyEx( hKeyEnumBus, dwIndexEnumBus, szSubKey, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
 				{
-					// For each object, Try to open the SCSI traget key
+					// For each object, Try to open the SCSI target key
 					szSubKey[dwLength] = 0;
 					bHaveToStore = FALSE;
 					csSubKeyTarget.Format( _T( "%s\\%s"), csSubKeyBus, szSubKey);
@@ -3087,7 +3088,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 						dwIndexEnumTarget = 0;
 						while ((lResult = RegEnumKeyEx( hKeyEnumTarget, dwIndexEnumTarget, szKey, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
 						{
-							// For each object, Try to open the SCSI traget key
+							// For each object, Try to open the SCSI target key
 							szKey[dwLength] = 0;
 							bHaveToStore = FALSE;
 							csSubKeyLogical.Format( _T( "%s\\%s"), csSubKeyTarget, szKey);
@@ -3109,7 +3110,7 @@ BOOL CRegistry::GetStoragePeripheralsNT(CStoragePeripheralList *pList)
 										csName = NOT_AVAILABLE; 
 										csDescription = NOT_AVAILABLE; 
 										csType = NOT_AVAILABLE; 
-										// Read the manufactuer
+										// Read the manufacturer
 										if (GetValue( hKeyObject, NT_STORAGE_OTHER_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 										{
 											bHaveToStore = TRUE;
@@ -3253,7 +3254,7 @@ BOOL CRegistry::GetRegistryApplications(CSoftwareList *pList, BOOL hkcu)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get BIOS Informations info from the registry
+	// Try to get BIOS Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3495,7 +3496,7 @@ BOOL CRegistry::GetRegistryApplicationsNT(CSoftwareList *pList, HKEY hHive, UINT
 
 BOOL CRegistry::GetDeviceDescription( CString &csDescription)
 {
-	// Try to get Modems Informations info from the registry
+	// Try to get Device Description Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3538,7 +3539,7 @@ BOOL CRegistry::GetDeviceDescriptionNT( CString &csDescription)
 
 BOOL CRegistry::GetDomainOrWorkgroup(CString &csDomain)
 {
-	// Try to get Modems Informations info from the registry
+	// Try to get Domain or Workgroup Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3659,14 +3660,6 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 
 	int isWin8;
 	int Last;
-	
-	//Get OS Version
-	OSVERSIONINFO osVersion;
-
-	ZeroMemory(&osVersion, sizeof(OSVERSIONINFO));
-	osVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-	GetVersionEx(&osVersion);
 
 	CString csKeyPath, csValueName, csValue4Name;
 
@@ -3698,7 +3691,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 		return FALSE;
 	}
 
-	//Requete registry
+	//Query registry
 	if( RegOpenKeyEx( m_hKey, csKeyPath, 0, KEY_READ|KEY_WOW64_64KEY, &InfoKey ) == ERROR_SUCCESS )
 	{
 		if( RegQueryValueEx(InfoKey, csValueName, NULL, &InfoType, Data, &dwDataSize) == ERROR_SUCCESS )
@@ -3707,7 +3700,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 			memcpy( BinaryKey, &Data[0x34], sizeof(BinaryKey));
 
 			//For Windows 8 and +
-			if ((osVersion.dwMajorVersion == 6) && (osVersion.dwMinorVersion >= 2) || (osVersion.dwMajorVersion == 10))
+			if (IsWindows8OrGreater())
 			{
 				isWin8 = (BinaryKey[14] / 6) & 1;
 				BinaryKey[14] = ((BinaryKey[14] & 0xF7) | ((isWin8 & 2) * 4));
@@ -3727,7 +3720,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 			}
 
 			//For Windows 8 and +
-			if ((osVersion.dwMajorVersion >= 6) && (osVersion.dwMinorVersion >= 2) || (osVersion.dwMajorVersion == 10))
+			if (IsWindows8OrGreater())
 			{
 				if (isWin8 = 1)
 				{
@@ -3782,7 +3775,7 @@ BOOL CRegistry::GetWindowsProductKey(CString &csProductKey)
 
 BOOL CRegistry::GetLoggedOnUser(CString &csUser)
 {
-	// Try to get Modems Informations info from the registry
+	// Try to get Logged On User Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3930,7 +3923,7 @@ BOOL CRegistry::GetInputDevices(CInputDeviceList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get system Controllers Informations info from the registry
+	// Try to get system Controllers Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:
@@ -3988,7 +3981,7 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 				csDescription = NOT_AVAILABLE; 
 				csPointingType = NOT_AVAILABLE; 
 				csPointingInterface = NOT_AVAILABLE; 
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_INPUT_KEYBOARD_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -4105,7 +4098,7 @@ BOOL CRegistry::GetInputDevicesNT(CInputDeviceList *pList)
 				csDescription = NOT_AVAILABLE; 
 				csPointingType = NOT_AVAILABLE; 
 				csPointingInterface = NOT_AVAILABLE; 
-				// Read the manufactuer
+				// Read the manufacturer
 				if (GetValue( hKeyObject, NT_INPUT_KEYBOARD_MANUFACTURER_VALUE, csManufacturer) == ERROR_SUCCESS)
 				{
 					bHaveToStore = TRUE;
@@ -4210,7 +4203,7 @@ BOOL CRegistry::GetSystemPorts(CSystemPortList *pList)
 	// Reset object list content
 	while (!(pList->GetCount() == 0))
 		pList->RemoveHead();
-	// Try to get system ports Informations info from the registry
+	// Try to get system ports Information from the registry
 	switch( m_dwPlatformId)
 	{
 	case VER_PLATFORM_WIN32_NT:

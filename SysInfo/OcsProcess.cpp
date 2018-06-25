@@ -144,7 +144,7 @@ BOOL CProcess::IsProcessRunning9X(LPCTSTR lpstrProcessName)
 					csFindedModuleName = meModule.szModule;
 					csFindedModuleName.MakeLower();
 					if (csFindedModuleName.Find( csModuleNameToFind) >= 0)
-						// Finded
+						// Found
 						bFound = TRUE;
 					else
 						// Get the next process module
@@ -258,7 +258,7 @@ BOOL CProcess::IsProcessRunningNT(LPCTSTR lpstrProcessName)
 					csFindedModuleName.ReleaseBuffer( (int) _tcslen( szModuleName)+1);
 					csFindedModuleName.MakeLower();
 					if (csFindedModuleName.Find( csModuleNameToFind) >= 0)
-						// Finded
+						// Found
 						bFound = TRUE;
 				}
 			}

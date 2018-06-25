@@ -10,9 +10,9 @@
 
 setcompressor /SOLID lzma
 
-; Version informations
+; Version information
 !define PRODUCT_NAME "OCS Inventory NG Logon Installer"
-!define PRODUCT_VERSION "2.3.1.0"
+!define PRODUCT_VERSION "2.3.1.1"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 
@@ -20,7 +20,7 @@ setcompressor /SOLID lzma
 !define Default_OCS_Server "http://ocsinventory-ng/ocsinventory"
 ; Default timeout
 !define Default_TimeOut "60000"
-; Others specific options to force at setup must be set here
+; Other specific options to force at setup must be set here
 !define AgentCmdLineHardOptions ""
 
 ; Use Modern UI
