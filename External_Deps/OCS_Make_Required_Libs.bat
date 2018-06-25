@@ -122,7 +122,7 @@ Rem Fix cURL DLL config for MS Visual C++ with lastest Service Pack ( -D_BIND_TO
 Rem perl.exe -pi.bak -e "s# /DBUILDING_LIBCURL# /DBUILDING_LIBCURL /D_BIND_TO_CURRENT_VCLIBS_VERSION#g" Makefile.vc12
 Rem Build cURL dll using OpenSSL Dlls and Zlib dll
 Rem nmake /NOLOGO /f Makefile.vc12 cfg=release-dll-ssl-dll-zlib-dll
-nmake /f Makefile.vc mode=dll VC=12 ENABLE_SSPI=NO ENABLE_IPV6=NO
+nmake /f Makefile.vc mode=dll VC=12 ENABLE_SSPI=NO ENABLE_IPV6=YES
 if ERRORLEVEL 1 goto ERROR
 Rem Insert manifest into DLL
 cd release-dll-ssl-dll-zlib-dll

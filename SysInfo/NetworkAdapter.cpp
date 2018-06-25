@@ -113,7 +113,7 @@ void CNetworkAdapter::SetNetNumber( LPCTSTR nbr )
 	StrForSQL( m_csNetNumber);
 }
 
-void CNetworkAdapter::SetDescription( LPCTSTR lpstrDescription)
+void CNetworkAdapter::SetDescription( CString lpstrDescription)
 {
 	m_csDescription = lpstrDescription;
 	StrForSQL( m_csDescription);
