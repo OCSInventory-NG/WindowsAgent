@@ -25,7 +25,7 @@ Rem Set path to Zlib sources
 set ZLIB_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\zlib-1.2.8
 
 Rem Set path to OpenSSL sources
-set OPENSSL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\openssl-1.0.2k
+set OPENSSL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\openssl-1.0.2o
 
 Rem Set path to cURL sources
 set CURL_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\curl-7.54.0\src
@@ -57,6 +57,7 @@ echo *                                                                       *
 echo *************************************************************************
 echo.
 cd "%ZLIB_PATH%"
+
 Rem Build Zlib using precompiled asm code for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
 nmake /NOLOGO -f Win32\Makefile.msc LOC="-DASMV -DASMINF -D_BIND_TO_CURRENT_VCLIBS_VERSION" OBJA="inffas32.obj match686.obj"
 if ERRORLEVEL 1 goto ERROR
@@ -70,6 +71,7 @@ copy zlib1.dll ..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
 cd ..
+:comment
 title OCS Inventory NG Agent for Windows - Building OpenSSL DLLs...
 echo.
 echo *************************************************************************
@@ -79,6 +81,7 @@ echo *                                                                       *
 echo *************************************************************************
 echo.
 cd "%OPENSSL_PATH%"
+
 Rem Configure OpenSSL for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
 perl.exe configure no-asm VC-WIN32 -D_BIND_TO_CURRENT_VCLIBS_VERSION -D_WINSOCK_DEPRECATED_NO_WARNINGS
 if ERRORLEVEL 1 goto ERROR
@@ -98,6 +101,8 @@ if ERRORLEVEL 1 goto ERROR
 Rem copy libs to use them in OCS
 copy ssleay32.lib ..\..
 copy libeay32.lib ..\..
+copy libeay32.lib ..\..\curl-7.54.0\winbuild
+copy ssleay32.lib ..\..\curl-7.54.0\winbuild
 copy ssleay32.dll ..\..\..\Release
 copy libeay32.dll ..\..\..\Release
 copy ssleay32.dll ..\..\..\Debug
@@ -122,22 +127,22 @@ Rem Fix cURL DLL config for MS Visual C++ with lastest Service Pack ( -D_BIND_TO
 Rem perl.exe -pi.bak -e "s# /DBUILDING_LIBCURL# /DBUILDING_LIBCURL /D_BIND_TO_CURRENT_VCLIBS_VERSION#g" Makefile.vc12
 Rem Build cURL dll using OpenSSL Dlls and Zlib dll
 Rem nmake /NOLOGO /f Makefile.vc12 cfg=release-dll-ssl-dll-zlib-dll
-nmake /f Makefile.vc mode=dll VC=12 ENABLE_SSPI=NO ENABLE_IPV6=YES
+nmake /f Makefile.vc mode=dll VC=12 ENABLE_SSPI=NO ENABLE_IPV6=YES WITH_SSL=dll
+
 if ERRORLEVEL 1 goto ERROR
 Rem Insert manifest into DLL
-cd release-dll-ssl-dll-zlib-dll
+cd ..\lib\release-dll-ssl-dll-zlib-dll
 rem mt -manifest libcurl.dll.manifest -outputresource:libcurl.dll;2
 if ERRORLEVEL 1 goto ERROR
 
 Rem copy libs to use them in OCS
-copy "libcurl_imp.lib" ..\..\..
-copy "libcurl.dll" ..\..\..\..\Release
-copy "libcurl.dll" ..\..\..\..\Debug
+copy "..\..\builds\libcurl-vc12-x86-release-dll-ssl-dll-obj-lib\libcurl.lib" ..\..\..
+copy "..\..\builds\libcurl-vc12-x86-release-dll-ssl-dll-obj-lib\libcurl.dll" ..\..\..\..\Release
+copy "..\..\builds\libcurl-vc12-x86-release-dll-ssl-dll-obj-lib\libcurl.dll" ..\..\..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
 cd ..\..\..
 
-:comment
 
 title OCS Inventory NG Agent for Windows - Building Net-SNMP DLL...
 echo.
