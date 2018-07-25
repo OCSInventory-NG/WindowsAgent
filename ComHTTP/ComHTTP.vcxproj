@@ -126,7 +126,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>..\External_Deps\libeay32.lib;..\External_Deps\libcurl_imp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\External_Deps\libeay32.lib;..\External_Deps\libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
       <ModuleDefinitionFile />
       <GenerateDebugInformation>true</GenerateDebugInformation>
