@@ -2959,7 +2959,7 @@ void CTestSysInfoDlg::OnBnClickedSysinfo()
 		SysInfoLog( str);
 		str.Format( _T( "Free space in MB: %ld"), myDrive.GetFreeMB());
 		SysInfoLog( str);
-		str.Format( _T( "Volume Name: %s"), myDrive.GetVolumName());
+		str.Format( _T( "Volume Name: %s"), myDrive.GetVolumeName());
 		SysInfoLog( str);
 		if (pos != NULL)
 		{

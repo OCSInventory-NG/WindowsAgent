@@ -42,7 +42,7 @@ protected:
 	CCpuList m_CpuList;
 	// List of Input devices info
 	CInputDeviceList m_InputList;
-	// List of Logical Drives (Volum name, File system, Total size, Free space...)
+	// List of Logical Drives (Volume name, File system, Total size, Free space...)
 	CLogicalDriveList m_DriveList;
 	// List of Memory slots
 	CMemorySlotList m_MemoryList;

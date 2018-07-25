@@ -44,7 +44,7 @@ public: // Methods
 	// Return the letter associated by the OS to the logical drive (A, C, D...)
 	LPCTSTR GetDriveLetter();
 	// Return the operating system volume name of the logical drive
-	LPCTSTR GetVolumName();
+	LPCTSTR GetVolumeName();
 	// Return the drive type the logical drive (Hard drive, CD-rom...)
 	LPCTSTR GetDriveType();
 	// Return the file system of the logical drive (FAT, FAT32, NTFS...)
@@ -61,7 +61,7 @@ public: // Methods
 
 	void SetType( DWORD dwType);
 	void SetDriveType( LPCTSTR lpstrType);
-	void SetVolumName( LPCTSTR lpstrVolumn);
+	void SetVolumeName( LPCTSTR lpstrVolumeName);
 	void SetFileSystem( LPCTSTR lpstrFileSystem);
 	void SetDriveLetter( LPCTSTR lpstrLetter);
 	void SetTotalSize( LONG lSize);
@@ -82,7 +82,7 @@ protected: // Methods
 
 protected: // Attributes
 	CString m_csDriveType;	// Drive type (HD, FD, CDRom, REMOVABLE, NETWORK)
-	CString m_csVolumName;	// OS volum name
+	CString m_csVolumeName;	// OS volume name
 	CString m_csFileSystem;	// File system type (FAT, FAT32, NTFS...)
 	CString m_csDriveLetter;// OS drive letter
 	LONG	m_lTotalSize;	// Total size in MB

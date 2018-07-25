@@ -77,7 +77,7 @@ BOOL CProcess::IsProcessRunning(LPCTSTR lpstrProcessName)
 
 BOOL CProcess::IsProcessRunning9X(LPCTSTR lpstrProcessName)
 {
-	CString		csFindedModuleName,
+	CString		csFoundModuleName,
 				csModuleNameToFind = lpstrProcessName;
 	BOOL		bFound = FALSE;
 	HANDLE			hSnapProcess,
@@ -141,9 +141,9 @@ BOOL CProcess::IsProcessRunning9X(LPCTSTR lpstrProcessName)
 				bNextModule = lpfnModule32First( hSnapModule, &meModule);
 				while ((!bFound) && bNextModule)
 				{
-					csFindedModuleName = meModule.szModule;
-					csFindedModuleName.MakeLower();
-					if (csFindedModuleName.Find( csModuleNameToFind) >= 0)
+					csFoundModuleName = meModule.szModule;
+					csFoundModuleName.MakeLower();
+					if (csFoundModuleName.Find( csModuleNameToFind) >= 0)
 						// Found
 						bFound = TRUE;
 					else
@@ -167,7 +167,7 @@ BOOL CProcess::IsProcessRunning9X(LPCTSTR lpstrProcessName)
 BOOL CProcess::IsProcessRunningNT(LPCTSTR lpstrProcessName)
 {
 	TCHAR		*szModuleName;
-	CString		csFindedModuleName,
+	CString		csFoundModuleName,
 				csModuleNameToFind = lpstrProcessName;
 	BOOL		bFound = FALSE;
 	DWORD		lpidProcess[MAX_OBJECTS],
@@ -251,13 +251,13 @@ BOOL CProcess::IsProcessRunningNT(LPCTSTR lpstrProcessName)
 				// Find if a process module as the required name
 				for (lCptModule=0; (lCptModule<lModuleNumber) && (!bFound); lCptModule++)
 				{
-					csFindedModuleName.Empty();
-					szModuleName = csFindedModuleName.GetBuffer( _MAX_PATH+1);
+					csFoundModuleName.Empty();
+					szModuleName = csFoundModuleName.GetBuffer( _MAX_PATH+1);
 					cbSize = _MAX_PATH;
 					lpfnGetModuleFileNameEx( hProcess, lphModule[ lCptModule], szModuleName, cbSize);
-					csFindedModuleName.ReleaseBuffer( (int) _tcslen( szModuleName)+1);
-					csFindedModuleName.MakeLower();
-					if (csFindedModuleName.Find( csModuleNameToFind) >= 0)
+					csFoundModuleName.ReleaseBuffer( (int) _tcslen( szModuleName)+1);
+					csFoundModuleName.MakeLower();
+					if (csFoundModuleName.Find( csModuleNameToFind) >= 0)
 						// Found
 						bFound = TRUE;
 				}

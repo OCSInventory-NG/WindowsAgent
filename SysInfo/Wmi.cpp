@@ -2013,40 +2013,40 @@ BOOL CWmi::GetLogicalDrives( CLogicalDriveList *pMyList)
 				{
 				case DRIVE_REMOVABLE:
 					myObject.SetFileSystem( NOT_AVAILABLE);
-					myObject.SetVolumName( NOT_AVAILABLE);
+					myObject.SetVolumeName( NOT_AVAILABLE);
 					bIsLocalDrive = FALSE;
 					break;
 				case DRIVE_FIXED:
 					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Filesystem"));
 					myObject.SetFileSystem( csBuffer);
 					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "VolumeName"));
-					myObject.SetVolumName( csBuffer);
+					myObject.SetVolumeName( csBuffer);
 					bIsLocalDrive = TRUE;
 					break;
 				case DRIVE_REMOTE:
 					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Filesystem"));
 					myObject.SetFileSystem( csBuffer);
 					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "ProviderName"));
-					myObject.SetVolumName( csBuffer);
+					myObject.SetVolumeName( csBuffer);
 					bIsLocalDrive = FALSE;
 					break;
 				case DRIVE_CDROM:
 					myObject.SetFileSystem( NOT_AVAILABLE);
-					myObject.SetVolumName( NOT_AVAILABLE);
+					myObject.SetVolumeName( NOT_AVAILABLE);
 					bIsLocalDrive = FALSE;
 					break;
 				case DRIVE_RAMDISK:
 					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "Filesystem"));
 					myObject.SetFileSystem( csBuffer);
 					csBuffer = m_dllWMI.GetClassObjectStringValue( _T( "VolumeName"));
-					myObject.SetVolumName( csBuffer);
+					myObject.SetVolumeName( csBuffer);
 					bIsLocalDrive = TRUE;
 					break;
 				case DRIVE_NO_ROOT_DIR:
 				case DRIVE_UNKNOWN:
 				default:
 					myObject.SetFileSystem( NOT_AVAILABLE);
-					myObject.SetVolumName( NOT_AVAILABLE);
+					myObject.SetVolumeName( NOT_AVAILABLE);
 					bIsLocalDrive = FALSE;
 					break;
 				}
@@ -2065,8 +2065,8 @@ BOOL CWmi::GetLogicalDrives( CLogicalDriveList *pMyList)
 				}
 
 				pMyList->AddTail( myObject);
-				AddLog( _T( "\t\t<Drive: %s><Type: %s><Filesystem: %s><Volum Name: %s><size: %ld MB><Free Space: %ld MB>\n"), 
-					myObject.GetDriveLetter(), myObject.GetDriveType(), myObject.GetFileSystem(), myObject.GetVolumName(),
+				AddLog( _T( "\t\t<Drive: %s><Type: %s><Filesystem: %s><Volume Name: %s><size: %ld MB><Free Space: %ld MB>\n"),
+					myObject.GetDriveLetter(), myObject.GetDriveType(), myObject.GetFileSystem(), myObject.GetVolumeName(),
 					myObject.GetTotalMB(), myObject.GetFreeMB());
 				uIndex ++;
 			}
