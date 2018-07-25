@@ -111,7 +111,7 @@
       <MkTypLibCompatible>false</MkTypLibCompatible>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\OcsWmi;..\External_Deps\openssl-1.0.2k\inc32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\OcsWmi;..\External_Deps\openssl-1.0.2o\inc32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;_AFX_NO_DB_SUPPORT;_AFX_NO_DAO_SUPPORT;_CRT_SECURE_NO_DEPRECATE;_BIND_TO_CURRENT_VCLIBS_VERSION;SYSINFO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader />
