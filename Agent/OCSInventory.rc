@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Neutre (Par défaut) resources
+// Neutral (Default) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
 LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
@@ -34,8 +34,8 @@ IDR_MAINFRAME           ICON                    "res\\OCSInventory.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,3,1,1
- PRODUCTVERSION 2,3,1,1
+ FILEVERSION 2,4,0,0
+ PRODUCTVERSION 2,4,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -53,13 +53,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory NG Agent"
             VALUE "CompanyName", "OCS Inventory NG"
             VALUE "FileDescription", "OCS Inventory NG Agent"
-            VALUE "FileVersion", "2.3.1.1"
+            VALUE "FileVersion", "2.4.0.0"
             VALUE "InternalName", "OCSInventory.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OCSInventory.exe"
             VALUE "ProductName", "OCS Inventory NG Windows Agent"
-            VALUE "ProductVersion", "2.3.1.1"
+            VALUE "ProductVersion", "2.4.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -68,12 +68,12 @@ BEGIN
     END
 END
 
-#endif    // Neutre (Par défaut) resources
+#endif    // Neutral (Default) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Français (France) resources
+// French (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
@@ -114,7 +114,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Français (France) resources
+#endif    // French (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
