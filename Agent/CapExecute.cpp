@@ -81,7 +81,7 @@ BOOL CCapExecute::execute( const int bScript, LPCTSTR lpstrPath)
 			cmProcess.setOutputFile( csOutputFile);
 			// Execute script
 			if (bScript == PWSHELL){
-				csCommand.Format(_T("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -Command \"& {%s; [Environment]::Exit(1)}\""), cFinder.GetFilePath());
+				csCommand.Format(_T("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -Command \"& {& '%s'; [Environment]::Exit(1)}\""), cFinder.GetFilePath());
 			}
 			else if (bScript == VBS){
 				csCommand.Format(_T("cscript /nologo \"%s\""), cFinder.GetFilePath());
