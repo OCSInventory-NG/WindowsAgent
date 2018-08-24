@@ -1,3 +1,9 @@
+2.4.0.0
+  * Add support IPV6 networks
+  * Fix device ID regeneration
+  * Fix some typos
+  * Update openssl version to 1.0.2o
+
 2.3.1.1
   * Fix memory leak
   * Add Network disconnected status on inventory
