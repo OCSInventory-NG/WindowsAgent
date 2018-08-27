@@ -1750,6 +1750,12 @@ Section "OCS Inventory Agent" SEC03
     Call Write_Log
   	strcpy $installSatus ":("
 	clearerrors
+	File "..\Pre_Installed_Plugins\Saas.ps1"
+	Iferrors 0 +5
+	StrCpy $logBuffer "$logBuffer ERROR copying Pre_Installed_Plugins\Saas.ps1 $\r$\n"
+    Call Write_Log
+  	strcpy $installSatus ":("
+	clearerrors
 	strcpy $logBuffer "Copying new files status is $installSatus$\r$\n"
 	Call Write_Log
 	; Write configuration file
