@@ -1,13 +1,28 @@
-$store = Get-DnsClientCache
+Function Get-DNSClientCache($pwlang){  
+    $hash = @{}  
 
-foreach ($store in $store) {
-
-	$xml += "<SAAS>`n"
-	$xml += "<ENTRY>" + $store.Entry + "</ENTRY>`n"
-	$xml += "<DATA>" + $store.Data + "</DATA>`n"
-	$xml += "<TTL>" + $store.TimeToLive + "</TTL>`n"
-	$xml += "</SAAS>`n"
+    Invoke-Expression "ipconfig /displaydns" |  
+    Select-String -Pattern $pwlang -Context 0,5 |  
+        %{  
+			$xml += "<SAAS>`n"
+			$xml += "<ENTRY>" + ($_.Line -Split ":")[1].Trim().ToLower()  + "</ENTRY>`n"
+			$xml += "<DATA>" + ($_.Context.PostContext[4] -Split ":")[1].Trim().ToLower() + "</DATA>`n"
+			$xml += "<TTL>" + ($_.Context.PostContext[1] -Split ":")[1].Trim() + "</TTL>`n"
+			$xml += "</SAAS>`n"           
+        }  
 	
+	return $xml
+	
+} 
+
+$lang = Get-Culture
+
+if($lang.Name -eq "fr-FR"){
+	$pwlang = "Nom d'enregistrement"
+}else{
+	$pwlang = "Record Name"
 }
-	
-echo $xml
+
+ 
+$dns = Get-DnsClientCache($pwlang) 
+echo $dns
