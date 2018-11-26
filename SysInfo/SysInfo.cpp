@@ -658,7 +658,7 @@ BOOL CSysInfo::getUserName(CString &csUserName)
 	}
 	AddLog( _T( "\tFailed with error <%i> !\n"), GetLastError());
 	// Last use registry
-	return m_registryInfo.GetLoggedOnUser( csUserName);	
+	return m_registryInfo.GetUser(csUserName);
 }
 
 BOOL CSysInfo::getUserNameFromExplorerProcess(CString &csUserName)
