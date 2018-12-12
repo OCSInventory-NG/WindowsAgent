@@ -1,3 +1,6 @@
+2.6.0.0
+  * Fix bug last loggon user
+
 2.4.0.0
   * Add support IPV6 networks
   * Fix device ID regeneration
