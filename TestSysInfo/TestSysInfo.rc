@@ -16,7 +16,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Neutre (Par d�faut) resources
+// Neutral (Default) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
 LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,3,1,1
- PRODUCTVERSION 2,3,1,1
+ FILEVERSION 2,6,0,0
+ PRODUCTVERSION 2,6,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,13 +70,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory NG System Information Testing tool"
             VALUE "CompanyName", "OCS Inventory NG"
             VALUE "FileDescription", "OCS Inventory NG System Information Testing tool"
-            VALUE "FileVersion", "2.3.1.1"
+            VALUE "FileVersion", "2.6.0.0"
             VALUE "InternalName", "TestSysInfo.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "TestSysInfo.exe"
             VALUE "ProductName", "OCS Inventory NG Windows Agent"
-            VALUE "ProductVersion", "2.3.1.1"
+            VALUE "ProductVersion", "2.6.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -113,12 +113,12 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ico"
-#endif    // Neutre (Par d�faut) resources
+#endif    // Neutral (Default) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Fran�ais (France) resources
+// French (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
@@ -131,8 +131,8 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON1               ICON                    "C:\\Users\\user-win-dev\\Documents\\GitHub\\WindowsAgent\\NSIS_agent_setup\\install-ocs.ico"
-IDI_ICON2               ICON                    "C:\\Users\\user-win-dev\\Documents\\GitHub\\WindowsAgent\\Agent\\res\\OCSInventory.ico"
+IDI_ICON1               ICON                    "C:\\Users\\Factorfx\\Documents\\GitHub\\WindowsAgent\\NSIS_agent_setup\\install-ocs.ico"
+IDI_ICON2               ICON                    "C:\\Users\\Factorfx\\Documents\\GitHub\\WindowsAgent\\Agent\\res\\OCSInventory.ico"
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -172,7 +172,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Fran�ais (France) resources
+#endif    // French (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
