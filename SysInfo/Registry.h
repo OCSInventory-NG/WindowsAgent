@@ -66,7 +66,8 @@ public: // Methods
 	BOOL GetWindowsProductKey( CString &csProductKey );
 	BOOL IsNotebook();
 	BOOL GetRegistryValue( UINT uKeyTree, LPCTSTR lpstrSubKey, LPCTSTR lpstrValue, CString &csResult);
-	BOOL GetRegistryMultipleValues( LPCTSTR lpstrQueryName, UINT uKeyTree, LPCTSTR lpstrSubKey, CRegistryValueList *pMyList);
+	BOOL GetRegistryMultipleValues(LPCTSTR lpstrQueryName, UINT uKeyTree, LPCTSTR lpstrSubKey, CRegistryValueList *pMyList);
+	BOOL GetUser(CString &csUser);
 
 	//////////////////////////////////
 	// Set attributes values
