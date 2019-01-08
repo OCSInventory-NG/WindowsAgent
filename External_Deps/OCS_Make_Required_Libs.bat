@@ -46,7 +46,6 @@ call "%VC_PATH%\VCVARSALL.BAT"
 Rem Add perl to PATH
 set PATH=%PATH%;%PERL_PATH%
 
-goto comment
 
 title OCS Inventory NG Agent for Windows - Building Zlib DLL...
 echo.
@@ -71,7 +70,7 @@ copy zlib1.dll ..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
 cd ..
-:comment
+
 title OCS Inventory NG Agent for Windows - Building OpenSSL DLLs...
 echo.
 echo *************************************************************************

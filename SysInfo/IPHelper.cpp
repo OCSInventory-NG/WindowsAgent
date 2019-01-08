@@ -353,7 +353,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 		if (pIfEntry->Type != IF_TYPE_SOFTWARE_LOOPBACK)
 		{
 			//if Network card is disabled
-			if (pIfEntry->OperStatus == IfOperStatusDown && pIfEntry->TransmitLinkSpeed != NULL)
+			if (pIfEntry->OperStatus == IfOperStatusDown)
 			{
 				// Get the Index
 				cAdapter.SetIfIndex(pIfEntry->InterfaceIndex);
