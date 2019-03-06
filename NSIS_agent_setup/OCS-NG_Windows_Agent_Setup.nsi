@@ -1579,24 +1579,24 @@ Section "OCS Inventory Agent" SEC03
         ;Call Write_Log
   	    ;strcpy $installSatus ":("
 	    ;clearerrors
-	    ;File "C:\Windows\System32\msvcm120.dll"
+	    ;File "C:\Windows\System32\msvcm140.dll"
 	    ;Iferrors 0 +5
-	    ;StrCpy $logBuffer "$logBuffer ERROR copying msvcm120.dll $\r$\n"
+	    ;StrCpy $logBuffer "$logBuffer ERROR copying msvcm140.dll $\r$\n"
         ;Call Write_Log
   	    ;strcpy $installSatus ":("
 	    ;clearerrors
-	    File "C:\Windows\System32\msvcp120.dll"
+	    File "C:\Windows\System32\msvcp140.dll"
 	    Iferrors 0 +5
-	    StrCpy $logBuffer "$logBuffer ERROR copying msvcp120.dll $\r$\n"
+	    StrCpy $logBuffer "$logBuffer ERROR copying msvcp140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\msvcr120.dll"
-	    Iferrors 0 +5
-	    StrCpy $logBuffer "$logBuffer ERROR copying msvcr120.dll $\r$\n"
-        Call Write_Log
-  	    strcpy $installSatus ":("
-	    clearerrors
+	    ;File "C:\Windows\System32\msvcr120.dll"
+	    ;Iferrors 0 +5
+	    ;StrCpy $logBuffer "$logBuffer ERROR copying msvcr120.dll $\r$\n"
+        ;Call Write_Log
+  	    ;strcpy $installSatus ":("
+	    ;clearerrors
 	    ; MSVC 9 MFC redist current for XP and higher
 	    ;File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest"
 	    ;Iferrors 0 +5
@@ -1604,25 +1604,25 @@ Section "OCS Inventory Agent" SEC03
         ;Call Write_Log
   	    ;strcpy $installSatus ":("
 	    ;clearerrors
-	    File "C:\Windows\System32\mfc120.dll"
+	    File "C:\Windows\System32\mfc140.dll"
 	    Iferrors 0 +5
-	    StrCpy $logBuffer "$logBuffer ERROR copying mfc120.dll $\r$\n"
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfc140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\mfc120u.dll"
+	    File "C:\Windows\System32\mfc140u.dll"
 	    Iferrors 0 +5
-	    StrCpy $logBuffer "$logBuffer ERROR copying mfc120u.dll $\r$\n"
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfc140u.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\mfcm120.dll"
+	    File "C:\Windows\System32\mfcm140.dll"
 	    Iferrors 0 +5
-	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm120.dll $\r$\n"
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\mfcm120u.dll"
+	    File "C:\Windows\System32\mfcm140u.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm120u.dll $\r$\n"
         Call Write_Log
@@ -1635,13 +1635,13 @@ Section "OCS Inventory Agent" SEC03
         ;Call Write_Log
   	    ;strcpy $installSatus ":("
 	    ;clearerrors
-		File "C:\Windows\SysWOW64\vcomp120.dll"
+		File "C:\Windows\SysWOW64\vcomp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying vcomp140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-		File "C:\Windows\SysWOW64\vcamp120.dll"
+		File "C:\Windows\SysWOW64\vcamp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying vcamp140.dll $\r$\n"
         Call Write_Log

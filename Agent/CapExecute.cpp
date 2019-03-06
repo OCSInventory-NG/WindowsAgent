@@ -107,7 +107,8 @@ BOOL CCapExecute::execute( const int bScript, LPCTSTR lpstrPath)
 				break;
 			}
 			// Now get output and ensure XML well formed
-			m_pLogger->log( LOG_PRIORITY_TRACE, _T( "%s"), CA2T( cmProcess.getOutput()));
+			CString csProcessOutput = CA2T(cmProcess.getOutput());
+			m_pLogger->log( LOG_PRIORITY_TRACE, _T( "%s"), csProcessOutput);
 			// First, ensure output is not empty
 			if (CFile::GetStatus( csOutputFile, rStatus) && (rStatus.m_size == 0))
 			{

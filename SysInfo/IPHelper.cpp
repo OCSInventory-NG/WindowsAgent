@@ -492,7 +492,8 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 										SOCKADDR_IN6* ipv6 = reinterpret_cast<SOCKADDR_IN6*>(pUnicast->Address.lpSockaddr);
 										char ipv6_buffer[INET6_ADDRSTRLEN] = { 0 };
 										inet_ntop(AF_INET6, &(ipv6->sin6_addr), ipv6_buffer, INET6_ADDRSTRLEN);
-										csAddressIp.Format(_T("%s"), CA2W(ipv6_buffer));
+										CString IPV6_buf = CA2W(ipv6_buffer);
+										csAddressIp.Format(_T("%s"), IPV6_buf);
 
 										if (csAddressIp.Mid(0, 2) != _T("fe"))
 										{
