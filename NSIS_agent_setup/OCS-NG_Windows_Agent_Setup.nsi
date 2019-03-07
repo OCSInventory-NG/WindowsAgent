@@ -1591,12 +1591,12 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    ;File "C:\Windows\System32\msvcr120.dll"
-	    ;Iferrors 0 +5
-	    ;StrCpy $logBuffer "$logBuffer ERROR copying msvcr120.dll $\r$\n"
-        ;Call Write_Log
-  	    ;strcpy $installSatus ":("
-	    ;clearerrors
+	    File "C:\Windows\System32\msvcr120.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying msvcr120.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
 	    ; MSVC 9 MFC redist current for XP and higher
 	    ;File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest"
 	    ;Iferrors 0 +5
@@ -1644,6 +1644,12 @@ Section "OCS Inventory Agent" SEC03
 		File "C:\Windows\SysWOW64\vcamp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying vcamp140.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+		File "C:\Windows\SysWOW64\vcruntime140.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying vcruntime140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
