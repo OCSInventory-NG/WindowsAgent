@@ -1653,6 +1653,12 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
+		File "C:\Windows\System32\ucrtbased.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying vcruntime140.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
     ${EndIf}
     ; Zlib and ZipArchive library
 	File "..\Release\ZipArchive.dll"
