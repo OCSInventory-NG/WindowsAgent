@@ -587,13 +587,15 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 					break;
 				}
 				myMonitor.SetType( CA2T( DecodeDPMSFlag( myRecord.DPMS_Flags)));
-				AddLog( _T( "\tEDID : Monitor %s, Serial "), CA2T( csDescription));
-				AddLog( _T( "<%s>"), CA2T( csSerial));
+				csDescription = CA2T(csDescription);
+				AddLog( _T( "\tEDID : Monitor %s, Serial "), csDescription);
+				csSerial = CA2T(csSerial);
+				AddLog( _T( "<%s>"), csSerial);
 				// Acer monitors have bogus serial
 				if (AcerHack( csSerial, &myRecord))
-					AddLog( _T( ", Acer Fix: Change Serial Number to <%s>\n"), CA2T( csSerial));
+					AddLog( _T( ", Acer Fix: Change Serial Number to <%s>\n"), csSerial);
 				else
-					AddLog( _T( "\n"), CA2T( csSerial));
+					AddLog( _T( "\n"), csSerial);
 				myMonitor.SetCaption( CA2T( csCaption));
 				myMonitor.SetDescription( CA2T( csDescription));
 				if (myMonitor.IsValidSerial( CA2T( csSerial)))
@@ -677,13 +679,13 @@ BOOL CEdid::GetMonitors( CMonitorList *pMyList)
 					break;
 				}
 				myMonitor.SetType( CA2T( DecodeDPMSFlag( myRecord.DPMS_Flags)));
-				AddLog( _T( "\tEDID : Monitor %s, Serial "), CA2T( csDescription));
-				AddLog( _T( "<%s>"), CA2T( csSerial));
+				AddLog( _T( "\tEDID : Monitor %s, Serial "), csDescription);
+				AddLog( _T( "<%s>"), csSerial);
 				// Acer monitors have bogus serial
 				if (AcerHack( csSerial, &myRecord))
-					AddLog( _T( ", Acer Fix: Change Serial Number to <%s>\n"), CA2T( csSerial));
+					AddLog( _T( ", Acer Fix: Change Serial Number to <%s>\n"), csSerial);
 				else
-					AddLog( _T( "\n"), CA2T( csSerial));
+					AddLog( _T( "\n"), csSerial);
 				myMonitor.SetCaption( CA2T( csCaption));
 				myMonitor.SetDescription( CA2T( csDescription));
 				myMonitor.SetSerial( CA2T( csSerial));

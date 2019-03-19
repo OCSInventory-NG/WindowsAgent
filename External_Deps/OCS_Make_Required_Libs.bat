@@ -13,13 +13,13 @@ echo.
 Rem ========= UPDATE CONSTANTS BELOW TO MEET YOUR CONFIGURATION NEED =========  
 
 Rem Set path to MS Visual C++
-set VC_PATH=C:\Program Files (x86)\\Microsoft Visual Studio 12.0\VC
+set VC_PATH=C:\Program Files (x86)\\Microsoft Visual Studio 14.0\VC
 
 Rem Set path to MS Windows SDK, needed to build cURL
-set WINDOWS_SDK_PATH="C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A"
+set WINDOWS_SDK_PATH="C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A"
 
 Rem Set path to Perl 5.6 or higher binary
-set PERL_PATH=C:\Perl\bin
+set PERL_PATH=C:\Strawberry\perl\bin
 
 Rem Set path to Zlib sources
 set ZLIB_PATH=C:\Users\user-win-dev\Documents\GitHub\WindowsAgent\External_Deps\zlib-1.2.8
@@ -126,7 +126,7 @@ Rem Fix cURL DLL config for MS Visual C++ with lastest Service Pack ( -D_BIND_TO
 Rem perl.exe -pi.bak -e "s# /DBUILDING_LIBCURL# /DBUILDING_LIBCURL /D_BIND_TO_CURRENT_VCLIBS_VERSION#g" Makefile.vc12
 Rem Build cURL dll using OpenSSL Dlls and Zlib dll
 Rem nmake /NOLOGO /f Makefile.vc12 cfg=release-dll-ssl-dll-zlib-dll
-nmake /f Makefile.vc mode=dll VC=12 ENABLE_SSPI=NO ENABLE_IPV6=YES WITH_SSL=dll
+nmake /f Makefile.vc mode=dll VC=14 ENABLE_SSPI=NO ENABLE_IPV6=YES WITH_SSL=dll
 
 if ERRORLEVEL 1 goto ERROR
 Rem Insert manifest into DLL
@@ -135,9 +135,9 @@ rem mt -manifest libcurl.dll.manifest -outputresource:libcurl.dll;2
 if ERRORLEVEL 1 goto ERROR
 
 Rem copy libs to use them in OCS
-copy "..\..\builds\libcurl-vc12-x86-release-dll-ssl-dll-obj-lib\libcurl.lib" ..\..\..
-copy "..\..\builds\libcurl-vc12-x86-release-dll-ssl-dll-obj-lib\libcurl.dll" ..\..\..\..\Release
-copy "..\..\builds\libcurl-vc12-x86-release-dll-ssl-dll-obj-lib\libcurl.dll" ..\..\..\..\Debug
+copy "..\..\builds\libcurl-vc14-x86-release-dll-ssl-dll-obj-lib\libcurl.lib" ..\..\..
+copy "..\..\builds\libcurl-vc14-x86-release-dll-ssl-dll-obj-lib\libcurl.dll" ..\..\..\..\Release
+copy "..\..\builds\libcurl-vc14-x86-release-dll-ssl-dll-obj-lib\libcurl.dll" ..\..\..\..\Debug
 if ERRORLEVEL 1 goto ERROR
 
 cd ..\..\..
