@@ -103,8 +103,8 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON1               ICON                    "C:\\Users\\Factorfx\\Documents\\GitHub\\WindowsAgent\\NSIS_agent_setup\\OCSInventory.ico"
-IDI_ICON2               ICON                    "C:\\Users\\Factorfx\\Documents\\GitHub\\WindowsAgent\\Agent\\res\\OCSInventory.ico"
+IDI_ICON1               ICON                    "C:\\Users\\Admin\\Documents\\GitHub\\WindowsAgent\\NSIS_agent_setup\\OCSInventory.ico"
+IDI_ICON2               ICON                    "C:\\Users\\Admin\\Documents\\GitHub\\WindowsAgent\\Agent\\res\\OCSInventory.ico"
 #endif    // French (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
