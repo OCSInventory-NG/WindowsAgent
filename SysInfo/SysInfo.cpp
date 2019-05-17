@@ -110,42 +110,42 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 			}
 			case COSVersion::Windows9x:           
 			{
-				if (os.IsWindows95(&osvi))
+				if (os.IsWindows95(&osvi, FALSE))
 				{
 					csName = _T( "Microsoft Windows 95");
 					csComment.Empty();
 				}
-				else if (os.IsWindows95SP1(&osvi))
+				else if (os.IsWindows95SP1(&osvi, FALSE))
 				{
 					csName = _T( "Microsoft Windows 95");
 					csComment = _T( "Service Pack 1");
 				}
-				else if (os.IsWindows95B(&osvi))
+				else if (os.IsWindows95B(&osvi, FALSE))
 				{
 					csName = _T( "Microsoft Windows 95");
 					csComment = _T( "Operating System Release 2.0/2.1 (B)");
 				}
-				else if (os.IsWindows95C(&osvi))
+				else if (os.IsWindows95C(&osvi, FALSE))
 				{
 					csName = _T( "Microsoft Windows 95");
 					csComment = _T( "Operating System Release 2.5 (C)");
 				}
-				else if (os.IsWindows98(&osvi))
+				else if (os.IsWindows98(&osvi, FALSE))
 				{
 					csName = _T( "Microsoft Windows 98");
 					csComment.Empty();
 				}
-				else if (os.IsWindows98SP1(&osvi))
+				else if (os.IsWindows98SP1(&osvi, FALSE))
 				{
 					csName = _T( "Microsoft Windows 98");
 					csComment = _T( "Service Pack 1");
 				}
-				else if (os.IsWindows98SE(&osvi))
+				else if (os.IsWindows98SE(&osvi, FALSE))
 				{
 					csName = _T( "Microsoft Windows 98");
 					csComment = _T( "Second Edition");
 				}
-				else if (os.IsWindowsME(&osvi))
+				else if (os.IsWindowsME(&osvi, FALSE))
 				{
 					csName = _T( "Microsoft Windows Millennium");
 					csComment.Empty();
@@ -159,197 +159,254 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 			}
 			case COSVersion::WindowsNT:    
 			{
-				if (os.IsNTPreWin2k(&osvi))
+				if (os.IsNTPreWin2k(&osvi, FALSE))
 				{
 					csName.Format( _T( "Microsoft Windows NT %d.%d"),
 									osvi.dwUnderlyingMajorVersion,
 									osvi.dwUnderlyingMinorVersion);
 
-					if (os.IsNTWorkstation(&osvi))
+					if (os.IsNTWorkstation(&osvi, FALSE))
 						csName += _T(" Workstation");
-					else if (os.IsNTDatacenterServer(&osvi))
+					else if (os.IsNTDatacenterServer(&osvi, FALSE))
 						csName += _T(" Datacenter");
-					else if (os.IsNTEnterpriseServer(&osvi))
+					else if (os.IsNTEnterpriseServer(&osvi, FALSE))
 						csName += _T(" Enterprise");
 					else 
 						csName += _T(" Server");
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
-				else if (os.IsWindows2000(&osvi))
+				else if (os.IsWindows2000(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows 2000");
 
-					if (os.IsWindows2000Professional(&osvi))
+					if (os.IsWindows2000Professional(&osvi, FALSE))
 						csName += _T(" Professional");
-					else if (os.IsWindows2000DatacenterServer(&osvi))
+					else if (os.IsWindows2000DatacenterServer(&osvi, FALSE))
 						csName += _T(" Datacenter");
-					else if (os.IsWindows2000AdvancedServer(&osvi))
+					else if (os.IsWindows2000AdvancedServer(&osvi, FALSE))
 						csName += _T(" Advanced Server");
 					else 
 						csName += _T(" Server");
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
-				else if (os.IsWindowsXP(&osvi))
+				else if (os.IsWindowsXP(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows XP");
 
-					if (os.IsWindowsXPPersonal(&osvi))
+					if (os.IsWindowsXPPersonal(&osvi, FALSE))
 						csName += _T(" Home Edition");                  
-					else if (os.IsWindowsXPProfessional(&osvi))
+					else if (os.IsWindowsXPProfessional(&osvi, FALSE))
 						csName += _T(" Professional");                  
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
-				else if (os.IsWindowsServer2003(&osvi))
+				else if (os.IsWindowsServer2003(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows Server 2003");
 
-					if (os.IsDatacenterWindowsServer2003(&osvi))
+					if (os.IsDatacenterWindowsServer2003(&osvi, FALSE))
 						csName += _T(" Datacenter Edition");
-					else if (os.IsEnterpriseWindowsServer2003(&osvi))
+					else if (os.IsEnterpriseWindowsServer2003(&osvi, FALSE))
 						csName += _T(" Enterprise Edition");
-					else if (os.IsWebWindowsServer2003(&osvi))
+					else if (os.IsWebWindowsServer2003(&osvi, FALSE))
 						csName += _T(" Web Edition");
-					else if (os.IsStandardWindowsServer2003(&osvi))
+					else if (os.IsStandardWindowsServer2003(&osvi, FALSE))
 						csName += _T(" Standard Edition");
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
-				else if (os.IsWindowsServer2003R2(&osvi))
+				else if (os.IsWindowsServer2003R2(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows Server 2003 R2");
 
-					if (os.IsDatacenterWindowsServer2003R2(&osvi))
+					if (os.IsDatacenterWindowsServer2003R2(&osvi, FALSE))
 						csName += _T(" Datacenter Edition");
-					else if (os.IsEnterpriseWindowsServer2003R2(&osvi))
+					else if (os.IsEnterpriseWindowsServer2003R2(&osvi, FALSE))
 						csName += _T(" Enterprise Edition");
-					else if (os.IsWebWindowsServer2003R2(&osvi))
+					else if (os.IsWebWindowsServer2003R2(&osvi, FALSE))
 						csName += _T(" Web Edition");
-					else if (os.IsStandardWindowsServer2003R2(&osvi))
+					else if (os.IsStandardWindowsServer2003R2(&osvi, FALSE))
 						csName += _T(" Standard Edition");
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
-				else if (os.IsWindowsVista(&osvi))
+				else if (os.IsWindowsVista(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows Vista");
 
-					if (os.IsHomeBasicInstalled(&osvi))
+					if (os.IsHomeBasic(&osvi))
 						csName += _T(" Home Basic Edition");                  
 					else if (os.IsHomeBasicPremium(&osvi))
 						csName += _T(" Home Premium Edition");                  
-					else if (os.IsBusinessInstalled(&osvi))
+					else if (os.IsBusiness(&osvi))
 						csName += _T(" Business Edition");                  
-					else if (os.IsProfessionalInstalled(&osvi))
+					else if (os.IsProfessional(&osvi))
 						csName += _T(" Professional Edition");                  
-					else if (os.IsEnterpriseInstalled(&osvi))
+					else if (os.IsEnterprise(&osvi))
 						csName += _T(" Enterprise Edition");                  
-					else if (os.IsUltimateInstalled(&osvi))
+					else if (os.IsUltimate(&osvi))
 						csName += _T(" Ultimate Edition");                  
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
-				else if (os.IsWindowsServer2008(&osvi))
+				else if (os.IsWindowsServer2008(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows Server 2008");
 
-					if (os.IsDatacenterWindowsServer2008(&osvi))
+					if (os.IsDatacenterWindowsServer2008(&osvi, FALSE))
 						csName += _T(" Datacenter Edition");
-					else if (os.IsEnterpriseWindowsServer2008(&osvi))
+					else if (os.IsEnterpriseWindowsServer2008(&osvi, FALSE))
 						csName += _T(" Enterprise Edition");
-					else if (os.IsWebWindowsServer2008(&osvi))
+					else if (os.IsWebWindowsServer2008(&osvi, FALSE))
 						csName += _T(" Web Edition");
-					else if (os.IsStandardWindowsServer2008(&osvi))
+					else if (os.IsStandardWindowsServer2008(&osvi, FALSE))
 						csName += _T(" Standard Edition");
 				}
-				else if (os.IsWindows7(&osvi))
+				else if (os.IsWindows7(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows 7");
 
-					if (os.IsHomeBasicInstalled(&osvi))
+					if (os.IsHomeBasic(&osvi))
 						csName += _T(" Home Basic Edition");                  
 					else if (os.IsHomeBasicPremium(&osvi))
 						csName += _T(" Home Premium Edition");                  
-					else if (os.IsBusinessInstalled(&osvi))
+					else if (os.IsBusiness(&osvi))
 						csName += _T(" Business Edition");                  
-					else if (os.IsProfessionalInstalled(&osvi))
+					else if (os.IsProfessional(&osvi))
 						csName += _T(" Professional Edition");                  
-					else if (os.IsEnterpriseInstalled(&osvi))
+					else if (os.IsEnterprise(&osvi))
 						csName += _T(" Enterprise Edition");                  
-					else if (os.IsUltimateInstalled(&osvi))
+					else if (os.IsUltimate(&osvi))
 						csName += _T(" Ultimate Edition");                  
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
-				else if (os.IsWindowsServer2008R2(&osvi))
+				else if (os.IsWindowsServer2008R2(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows Server 2008 R2");
 
-					if (os.IsDatacenterWindowsServer2008R2(&osvi))
+					if (os.IsDatacenterWindowsServer2008R2(&osvi, FALSE))
 						csName += _T(" Datacenter Edition");
-					else if (os.IsEnterpriseWindowsServer2008R2(&osvi))
+					else if (os.IsEnterpriseWindowsServer2008R2(&osvi, FALSE))
 						csName += _T(" Enterprise Edition");
-					else if (os.IsWebWindowsServer2008R2(&osvi))
+					else if (os.IsWebWindowsServer2008R2(&osvi, FALSE))
 						csName += _T(" Web Edition");
-					else if (os.IsStandardWindowsServer2008R2(&osvi))
+					else if (os.IsStandardWindowsServer2008R2(&osvi, FALSE))
 						csName += _T(" Standard Edition");
 				}
-				else if (os.IsWindows8(&osvi))
+				else if (os.IsWindows8(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows 8");
 
-					if (os.IsHomeBasicInstalled(&osvi))
+					if (os.IsHomeBasic(&osvi))
 						csName += _T(" Home Basic Edition");                  
 					else if (os.IsHomeBasicPremium(&osvi))
 						csName += _T(" Home Premium Edition");                  
-					else if (os.IsBusinessInstalled(&osvi))
+					else if (os.IsBusiness(&osvi))
 						csName += _T(" Business Edition");                  
-					else if (os.IsProfessionalInstalled(&osvi))
+					else if (os.IsProfessional(&osvi))
 						csName += _T(" Professional Edition");                  
-					else if (os.IsEnterpriseInstalled(&osvi))
+					else if (os.IsEnterprise(&osvi))
 						csName += _T(" Enterprise Edition");                  
-					else if (os.IsUltimateInstalled(&osvi))
+					else if (os.IsUltimate(&osvi))
 						csName += _T(" Ultimate Edition");                  
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
-				else if (os.IsWindowsServer2012(&osvi))
+				else if (os.IsWindowsServer2012(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows Server 2012");
 
-					if (os.IsDatacenterWindowsServer2012(&osvi))
+					if (os.IsDatacenterWindowsServer2012(&osvi, FALSE))
 						csName += _T(" Datacenter Edition");
-					else if (os.IsEnterpriseWindowsServer2012(&osvi))
+					else if (os.IsEnterpriseWindowsServer2012(&osvi, FALSE))
 						csName += _T(" Enterprise Edition");
-					else if (os.IsWebWindowsServer2012(&osvi))
+					else if (os.IsWebWindowsServer2012(&osvi, FALSE))
 						csName += _T(" Web Edition");
-					else if (os.IsStandardWindowsServer2012(&osvi))
+					else if (os.IsStandardWindowsServer2012(&osvi, FALSE))
 						csName += _T(" Standard Edition");
 				}
-				else if (os.IsWindows8Point1(&osvi))
+				else if (os.IsWindows8Point1(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows Blue");
 
-					if (os.IsHomeBasicInstalled(&osvi))
+					if (os.IsHomeBasic(&osvi))
 						csName += _T(" Home Basic Edition");                  
 					else if (os.IsHomeBasicPremium(&osvi))
 						csName += _T(" Home Premium Edition");                  
-					else if (os.IsBusinessInstalled(&osvi))
+					else if (os.IsBusiness(&osvi))
 						csName += _T(" Business Edition");                  
-					else if (os.IsProfessionalInstalled(&osvi))
+					else if (os.IsProfessional(&osvi))
 						csName += _T(" Professional Edition");                  
-					else if (os.IsEnterpriseInstalled(&osvi))
+					else if (os.IsEnterprise(&osvi))
 						csName += _T(" Enterprise Edition");                  
-					else if (os.IsUltimateInstalled(&osvi))
+					else if (os.IsUltimate(&osvi))
 						csName += _T(" Ultimate Edition");                  
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
-				else if (os.IsWebWindowsServerBlue(&osvi))
+				else if (os.IsWebWindowsServer2012(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows Server Blue");
 
-					if (os.IsDatacenterWindowsServer2012(&osvi))
+					if (os.IsDatacenterWindowsServer2012(&osvi, FALSE))
 						csName += _T(" Datacenter Edition");
-					else if (os.IsEnterpriseWindowsServer2012(&osvi))
+					else if (os.IsEnterpriseWindowsServer2012(&osvi, FALSE))
 						csName += _T(" Enterprise Edition");
-					else if (os.IsWebWindowsServer2012(&osvi))
+					else if (os.IsWebWindowsServer2012(&osvi, FALSE))
 						csName += _T(" Web Edition");
-					else if (os.IsStandardWindowsServer2012(&osvi))
+					else if (os.IsStandardWindowsServer2012(&osvi, FALSE))
 						csName += _T(" Standard Edition");
+				}
+				else if (os.IsWindows10(&osvi, FALSE)) {
+
+					csName = _T("Microsoft Windows 10");
+
+					if (os.IsHomeBasic(&osvi))
+						csName += _T(" Home Basic Edition");
+					else if (os.IsHomeBasicPremium(&osvi))
+						csName += _T(" Home Premium Edition");
+					else if (os.IsBusiness(&osvi))
+						csName += _T(" Business Edition");
+					else if (os.IsProfessional(&osvi))
+						csName += _T(" Professional Edition");
+					else if (os.IsEnterprise(&osvi))
+						csName += _T(" Enterprise Edition");
+					else if (os.IsUltimate(&osvi))
+						csName += _T(" Ultimate Edition");
+					csComment = osvi.szUnderlyingCSDVersion;
+				}
+				else if (os.IsWindowsServer2012(&osvi, FALSE))
+				{
+				csName = _T("Microsoft Windows Server 2012");
+
+				if (os.IsDatacenterWindowsServer2012(&osvi, FALSE))
+					csName += _T(" Datacenter Edition");
+				else if (os.IsEnterpriseWindowsServer2012(&osvi, FALSE))
+					csName += _T(" Enterprise Edition");
+				else if (os.IsWebWindowsServer2012(&osvi, FALSE))
+					csName += _T(" Web Edition");
+				else if (os.IsStandardWindowsServer2012(&osvi, FALSE))
+					csName += _T(" Standard Edition");
+				}
+				else if (os.IsWindowsServer2016(&osvi, FALSE))
+				{
+					csName = _T("Microsoft Windows Server 2016");
+
+					if (os.IsDatacenterWindowsServer2016(&osvi, FALSE))
+						csName += _T(" Datacenter Edition");
+					else if (os.IsEnterpriseWindowsServer2016(&osvi, FALSE))
+						csName += _T(" Enterprise Edition");
+					else if (os.IsWebWindowsServer2016(&osvi, FALSE))
+						csName += _T(" Web Edition");
+					else if (os.IsStandardWindowsServer2016(&osvi, FALSE))
+						csName += _T(" Standard Edition");
+				}
+				else if (os.IsWindowsServer2019(&osvi, FALSE))
+				{
+				csName = _T("Microsoft Windows Server 2019");
+
+				if (os.IsDatacenterWindowsServer2019(&osvi, FALSE))
+					csName += _T(" Datacenter Edition");
+				else if (os.IsEnterpriseWindowsServer2019(&osvi, FALSE))
+					csName += _T(" Enterprise Edition");
+				else if (os.IsWebWindowsServer2019(&osvi, FALSE))
+					csName += _T(" Web Edition");
+				else if (os.IsStandardWindowsServer2019(&osvi, FALSE))
+					csName += _T(" Standard Edition");
 				}
 /*				if (os.IsEmulated64Bit(&osvi))
 					csComment += _T(" (64 Bits)");
