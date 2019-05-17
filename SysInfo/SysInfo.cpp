@@ -369,19 +369,6 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 						csName += _T(" Ultimate Edition");
 					csComment = osvi.szUnderlyingCSDVersion;
 				}
-				else if (os.IsWindowsServer2012(&osvi, FALSE))
-				{
-				csName = _T("Microsoft Windows Server 2012");
-
-				if (os.IsDatacenterWindowsServer2012(&osvi, FALSE))
-					csName += _T(" Datacenter Edition");
-				else if (os.IsEnterpriseWindowsServer2012(&osvi, FALSE))
-					csName += _T(" Enterprise Edition");
-				else if (os.IsWebWindowsServer2012(&osvi, FALSE))
-					csName += _T(" Web Edition");
-				else if (os.IsStandardWindowsServer2012(&osvi, FALSE))
-					csName += _T(" Standard Edition");
-				}
 				else if (os.IsWindowsServer2016(&osvi, FALSE))
 				{
 					csName = _T("Microsoft Windows Server 2016");
@@ -397,16 +384,16 @@ BOOL CSysInfo::getOS( CString &csName, CString &csVersion, CString &csComment, C
 				}
 				else if (os.IsWindowsServer2019(&osvi, FALSE))
 				{
-				csName = _T("Microsoft Windows Server 2019");
+					csName = _T("Microsoft Windows Server 2019");
 
-				if (os.IsDatacenterWindowsServer2019(&osvi, FALSE))
-					csName += _T(" Datacenter Edition");
-				else if (os.IsEnterpriseWindowsServer2019(&osvi, FALSE))
-					csName += _T(" Enterprise Edition");
-				else if (os.IsWebWindowsServer2019(&osvi, FALSE))
-					csName += _T(" Web Edition");
-				else if (os.IsStandardWindowsServer2019(&osvi, FALSE))
-					csName += _T(" Standard Edition");
+					if (os.IsDatacenterWindowsServer2019(&osvi, FALSE))
+						csName += _T(" Datacenter Edition");
+					else if (os.IsEnterpriseWindowsServer2019(&osvi, FALSE))
+						csName += _T(" Enterprise Edition");
+					else if (os.IsWebWindowsServer2019(&osvi, FALSE))
+						csName += _T(" Web Edition");
+					else if (os.IsStandardWindowsServer2019(&osvi, FALSE))
+						csName += _T(" Standard Edition");
 				}
 /*				if (os.IsEmulated64Bit(&osvi))
 					csComment += _T(" (64 Bits)");
