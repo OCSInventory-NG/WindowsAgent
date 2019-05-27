@@ -191,7 +191,7 @@ HCURSOR CDownloadDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-void CDownloadDlg::OnTimer(UINT nIDEvent) 
+void CDownloadDlg::OnTimer(UINT_PTR nIDEvent) 
 {
 	CString csMessage;
 

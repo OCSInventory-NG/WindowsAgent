@@ -89,10 +89,9 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${PRODUCT_VERSION}"
 BRANDINGTEXT "OCS Inventory NG"
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "OCS-NG-Windows-Agent-Setup.exe"
-InstallDir "$PROGRAMFILES\OCS Inventory Agent"
-InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
+InstallDir "$PROGRAMFILES64\OCS Inventory Agent"
+#InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowUnInstDetails show
-
 
 #####################################################################
 # Global variables
@@ -597,8 +596,8 @@ ParseCmd_NoSplash_End:
 	; /UPGRADE switch to set deployment status
     ${GetOptions} '$9' '/UPGRADE' $R0
     IfErrors 0 ParseCmd_Upgrade
-	; Do not write deployment status file
-	StrCpy $OcsUpgrade "FALSE"
+		; Do not write deployment status file
+		StrCpy $OcsUpgrade "FALSE"
     goto ParseCmd_Upgrade_End
 ParseCmd_Upgrade:
 	; Write deployment status file
@@ -610,8 +609,8 @@ ParseCmd_Upgrade_End:
 	; Parse /LOCAL=
     ${GetOptions} '$9' '/LOCAL=' $R0
     IfErrors 0 ParseCmd_Local
-    ; Network enabled inventory
-    SetCurInstType 0
+		; Network enabled inventory
+		SetCurInstType 0
     goto ParseCmd_Local_End
 ParseCmd_Local:
 	; Local inventory asked
@@ -668,50 +667,94 @@ stop_service_time_out_reached:
 	StrCpy $logBuffer "Will try to kill processes..$\r$\n"
 	Call Write_Log
 stop_service_end_loop:
-	; KillProcDLL ©2003 by DITMan, based upon the KILL_PROC_BY_NAME function programmed by Ravi, reach him at: http://www.physiology.wisc.edu/ravi/
-	;* 0 = Process was successfully Trying to kill process d
-	;* 603 = Process was not currently running
-	;* 604 = No permission to Trying to kill process  process
-	;* 605 = Unable to load PSAPI.DLL
-	;* 602 = Unable to Trying to kill process  process for some other reason
-	;* 606 = Unable to identify system type
-	;* 607 = Unsupported OS
-	;* 632 = Invalid process name
-	;* 700 = Unable to get procedure address from PSAPI.DLL
-	;* 701 = Unable to get process list, EnumProcesses failed
-	;* 702 = Unable to load KERNEL32.DLL
-	;* 703 = Unable to get procedure address from KERNEL32.DLL
-	;* 704 = CreateToolhelp32Snapshot failed
+	; KillProcDLL
+	;	0 = Process was successfully terminated
+	;	603 = Process was not currently running
+	;	604 = No permission to terminate process
+	;	605 = Unable to load PSAPI.DLL
+	;	602 = Unable to terminate process for some other reason
+	;	606 = Unable to identify system type
+	;	607 = Unsupported OS
+	;	632 = Invalid process name
+	;	700 = Unable to get procedure address from PSAPI.DLL
+	;	701 = Unable to get process list, EnumProcesses failed
+	;	702 = Unable to load KERNEL32.DLL
+	;	703 = Unable to get procedure address from KERNEL32.DLL
+	;	704 = CreateToolhelp32Snapshot failed
 	sleep 1000
-	KillProcDLL::KillProc "OcsSystray.exe"
+	KillProcDLL::KillProc "OcsSystray.exe" $R0
 	StrCpy $logBuffer "Trying to kill process OcsSystray.exe...Result: $R0$\r$\n"
 	Call Write_Log
 	; If OcsSystray killed, perhaps there is another process running under another user session,
 	; So try to kill OcsSystray.exe until there no process or error detected
 	StrCmp "$R0" "0" stop_service_end_loop
 	sleep 1000
-	KillProcDLL::KillProc "OcsService.exe"
+	KillProcDLL::KillProc "OcsService.exe" $R0
 	StrCpy $logBuffer "Trying to kill process OcsService.exe...Result: $R0$\r$\n"
 	Call Write_Log
 	sleep 1000
-	KillProcDLL::KillProc "OCSInventory.exe" ; $R0
+	KillProcDLL::KillProc "OCSInventory.exe" $R0
 	StrCpy $logBuffer "Trying to kill process OCSInventory.exe...Result: $R0$\r$\n"
 	Call Write_Log
 	sleep 1000
-	KillProcDLL::KillProc "download.exe" ;$R0
+	KillProcDLL::KillProc "download.exe" $R0
 	StrCpy $logBuffer "Trying to kill process download.exe...Result: $R0$\r$\n"
 	Call Write_Log
 	sleep 1000
 	; For old agent using inst32.exe
-	KillProcDLL::KillProc "inst32.exe"
+	KillProcDLL::KillProc "inst32.exe" $R0
 	StrCpy $logBuffer "Trying to kill process inst32.exe...Result: $R0$\r$\n"
 	Call Write_Log
 	sleep 1000
 	StrCpy $logBuffer "Waiting 10 seconds for processes to terminate...$\r$\n"
 	Call Write_Log
 	sleep 10000
+	${Locate} "C:\Program Files (x86)" "/L=F /M=OCSInventory.exe" "FoundOldAgent"
 	; Restore used register
 	Pop $R0
+FunctionEnd
+
+Function FoundOldAgent
+	StrCpy $logBuffer "OK $R0 $R8$\r$\n"
+	Call Write_Log
+	sleep 1000
+	StrCpy $logBuffer "$0" StopLocate
+	Call Write_Log
+	sleep 1000
+
+	;	If old agent detected remove all files
+	StrCpy $logBuffer "Sarting Old ${PRODUCT_NAME} Version UNISTALL in $R8...$\r$\n"
+	Call Write_Log
+	; Uninstall NT service
+	nsExec::ExecToLog "$R8\ocsservice.exe -uninstall"
+	; Remove startup links
+	Delete /REBOOTOK "$SMSTARTUP\OCS Inventory NG Systray.lnk"
+	; Remove files
+	Delete /REBOOTOK "$R8\uninst.exe"
+	StrCpy $logBuffer "Delete uninst.exe...$\r$\n"
+	Call Write_Log
+	Delete /REBOOTOK "$R8\zlib1.dll"
+	StrCpy $logBuffer "Delete zlib...$\r$\n"
+	Call Write_Log
+	Delete /REBOOTOK "$R8\ZipArchive.dll"
+	StrCpy $logBuffer "Delete zipArchive...$\r$\n"
+	Call Write_Log
+	Delete /REBOOTOK "$R8\uac.manifest"
+	Delete /REBOOTOK "$R8\SysInfo.dll"
+	Delete /REBOOTOK "$R8\ssleay32.dll"
+	Delete /REBOOTOK "$R8\OcsWmi.dll"
+	Delete /REBOOTOK "$R8\OcsSystray.exe"
+	Delete /REBOOTOK "$R8\OcsService.exe"
+	Delete /REBOOTOK "$R8\OCSInventory.exe"
+	Delete /REBOOTOK "$R8\OcsSnmp.exe"
+	Delete /REBOOTOK "$R8\libeay32.dll"
+	Delete /REBOOTOK "$R8\libcurl.dll"
+	Delete /REBOOTOK "$R8\download.exe"
+	RMDir /r /REBOOTOK "$R8"
+	StrCpy $logBuffer "Delete old repository...$\r$\n"
+	Call Write_Log
+	
+	SetAutoClose true
 FunctionEnd
 
 #####################################################################
@@ -752,37 +795,37 @@ un.stop_service_time_out_reached:
 	StrCpy $logBuffer "Will try to kill processes..$\r$\n"
 	Call un.Write_Log
 un.stop_service_end_loop:
-	; KillProcDLL ©2003 by DITMan, based upon the KILL_PROC_BY_NAME function programmed by Ravi, reach him at: http://www.physiology.wisc.edu/ravi/
-	;* 0 = Process was successfully Trying to kill process d
-	;* 603 = Process was not currently running
-	;* 604 = No permission to Trying to kill process  process
-	;* 605 = Unable to load PSAPI.DLL
-	;* 602 = Unable to Trying to kill process  process for some other reason
-	;* 606 = Unable to identify system type
-	;* 607 = Unsupported OS
-	;* 632 = Invalid process name
-	;* 700 = Unable to get procedure address from PSAPI.DLL
-	;* 701 = Unable to get process list, EnumProcesses failed
-	;* 702 = Unable to load KERNEL32.DLL
-	;* 703 = Unable to get procedure address from KERNEL32.DLL
-	;* 704 = CreateToolhelp32Snapshot failed
+	; KillProcDLL
+	;	0 = Process was successfully terminated
+	;	603 = Process was not currently running
+	;	604 = No permission to terminate process
+	;	605 = Unable to load PSAPI.DLL
+	;	602 = Unable to terminate process for some other reason
+	;	606 = Unable to identify system type
+	;	607 = Unsupported OS
+	;	632 = Invalid process name
+	;	700 = Unable to get procedure address from PSAPI.DLL
+	;	701 = Unable to get process list, EnumProcesses failed
+	;	702 = Unable to load KERNEL32.DLL
+	;	703 = Unable to get procedure address from KERNEL32.DLL
+	;	704 = CreateToolhelp32Snapshot failed
 	sleep 1000
-	KillProcDLL::KillProc "OcsSystray.exe"
+	KillProcDLL::KillProc "OcsSystray.exe" $R0
 	StrCpy $logBuffer "Trying to kill process OcsSystray.exe...Result: $R0$\r$\n"
 	Call un.Write_Log
 	; If OcsSystray killed, perhaps there is another process running under another user session,
 	; So try to kill OcsSystray.exe until there no process or error detected
 	StrCmp "$R0" "0" un.stop_service_end_loop
 	sleep 1000
-	KillProcDLL::KillProc "OcsService.exe"
+	KillProcDLL::KillProc "OcsService.exe" $R0
 	StrCpy $logBuffer "Trying to kill process OcsService.exe...Result: $R0$\r$\n"
 	Call un.Write_Log
 	sleep 1000
-	KillProcDLL::KillProc "OCSInventory.exe" ; $R0
+	KillProcDLL::KillProc "OCSInventory.exe" $R0
 	StrCpy $logBuffer "Trying to kill process OCSInventory.exe...Result: $R0$\r$\n"
 	Call un.Write_Log
 	sleep 1000
-	KillProcDLL::KillProc "download.exe" ;$R0
+	KillProcDLL::KillProc "download.exe" $R0
 	StrCpy $logBuffer "Trying to kill process download.exe...Result: $R0$\r$\n"
 	Call un.Write_Log
 	sleep 1000
@@ -1585,13 +1628,13 @@ Section "OCS Inventory Agent" SEC03
         ;Call Write_Log
   	    ;strcpy $installSatus ":("
 	    ;clearerrors
-	    File "C:\Windows\System32\msvcp140.dll"
+	    File "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.CRT\msvcp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying msvcp140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\msvcr120.dll"
+	    File "C:\Windows\SysWOW64\msvcr120.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying msvcr120.dll $\r$\n"
         Call Write_Log
@@ -1604,58 +1647,52 @@ Section "OCS Inventory Agent" SEC03
         ;Call Write_Log
   	    ;strcpy $installSatus ":("
 	    ;clearerrors
-	    File "C:\Windows\System32\mfc140.dll"
+	    File "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.MFC\mfc140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfc140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\mfc140u.dll"
+	    File "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.MFC\mfc140u.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfc140u.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\mfcm140.dll"
+	    File "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.MFC\mfcm140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "C:\Windows\System32\mfcm140u.dll"
+	    File "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.MFC\mfcm140u.dll"
 	    Iferrors 0 +5
-	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm120u.dll $\r$\n"
+	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm140u.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
 		;Lib for Win 8.0 / 8.1 / win 10
-		;File "C:\Windows\SysWOW64\vcruntime120.dll"
-	    ;Iferrors 0 +5
-	    ;StrCpy $logBuffer "$logBuffer ERROR copying vcruntime140.dll $\r$\n"
-        ;Call Write_Log
-  	    ;strcpy $installSatus ":("
-	    ;clearerrors
-		File "C:\Windows\SysWOW64\vcomp140.dll"
+		File "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.CRT\vcruntime140.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying vcruntime140.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
+		File "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.OpenMP\vcomp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying vcomp140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-		File "C:\Windows\SysWOW64\vcamp140.dll"
+		File "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.CXXAMP\vcamp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying vcamp140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-		File "C:\Windows\SysWOW64\vcruntime140.dll"
+		File "C:\Windows\SysWOW64\ucrtbase.dll"
 	    Iferrors 0 +5
-	    StrCpy $logBuffer "$logBuffer ERROR copying vcruntime140.dll $\r$\n"
-        Call Write_Log
-  	    strcpy $installSatus ":("
-	    clearerrors
-		File "C:\Windows\System32\ucrtbased.dll"
-	    Iferrors 0 +5
-	    StrCpy $logBuffer "$logBuffer ERROR copying vcruntime140.dll $\r$\n"
+	    StrCpy $logBuffer "$logBuffer ERROR copying ucrtbase.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
@@ -1937,7 +1974,7 @@ Section Uninstall
 	; Remove files
 	Delete /REBOOTOK "$INSTDIR\uninst.exe"
 	Delete /REBOOTOK "$INSTDIR\zlib1.dll"
-	Delete /REBOOTOK "$INSTDIR\AipArchive.dll"
+	Delete /REBOOTOK "$INSTDIR\ZipArchive.dll"
 	Delete /REBOOTOK "$INSTDIR\uac.manifest"
 	Delete /REBOOTOK "$INSTDIR\SysInfo.dll"
 	Delete /REBOOTOK "$INSTDIR\ssleay32.dll"
