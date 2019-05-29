@@ -34,9 +34,9 @@ BUILDING DEPENDENCIES
 
 OCS Inventory NG Agent for Windows needs following libraries:
 
-- zlib 1.2.11 or newer (www.zlib.net)
-- openssl 1.0.2k or newer (www.openssl.org)
-- curl 7.53.1 or newer (http://curl.haxx.se/)
+- zlib 1.2.8 or newer (www.zlib.net)
+- openssl 1.0.2r or newer (www.openssl.org)
+- curl 7.64.1 or newer (http://curl.haxx.se/)
 - tinyXML 2.6.2 or newer (http://www.sourceforge.net/projects/tinyxml/)
 - net-snmp 5.7.3 or newer (http://www.net-snmp.org/)
 - ZipArchive GPL Edition 4.0.1 or newer (http://www.artpol-software.com)
@@ -76,11 +76,11 @@ Edit script "OCS_Make_Required_Libs.bat" to meet your need, especially
 - Set path to Perl 5.6 or higher binary, for example
   set PERL_PATH=C:\xampp\perl\bin
 - Set path to Zlib sources, for example
-  set ZLIB_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\zlib-1.2.11
+  set ZLIB_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\zlib-1.2.8
 - Set path to OpenSSL sources, for example
-  set OPENSSL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\openssl-1.0.2k
+  set OPENSSL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\openssl-1.0.2r
 - Set path to cURL sources, for example
-  set CURL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\curl-7.53.1
+  set CURL_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\curl-7.64.1
 - Set path to tinyXML sources, for example
   set XML_PATH=D:\Developp\OCS Inventory NG\Bazaar\ocsinventory-windows-agent\External_Deps\tinyxml
 - Set path to ZipArchive sources, for example
