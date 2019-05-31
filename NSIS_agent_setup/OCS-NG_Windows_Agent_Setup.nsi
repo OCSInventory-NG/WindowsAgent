@@ -709,7 +709,7 @@ stop_service_end_loop:
 	StrCpy $logBuffer "Waiting 10 seconds for processes to terminate...$\r$\n"
 	Call Write_Log
 	sleep 10000
-	${Locate} "C:\Program Files (x86)" "/L=F /M=OCSInventory.exe" "FoundOldAgent"
+	${Locate} "C:\Program Files (x86)\OCS Inventory Agent" "/L=F /M=OCSInventory.exe" "FoundOldAgent"
 	; Restore used register
 	Pop $R0
 FunctionEnd
@@ -1265,7 +1265,7 @@ Function ConfigureFirewall
         ; Check if agent firewall exists
         SimpleFC::AdvExistsRule "OCS Inventory NG Agent"
         Pop $0 ; return error(1)/success(0)
-        Pop $1 ; return 1=Exists/0=Doesn´t exists
+        Pop $1 ; return 1=Exists/0=Doesnï¿½t exists
         StrCmp "$1" "1" ConfigureFirewall_Skip_Agent
         StrCpy $logBuffer "Adding custom Windows Firewall rule for <$INSTDIR\ocsinventory.exe>..."
         Call Write_Log
@@ -1283,7 +1283,7 @@ ConfigureFirewall_Skip_Agent:
         ; Check if download firewall exists
         SimpleFC::AdvExistsRule "OCS Inventory NG Download and Setup tool"
         Pop $0 ; return error(1)/success(0)
-        Pop $1 ; return 1=Exists/0=Doesn´t exists
+        Pop $1 ; return 1=Exists/0=Doesnï¿½t exists
         StrCmp "$1" "1" ConfigureFirewall_Skip_Download
         StrCpy $logBuffer "Adding custom Windows Firewall rule for <$INSTDIR\download.exe>..."
         Call Write_Log
