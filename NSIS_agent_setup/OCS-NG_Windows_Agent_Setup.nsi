@@ -1616,18 +1616,6 @@ Section "OCS Inventory Agent" SEC03
         clearerrors
 	    ; MSVC 9 CRT redist current for XP and higher
      	SetOutPath "$INSTDIR"
-      	;File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest"
-       	;Iferrors 0 +5
-        ;StrCpy $logBuffer "$logBuffer ERROR copying Microsoft.VC90.CRT.manifest $\r$\n"
-        ;Call Write_Log
-  	    ;strcpy $installSatus ":("
-	    ;clearerrors
-	    ;File "C:\Windows\System32\msvcm140.dll"
-	    ;Iferrors 0 +5
-	    ;StrCpy $logBuffer "$logBuffer ERROR copying msvcm140.dll $\r$\n"
-        ;Call Write_Log
-  	    ;strcpy $installSatus ":("
-	    ;clearerrors
 	    File "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.CRT\msvcp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying msvcp140.dll $\r$\n"
@@ -1640,13 +1628,6 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    ; MSVC 9 MFC redist current for XP and higher
-	    ;File "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest"
-	    ;Iferrors 0 +5
-	    ;StrCpy $logBuffer "$logBuffer ERROR copying \Microsoft.VC90.MFC.manifest $\r$\n"
-        ;Call Write_Log
-  	    ;strcpy $installSatus ":("
-	    ;clearerrors
 	    File "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.16.27012\x64\Microsoft.VC141.MFC\mfc140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfc140.dll $\r$\n"
@@ -1786,12 +1767,6 @@ Section "OCS Inventory Agent" SEC03
     Call Write_Log
   	strcpy $installSatus ":("
 	clearerrors
-;	File "..\Release\uac.manifest"
-;	Iferrors 0 +5
-;	StrCpy $logBuffer "$logBuffer ERROR copying uac.manifest $\r$\n"
-;   Call Write_Log
-;  	strcpy $installSatus ":("
-;	clearerrors
 	SetOutPath "$INSTDIR\Plugins"
 	File "..\Release\Plugins\DO_NOT_REMOVE.txt"
 	Iferrors 0 +5
