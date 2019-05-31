@@ -542,7 +542,7 @@ BOOL CDownloadApp::runPeriod()
 {
 	CPackage	*pPack;
 	INT_PTR		nIndex;
-	UINT		uPeriod,
+	UINT64		uPeriod,
 				uFragToDownload = 0,// Number of fragment to download
 				uError = 0;			// Number of download error
 	CTime		cCycleTime;			// Start time of the cycle
@@ -677,6 +677,7 @@ BOOL CDownloadApp::executePackage( CPackage *pPack)
 	}
 	// Execute package
 	m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "DOWNLOAD => Executing action <%s> for package <%s>"), pPack->getAction(), pPack->getID());
+	
 	if (!pPack->execute( m_uCommandTimeout))
 	{
 		m_pLogger->log( LOG_PRIORITY_ERROR, _T( "DOWNLOAD => Failed to execute action <%s> for package <%s>"), pPack->getAction(), pPack->getID());

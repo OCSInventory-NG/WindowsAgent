@@ -207,7 +207,7 @@ BOOL CCapDownload::retrievePackages()
 		// Check if package is not expired
 		if (pOptDownloadPackage->isExpired(m_csDownloadTimeout))
 		{
-			ULONG ulNow = time(NULL);
+			time_t ulNow = time(NULL);
 			m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Package <%s> timed out (now:%lu, since:%lu, Timeout:%s)"), pOptDownloadPackage->getId(), ulNow, (ULONG)pOptDownloadPackage->getTimeStamp(), m_csDownloadTimeout);
 			if (sendMessage(pOptDownloadPackage->getId(), ERR_TIMEOUT))
 				// Server successfully notified => remove package

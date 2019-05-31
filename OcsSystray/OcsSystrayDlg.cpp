@@ -193,7 +193,7 @@ HCURSOR COcsSystrayDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-void COcsSystrayDlg::OnTimer( UINT nIDEvent)
+void COcsSystrayDlg::OnTimer( UINT_PTR nIDEvent)
 {
 	// Get service status
 	CString csMessage;

@@ -55,7 +55,7 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	// Update service status every 5 seconds
-	afx_msg void OnTimer( UINT nIDEvent);
+	afx_msg void OnTimer( UINT_PTR nIDEvent);
 	// Show version information dialogbox
 	afx_msg void OnDisplay();
 	// Ask servive to start agent now

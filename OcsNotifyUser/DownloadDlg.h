@@ -46,7 +46,7 @@ protected:
 	// Generated message map functions
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
-	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnCancel();
 	afx_msg void OnDelay();
 	DECLARE_MESSAGE_MAP()

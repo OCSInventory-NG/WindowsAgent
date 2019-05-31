@@ -35,15 +35,15 @@
 
 */
 
-#include <windows.h>
+/*#include <windows.h>
 
 // IsInsideVPC's exception filter
 DWORD __forceinline IsInsideVPC_exceptionFilter(LPEXCEPTION_POINTERS ep)
 {
   PCONTEXT ctx = ep->ContextRecord;
 
-  ctx->Ebx = -1; // Not running VPC
-  ctx->Eip += 4; // skip past the "call VPC" opcodes
+  ctx->Rbx = -1; // Not running VPC
+  ctx->Rip += 4; // skip past the "call VPC" opcodes
   return EXCEPTION_CONTINUE_EXECUTION; // we can safely resume execution since we skipped faulty instruction
 }
 

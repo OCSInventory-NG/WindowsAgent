@@ -28,7 +28,7 @@ public:
 	// Get package ID (i.e timestamp)
 	LPCTSTR getID();
 	// Get package priority
-	UINT getPriority();
+	UINT64 getPriority();
 	// Get Action
 	LPCTSTR getAction();
 	// Get if we have to schedule package setup at specified date
@@ -53,9 +53,9 @@ public:
 	// Set task result code into "done" file, with optional command output
 	BOOL setDone( LPCTSTR lpstrCode, LPCTSTR lpstrOutput = _T( ""));
 	// Get execute try number from "exec_try" file
-	BOOL getExecTry( UINT *puTry);
+	BOOL getExecTry( UINT64 *puTry);
 	// Set execute try number to "exec_try" file
-	BOOL setExecTry( UINT uTry);
+	BOOL setExecTry( UINT64 uTry);
 	// Is there any more frag to download (task filesize > 0)
 	BOOL isFragTodownload();
 	// Get next frag ID to download from task file (the first one)
@@ -71,9 +71,9 @@ public:
 	// Concatenete fragment to create build.zip, verify signature, delete fragment
 	BOOL build();
 	// Execute package using provided time out in minutes
-	UINT execute( UINT uCommandTimeOut);
+	UINT64 execute( UINT64 uCommandTimeOut);
 	// Execute post package execution command using provided time out in minutes
-	UINT executePostCmd( UINT uCommandTimeOut);
+	UINT64 executePostCmd( UINT64 uCommandTimeOut);
 
 	// User notification
 	BOOL isNotifyUserRequired();

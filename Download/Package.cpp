@@ -248,7 +248,7 @@ LPCTSTR CPackage::getID()
 	return m_csID;
 }
 
-UINT CPackage::getPriority()
+UINT64 CPackage::getPriority()
 {
 	return m_uPriority;
 }
@@ -400,7 +400,7 @@ BOOL CPackage::setDone( LPCTSTR lpstrCode, LPCTSTR lpstrOutput)
 	return TRUE;
 }
 
-BOOL CPackage::setExecTry( UINT uTry)
+BOOL CPackage::setExecTry( UINT64 uTry)
 {
 	CStdioFile myFile;
 	CString	   csFile;
@@ -425,7 +425,7 @@ BOOL CPackage::setExecTry( UINT uTry)
 	return TRUE;
 }
 
-BOOL CPackage::getExecTry( UINT *puTry)
+BOOL CPackage::getExecTry( UINT64 *puTry)
 {
 	CString csFile;
 	CStdioFile myFile;
@@ -731,6 +731,7 @@ BOOL CPackage::unZip()
 {
 	CZipArchive cZip;
 	CString		csFile;
+	CLog *pLog = getOcsLogger();
 
 	// If there is no fragment, assume package unzipped
 	if (m_uFrags == 0)
@@ -740,6 +741,7 @@ BOOL CPackage::unZip()
 	try
 	{
 		cZip.Open( csFile);
+
 		for(ZIP_INDEX_TYPE i=0; i<cZip.GetCount();i++)
 			cZip.ExtractFile(i, m_csPath);
 		cZip.Close();
@@ -755,6 +757,7 @@ BOOL CPackage::unZip()
 				cFile.Close();
 			}
 		}
+
 	}
 	catch (CException *pE)
 	{		
@@ -771,12 +774,12 @@ BOOL CPackage::unZip()
 	return TRUE;
 }
 
-UINT CPackage::execute( UINT uCommandTimeOut)
+UINT64 CPackage::execute( UINT64 uCommandTimeOut)
 {
 	CLog *pLog = getOcsLogger();
 	CExecCommand cmProcess;
 	CString csBuffer;
-	UINT	uTry;
+	UINT64	uTry;
 
 	// Check signature before executing package
 	if (!checkSignature())
@@ -785,11 +788,13 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 		setDone( ERR_BAD_DIGEST);
 		return FALSE;
 	}
+
 	// Check if package not crashing all time
 	if (!getExecTry( &uTry))
 		// Assuming first execution try
 		uTry = 0;
 	uTry++;
+
 	if (uTry > MAX_ERROR_COUNT)
 	{
 		pLog->log( LOG_PRIORITY_WARNING, _T( "PACKAGE => Max try count (%u) reached while executing Package <%s>"), uTry, m_csID);
@@ -798,7 +803,7 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 	}
 	else
 		setExecTry( uTry);
-	
+
 	if (m_csAction == OCS_DOWNLOAD_ACTION_LAUNCH)
 	{
 		// We need to wait for all threads/processes started
@@ -841,8 +846,10 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 		setDone( csBuffer);
 		return TRUE;
 	}
+
 	if (m_csAction == OCS_DOWNLOAD_ACTION_EXECUTE)
 	{
+
 		// We only need to wait for cmmand result
 		// First, extrac build.zip to tmp folder
 		if (!directoryCreate( m_csPath) || !unZip())
@@ -851,6 +858,7 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 			setDone( ERR_UNZIP);
 			return FALSE;
 		}
+
 		pLog->log( LOG_PRIORITY_DEBUG, _T( "PACKAGE => Executing command <%s> for package <%s> on <%s>"), m_csCommand, m_csID, CTime::GetCurrentTime().Format( _T( "%#c")));
 		if (m_csCommand.IsEmpty())
 		{
@@ -908,7 +916,7 @@ UINT CPackage::execute( UINT uCommandTimeOut)
 	return FALSE;
 }
 
-UINT CPackage::executePostCmd( UINT uCommandTimeOut)
+UINT64 CPackage::executePostCmd( UINT64 uCommandTimeOut)
 {
 	CLog *pLog = getOcsLogger();
 	CExecCommand cmProcess;
