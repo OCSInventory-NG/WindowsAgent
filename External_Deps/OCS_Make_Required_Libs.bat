@@ -126,7 +126,7 @@ Rem Fix cURL DLL config for MS Visual C++ with lastest Service Pack ( -D_BIND_TO
 Rem perl.exe -pi.bak -e "s# /DBUILDING_LIBCURL# /DBUILDING_LIBCURL /D_BIND_TO_CURRENT_VCLIBS_VERSION#g" Makefile.vc12
 Rem Build cURL dll using OpenSSL Dlls and Zlib dll
 Rem nmake /NOLOGO /f Makefile.vc12 cfg=release-dll-ssl-dll-zlib-dll
-nmake /f Makefile.vc mode=dll VC=15 ENABLE_SSPI=NO ENABLE_IPV6=YES WITH_SSL=dll MACHINE=x86 SSL_PATH="%SSL_PATH%\inc32" ZLIB_PATH="%ZLIB_PATH%"
+nmake /f Makefile.vc mode=dll VC=15 ENABLE_SSPI=NO ENABLE_IPV6=YES WITH_SSL=dll MACHINE=x86 SSL_PATH="%OPENSSL_PATH%\inc32" ZLIB_PATH="%ZLIB_PATH%"
 
 if ERRORLEVEL 1 goto ERROR
 Rem Insert manifest into DLL
@@ -141,7 +141,7 @@ copy "..\builds\libcurl-vc15-x86-release-dll-ssl-dll-obj-lib\libcurl.dll" ..\..\
 if ERRORLEVEL 1 goto ERROR
 
 cd ..\..\..
-:comment
+
 title OCS Inventory NG Agent for Windows - Building Net-SNMP DLL...
 echo.
 echo *************************************************************************
@@ -152,8 +152,8 @@ echo *************************************************************************
 echo.
 cd "%SNMP_PATH%\win32"
 Rem Prepare OpenSSL for Net-SNMP
-SET INCLUDE=%INCLUDE%;%SSL_PATH%\inc32
-SET LIB=%LIB%;%SSL_PATH%\out32dll
+SET INCLUDE=%INCLUDE%;%OPENSSL_PATH%\inc32
+SET LIB=%LIB%;%OPENSSL_PATH%\out32dll
 Rem Configure Net-SNMP
 perl.exe Configure --config=release --with-ssl --linktype=dynamic
 if ERRORLEVEL 1 goto ERROR
