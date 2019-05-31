@@ -1,5 +1,10 @@
-2.6.0.0
-  * Fix bug last loggon user
+﻿2.6.0.0
+  * Refactoring agent in 64 bits
+  * Add deployement support for package greater than 4GB (ZipArchive library in commercial version) 
+  * Fix bug kill process OcsSystray.exe when upgrade or uninstall agent
+  * Fix bug last logon user
+  * Update libraries version
+  * Fix compilation error for External Dependencies
 
 2.4.0.0
   * Add support IPV6 networks
