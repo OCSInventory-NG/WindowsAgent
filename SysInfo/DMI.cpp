@@ -49,6 +49,9 @@ LPCTSTR CDMI::DmiString(DmiHeader* dmi, UCHAR id)
 
 	p += dmi->Length;
 
+	if (id == 0)
+		return _T( "");
+
 	while(id > 1 && *p)
 	{
 		p += strlen(p);
