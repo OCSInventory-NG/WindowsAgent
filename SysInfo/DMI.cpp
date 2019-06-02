@@ -47,10 +47,10 @@ LPCTSTR CDMI::DmiString(DmiHeader* dmi, UCHAR id)
 	static CString cstr;
 	char *p = (char *)dmi;
 
+	p += dmi->Length;
+
 	if (id == 0)
 		return _T( "");
-
-	p += dmi->Length;
 
 	while(id > 1 && *p)
 	{
