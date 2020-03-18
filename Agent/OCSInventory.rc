@@ -53,13 +53,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory NG Agent"
             VALUE "CompanyName", "OCS Inventory NG"
             VALUE "FileDescription", "OCS Inventory NG Agent"
-            VALUE "FileVersion", "2.6.0.0"
+            VALUE "FileVersion", "2.6.0.1"
             VALUE "InternalName", "OCSInventory.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OCSInventory.exe"
             VALUE "ProductName", "OCS Inventory NG Windows Agent"
-            VALUE "ProductVersion", "2.6.0.0"
+            VALUE "ProductVersion", "2.6.0.1"
         END
     END
     BLOCK "VarFileInfo"
