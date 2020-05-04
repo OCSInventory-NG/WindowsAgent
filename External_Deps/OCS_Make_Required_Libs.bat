@@ -122,6 +122,8 @@ cd "%CURL_PATH%"
 Rem Disable LDAP support, not needed in OCS Inventory NG Agent
 set WINDOWS_SSPI=0
 cd ..\winbuild
+Rem Fix cURL DLL config for correct OpenSSL include path
+perl.exe -pi.bak -e "s#\$\(SSL_PATH\)\\include#\$\(SSL_PATH\)#g" MakefileBuild.vc
 Rem Fix cURL DLL config for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
 Rem perl.exe -pi.bak -e "s# /DBUILDING_LIBCURL# /DBUILDING_LIBCURL /D_BIND_TO_CURRENT_VCLIBS_VERSION#g" Makefile.vc12
 Rem Build cURL dll using OpenSSL Dlls and Zlib dll
@@ -180,11 +182,16 @@ title OCS Inventory NG Agent for Windows - Building ZipArchive DLL...
 echo.
 echo *************************************************************************
 echo *                                                                       *
-echo * Preparing for OCS Inventory NG : Configuring ZipArchive DLL...        *
+echo * Preparing for OCS Inventory NG : Building ZipArchive DLL...           *
 echo *                                                                       *
 echo *************************************************************************
 echo.
-cd "%ZIP_PATH%\Release Unicode STL MD DLL"
+cd "%ZIP_PATH%"
+Rem Fix ZipArchive DLL config for MS Visual C++ with lastest Service Pack
+perl.exe -pi.bak -e "s#_CRT_RAND_S;%%\(PreprocessorDefinitions\)</PreprocessorDefinitions>#_CRT_RAND_S;_BIND_TO_CURRENT_VCLIBS_VERSION;%%\(PreprocessorDefinitions\)</PreprocessorDefinitions>#g" ZipArchive.vcxproj
+devenv ZipArchive.sln /Build "Release Unicode STL MD DLL|Win32"
+if ERRORLEVEL 1 goto ERROR
+cd "Release Unicode STL MD DLL"
 Rem copy libs to use them in OCS
 copy "ZipArchive.lib" ..\..
 copy "ZipArchive.dll" ..\..\..\Release
@@ -228,7 +235,6 @@ echo *                                                                       *
 echo * Here is some common errors:                                           *
 echo * - Have you reviewed paths at the beginning of this batch file ?       *
 echo * - Have you updated Visual C++ version in cURL Makefile ?              *
-echo * - Have you build ZipArchive "Release Unicode STL MD DLL" ?            *
 echo *                                                                       *
 echo *************************************************************************
 
