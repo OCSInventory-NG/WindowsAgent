@@ -605,8 +605,6 @@ BOOL CSysInfo::getNetworkAdapters( CNetworkAdapterList *pMyList)
 	// First try IPHelper
 	if (CIPHelper::GetNetworkAdapters( pMyList))
 		return TRUE;
-	// Last, use SNMP
-	return CSNMP::GetNetworkAdapters( pMyList);
 }
 
 BOOL CSysInfo::getVideoAdapters( CVideoAdapterList *pMyList)

@@ -14,7 +14,6 @@
 
 #include "stdafx.h"
 #include "CapIpdiscover.h"
-#include "CapSnmp.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

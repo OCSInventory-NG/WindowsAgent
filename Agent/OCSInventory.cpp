@@ -144,7 +144,6 @@ BOOL COCSInventoryApp::InitInstance()
 		// Capacities
 		CCapRegistry		cCapRegistry;
 		CCapIpdiscover		cCapIpdiscover;
-		CCapSnmp			cCapSnmp;
 		CCapDownload		cCapDownload;
 		CCapExecute			cCapExec;
 
@@ -376,7 +375,6 @@ BOOL COCSInventoryApp::InitInstance()
 		 *
 		 ****/
 		cCapRegistry.setProlog( pProlog);
-		cCapSnmp.setProlog(pProlog);
 		cCapIpdiscover.setProlog( pProlog);
 		cCapDownload.setProlog( pProlog);
 		cCapExec.setProlog( pProlog);
@@ -415,7 +413,6 @@ BOOL COCSInventoryApp::InitInstance()
 		 *
 		 ****/
 		cCapRegistry.setPrologResp( pPrologResp);
-		cCapSnmp.setPrologResp(pPrologResp);
 		cCapIpdiscover.setPrologResp( pPrologResp);
 		cCapDownload.setPrologResp( pPrologResp);
 		cCapExec.setPrologResp( pPrologResp);
@@ -468,22 +465,8 @@ BOOL COCSInventoryApp::InitInstance()
 			{
 				cCapRegistry.setInventory( pInventory);
 				cCapIpdiscover.setInventory( pInventory);
-				cCapSnmp.setInventory(pInventory);
 				cCapDownload.setInventory( pInventory);
 				cCapExec.setInventory( pInventory);
-			}
-
-			/*****
-			 *
-			 *	Using capacities on inventory (not in notify mode)
-			 *
-			 ****/
-			if (pPrologResp->isSnmpRequired()){
-				// Remove previous snmp list files
-				remove("snmp.txt");
-				remove("snmp_com.txt");
-				remove("snmplist.txt");
-				cCapSnmp.RetrieveCommunities();
 			}
 
 			// Feed inventory with required registry keys (not in notify mode)
@@ -585,16 +568,6 @@ BOOL COCSInventoryApp::InitInstance()
 			if (pInventoryResponse != NULL)
 				delete pInventoryResponse;
 		}
-
-		/*****
-		*
-		*	SNMP handler
-		*
-		****/
-		if (pPrologResp->isSnmpRequired()){
-			cCapSnmp.CallSnmp(pConnexion, m_pConfig);
-		}
-
 
 		/*****
 		 *
