@@ -1,4 +1,11 @@
-﻿2.6.0.0
+﻿2.7.0.0
+  * Remove SNMP Feature (only on Linux agent, see documentation)
+  * Add countdown on dialog box when deployment is finished
+
+2.6.0.1
+  * Improvement of powershell loader to use the 64 bits of powershell
+
+2.6.0.0
   * Refactoring agent in 64 bits
   * Add deployement support for package greater than 4GB (ZipArchive library in commercial version) 
   * Fix bug kill process OcsSystray.exe when upgrade or uninstall agent
