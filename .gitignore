@@ -14,7 +14,6 @@ OCSInventory.v12.suo
 *.aps
 *.lib
 *.user
-*.vcxproj
 Service/MSG00001.bin
 Service/NTServiceMsg.h
 /NSIS_agent_setup/curl-*
@@ -55,3 +54,6 @@ ComHTTP/HTTP.APS
 /SysInfo/Release/
 /TestSysInfo/Debug/
 /TestSysInfo/Release/
+
+.vs
+

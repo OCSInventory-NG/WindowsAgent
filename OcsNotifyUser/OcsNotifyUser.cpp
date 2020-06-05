@@ -296,7 +296,7 @@ BOOL COcsNotifyUserApp::displayPostinstallDialogBox()
 	cDlg.setAbortAllowed( FALSE);
 	cDlg.setDelayAllowed( m_bDelay);
 	cDlg.setRebootRequired( m_bReboot);
-	cDlg.setTimeOut( m_uTimeOut);
+	cDlg.setTimeOut(30);
 	cDlg.setNotification( m_csMessage);
 	switch (cDlg.DoModal())
 	{

@@ -22,33 +22,33 @@
     <ProjectGuid>{8CD66811-C9A5-4C76-9938-1E046C2DFBAF}</ProjectGuid>
     <RootNamespace>SysInfo</RootNamespace>
     <Keyword>MFCDLLProj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
-	<PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <PlatformToolset>v142</PlatformToolset>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -205,8 +205,6 @@
     <ClInclude Include="RegistryValue.h" />
     <ClInclude Include="RegistryValueList.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="snmp.h" />
-    <ClInclude Include="SnmpAPI.h" />
     <ClInclude Include="Software.h" />
     <ClInclude Include="SoftwareList.h" />
     <ClInclude Include="SoundDevice.h" />
@@ -270,8 +268,6 @@
     <ClCompile Include="Registry.cpp" />
     <ClCompile Include="RegistryValue.cpp" />
     <ClCompile Include="RegistryValueList.cpp" />
-    <ClCompile Include="snmp.cpp" />
-    <ClCompile Include="SnmpAPI.cpp" />
     <ClCompile Include="Software.cpp" />
     <ClCompile Include="SoftwareList.cpp" />
     <ClCompile Include="SoundDevice.cpp" />
