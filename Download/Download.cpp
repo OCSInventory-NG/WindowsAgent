@@ -1,6 +1,6 @@
 //====================================================================================
 // Open Computer and Software Inventory Next Generation
-// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Copyright (C) 2010 OCS Inventory Team. All rights reserved.
 // Web: http://www.ocsinventory-ng.org
 
 // This code is open source and may be copied and modified as long as the source
@@ -129,7 +129,7 @@ BOOL CDownloadApp::InitInstance()
 		m_pLogger			= getOcsLogger();
 		m_pLogger->setApplication( AfxGetAppName());
 		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "=============================================================================="));
-		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "Starting OCS Inventory NG Package Download and Setup Tool on %s."), cStartTime.Format( _T( "%#c")));
+		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "Starting OCS Inventory Package Download and Setup Tool on %s."), cStartTime.Format( _T( "%#c")));
 
 		// Agent Configuration
 		m_pConfig			= getAgentConfig();
@@ -164,8 +164,8 @@ BOOL CDownloadApp::InitInstance()
 			csMessage=_T( "0.0.0.1");
 		}
 		m_pConfig->setVersion( csMessage);
-		m_pLogger->log(LOG_PRIORITY_NOTICE, _T("DOWNLOAD => Running OCS Inventory NG Download Version %s"), csMessage);
-		m_pLogger->log(LOG_PRIORITY_NOTICE, _T("DOWNLOAD => Using OCS Inventory NG FrameWork Version %s"), getFrameworkVersion());
+		m_pLogger->log(LOG_PRIORITY_NOTICE, _T("DOWNLOAD => Running OCS Inventory Download Version %s"), csMessage);
+		m_pLogger->log(LOG_PRIORITY_NOTICE, _T("DOWNLOAD => Using OCS Inventory FrameWork Version %s"), getFrameworkVersion());
 
 		/*****
 		 *

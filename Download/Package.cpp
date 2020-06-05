@@ -1,6 +1,6 @@
 //====================================================================================
 // Open Computer and Software Inventory Next Generation
-// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Copyright (C) 2010 OCS Inventory Team. All rights reserved.
 // Web: http://www.ocsinventory-ng.org
 
 // This code is open source and may be copied and modified as long as the source
@@ -953,7 +953,7 @@ UINT64 CPackage::executePostCmd( UINT64 uCommandTimeOut)
 			return FALSE;
 		}
 		// Initiate a planned restart to perform application installation.
-		if (!InitiateSystemShutdownEx( NULL, _T( "OCS Inventory NG must REBOOT your system after package setup"), 
+		if (!InitiateSystemShutdownEx( NULL, _T( "OCS Inventory must REBOOT your system after package setup"), 
 										uCommandTimeOut, TRUE, TRUE,
 										SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_INSTALLATION | SHTDN_REASON_FLAG_PLANNED))
 		{
@@ -985,7 +985,7 @@ UINT64 CPackage::executePostCmd( UINT64 uCommandTimeOut)
 			return FALSE;
 		}
 		// Initiate a planned shutdown to perform application installation.
-		if (!InitiateSystemShutdownEx( NULL, _T( "OCS Inventory NG must SHUTDOWN your system after package setup"),
+		if (!InitiateSystemShutdownEx( NULL, _T( "OCS Inventory must SHUTDOWN your system after package setup"),
 										uCommandTimeOut, TRUE, FALSE,
 										SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_INSTALLATION | SHTDN_REASON_FLAG_PLANNED))
 		{

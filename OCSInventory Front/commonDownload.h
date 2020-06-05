@@ -1,6 +1,6 @@
 //====================================================================================
 // Open Computer and Software Inventory Next Generation
-// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Copyright (C) 2010 OCS Inventory Team. All rights reserved.
 // Web: http://www.ocsinventory-ng.org
 
 // This code is open source and may be copied and modified as long as the source
@@ -38,16 +38,16 @@
 // This file contains package execution result
 #define OCS_DOWNLOAD_DONE		_T( "done")
 // This file contains OCSNG Windows Agent Setup execution result and
-// is located under %ProgramData%\OCS Inventory NG\Agent\Download
+// is located under %ProgramData%\OCS Inventory\Agent\Download
 #define OCS_AGENT_SETUP_DONE	_T( "OCSNG-Windows-Agent-Setup_done")
 // This file contains package ID
 #define OCS_DOWNLOAD_PACKAGE_ID	_T( "OCSNG-Windows-Agent-PackageID")
 // Fragment files assembled create build.zip
 #define OCS_DOWNLOAD_BUILD		_T( "build.zip")
 // HKLM registry key to store package ID and digest
-#define OCS_DOWNLOAD_REGISTRY	_T( "SOFTWARE\\OCS Inventory NG\\Agent\\Download")
+#define OCS_DOWNLOAD_REGISTRY	_T( "SOFTWARE\\OCS Inventory\\Agent\\Download")
 // HKLM registry key to store scheduled tasks
-#define OCS_SCHEDULE_REGISTRY	_T( "SOFTWARE\\OCS Inventory NG\\Agent\\Schedule")
+#define OCS_SCHEDULE_REGISTRY	_T( "SOFTWARE\\OCS Inventory\\Agent\\Schedule")
 
 // Download tool default configuration parameter
 #define FRAG_LATENCY_DEFAULT	_T( "10")

@@ -50,15 +50,15 @@ BEGIN
     BEGIN
         BLOCK "040004b0"
         BEGIN
-            VALUE "Comments", "OCS Inventory NG Agent"
-            VALUE "CompanyName", "OCS Inventory NG"
-            VALUE "FileDescription", "OCS Inventory NG Agent"
+            VALUE "Comments", "OCS Inventory Agent"
+            VALUE "CompanyName", "OCS Inventory"
+            VALUE "FileDescription", "OCS Inventory Agent"
             VALUE "FileVersion", "2.7.0.0"
             VALUE "InternalName", "OCSInventory.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OCSInventory.exe"
-            VALUE "ProductName", "OCS Inventory NG Windows Agent"
+            VALUE "ProductName", "OCS Inventory Windows Agent"
             VALUE "ProductVersion", "2.7.0.0"
         END
     END

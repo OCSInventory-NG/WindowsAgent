@@ -11,9 +11,9 @@
 setcompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
-!define PRODUCT_NAME "OCS Inventory NG Agent"
+!define PRODUCT_NAME "OCS Inventory Agent"
 !define PRODUCT_VERSION "2.7.0.0"
-!define PRODUCT_PUBLISHER "OCS Inventory NG Team"
+!define PRODUCT_PUBLISHER "OCS Inventory Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -33,7 +33,7 @@ ICON "install-ocs.ico"
 ; MUI Settings
 !define MUI_HEADERIMAGE
 !define MUI_WELCOMEPAGE_TITLE_3LINES
-!define MUI_HEADERIMAGE_BITMAP "OCS-NG-48.bmp" ; optional
+!define MUI_HEADERIMAGE_BITMAP "OCS-48.bmp" ; optional
 !define MUI_ABORTWARNING
 !define MUI_ICON "install-ocs.ico"
 !define MUI_UNICON "uninstall-ocs.ico"
@@ -55,7 +55,7 @@ Page custom AskLocalInventory ValidateLocalInventory ""
 ; View before start page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finshed page
-!define MUI_FINISHPAGE_RUN_TEXT "Start OCS inventory NG Systray Applet"
+!define MUI_FINISHPAGE_RUN_TEXT "Start OCS Inventory Systray Applet"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\OcsSystray.exe"
 !insertmacro MUI_PAGE_FINISH
 ; Confirl before uninstall
@@ -72,7 +72,7 @@ InstType "Network inventory"
 InstType "Local inventory"
 
 ; Setup log file
-!define SETUP_LOG_FILE "$exedir\OCS-NG-Windows-Agent-Setup.log"
+!define SETUP_LOG_FILE "$exedir\OCS-Windows-Agent-Setup.log"
 !define Service_Time_Out "10"
 
 
@@ -86,9 +86,9 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Distributed under GNU GP
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "${PRODUCT_NAME}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${PRODUCT_VERSION}"
 
-BRANDINGTEXT "OCS Inventory NG"
+BRANDINGTEXT "OCS Inventory"
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "OCS-NG-Windows-Agent-Setup.exe"
+OutFile "OCS-Windows-Agent-Setup.exe"
 InstallDir "$PROGRAMFILES64\OCS Inventory Agent"
 #InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowUnInstDetails show
@@ -778,7 +778,7 @@ Function un.StopService
 	StrCpy $logBuffer "$0$\r$\n"
 	Call un.Write_Log
 	strcpy $1 0
-un.stop_service_loop:
+	un.stop_service_loop:
 	intop $1 $1 + 1
 	strcmp ${Service_Time_Out} $1 un.stop_service_time_out_reached 0
 	sleep 950
@@ -789,12 +789,12 @@ un.stop_service_loop:
 	StrCpy $logBuffer "$0 - waiting 1 second(s) for service to stop...$\r$\n"
 	Call un.Write_Log
 	strcmp $0 "YES" un.stop_service_loop un.stop_service_end_loop
-un.stop_service_time_out_reached:
+	un.stop_service_time_out_reached:
 	StrCpy $logBuffer "Error time out reached while waiting for service stop!$\r$\n"
 	Call un.Write_Log
 	StrCpy $logBuffer "Will try to kill processes..$\r$\n"
 	Call un.Write_Log
-un.stop_service_end_loop:
+	un.stop_service_end_loop:
 	; KillProcDLL
 	;	0 = Process was successfully terminated
 	;	603 = Process was not currently running
@@ -1117,7 +1117,7 @@ Function .onInit
 	Call Write_Log
 	StrCpy $logBuffer "Checking if setup not already running..."
 	Call Write_Log
-	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "OcsSetupNG") i .r1 ?e'
+	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "OcsSetup") i .r1 ?e'
 	Pop $R0
 	StrCmp $R0 0 not_running
 	StrCpy $logBuffer "Yes$\r$\nABORT: Setup already running !"
@@ -1215,17 +1215,17 @@ Function WriteAgentSetupDone
 	; Write deployment status file if required
 	StrCmp "$OcsUpgrade" "TRUE" 0 WriteAgentSetupDone_end
 	; Read package ID from same directory as the installer
-    FileOpen $0 "$EXEDIR\OCSNG-Windows-Agent-PackageID" r
+    FileOpen $0 "$EXEDIR\OCS-Windows-Agent-PackageID" r
     IfErrors WriteAgentSetupDone_Parent WriteAgentSetupDone_ReadFile
 WriteAgentSetupDone_Parent:
 	; Read package ID from parent directory of the installer
-    FileOpen $0 "$EXEDIR\..\OCSNG-Windows-Agent-PackageID" r
+    FileOpen $0 "$EXEDIR\..\OCS-Windows-Agent-PackageID" r
 WriteAgentSetupDone_ReadFile:
     FileRead $0 $1
 	FileClose $0
 	; Get result code to write
 	Pop $2
-	StrCpy $logBuffer "Writing setup result <$2> for Package ID <$1> to file <$APPDATA\OCS Inventory NG\Agent\Download\OCSNG-Windows-Agent-Setup_done>...$\r$\n"
+	StrCpy $logBuffer "Writing setup result <$2> for Package ID <$1> to file <$APPDATA\OCS Inventory NG\Agent\Download\OCS-Windows-Agent-Setup_done>...$\r$\n"
 	Call Write_Log
 	; WRITE ../done
 	SetOutPath "$exedir"
@@ -1236,7 +1236,7 @@ WriteAgentSetupDone_ReadFile:
 	; WRITE OCSNG-Windows-Agent-Setup_done into "$APPDATA\OCS Inventory NG\Agent\Download" directory, because in 2.0 or higher,
     ; package is unzipped into system TEMP directory and no more under "$APPDATA\OCS Inventory NG\Agent\Download\PackID\Temp"
     SetShellVarContext All
-	FileOpen $0 "$APPDATA\OCS Inventory NG\Agent\Download\OCSNG-Windows-Agent-Setup_done" w
+	FileOpen $0 "$APPDATA\OCS Inventory NG\Agent\Download\OCS-Windows-Agent-Setup_done" w
 	FileWrite $0 "$2$\r$\n"
 	FileWrite $0 "$1$\r$\n"
 	FileClose $0
@@ -1263,14 +1263,14 @@ Function ConfigureFirewall
         StrCpy $logBuffer "Windows Advanced Firewall is enabled...$\r$\n"
         Call Write_Log
         ; Check if agent firewall exists
-        SimpleFC::AdvExistsRule "OCS Inventory NG Agent"
+        SimpleFC::AdvExistsRule "OCS Inventory Agent"
         Pop $0 ; return error(1)/success(0)
         Pop $1 ; return 1=Exists/0=Doesn�t exists
         StrCmp "$1" "1" ConfigureFirewall_Skip_Agent
         StrCpy $logBuffer "Adding custom Windows Firewall rule for <$INSTDIR\ocsinventory.exe>..."
         Call Write_Log
         ; Add Agent application to the firewall exception list - All protocol, outgoing, enabled, Networks, All Profiles, Allow, any icmp code, any group, any local port, any remote port, any local address, any remote address
-        SimpleFC::AdvAddRule "OCS Inventory NG Agent" "Allows any outgoing request for OCS Inventory NG Agent" "256" "2" "1" "2147483647" "1" "$INSTDIR\ocsinventory.exe" "" "" "" "" "" ""
+        SimpleFC::AdvAddRule "OCS Inventory Agent" "Allows any outgoing request for OCS Inventory Agent" "256" "2" "1" "2147483647" "1" "$INSTDIR\ocsinventory.exe" "" "" "" "" "" ""
         Pop $0 ; return error(1)/success(0)
         ${If} $0 > 0
             StrCpy $logBuffer "Failed !$\r$\n"
@@ -1281,14 +1281,14 @@ Function ConfigureFirewall
         ${EndIf}
 ConfigureFirewall_Skip_Agent:
         ; Check if download firewall exists
-        SimpleFC::AdvExistsRule "OCS Inventory NG Download and Setup tool"
+        SimpleFC::AdvExistsRule "OCS Inventory Download and Setup tool"
         Pop $0 ; return error(1)/success(0)
         Pop $1 ; return 1=Exists/0=Doesn�t exists
         StrCmp "$1" "1" ConfigureFirewall_Skip_Download
         StrCpy $logBuffer "Adding custom Windows Firewall rule for <$INSTDIR\download.exe>..."
         Call Write_Log
         ; Add download application to the firewall exception list - TCP protocol, outgoing, enabled, Networks, All Profiles, Allow, any icmp code, any group, any local port, any remote port, any local address, any remote address
-        SimpleFC::AdvAddRule "OCS Inventory NG Download and Setup tool" "Allows TCP outgoing request for OCS Inventory NG Download and Setup tool" "6" "2" "1" "2147483647" "1" "$INSTDIR\download.exe" "" "" "" "" "" ""
+        SimpleFC::AdvAddRule "OCS Inventory Download and Setup tool" "Allows TCP outgoing request for OCS Inventory Download and Setup tool" "6" "2" "1" "2147483647" "1" "$INSTDIR\download.exe" "" "" "" "" "" ""
         Pop $0 ; return error(1)/success(0)
         ${If} $0 > 0
             StrCpy $logBuffer "Failed !$\r$\n"
@@ -1310,7 +1310,7 @@ FunctionEnd
 #####################################################################
 Function AskServerOptions
     ${If} ${SectionIsSelected} 3 ; Index of Network inventory section
-	    !insertmacro MUI_HEADER_TEXT "OCS Inventory NG Server properties" "Fill in OCS Inventory NG Server address and options..."
+	    !insertmacro MUI_HEADER_TEXT "OCS Inventory Server properties" "Fill in OCS Inventory Server address and options..."
 	    InstallOptions::dialog "$PLUGINSDIR\server.ini"
     ${EndIf}
 FunctionEnd
@@ -1330,7 +1330,7 @@ FunctionEnd
 
 Function AskAgentOptions
     ${If} ${SectionIsSelected} 3 ; Index of Network inventory section
-	    !insertmacro MUI_HEADER_TEXT "OCS Inventory NG Agent for Windows properties" "If needed, specify OCS Inventory NG Agent options..."
+	    !insertmacro MUI_HEADER_TEXT "OCS Inventory Agent for Windows properties" "If needed, specify OCS Inventory Agent options..."
 	    InstallOptions::dialog "$PLUGINSDIR\agent.ini"
     ${EndIf}
 FunctionEnd
@@ -1340,7 +1340,7 @@ FunctionEnd
 
 Function AskLocalInventory
     ${If} ${SectionIsSelected} 4 ; Index of Local inventory section
-        !insertmacro MUI_HEADER_TEXT "OCS Inventory NG Agent for Windows" "Choose folder to save inventory result..."
+        !insertmacro MUI_HEADER_TEXT "OCS Inventory Agent for Windows" "Choose folder to save inventory result..."
 	    InstallOptions::dialog "$PLUGINSDIR\local.ini"
     ${EndIf}
 FunctionEnd
@@ -1802,14 +1802,14 @@ Section "Network inventory (server reachable)" SEC04
 	; Read /NO_SYSTRAY
 	ReadINIStr $R0 "$PLUGINSDIR\Agent.ini" "Field 8" "State"
 	${If} "$R0" == "1"
-    	StrCpy $logBuffer '[/NO_SYSTRAY] used, so removing Systray applet startup menu shortcut <$SMSTARTUP\OCS Inventory NG Systray.lnk>...$\r$\n'
+    	StrCpy $logBuffer '[/NO_SYSTRAY] used, so removing Systray applet startup menu shortcut <$SMSTARTUP\OCS Inventory Systray.lnk>...$\r$\n'
 	    Call Write_Log
-	    Delete /REBOOTOK "$SMSTARTUP\OCS Inventory NG Systray.lnk"
+	    Delete /REBOOTOK "$SMSTARTUP\OCS Inventory Systray.lnk"
     ${Else}
 	    ; Create startup menu item to launch systray applet
-	    StrCpy $logBuffer 'Creating startup menu shortCut <$SMSTARTUP\OCS Inventory NG Systray.lnk> to start Systray applet...$\r$\n'
+	    StrCpy $logBuffer 'Creating startup menu shortCut <$SMSTARTUP\OCS Inventory Systray.lnk> to start Systray applet...$\r$\n'
 	    Call Write_Log
-	    CreateShortCut "$SMSTARTUP\OCS Inventory NG Systray.lnk" "$INSTDIR\OcsSystray.exe"
+	    CreateShortCut "$SMSTARTUP\OCS Inventory Systray.lnk" "$INSTDIR\OcsSystray.exe"
 ; DO NOT LAUNCH SYSTRAY AUTOMATICALLY, to avoid it running under system account
 ; when agent is upgraded using agent itself and package deployment
 ;	    Exec "$INSTDIR\OcsSystray.exe"
@@ -1871,7 +1871,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Create folder to store working files (required to store computer identification, logs... Never removed)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Migrate configuration data from ${PRODUCT_NAME} 1.X (serie 4000) format"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Install ${PRODUCT_NAME} files"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Run Agent using Service or Logon/GPO script (OCS Inventory NG Server reachable through the network)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Run Agent using Service or Logon/GPO script (OCS Inventory Server reachable through the network)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Run Agent in local inventory mode (write inventory to the specified folder, then remove installed files)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} "Create uninstaller and add ${PRODUCT_NAME} to the list of installed software"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
@@ -1939,6 +1939,8 @@ Section Uninstall
 	nsExec::ExecToLog "$INSTDIR\ocsservice.exe -uninstall"
 	; Remove startup links
 	Delete /REBOOTOK "$SMSTARTUP\OCS Inventory NG Systray.lnk"
+	; Remove startup links
+	Delete /REBOOTOK "$SMSTARTUP\OCS Inventory Systray.lnk"
 	; Remove files
 	Delete /REBOOTOK "$INSTDIR\uninst.exe"
 	Delete /REBOOTOK "$INSTDIR\zlib1.dll"

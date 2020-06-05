@@ -41,15 +41,15 @@ BEGIN
     BEGIN
         BLOCK "040004b0"
         BEGIN
-            VALUE "Comments", "OCS Inventory NG Communication Provider"
-            VALUE "CompanyName", "OCS Inventory NG"
-            VALUE "FileDescription", "OCS Inventory NG cURL Communication Provider"
+            VALUE "Comments", "OCS Inventory Communication Provider"
+            VALUE "CompanyName", "OCS Inventory"
+            VALUE "FileDescription", "OCS Inventory cURL Communication Provider"
             VALUE "FileVersion", "2.7.0.0"
             VALUE "InternalName", "ComHTTP.dll"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "ComHTTP.dll"
-            VALUE "ProductName", "OCS Inventory NG Windows Agent"
+            VALUE "ProductName", "OCS Inventory Windows Agent"
             VALUE "ProductVersion", "2.7.0.0"
         END
     END

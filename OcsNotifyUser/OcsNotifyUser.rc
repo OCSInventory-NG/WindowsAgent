@@ -30,36 +30,36 @@ LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
 IDD_WAIT_SETUP_DIALOG DIALOGEX 0, 0, 318, 119
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
 EXSTYLE WS_EX_NOACTIVATE
-CAPTION "OCS Inventory NG for Windows Notification"
+CAPTION "OCS Inventory for Windows Notification"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "OCS Inventory NG for Windows Notification\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
+    LTEXT           "OCS Inventory for Windows Notification\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
     CTEXT           "Your keyboard and mouse are locked while Setup is running.\n\nPlease, wait... ",IDC_STATUS,7,59,304,53
 END
 
 IDD_CU DIALOGEX 0, 0, 283, 142
 STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | DS_CENTERMOUSE | WS_POPUP | WS_VISIBLE | WS_CAPTION
-CAPTION "OCS Inventory NG"
+CAPTION "OCS Inventory"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     EDITTEXT        IDC_VAL,13,73,257,28,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,101,115,80,20
     LTEXT           "Please, fill in TAG value.",IDC_LABEL_TEXT,13,47,257,19,SS_CENTERIMAGE
     ICON            IDR_MAINFRAME,IDC_STATIC,7,5,20,20
-    LTEXT           "OCS Inventory NG\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
+    LTEXT           "OCS Inventory\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
     GROUPBOX        "",IDC_STATIC,7,33,269,76
 END
 
 IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 400, 220
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
 EXSTYLE WS_EX_APPWINDOW
-CAPTION "OCS Inventory NG for Windows Notification"
+CAPTION "OCS Inventory for Windows Notification"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    LTEXT           "OCS Inventory NG for Windows Notification\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,7,260,25
+    LTEXT           "OCS Inventory for Windows Notification\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,7,260,25
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
-    GROUPBOX        "Message from OCS Inventory NG Agent Package Setup...",IDC_STATIC,7,46,386,142
+    GROUPBOX        "Message from OCS Inventory Agent Package Setup...",IDC_STATIC,7,46,386,142
     EDITTEXT        IDC_EDIT1,13,63,374,100,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
     LTEXT           "",IDC_STATUS,13,168,373,12
     PUSHBUTTON      "OK",IDOK,7,196,80,20
@@ -124,7 +124,7 @@ END
 
 STRINGTABLE
 BEGIN
-    AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
+    AFX_IDS_APP_TITLE       "OCS Inventory for Windows Notification"
 END
 
 #endif    // English resources
@@ -146,10 +146,10 @@ LANGUAGE LANG_SPANISH, SUBLANG_NEUTRAL
 IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 400, 220
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
 EXSTYLE WS_EX_APPWINDOW
-CAPTION "OCS Inventory NG for Windows Notification"
+CAPTION "OCS Inventory for Windows Notification"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    LTEXT           "OCS Inventory NG: Paquete de instalación\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,7,260,25
+    LTEXT           "OCS Inventory: Paquete de instalación\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,7,260,25
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
     GROUPBOX        "Mensaje desde el paquete de instalación del Agente OCS...",IDC_STATIC,7,46,386,142
     EDITTEXT        IDC_EDIT1,13,63,374,100,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
@@ -162,24 +162,24 @@ END
 IDD_WAIT_SETUP_DIALOG DIALOGEX 0, 0, 318, 119
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
 EXSTYLE WS_EX_NOACTIVATE
-CAPTION "OCS Inventory NG for Windows Notification"
+CAPTION "OCS Inventory for Windows Notification"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "OCS Inventory NG: Paquete de instalación\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
+    LTEXT           "OCS Inventory: Paquete de instalación\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
     CTEXT           "Su teclado y ratón están bloqueados durante la instalación.\n\nPor favor, espere... ",IDC_STATUS,7,59,304,53
 END
 
 IDD_CU DIALOGEX 0, 0, 283, 142
 STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | DS_CENTERMOUSE | WS_POPUP | WS_VISIBLE | WS_CAPTION
-CAPTION "OCS Inventory NG"
+CAPTION "OCS Inventory"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     EDITTEXT        IDC_VAL,13,73,257,28,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,101,115,80,20
     LTEXT           "Por favor, introduzca el texto en el campo TAG.",IDC_LABEL_TEXT,13,47,257,19,SS_CENTERIMAGE
     ICON            IDR_MAINFRAME,IDC_STATIC,7,5,20,20
-    LTEXT           "OCS Inventory NG\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
+    LTEXT           "OCS Inventory\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
     GROUPBOX        "",IDC_STATIC,7,33,269,76
 END
 
@@ -240,7 +240,7 @@ END
 
 STRINGTABLE
 BEGIN
-    AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
+    AFX_IDS_APP_TITLE       "OCS Inventory for Windows Notification"
 END
 
 #endif    // Spanish resources
@@ -262,10 +262,10 @@ LANGUAGE LANG_FRENCH, SUBLANG_NEUTRAL
 IDD_WAIT_SETUP_DIALOG DIALOGEX 0, 0, 318, 119
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
 EXSTYLE WS_EX_NOACTIVATE
-CAPTION "OCS Inventory NG for Windows Notification"
+CAPTION "OCS Inventory for Windows Notification"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "OCS Inventory NG Agent Package Setup Tool\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
+    LTEXT           "OCS Inventory Agent Package Setup Tool\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
     CTEXT           "Votre souris et votre clavier sont bloqués pendant l'installation.\n\nMerci de patienter... ",IDC_STATUS,7,59,304,53
 END
@@ -273,12 +273,12 @@ END
 IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 400, 220
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
 EXSTYLE WS_EX_APPWINDOW
-CAPTION "OCS Inventory NG for Windows Notification"
+CAPTION "OCS Inventory for Windows Notification"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    LTEXT           "OCS Inventory NG for Windows Notification\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,7,260,25
+    LTEXT           "OCS Inventory for Windows Notification\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,7,260,25
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
-    GROUPBOX        "Message d'information d'OCS Inventory NG Agent Package Setup...",IDC_STATIC,7,46,386,141
+    GROUPBOX        "Message d'information d'OCS Inventory Agent Package Setup...",IDC_STATIC,7,46,386,141
     EDITTEXT        IDC_EDIT1,13,63,374,100,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
     LTEXT           "",IDC_STATUS,13,168,374,12
     PUSHBUTTON      "OK",IDOK,7,196,80,20
@@ -288,14 +288,14 @@ END
 
 IDD_CU DIALOGEX 0, 0, 283, 142
 STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | DS_CENTERMOUSE | WS_POPUP | WS_VISIBLE | WS_CAPTION
-CAPTION "OCS Inventory NG"
+CAPTION "OCS Inventory"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     EDITTEXT        IDC_VAL,13,73,257,28,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,101,115,80,20
     LTEXT           "Merci de saisir la valeur du TAG.",IDC_LABEL_TEXT,13,47,257,19,SS_CENTERIMAGE
     ICON            IDR_MAINFRAME,IDC_STATIC,7,5,20,20
-    LTEXT           "OCS Inventory NG\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
+    LTEXT           "OCS Inventory\n\nWeb site: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
     GROUPBOX        "",IDC_STATIC,7,33,269,76
 END
 
@@ -356,7 +356,7 @@ END
 
 STRINGTABLE
 BEGIN
-    AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
+    AFX_IDS_APP_TITLE       "OCS Inventory for Windows Notification"
 END
 
 #endif    // French resources
@@ -401,15 +401,15 @@ BEGIN
     BEGIN
         BLOCK "040004e4"
         BEGIN
-            VALUE "Comments", "OCS Inventory NG User Notification Provider"
-            VALUE "CompanyName", "OCS Inventory NG"
-            VALUE "FileDescription", "OCS Inventory NG User Notification Provider"
+            VALUE "Comments", "OCS Inventory User Notification Provider"
+            VALUE "CompanyName", "OCS Inventory"
+            VALUE "FileDescription", "OCS Inventory User Notification Provider"
             VALUE "FileVersion", "2.7.0.0"
             VALUE "InternalName", "OcsNotifyUser.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OcsNotifyUser.exe"
-            VALUE "ProductName", "OCS Inventory NG Windows Agent"
+            VALUE "ProductName", "OCS Inventory Windows Agent"
             VALUE "ProductVersion", "2.7.0.0"
         END
     END
@@ -438,10 +438,10 @@ LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 IDD_WAIT_SETUP_DIALOG DIALOGEX 0, 0, 318, 119
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
 EXSTYLE WS_EX_NOACTIVATE
-CAPTION "OCS Inventory NG for Windows Notification"
+CAPTION "OCS Inventory for Windows Notification"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "OCS Inventory NG: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
+    LTEXT           "OCS Inventory: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,34,7,259,25
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
     CTEXT           "Ihre Maus und Tastatur sind gesperrt, solange die Installation ausgeführt wird.\n\nBitte warten... ",IDC_STATUS,7,59,304,53
 END
@@ -449,12 +449,12 @@ END
 IDD_DOWNLOAD_DIALOG DIALOGEX 0, 0, 400, 220
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
 EXSTYLE WS_EX_APPWINDOW
-CAPTION "OCS Inventory NG for Windows Notification"
+CAPTION "OCS Inventory for Windows Notification"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    LTEXT           "OCS Inventory NG: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,36,7,260,25
+    LTEXT           "OCS Inventory: Softwareverteilung\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,36,7,260,25
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
-    GROUPBOX        "Nachricht von OCS Inventory NG: Softwareverteilung...",IDC_STATIC,7,46,386,142
+    GROUPBOX        "Nachricht von OCS Inventory: Softwareverteilung...",IDC_STATIC,7,46,386,142
     EDITTEXT        IDC_EDIT1,13,63,374,100,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
     LTEXT           "",IDC_STATUS,13,168,374,12
     PUSHBUTTON      "OK",IDOK,7,196,80,20
@@ -464,14 +464,14 @@ END
 
 IDD_CU DIALOGEX 0, 0, 283, 142
 STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | DS_CENTERMOUSE | WS_POPUP | WS_VISIBLE | WS_CAPTION
-CAPTION "OCS Inventory NG"
+CAPTION "OCS Inventory"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     EDITTEXT        IDC_VAL,13,73,257,28,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,101,115,80,20
     LTEXT           "Bitte tragen Sie eine TAG-Bezeichnung ein.",IDC_LABEL_TEXT,13,47,257,19,SS_CENTERIMAGE
     ICON            IDR_MAINFRAME,IDC_STATIC,7,5,20,20
-    LTEXT           "OCS Inventory NG\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
+    LTEXT           "OCS Inventory\n\nInternetseite: http://www.ocsinventory-ng.org",IDC_STATIC,36,2,240,25
     GROUPBOX        "",IDC_STATIC,7,33,269,76
 END
 
@@ -532,7 +532,7 @@ END
 
 STRINGTABLE
 BEGIN
-    AFX_IDS_APP_TITLE       "OCS Inventory NG for Windows Notification"
+    AFX_IDS_APP_TITLE       "OCS Inventory for Windows Notification"
 END
 
 #endif    // German (Germany) resources

@@ -38,7 +38,7 @@ BEGIN
     PUSHBUTTON      "SMBios/DMI",IDC_SMBIOS,7,317,50,14
     PUSHBUTTON      "WMI",IDC_WMI,77,317,50,14
     PUSHBUTTON      "SysInfo",IDC_SYSINFO,147,317,50,14
-    LTEXT           "OCS Inventory NG System Functions Testing Tool",IDC_STATIC,44,13,397,11
+    LTEXT           "OCS Inventory System Functions Testing Tool",IDC_STATIC,44,13,397,11
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
     PUSHBUTTON      "Load XML",IDC_LOAD_XML,217,317,50,14
     PUSHBUTTON      "Save XML",IDC_SAVE_XML,287,317,50,14
@@ -67,15 +67,15 @@ BEGIN
     BEGIN
         BLOCK "040004b0"
         BEGIN
-            VALUE "Comments", "OCS Inventory NG System Information Testing tool"
-            VALUE "CompanyName", "OCS Inventory NG"
-            VALUE "FileDescription", "OCS Inventory NG System Information Testing tool"
+            VALUE "Comments", "OCS Inventory System Information Testing tool"
+            VALUE "CompanyName", "OCS Inventory"
+            VALUE "FileDescription", "OCS Inventory System Information Testing tool"
             VALUE "FileVersion", "2.7.0.0"
             VALUE "InternalName", "TestSysInfo.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "TestSysInfo.exe"
-            VALUE "ProductName", "OCS Inventory NG Windows Agent"
+            VALUE "ProductName", "OCS Inventory Windows Agent"
             VALUE "ProductVersion", "2.7.0.0"
         END
     END
