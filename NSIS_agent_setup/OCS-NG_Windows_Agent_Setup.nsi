@@ -55,7 +55,7 @@ Page custom AskLocalInventory ValidateLocalInventory ""
 ; View before start page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finshed page
-!define MUI_FINISHPAGE_RUN_TEXT "Start OCS Inventory Systray Applet"
+!define MUI_FINISHPAGE_RUN_TEXT "Start OCS Inventory NG Systray Applet"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\OcsSystray.exe"
 !insertmacro MUI_PAGE_FINISH
 ; Confirl before uninstall
@@ -682,12 +682,16 @@ stop_service_end_loop:
 	;	703 = Unable to get procedure address from KERNEL32.DLL
 	;	704 = CreateToolhelp32Snapshot failed
 	sleep 1000
-	KillProcDLL::KillProc "OcsSystray.exe" $R0
+	nsProcess::_FindProcess "OcsSystray.exe"
+	StrCpy $logBuffer "Trying to find process OcsSystray.exe...Result: $R0$\r$\n"
+	Call Write_Log
+	sleep 1000
+	nsProcess::_KillProcess  "OcsSystray.exe" $R0
 	StrCpy $logBuffer "Trying to kill process OcsSystray.exe...Result: $R0$\r$\n"
 	Call Write_Log
 	; If OcsSystray killed, perhaps there is another process running under another user session,
 	; So try to kill OcsSystray.exe until there no process or error detected
-	StrCmp "$R0" "0" stop_service_end_loop
+	StrCmp "$R0" "1" stop_service_end_loop
 	sleep 1000
 	KillProcDLL::KillProc "OcsService.exe" $R0
 	StrCpy $logBuffer "Trying to kill process OcsService.exe...Result: $R0$\r$\n"
@@ -1215,11 +1219,11 @@ Function WriteAgentSetupDone
 	; Write deployment status file if required
 	StrCmp "$OcsUpgrade" "TRUE" 0 WriteAgentSetupDone_end
 	; Read package ID from same directory as the installer
-    FileOpen $0 "$EXEDIR\OCS-Windows-Agent-PackageID" r
+    FileOpen $0 "$EXEDIR\OCSNG-Windows-Agent-PackageID" r
     IfErrors WriteAgentSetupDone_Parent WriteAgentSetupDone_ReadFile
 WriteAgentSetupDone_Parent:
 	; Read package ID from parent directory of the installer
-    FileOpen $0 "$EXEDIR\..\OCS-Windows-Agent-PackageID" r
+    FileOpen $0 "$EXEDIR\..\OCSNG-Windows-Agent-PackageID" r
 WriteAgentSetupDone_ReadFile:
     FileRead $0 $1
 	FileClose $0
@@ -1802,14 +1806,14 @@ Section "Network inventory (server reachable)" SEC04
 	; Read /NO_SYSTRAY
 	ReadINIStr $R0 "$PLUGINSDIR\Agent.ini" "Field 8" "State"
 	${If} "$R0" == "1"
-    	StrCpy $logBuffer '[/NO_SYSTRAY] used, so removing Systray applet startup menu shortcut <$SMSTARTUP\OCS Inventory Systray.lnk>...$\r$\n'
+    	StrCpy $logBuffer '[/NO_SYSTRAY] used, so removing Systray applet startup menu shortcut <$SMSTARTUP\OCS Inventory NG Systray.lnk>...$\r$\n'
 	    Call Write_Log
-	    Delete /REBOOTOK "$SMSTARTUP\OCS Inventory Systray.lnk"
+	    Delete /REBOOTOK "$SMSTARTUP\OCS Inventory NG Systray.lnk"
     ${Else}
 	    ; Create startup menu item to launch systray applet
-	    StrCpy $logBuffer 'Creating startup menu shortCut <$SMSTARTUP\OCS Inventory Systray.lnk> to start Systray applet...$\r$\n'
+	    StrCpy $logBuffer 'Creating startup menu shortCut <$SMSTARTUP\OCS Inventory NG Systray.lnk> to start Systray applet...$\r$\n'
 	    Call Write_Log
-	    CreateShortCut "$SMSTARTUP\OCS Inventory Systray.lnk" "$INSTDIR\OcsSystray.exe"
+	    CreateShortCut "$SMSTARTUP\OCS Inventory NG Systray.lnk" "$INSTDIR\OcsSystray.exe"
 ; DO NOT LAUNCH SYSTRAY AUTOMATICALLY, to avoid it running under system account
 ; when agent is upgraded using agent itself and package deployment
 ;	    Exec "$INSTDIR\OcsSystray.exe"
@@ -1939,8 +1943,6 @@ Section Uninstall
 	nsExec::ExecToLog "$INSTDIR\ocsservice.exe -uninstall"
 	; Remove startup links
 	Delete /REBOOTOK "$SMSTARTUP\OCS Inventory NG Systray.lnk"
-	; Remove startup links
-	Delete /REBOOTOK "$SMSTARTUP\OCS Inventory Systray.lnk"
 	; Remove files
 	Delete /REBOOTOK "$INSTDIR\uninst.exe"
 	Delete /REBOOTOK "$INSTDIR\zlib1.dll"
