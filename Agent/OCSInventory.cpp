@@ -1,6 +1,6 @@
 //====================================================================================
 // Open Computer and Software Inventory Next Generation
-// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Copyright (C) 2010 OCS Inventory Team. All rights reserved.
 // Web: http://www.ocsinventory-ng.org
 
 // This code is open source and may be copied and modified as long as the source
@@ -130,7 +130,7 @@ BOOL COCSInventoryApp::InitInstance()
 		m_pLogger			= getOcsLogger();
 		m_pLogger->setApplication( AfxGetAppName());
 		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "=============================================================================="));
-		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "Starting OCS Inventory NG Agent on %s."), cStartTime.Format( _T( "%#c")));
+		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "Starting OCS Inventory Agent on %s."), cStartTime.Format( _T( "%#c")));
 
 		// Agent Configuration
 		m_pConfig			= getAgentConfig();
@@ -144,7 +144,6 @@ BOOL COCSInventoryApp::InitInstance()
 		// Capacities
 		CCapRegistry		cCapRegistry;
 		CCapIpdiscover		cCapIpdiscover;
-		CCapSnmp			cCapSnmp;
 		CCapDownload		cCapDownload;
 		CCapExecute			cCapExec;
 
@@ -194,8 +193,8 @@ BOOL COCSInventoryApp::InitInstance()
 			csMessage=_T( "0001");
 		}
 		m_pConfig->setVersion( csMessage);
-		m_pLogger->log(LOG_PRIORITY_NOTICE, _T("AGENT => Running OCS Inventory NG Agent Version %s"), csMessage);
-		m_pLogger->log(LOG_PRIORITY_NOTICE, _T("AGENT => Using OCS Inventory NG FrameWork Version %s"), getFrameworkVersion());
+		m_pLogger->log(LOG_PRIORITY_NOTICE, _T("AGENT => Running OCS Inventory Agent Version %s"), csMessage);
+		m_pLogger->log(LOG_PRIORITY_NOTICE, _T("AGENT => Using OCS Inventory FrameWork Version %s"), getFrameworkVersion());
 
 		/*****
 		 *
@@ -376,7 +375,6 @@ BOOL COCSInventoryApp::InitInstance()
 		 *
 		 ****/
 		cCapRegistry.setProlog( pProlog);
-		cCapSnmp.setProlog(pProlog);
 		cCapIpdiscover.setProlog( pProlog);
 		cCapDownload.setProlog( pProlog);
 		cCapExec.setProlog( pProlog);
@@ -415,7 +413,6 @@ BOOL COCSInventoryApp::InitInstance()
 		 *
 		 ****/
 		cCapRegistry.setPrologResp( pPrologResp);
-		cCapSnmp.setPrologResp(pPrologResp);
 		cCapIpdiscover.setPrologResp( pPrologResp);
 		cCapDownload.setPrologResp( pPrologResp);
 		cCapExec.setPrologResp( pPrologResp);
@@ -468,22 +465,8 @@ BOOL COCSInventoryApp::InitInstance()
 			{
 				cCapRegistry.setInventory( pInventory);
 				cCapIpdiscover.setInventory( pInventory);
-				cCapSnmp.setInventory(pInventory);
 				cCapDownload.setInventory( pInventory);
 				cCapExec.setInventory( pInventory);
-			}
-
-			/*****
-			 *
-			 *	Using capacities on inventory (not in notify mode)
-			 *
-			 ****/
-			if (pPrologResp->isSnmpRequired()){
-				// Remove previous snmp list files
-				remove("snmp.txt");
-				remove("snmp_com.txt");
-				remove("snmplist.txt");
-				cCapSnmp.RetrieveCommunities();
 			}
 
 			// Feed inventory with required registry keys (not in notify mode)
@@ -585,16 +568,6 @@ BOOL COCSInventoryApp::InitInstance()
 			if (pInventoryResponse != NULL)
 				delete pInventoryResponse;
 		}
-
-		/*****
-		*
-		*	SNMP handler
-		*
-		****/
-		if (pPrologResp->isSnmpRequired()){
-			cCapSnmp.CallSnmp(pConnexion, m_pConfig);
-		}
-
 
 		/*****
 		 *

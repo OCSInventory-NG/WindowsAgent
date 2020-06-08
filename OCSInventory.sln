@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.645
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Agent", "Agent\OCSInventory.vcxproj", "{BF43603D-08D1-4CBA-9FD3-6EBB7BBDCED9}"
 EndProject
@@ -23,8 +23,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OCSPlugin_Example", "OCSPlugin_Example\OCSPlugin_Example.vcxproj", "{35E43197-A12B-4C25-AEDD-5624239A0DD9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OcsNotifyUser", "OcsNotifyUser\OcsNotifyUser.vcxproj", "{FBFF26D5-9AC2-4B21-845F-00684A4C613B}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OcsSnmp", "OcsSnmp\snmp.vcxproj", "{4DD39232-A819-4A48-A695-E14F66667183}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -192,20 +190,6 @@ Global
 		{FBFF26D5-9AC2-4B21-845F-00684A4C613B}.Release|Win32.Build.0 = Release|Win32
 		{FBFF26D5-9AC2-4B21-845F-00684A4C613B}.Release|x64.ActiveCfg = Release|x64
 		{FBFF26D5-9AC2-4B21-845F-00684A4C613B}.Release|x64.Build.0 = Release|x64
-		{4DD39232-A819-4A48-A695-E14F66667183}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{4DD39232-A819-4A48-A695-E14F66667183}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{4DD39232-A819-4A48-A695-E14F66667183}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{4DD39232-A819-4A48-A695-E14F66667183}.Debug|Win32.ActiveCfg = Debug|Win32
-		{4DD39232-A819-4A48-A695-E14F66667183}.Debug|Win32.Build.0 = Debug|Win32
-		{4DD39232-A819-4A48-A695-E14F66667183}.Debug|x64.ActiveCfg = Debug|x64
-		{4DD39232-A819-4A48-A695-E14F66667183}.Debug|x64.Build.0 = Debug|x64
-		{4DD39232-A819-4A48-A695-E14F66667183}.Release|Any CPU.ActiveCfg = Release|Win32
-		{4DD39232-A819-4A48-A695-E14F66667183}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{4DD39232-A819-4A48-A695-E14F66667183}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{4DD39232-A819-4A48-A695-E14F66667183}.Release|Win32.ActiveCfg = Release|Win32
-		{4DD39232-A819-4A48-A695-E14F66667183}.Release|Win32.Build.0 = Release|Win32
-		{4DD39232-A819-4A48-A695-E14F66667183}.Release|x64.ActiveCfg = Release|x64
-		{4DD39232-A819-4A48-A695-E14F66667183}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

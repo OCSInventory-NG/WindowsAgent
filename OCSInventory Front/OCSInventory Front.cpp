@@ -1,6 +1,6 @@
 //====================================================================================
 // Open Computer and Software Inventory Next Generation
-// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Copyright (C) 2010 OCS Inventory Team. All rights reserved.
 // Web: http://www.ocsinventory-ng.org
 
 // This code is open source and may be copied and modified as long as the source
@@ -48,9 +48,9 @@ BOOL COCSInventoryFrontApp::InitInstance()
 		if (!CWinApp::InitInstance())
 		{
 #ifdef _DEBUG
-			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG FrameWork instance!"), MB_ICONSTOP);
+			AfxMessageBox( _T( "Unable to initialize OCS Inventory FrameWork instance!"), MB_ICONSTOP);
 #else
-			_tprintf( _T( "Unable to initialize OCS Inventory NG FrameWork instance!")); 
+			_tprintf( _T( "Unable to initialize OCS Inventory FrameWork instance!")); 
 #endif
 			return FALSE;
 		}
@@ -64,9 +64,9 @@ BOOL COCSInventoryFrontApp::InitInstance()
 		if (GetModuleFileName( AfxGetInstanceHandle(), m_csInstallFolder.GetBuffer( _MAX_PATH*4+1), _MAX_PATH*4) == 0)
 		{
 #ifdef _DEBUG
-			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG installation path!"), MB_ICONSTOP);
+			AfxMessageBox( _T( "Unable to initialize OCS Inventory installation path!"), MB_ICONSTOP);
 #else
-			_tprintf( _T( "Unable to initialize OCS Inventory NG installation path!")); 
+			_tprintf( _T( "Unable to initialize OCS Inventory installation path!")); 
 #endif
 			return FALSE;
 		}
@@ -82,9 +82,9 @@ BOOL COCSInventoryFrontApp::InitInstance()
 		if (!SHGetSpecialFolderPath( NULL, m_csDataFolder.GetBuffer( _MAX_PATH+1), CSIDL_COMMON_APPDATA, TRUE))
 		{
 #ifdef _DEBUG
-			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG data storage path!"), MB_ICONSTOP);
+			AfxMessageBox( _T( "Unable to initialize OCS Inventory data storage path!"), MB_ICONSTOP);
 #else
-			_tprintf( _T( "Unable to initialize OCS Inventory NG data storage path!")); 
+			_tprintf( _T( "Unable to initialize OCS Inventory data storage path!")); 
 #endif
 			return FALSE;
 		}
@@ -94,9 +94,9 @@ BOOL COCSInventoryFrontApp::InitInstance()
 		if (!directoryCreate( m_csDataFolder))
 		{
 #ifdef _DEBUG
-			AfxMessageBox( _T( "Unable to initialize OCS Inventory NG data storage path!"), MB_ICONSTOP);
+			AfxMessageBox( _T( "Unable to initialize OCS Inventory data storage path!"), MB_ICONSTOP);
 #else
-			_tprintf( _T( "Unable to initialize OCS Inventory NG data storage path!"));
+			_tprintf( _T( "Unable to initialize OCS Inventory data storage path!"));
 #endif
 			return FALSE;
 		}

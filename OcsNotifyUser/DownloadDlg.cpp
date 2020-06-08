@@ -1,6 +1,6 @@
 //====================================================================================
 // Open Computer and Software Inventory Next Generation
-// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Copyright (C) 2010 OCS Inventory Team. All rights reserved.
 // Web: http://www.ocsinventory-ng.org
 
 // This code is open source and may be copied and modified as long as the source
@@ -87,7 +87,7 @@ BOOL CDownloadDlg::OnInitDialog()
 		// Windows XP/2003/Vista/2008/Seven or + => Display HTML message using SimpleBrowser
 		if (m_Browser.CreateFromControl( this, IDC_EDIT1))
 		{
-			csMessage.Format( _T( "<HTML><BODY><HEAD><TITLE>OCS Inventory NG Deployment Status text</TITLE></HEAD><P>%s</P></BODY></HTML>"),
+			csMessage.Format( _T( "<HTML><BODY><HEAD><TITLE>OCS Inventory Deployment Status text</TITLE></HEAD><P>%s</P></BODY></HTML>"),
 								m_csEdit);
 			m_Browser.Write( csMessage);
 		}
@@ -97,7 +97,7 @@ BOOL CDownloadDlg::OnInitDialog()
 	{
 		csMessage.Format( IDS_REBOOT_REQUIRED_STRING);
 		SetDlgItemText( IDC_STATUS, csMessage);
-		csMessage.Insert( 0, _T( "OCS Inventory NG - "));
+		csMessage.Insert( 0, _T( "OCS Inventory - "));
 		SetWindowText( csMessage);
 	}
 	// Bring window to front
@@ -206,7 +206,7 @@ void CDownloadDlg::OnTimer(UINT_PTR nIDEvent)
 	else
 		csMessage.Format( IDS_AUTO_VALIDATE_STRING, szUseless);
 	SetDlgItemText( IDC_STATUS, csMessage);
-	csMessage.Insert( 0, _T( "OCS Inventory NG - "));
+	csMessage.Insert( 0, _T( "OCS Inventory - "));
 	SetWindowText( csMessage);
 	BringWindowToTop();
 	SetWindowPos( &wndTopMost, 0,0,0,0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_SHOWWINDOW);

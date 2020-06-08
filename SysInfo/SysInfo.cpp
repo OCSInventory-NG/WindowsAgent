@@ -1,6 +1,6 @@
 //====================================================================================
 // Open Computer and Software Inventory Next Generation
-// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Copyright (C) 2010 OCS Inventory Team. All rights reserved.
 // Web: http://www.ocsinventory-ng.org
 
 // This code is open source and may be copied and modified as long as the source
@@ -605,8 +605,6 @@ BOOL CSysInfo::getNetworkAdapters( CNetworkAdapterList *pMyList)
 	// First try IPHelper
 	if (CIPHelper::GetNetworkAdapters( pMyList))
 		return TRUE;
-	// Last, use SNMP
-	return CSNMP::GetNetworkAdapters( pMyList);
 }
 
 BOOL CSysInfo::getVideoAdapters( CVideoAdapterList *pMyList)

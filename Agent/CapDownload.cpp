@@ -1,6 +1,6 @@
 //====================================================================================
 // Open Computer and Software Inventory Next Generation
-// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Copyright (C) 2010 OCS Inventory Team. All rights reserved.
 // Web: http://www.ocsinventory-ng.org
 
 // This code is open source and may be copied and modified as long as the source
@@ -267,7 +267,7 @@ BOOL CCapDownload::launch()
 	csCmd.Format(_T("\"%s\\download.exe\" %s"), getInstallFolder(), AfxGetApp()->m_lpCmdLine);
 	if (cmProcess.execNoWait(csCmd, getDataFolder()) != EXEC_SUCCESSFULL)
 	{
-		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Can't create OCS Inventory NG Download process (%s)"), cmProcess.getOutput());
+		m_pLogger->log(LOG_PRIORITY_ERROR, _T("DOWNLOAD => Can't create OCS Inventory Download process (%s)"), cmProcess.getOutput());
 		return FALSE;
 	}
 	m_pLogger->log(LOG_PRIORITY_NOTICE, _T("DOWNLOAD => Download and setup tool successfully started"));

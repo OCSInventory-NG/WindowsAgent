@@ -1,6 +1,6 @@
 //====================================================================================
 // Open Computer and Software Inventory Next Generation
-// Copyright (C) 2010 OCS Inventory NG Team. All rights reserved.
+// Copyright (C) 2010 OCS Inventory Team. All rights reserved.
 // Web: http://www.ocsinventory-ng.org
 
 // This code is open source and may be copied and modified as long as the source
@@ -19,7 +19,7 @@
 #include "ntservice.h"
 #include "ntservicemsg.h"
 
-#define OCS_SERVICE_DESCRIPTION		_T( "Service starting periodically OCS Inventory NG Agent for Windows")
+#define OCS_SERVICE_DESCRIPTION		_T( "Service starting periodically OCS Inventory Agent for Windows")
 #define OCS_SERVICE_DEPENDANCIES	_T( "RpcSs\0EventLog\0Winmgmt\0Tcpip\0\0")
 
 #define	OCS_SERVICE_RAND_FILE		_T( "rand")

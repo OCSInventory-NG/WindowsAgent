@@ -54,3 +54,6 @@ ComHTTP/HTTP.APS
 /SysInfo/Release/
 /TestSysInfo/Debug/
 /TestSysInfo/Release/
+
+.vs
+

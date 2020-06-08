@@ -66,9 +66,9 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "Comments", "Sample Plugin DLL for OCS Inventory NG Agent"
-            VALUE "CompanyName", "OCS Inventory NG"
-            VALUE "FileDescription", "Sample Plugin DLL for OCS Inventory NG Agent"
+            VALUE "Comments", "Sample Plugin DLL for OCS Inventory Agent"
+            VALUE "CompanyName", "OCS Inventory"
+            VALUE "FileDescription", "Sample Plugin DLL for OCS Inventory Agent"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "OCSPlugin_Example"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"

@@ -1,6 +1,6 @@
 //====================================================================================
 // Open Computer and Software Inventory Next Generation
-// Copyleft 2010 OCS Inventory NG Team
+// Copyleft 2010 OCS Inventory Team
 // Web: http://www.ocsinventory-ng.org
 
 // This code is open source and may be copied and modified as long as the source
@@ -545,7 +545,7 @@ void COcsService::Run()
 				bNotifyInventory = FALSE;
 				m_iOldPrologFreq = m_iPrologFreq;
 				writeConfig();
-				csStatus.Format( _T( "OCS Inventory NG Agent executed successfully.\n\nNew service parameters: FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i, INVENTORY_ON_STARTUP: %i"), m_iPrologFreq, vOld, m_iTToWait, m_iInventoryOnStatup);
+				csStatus.Format( _T( "OCS Inventory Agent executed successfully.\n\nNew service parameters: FREQ: %i, OLD_FREQ: %i, TTO_WAIT: %i, INVENTORY_ON_STARTUP: %i"), m_iPrologFreq, vOld, m_iTToWait, m_iInventoryOnStatup);
 				LogEvent(EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csStatus);
 			}
 		}
@@ -580,7 +580,7 @@ BOOL COcsService::isInventoryStateChanged()
 			// Changed => ask to force inventory in NOTIFY mode
 			CString csMessage;
 
-			csMessage.Format( _T( "Inventory state change detected on:\n- network adapters\n\nOCS Inventory NG Agent will be launched in NOTIFY mode"));
+			csMessage.Format( _T( "Inventory state change detected on:\n- network adapters\n\nOCS Inventory Agent will be launched in NOTIFY mode"));
 			LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
 			return TRUE;
 		}
@@ -616,11 +616,11 @@ BOOL COcsService::runAgent( BOOL bNotify)
 	switch (cmProcess.execWait( csCmd, getDataFolder(), FALSE))
 	{
 		case EXEC_ERROR_START_COMMAND:
-		csMessage.Format( _T( "Can't launch OCS Inventory NG Agent (%s)"), cmProcess.getOutput());
+		csMessage.Format( _T( "Can't launch OCS Inventory Agent (%s)"), cmProcess.getOutput());
 		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 		break;
 	case EXEC_ERROR_WAIT_COMMAND:
-		csMessage.Format( _T( "Can't get OCS Inventory NG Agent exit code"));
+		csMessage.Format( _T( "Can't get OCS Inventory Agent exit code"));
 		LogEvent( EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 		break;
 	default:
@@ -630,7 +630,7 @@ BOOL COcsService::runAgent( BOOL bNotify)
 		{
 		case -1:
 			// Exit code not available
-			csMessage.Format( _T( "Can't get OCS Inventory NG Agent exit code (%s)"), cmProcess.getOutput());
+			csMessage.Format( _T( "Can't get OCS Inventory Agent exit code (%s)"), cmProcess.getOutput());
 			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 			break;
 		case 0:
@@ -639,27 +639,27 @@ BOOL COcsService::runAgent( BOOL bNotify)
 			break;
 		case 1:
 			// Exit code is 1 => Generic agent Error
-			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d => Generic Agent error)"), nExitCode);
+			csMessage.Format( _T( "OCS Inventory Agent encounter an error (exit code is %d => Generic Agent error)"), nExitCode);
 			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 			break;
 		case 2:
 			// Exit code is 2 => Agent already running
-			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d => Agent is already running)"), nExitCode);
+			csMessage.Format( _T( "OCS Inventory Agent encounter an error (exit code is %d => Agent is already running)"), nExitCode);
 			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 			break;
 		case 3:
 			// Exit code is 3 => Failed to load/initialize Communication Provider
-			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d => Failed to load/initialize Communication Provider)"), nExitCode);
+			csMessage.Format( _T( "OCS Inventory Agent encounter an error (exit code is %d => Failed to load/initialize Communication Provider)"), nExitCode);
 			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 			break;
 		case 4:
 			// Exit code is 4 => Network error
-			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d => Failed to talk with Communication Server)"), nExitCode);
+			csMessage.Format( _T( "OCS Inventory Agent encounter an error (exit code is %d => Failed to talk with Communication Server)"), nExitCode);
 			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 			break;
 		default:
 			// Exit code is not a success
-			csMessage.Format( _T( "OCS Inventory NG Agent encounter an error (exit code is %d => Unknown code !)"), nExitCode);
+			csMessage.Format( _T( "OCS Inventory Agent encounter an error (exit code is %d => Unknown code !)"), nExitCode);
 			LogEvent(EVENTLOG_ERROR_TYPE, EVMSG_GENERIC_ERROR, csMessage);
 			break;
 		}
@@ -813,7 +813,7 @@ BOOL COcsService::isTimeToRunScheduledTasks()
 			if (cPack <= COleDateTime::GetCurrentTime())
 			{
 				// It time to start this package
-				csMessage.Format( _T( "Package <%s> was scheduled on <%s>, so launching OCS Inventory NG Agent"), lpstrID, (LPTSTR)pSchedule);
+				csMessage.Format( _T( "Package <%s> was scheduled on <%s>, so launching OCS Inventory Agent"), lpstrID, (LPTSTR)pSchedule);
 				LogEvent( EVENTLOG_INFORMATION_TYPE, EVMSG_GENERIC_MESSAGE, csMessage);
 				bReturn = TRUE;
 			}
