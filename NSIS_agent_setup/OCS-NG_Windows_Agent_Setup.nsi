@@ -1669,6 +1669,12 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
+		File "vcruntime140_1.dll"
+	    Iferrors 0 +5
+	    StrCpy $logBuffer "$logBuffer ERROR copying vcruntime140_1.dll $\r$\n"
+        Call Write_Log
+  	    strcpy $installSatus ":("
+	    clearerrors
 		File "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Redist\MSVC\14.26.28720\x64\Microsoft.VC142.CXXAMP\vcamp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying vcamp140.dll $\r$\n"
