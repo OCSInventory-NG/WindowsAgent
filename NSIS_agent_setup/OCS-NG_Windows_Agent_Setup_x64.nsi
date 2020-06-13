@@ -72,7 +72,7 @@ InstType "Network inventory"
 InstType "Local inventory"
 
 ; Setup log file
-!define SETUP_LOG_FILE "$exedir\OCS-Windows-Agent-Setup.log"
+!define SETUP_LOG_FILE "$exedir\OCS-Windows-Agent-Setup-x64.log"
 !define Service_Time_Out "10"
 
 
@@ -88,7 +88,7 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${PRODUCT_VERSION}"
 
 BRANDINGTEXT "OCS Inventory"
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "OCS-Windows-Agent-Setup.exe"
+OutFile "OCS-Windows-Agent-Setup-x64.exe"
 InstallDir "$PROGRAMFILES64\OCS Inventory Agent"
 #InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowUnInstDetails show
