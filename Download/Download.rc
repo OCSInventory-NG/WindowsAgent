@@ -16,7 +16,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Neutral (Default) resources
+// Neutre (Par défaut) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
 LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
@@ -28,8 +28,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,7,0,0
- PRODUCTVERSION 2,7,0,0
+ FILEVERSION 2,7,0,1
+ PRODUCTVERSION 2,7,0,1
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -47,13 +47,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory Package Download and Setup Tool"
             VALUE "CompanyName", "OCS Inventory"
             VALUE "FileDescription", "OCS Inventory Package Download and Setup Tool"
-            VALUE "FileVersion", "2.7.0.0"
+            VALUE "FileVersion", "2.7.0.1"
             VALUE "InternalName", "Download.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "Download.exe"
             VALUE "ProductName", "OCS Inventory Windows Agent"
-            VALUE "ProductVersion", "2.7.0.0"
+            VALUE "ProductVersion", "2.7.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -71,12 +71,13 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ico"
-#endif    // Neutral (Default) resources
+
+#endif    // Neutre (Par défaut) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// French (France) resources
+// Français (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
@@ -120,7 +121,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // French (France) resources
+#endif    // Français (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

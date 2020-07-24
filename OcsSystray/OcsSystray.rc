@@ -16,7 +16,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English resources
+// Anglais resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
@@ -131,12 +131,12 @@ BEGIN
                             "Cannot display inventory informations !\n\nReason: %s"
 END
 
-#endif    // English resources
+#endif    // Anglais resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Spanish resources
+// Espagnol resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
 LANGUAGE LANG_SPANISH, SUBLANG_NEUTRAL
@@ -251,12 +251,12 @@ BEGIN
                             "No se puede mostrar la información del inventario ! Razón: %s"
 END
 
-#endif    // Spanish resources
+#endif    // Espagnol resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// French resources
+// Français resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_NEUTRAL
@@ -371,12 +371,12 @@ BEGIN
                             "Impossible d'afficher les informations d'inventaire !\n\nRaison: %s"
 END
 
-#endif    // French resources
+#endif    // Français resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Neutral (Default) resources
+// Neutre (Par défaut) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
 LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
@@ -388,8 +388,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,7,0,0
- PRODUCTVERSION 2,7,0,0
+ FILEVERSION 2,7,0,1
+ PRODUCTVERSION 2,7,0,1
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -407,13 +407,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory Systray applet"
             VALUE "CompanyName", "OCS Inventory"
             VALUE "FileDescription", "OCS Inventory Systray applet"
-            VALUE "FileVersion", "2.7.0.0"
+            VALUE "FileVersion", "2.7.0.1"
             VALUE "InternalName", "OcsSystray.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OcsSystray.exe"
             VALUE "ProductName", "OCS Inventory Windows Agent"
-            VALUE "ProductVersion", "2.7.0.0"
+            VALUE "ProductVersion", "2.7.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -431,12 +431,13 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ico"
-#endif    // Neutral (Default) resources
+
+#endif    // Neutre (Par défaut) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// German (Germany) resources
+// Allemand (Allemagne) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
@@ -552,12 +553,12 @@ BEGIN
                             "Die Inventarisierungsinformationen können nicht angezeigt werden! Der Grund ist: %s"
 END
 
-#endif    // German (Germany) resources
+#endif    // Allemand (Allemagne) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// French (France) resources
+// Français (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
@@ -571,6 +572,7 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "..\\agent\\res\\icon1.ico"
+
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -610,7 +612,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // French (France) resources
+#endif    // Français (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
