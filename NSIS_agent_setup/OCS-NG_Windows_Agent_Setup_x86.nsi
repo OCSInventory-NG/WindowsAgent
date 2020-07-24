@@ -11,9 +11,9 @@
 setcompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
-!define PRODUCT_NAME "OCS Inventory Agent"
+!define PRODUCT_NAME "OCS Inventory NG Agent"
 !define PRODUCT_VERSION "2.7.0.0"
-!define PRODUCT_PUBLISHER "OCS Inventory Team"
+!define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -86,7 +86,7 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Distributed under GNU GP
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "${PRODUCT_NAME}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${PRODUCT_VERSION}"
 
-BRANDINGTEXT "OCS Inventory NG"
+BRANDINGTEXT "OCS Inventory"
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "OCS-Windows-Agent-Setup-x86.exe"
 InstallDir "$PROGRAMFILES\OCS Inventory Agent"
@@ -771,12 +771,16 @@ un.stop_service_end_loop:
 	;* 703 = Unable to get procedure address from KERNEL32.DLL
 	;* 704 = CreateToolhelp32Snapshot failed
 	sleep 1000
-	KillProcDLL::KillProc "OcsSystray.exe"
+	nsProcess::_FindProcess "OcsSystray.exe"
+	StrCpy $logBuffer "Trying to find process OcsSystray.exe...Result: $R0$\r$\n"
+	Call un.Write_Log
+	sleep 1000
+	nsProcess::_KillProcess  "OcsSystray.exe" $R0
 	StrCpy $logBuffer "Trying to kill process OcsSystray.exe...Result: $R0$\r$\n"
 	Call un.Write_Log
 	; If OcsSystray killed, perhaps there is another process running under another user session,
 	; So try to kill OcsSystray.exe until there no process or error detected
-	StrCmp "$R0" "0" un.stop_service_end_loop
+	StrCmp "$R0" "1" un.stop_service_end_loop
 	sleep 1000
 	KillProcDLL::KillProc "OcsService.exe"
 	StrCpy $logBuffer "Trying to kill process OcsService.exe...Result: $R0$\r$\n"
@@ -1909,7 +1913,7 @@ Section Uninstall
 	; Remove files
 	Delete /REBOOTOK "$INSTDIR\uninst.exe"
 	Delete /REBOOTOK "$INSTDIR\zlib1.dll"
-	Delete /REBOOTOK "$INSTDIR\AipArchive.dll"
+	Delete /REBOOTOK "$INSTDIR\ZipArchive.dll"
 	Delete /REBOOTOK "$INSTDIR\uac.manifest"
 	Delete /REBOOTOK "$INSTDIR\SysInfo.dll"
 	Delete /REBOOTOK "$INSTDIR\ssleay32.dll"

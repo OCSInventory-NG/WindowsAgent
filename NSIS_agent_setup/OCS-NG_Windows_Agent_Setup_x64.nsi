@@ -11,9 +11,9 @@
 setcompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
-!define PRODUCT_NAME "OCS Inventory Agent"
+!define PRODUCT_NAME "OCS Inventory NG Agent"
 !define PRODUCT_VERSION "2.7.0.0"
-!define PRODUCT_PUBLISHER "OCS Inventory Team"
+!define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -814,12 +814,16 @@ Function un.StopService
 	;	703 = Unable to get procedure address from KERNEL32.DLL
 	;	704 = CreateToolhelp32Snapshot failed
 	sleep 1000
-	KillProcDLL::KillProc "OcsSystray.exe" $R0
+	nsProcess::_FindProcess "OcsSystray.exe"
+	StrCpy $logBuffer "Trying to find process OcsSystray.exe...Result: $R0$\r$\n"
+	Call un.Write_Log
+	sleep 1000
+	nsProcess::_KillProcess  "OcsSystray.exe" $R0
 	StrCpy $logBuffer "Trying to kill process OcsSystray.exe...Result: $R0$\r$\n"
 	Call un.Write_Log
 	; If OcsSystray killed, perhaps there is another process running under another user session,
 	; So try to kill OcsSystray.exe until there no process or error detected
-	StrCmp "$R0" "0" un.stop_service_end_loop
+	StrCmp "$R0" "1" un.stop_service_end_loop
 	sleep 1000
 	KillProcDLL::KillProc "OcsService.exe" $R0
 	StrCpy $logBuffer "Trying to kill process OcsService.exe...Result: $R0$\r$\n"
@@ -1267,14 +1271,14 @@ Function ConfigureFirewall
         StrCpy $logBuffer "Windows Advanced Firewall is enabled...$\r$\n"
         Call Write_Log
         ; Check if agent firewall exists
-        SimpleFC::AdvExistsRule "OCS Inventory Agent"
+        SimpleFC::AdvExistsRule "OCS Inventory NG Agent"
         Pop $0 ; return error(1)/success(0)
         Pop $1 ; return 1=Exists/0=Doesn�t exists
         StrCmp "$1" "1" ConfigureFirewall_Skip_Agent
         StrCpy $logBuffer "Adding custom Windows Firewall rule for <$INSTDIR\ocsinventory.exe>..."
         Call Write_Log
         ; Add Agent application to the firewall exception list - All protocol, outgoing, enabled, Networks, All Profiles, Allow, any icmp code, any group, any local port, any remote port, any local address, any remote address
-        SimpleFC::AdvAddRule "OCS Inventory Agent" "Allows any outgoing request for OCS Inventory Agent" "256" "2" "1" "2147483647" "1" "$INSTDIR\ocsinventory.exe" "" "" "" "" "" ""
+        SimpleFC::AdvAddRule "OCS Inventory NG Agent" "Allows any outgoing request for OCS Inventory Agent" "256" "2" "1" "2147483647" "1" "$INSTDIR\ocsinventory.exe" "" "" "" "" "" ""
         Pop $0 ; return error(1)/success(0)
         ${If} $0 > 0
             StrCpy $logBuffer "Failed !$\r$\n"
@@ -1285,14 +1289,14 @@ Function ConfigureFirewall
         ${EndIf}
 ConfigureFirewall_Skip_Agent:
         ; Check if download firewall exists
-        SimpleFC::AdvExistsRule "OCS Inventory Download and Setup tool"
+        SimpleFC::AdvExistsRule "OCS Inventory NG Download and Setup tool"
         Pop $0 ; return error(1)/success(0)
-        Pop $1 ; return 1=Exists/0=Doesn�t exists
+        Pop $1 ; return 1=Exists/0=Doesn´t exists
         StrCmp "$1" "1" ConfigureFirewall_Skip_Download
         StrCpy $logBuffer "Adding custom Windows Firewall rule for <$INSTDIR\download.exe>..."
         Call Write_Log
         ; Add download application to the firewall exception list - TCP protocol, outgoing, enabled, Networks, All Profiles, Allow, any icmp code, any group, any local port, any remote port, any local address, any remote address
-        SimpleFC::AdvAddRule "OCS Inventory Download and Setup tool" "Allows TCP outgoing request for OCS Inventory Download and Setup tool" "6" "2" "1" "2147483647" "1" "$INSTDIR\download.exe" "" "" "" "" "" ""
+        SimpleFC::AdvAddRule "OCS Inventory NG Download and Setup tool" "Allows TCP outgoing request for OCS Inventory NG Download and Setup tool" "6" "2" "1" "2147483647" "1" "$INSTDIR\download.exe" "" "" "" "" "" ""
         Pop $0 ; return error(1)/success(0)
         ${If} $0 > 0
             StrCpy $logBuffer "Failed !$\r$\n"
