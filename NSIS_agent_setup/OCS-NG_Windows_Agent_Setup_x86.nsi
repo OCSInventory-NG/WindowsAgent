@@ -12,11 +12,13 @@ setcompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "OCS Inventory NG Agent"
+!define OLD_PRODUCT_NAME "OCS Inventory Agent"
 !define PRODUCT_VERSION "2.7.0.1"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+!define OLD_PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${OLD_PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_SERVICE_NAME "OCS Inventory Service"
 !include "FileFunc.nsh"
@@ -1073,6 +1075,7 @@ FunctionEnd
 #####################################################################
 Function .onInit
 	; Init debug log
+	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${OLD_PRODUCT_UNINST_KEY}"
 	strcpy $installSatus ";-)"
 	Delete ${SETUP_LOG_FILE}
 	StrCpy $logBuffer "********************************************************$\r$\n"
@@ -1928,6 +1931,7 @@ Section Uninstall
 	RMDir /r /REBOOTOK "$INSTDIR"
 	; Remove registry key
 	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
+	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${OLD_PRODUCT_UNINST_KEY}"
 	DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
 	SetAutoClose true
 SectionEnd
