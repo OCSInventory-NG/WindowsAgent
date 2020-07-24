@@ -1,4 +1,7 @@
-﻿2.7.0.0
+﻿2.7.0.1
+  * Fix bug uninstallation previous version
+
+2.7.0.0
   * Remove SNMP Feature (only on Linux agent, see documentation)
   * Add countdown on dialog box when deployment is finished
 
