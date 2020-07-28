@@ -12,16 +12,19 @@ setcompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "OCS Inventory NG Agent"
+!define OLD_PRODUCT_NAME "OCS Inventory Agent"
 !define PRODUCT_VERSION "2.7.0.1"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+!define OLD_PRODUCT_UNINST_KEY "Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\${OLD_PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_SERVICE_NAME "OCS Inventory Service"
 !include "FileFunc.nsh"
 !include "WordFunc.nsh"
 !include "WinVer.nsh"
+!include "x64.nsh"
 !insertmacro GetTime
 !insertmacro WordReplace
 ;!insertmacro un.GetParent
@@ -86,11 +89,11 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Distributed under GNU GP
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "${PRODUCT_NAME}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${PRODUCT_VERSION}"
 
-BRANDINGTEXT "OCS Inventory"
+BRANDINGTEXT "OCS Inventory NG"
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "OCS-Windows-Agent-Setup-x64.exe"
 InstallDir "$PROGRAMFILES64\OCS Inventory Agent"
-#InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
+InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowUnInstDetails show
 
 #####################################################################
@@ -727,7 +730,7 @@ Function FoundOldAgent
 	sleep 1000
 
 	;	If old agent detected remove all files
-	StrCpy $logBuffer "Sarting Old ${PRODUCT_NAME} Version UNISTALL in $R8...$\r$\n"
+	StrCpy $logBuffer "Sarting Old ${PRODUCT_NAME} Version UNINSTALL in $R8...$\r$\n"
 	Call Write_Log
 	; Uninstall NT service
 	nsExec::ExecToLog "$R8\ocsservice.exe -uninstall"
@@ -1116,6 +1119,14 @@ FunctionEnd
 #####################################################################
 Function .onInit
 	; Init debug log
+	${IfNot} ${RunningX64}
+		MessageBox MB_OK|MB_ICONINFORMATION "This program runs on x64 machines only, exiting"
+		Abort
+	${EndIf}
+	${DisableX64FSRedirection}
+	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${OLD_PRODUCT_UNINST_KEY}"
+	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
+	SetRegView 64
 	strcpy $installSatus ";-)"
 	Delete ${SETUP_LOG_FILE}
 	StrCpy $logBuffer "********************************************************$\r$\n"
@@ -1560,6 +1571,14 @@ UpgradeSkipUnregister:
     IfErrors 0 +3
 	StrCpy $logBuffer "Failed to remove key, but non blocking !"
 	Call Write_Log
+	; Remove old uninstall registry key
+	StrCpy $logBuffer "$\r$\n$\tRemoving old uninstall key <HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory NG Agent>..."
+	Call Write_Log
+	ClearErrors
+	DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OCS Inventory NG Agent"
+    IfErrors 0 +3
+	StrCpy $logBuffer "Failed to remove key, but non blocking !"
+	Call Write_Log
 	; Ensure service uninstall and migration process successful
     IfFileExists "$INSTDIR\PsApi.dll" TestInstall_Upgrade_Error
 	StrCpy $logBuffer "$\r$\nMigration process from old agent 4000 series succesfull, continuing setup...$\r$\n"
@@ -1935,7 +1954,7 @@ Function un.onInit
 	Pop $R9
 	StrLen $0 $R9
 	IntCmp $0 2 unOnInit_silent 0 unOnInit_silent
-	MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure to unistall $(^Name)?" IDYES +2
+	MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure to uninstall $(^Name)?" IDYES +2
 	Abort
 unOnInit_silent:
 FunctionEnd
@@ -1946,7 +1965,8 @@ FunctionEnd
 #####################################################################
 Section Uninstall
 	SetShellVarContext  all
-	StrCpy $logBuffer "Sarting ${PRODUCT_NAME} ${PRODUCT_VERSION} UNISTALL...$\r$\n"
+	SetRegView 64
+	StrCpy $logBuffer "Sarting ${PRODUCT_NAME} ${PRODUCT_VERSION} UNINSTALL...$\r$\n"
 	Call un.Write_Log
 	Call un.StopService
 	; Uninstall NT service
@@ -1971,6 +1991,7 @@ Section Uninstall
 	RMDir /r /REBOOTOK "$INSTDIR"
 	; Remove registry key
 	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
+	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${OLD_PRODUCT_UNINST_KEY}"
 	DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
 	SetAutoClose true
 SectionEnd
