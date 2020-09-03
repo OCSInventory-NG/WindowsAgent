@@ -67,6 +67,14 @@ LPCTSTR CBios::ParseChassisType( DWORD dwType)
 	case 0x1B:	return _T( "AdvancedTCA");	
 	case 0x1C:	return _T( "Blade");
 	case 0x1D:	return _T( "Blade Enclosure");
+    	case 0x1E:	return _T( "Tablet");
+    	case 0x1F:	return _T( "Convertible");
+    	case 0x20:	return _T( "Detachable");
+    	case 0x21:	return _T( "IoT Gateway");
+   	case 0x22:	return _T( "Embedded PC");
+    	case 0x23:	return _T( "Mini PC");
+    	case 0x24:	return _T( "Stick PC");
+			
 	default: return NOT_AVAILABLE;
 	}
 }
