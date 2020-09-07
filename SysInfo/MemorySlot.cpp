@@ -220,6 +220,36 @@ void CMemorySlot::SetType(DWORD dwType)
 	case 0x19:
 		m_csType = _T( "FBD2");
 		break;
+	case 0x1A:
+		m_csType = _T( "DDR4");
+		break;		
+	case 0x1B:
+		m_csType = _T( "LPDDR");
+		break;
+	case 0x1C:
+		m_csType = _T( "LPDDR2");
+		break;
+	case 0x1D:
+		m_csType = _T( "LPDDR3");
+		break;
+	case 0x1E:
+		m_csType = _T( "LPDDR4");
+		break;
+	case 0x1F:
+		m_csType = _T( "Logical non-volatile device");
+		break;	
+	case 0x20:
+		m_csType = _T( "HBM (High Bandwidth Memory)");
+		break;
+	case 0x21:
+		m_csType = _T( "HBM2 (High Bandwidth Memory Generation 2)");
+		break;
+	case 0x22:
+		m_csType = _T( "DDR5");
+		break;
+	case 0x23:
+		m_csType = _T( "LPDDR5");
+		break;
 	default:
 		m_csType.Format( _T( "%s (%lu)"), NOT_AVAILABLE, dwType);
 		break;
