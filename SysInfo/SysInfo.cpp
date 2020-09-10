@@ -565,8 +565,8 @@ BOOL CSysInfo::getMemorySlots( CMemorySlotList *pMyList)
 				// More than 3 GB memory on 32 bits OS, so assume result is OK
 				return TRUE;
 		// 64 bits OS od less than 3 GB on 32 bits OS
-		// Try to check if part of memory is used by video, either less than 128 MB or less than 15%
-		if (((ulTotalSlot - ulTotalRAM) < 128) || ((ulTotalSlot - ulTotalRAM) < (ulTotalRAM/15)))
+		// Try to check if part of memory is used by video, either less than 1024 MB or less than 15%
+		if (((ulTotalSlot - ulTotalRAM) < 1024) || ((ulTotalSlot - ulTotalRAM) < (ulTotalRAM/15)))
 			// DMI query seems OK
 			return TRUE;
 	}
