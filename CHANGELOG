@@ -1,4 +1,11 @@
-﻿2.7.0.1
+﻿2.8.0.0
+  * Add new chassis type in Bios Inventory
+  * Add HBM memory support
+  * Add LPDDR memory support
+  * Add DDR4 memory support
+  * Minor fix on registry keys during install
+
+2.7.0.1
   * Fix bug uninstallation previous version
 
 2.7.0.0
