@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,7,0,1
- PRODUCTVERSION 2,7,0,1
+ FILEVERSION 2,8,0,0
+ PRODUCTVERSION 2,8,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,13 +70,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory System Information Testing tool"
             VALUE "CompanyName", "OCS Inventory"
             VALUE "FileDescription", "OCS Inventory System Information Testing tool"
-            VALUE "FileVersion", "2.7.0.1"
+            VALUE "FileVersion", "2.8.0.0"
             VALUE "InternalName", "TestSysInfo.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "TestSysInfo.exe"
             VALUE "ProductName", "OCS Inventory Windows Agent"
-            VALUE "ProductVersion", "2.7.0.1"
+            VALUE "ProductVersion", "2.8.0.0"
         END
     END
     BLOCK "VarFileInfo"
