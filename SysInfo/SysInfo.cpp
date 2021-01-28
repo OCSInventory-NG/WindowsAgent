@@ -58,7 +58,6 @@ CSysInfo::CSysInfo( BOOL bEnableLog, LPCTSTR lpstrFolder)
 		OpenLog( lpstrFolder);
 	GetSystemInfo( &m_SystemInfo);
 	m_wmiInfo.Connect();
-	m_dmiInfo.Connect();
 	m_registryInfo.Connect();
 	m_dwAddressWidth = 0;
 }
@@ -67,7 +66,6 @@ CSysInfo::~CSysInfo()
 {
 	// Nothing to do yet
 	m_wmiInfo.Disconnect();
-	m_dmiInfo.Disconnect();
 	m_registryInfo.Disconnect();
 	CloseLog();
 }
@@ -488,10 +486,7 @@ DWORD CSysInfo::getAddressWidthOS()
 
 BOOL CSysInfo::getSystemPorts( CSystemPortList *pMyList)
 {
-	// First, try SMBios/DMI
-	if (m_dmiInfo.GetSystemPorts( pMyList))
-		return TRUE;
-	// Next, try WMI
+	// First, try WMI
 	if (m_wmiInfo.GetSystemPorts( pMyList))
 		return TRUE;
 	// Last, use registry
@@ -554,23 +549,6 @@ BOOL CSysInfo::getMemorySlots( CMemorySlotList *pMyList)
 	CMemory		memoryInfo;
 	ULONGLONG	ulTotalSlot, ulTotalRAM;
 
-	// First, try SMBios/DMI
-	if (m_dmiInfo.GetMemorySlots( pMyList))
-	{
-		ulTotalSlot = pMyList->GetTotalMemory();
-		ulTotalRAM = memoryInfo.getTotalRAM() / ONE_MEGABYTE;
-
-		// 32 bits Windows OS can only use 3235 MB max
-		if ((getAddressWidthOS() < 64) && (ulTotalSlot > 3235))
-				// More than 3 GB memory on 32 bits OS, so assume result is OK
-				return TRUE;
-		// 64 bits OS od less than 3 GB on 32 bits OS
-		// Try to check if part of memory is used by video, either less than 128 MB or less than 15%
-		if (((ulTotalSlot - ulTotalRAM) < 128) || ((ulTotalSlot - ulTotalRAM) < (ulTotalRAM/15)))
-			// DMI query seems OK
-			return TRUE;
-	}
-	// Last try WMI
 	return m_wmiInfo.GetMemorySlots( pMyList);
 }
 
@@ -636,21 +614,12 @@ BOOL CSysInfo::getStoragePeripherals( CStoragePeripheralList *pMyList)
 
 BOOL CSysInfo::getSystemSlots( CSystemSlotList *pMyList)
 {
-	// First, try SMBios/DMI
-	if (m_dmiInfo.GetSystemSlots( pMyList))
-		return TRUE;
-	// Last, try WMI
 	return m_wmiInfo.GetSystemSlots( pMyList);
 }
 
 BOOL CSysInfo::getBiosInfo( CBios *pMyBios)
 {
-	// First, try SMBios/DMI
-	if (m_dmiInfo.GetBiosInfo( pMyBios) &&
-		pMyBios->IsValidSystemSerialNumber() &&
-		pMyBios->IsValidSystemModel())
-		return TRUE;
-	// Next, try WMI
+	// First, try WMI
 	if (m_wmiInfo.GetBiosInfo( pMyBios))
 		return TRUE;
 	// Last, try registry
@@ -940,9 +909,6 @@ BOOL CSysInfo::getWindowsProductKey(CString &productKey)
 
 BOOL CSysInfo::getUUID( CString &csUUID)
 {
-	// First, try SMBios/DMI
-	if (m_dmiInfo.GetUUID( csUUID))
-		return TRUE;
-	// Last, use WMI
+	// Use WMI to retrieve UUID
 	return m_wmiInfo.GetUUID( csUUID);
 }
