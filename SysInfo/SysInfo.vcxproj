@@ -178,7 +178,6 @@
     <ClInclude Include="DetectVM.h" />
     <ClInclude Include="DeviceProperties.h" />
     <ClInclude Include="DiskInfo.h" />
-    <ClInclude Include="DMI.h" />
     <ClInclude Include="Dtwinver.h" />
     <ClInclude Include="EDID.h" />
     <ClInclude Include="FileVersion.h" />
@@ -242,7 +241,6 @@
     <ClCompile Include="DetectVM.cpp" />
     <ClCompile Include="DeviceProperties.cpp" />
     <ClCompile Include="DiskInfo.cpp" />
-    <ClCompile Include="DMI.cpp" />
     <ClCompile Include="Dtwinver.cpp" />
     <ClCompile Include="EDID.cpp" />
     <ClCompile Include="FileVersion.cpp" />

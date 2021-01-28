@@ -82,7 +82,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	afx_msg void OnBnClickedSmbios();
 	afx_msg void OnBnClickedWmi();
 	afx_msg void OnBnClickedSysinfo();
 	afx_msg void OnBnClickedLoadXml();

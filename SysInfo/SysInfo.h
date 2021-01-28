@@ -66,7 +66,6 @@
 #include "Registry.h"
 #include "Wmi.h"
 #include "EDID.h"
-#include "DMI.h"
 #include "VMSystem.h"
 
 // CSysInfoApp
@@ -153,7 +152,6 @@ public: // Methods
 protected: // Attributes
 	SYSTEM_INFO m_SystemInfo;	// System information
 	CWmi		m_wmiInfo;		// Class to get information from WMI
-	CDMI		m_dmiInfo;		// Class to get information from SMBIOS/DMI
 	CRegistry	m_registryInfo;	// Class to get information from registry
 	CWindowsSocket	m_Sock;		// Class to get information from Windows Sockets
 	DWORD		m_dwAddressWidth;// OS Address Width (32, 64 bits)

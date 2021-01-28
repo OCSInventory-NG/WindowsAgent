@@ -355,8 +355,8 @@ LPCTSTR COcsWmi::GetClassObjectStringValue(LPCTSTR lpstrProperty)
 		{
 			if(pType == 101)
 			{
-					m_csResult = strCimValue( pVal, pType);
-					return m_csResult;			
+				m_csResult = strCimValue( pVal, pType);
+				return m_csResult;			
 			}
 			else
 			{

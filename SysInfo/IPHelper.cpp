@@ -438,26 +438,26 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 
 										// Get subnet mask from the result of GetIpAddrTable
 										for (ifIndex = 0; ifIndex < (UINT)pIPAddrTable->dwNumEntries; ifIndex++)
-										  {
+										{
 										    if (pIfEntry->InterfaceIndex == pIPAddrTable->table[ifIndex].dwIndex)
-										      {
-											// Get NetMask
-											IPAddr.S_un.S_addr = (u_long)pIPAddrTable->table[ifIndex].dwMask;
-											IPAddrBis.S_un.S_addr = (u_long)pIPAddrTable->table[ifIndex].dwAddr;
-											csSubnet = inet_ntop(AF_INET, &IPAddr, str, INET_ADDRSTRLEN);
-											csAddressIp = inet_ntop(AF_INET, &IPAddrBis, bufferstr, INET_ADDRSTRLEN);
+											{
+												// Get NetMask
+												IPAddr.S_un.S_addr = (u_long)pIPAddrTable->table[ifIndex].dwMask;
+												IPAddrBis.S_un.S_addr = (u_long)pIPAddrTable->table[ifIndex].dwAddr;
+												csSubnet = inet_ntop(AF_INET, &IPAddr, str, INET_ADDRSTRLEN);
+												csAddressIp = inet_ntop(AF_INET, &IPAddrBis, bufferstr, INET_ADDRSTRLEN);
 											
-											inet_pton(AF_INET, bufferstr, &ipAdr);
-											inet_pton(AF_INET, str, &ipMsk);
-											nbRez = htonl(ipAdr & ipMsk);
+												inet_pton(AF_INET, bufferstr, &ipAdr);
+												inet_pton(AF_INET, str, &ipMsk);
+												nbRez = htonl(ipAdr & ipMsk);
 											
-											ipa.S_un.S_addr = htonl(nbRez);
-											csSubnetNetwork = inet_ntop(AF_INET, &ipa, bufferRez, INET_ADDRSTRLEN);
-											cAdapter.SetNetNumber(csSubnetNetwork);
+												ipa.S_un.S_addr = htonl(nbRez);
+												csSubnetNetwork = inet_ntop(AF_INET, &ipa, bufferRez, INET_ADDRSTRLEN);
+												cAdapter.SetNetNumber(csSubnetNetwork);
 
-											// No loop break??
-										      }
-										  }
+												break;
+										    }
+										}
 										
 										// Outside the loop??
 										cAdapter.SetIPNetMask(csSubnet);
@@ -480,7 +480,7 @@ BOOL CIPHelper::GetNetworkAdapters(CNetworkAdapterList *pList)
 															getnameinfo(pGateway->Address.lpSockaddr, pGateway->Address.iSockaddrLength, buf4, sizeof(buf4), NULL, 0, NI_NUMERICHOST);
 															cAdapter.SetGateway(CA2W(buf4));
 
-															// No loop break??
+															break;
 														}
 													}
 												}
