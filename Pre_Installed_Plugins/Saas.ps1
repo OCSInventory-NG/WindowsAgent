@@ -19,6 +19,8 @@ $lang = Get-Culture
 
 if($lang.Name -eq "fr-FR"){
 	$pwlang = "Nom d'enregistrement"
+}elseif($lang.Name -eq "it-IT"){
+	$pwlang = "Nome record"
 }else{
 	$pwlang = "Record Name"
 }
