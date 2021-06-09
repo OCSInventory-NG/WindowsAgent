@@ -1,4 +1,9 @@
-﻿2.8.0.0
+﻿2.9.0.0
+  * Add italian support for SAAS script
+  * Remove DMI call
+  * Minor fix on subnet loop
+
+2.8.0.0
   * Add new chassis type in Bios Inventory
   * Add HBM memory support
   * Add LPDDR memory support
