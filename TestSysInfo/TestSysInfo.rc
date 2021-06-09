@@ -50,8 +50,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,8,0,1
- PRODUCTVERSION 2,8,0,1
+ FILEVERSION 2,9,0,0
+ PRODUCTVERSION 2,9,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -69,13 +69,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory System Information Testing tool"
             VALUE "CompanyName", "OCS Inventory"
             VALUE "FileDescription", "OCS Inventory System Information Testing tool"
-            VALUE "FileVersion", "2.8.0.1"
+            VALUE "FileVersion", "2.9.0.0"
             VALUE "InternalName", "TestSysInfo.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "TestSysInfo.exe"
             VALUE "ProductName", "OCS Inventory Windows Agent"
-            VALUE "ProductVersion", "2.8.0.1"
+            VALUE "ProductVersion", "2.9.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -131,9 +131,9 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON1               ICON                    "C:\\Users\\charl\\Documents\\GitHub\\WindowsAgent_x64\\NSIS_agent_setup\\install-ocs.ico"
+IDI_ICON1               ICON                    "C:\\Users\\charl\\Documents\\GitHub\\WindowsAgent64\\NSIS_agent_setup\\install-ocs.ico"
 
-IDI_ICON2               ICON                    "C:\\Users\\charl\\Documents\\GitHub\\WindowsAgent_x64\\Agent\\res\\OCSInventory.ico"
+IDI_ICON2               ICON                    "C:\\Users\\charl\\Documents\\GitHub\\WindowsAgent64\\Agent\\res\\OCSInventory.ico"
 
 
 #ifdef APSTUDIO_INVOKED
