@@ -54,6 +54,7 @@ ICON "install-ocs.ico"
 Page custom AskServerOptions ValidateServerOptions ""
 Page custom AskProxyOptions ValidateProxyOptions ""
 Page custom AskAgentOptions ValidateAgentOptions ""
+Page custom AskAgent2Options ValidateAgent2Options ""
 ; Where to save inventory result when /LOCAL is used
 Page custom AskLocalInventory ValidateLocalInventory ""
 ; Directory page
@@ -528,6 +529,22 @@ ParseCmd_NoTag_End:
 	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 6" "State" "$R0"
 	; Remove parsed arg from command line
 	${WordReplace} '$9' '/TAG=$R0' "" "+" $R1
+	StrCpy $9 $R1
+	; /WMI_FLAG_MODE="value"
+	${GetOptions} '$9' '/WMI_FLAG_MODE=' $R0
+	IfErrors 0 +2
+	StrCpy $R0 "COMPLETE"
+	WriteINIStr "$PLUGINSDIR\agent2.ini" "Field 9" "State" "$R0"
+	; Remove parsed arg from command line
+	${WordReplace} '$9' '/WMI_FLAG_MODE=$R0' "" "+" $R1
+	StrCpy $9 $R1
+	; /DEFAULT_USER_DOMAIN="value"
+	${GetOptions} '$9' '/DEFAULT_USER_DOMAIN=' $R0
+	IfErrors 0 +2
+	StrCpy $R0 ""
+	WriteINIStr "$PLUGINSDIR\agent2.ini" "Field 4" "State" "$R0"
+	; Remove parsed arg from command line
+	${WordReplace} '$9' '/DEFAULT_USER_DOMAIN=$R0' "" "+" $R1
 	StrCpy $9 $R1
 	; No service
     ${GetOptions} '$9' '/NO_SERVICE' $R0
@@ -1081,6 +1098,14 @@ WriteServiceIni_Skip_NoTag:
 	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 6" "State"
 	StrCpy $R1 '$R2 /TAG="$R0"'
 	StrCpy $R2 $R1
+	; WMI_FLAG_MODE
+	ReadINIStr $R0 "$PLUGINSDIR\agent2.ini" "Field 9" "State"
+	StrCpy $R1 '$R2 /WMI_FLAG_MODE="$R0"'
+	StrCpy $R2 $R1
+	; DEFAULT_USER_DOMAIN
+	ReadINIStr $R0 "$PLUGINSDIR\agent2.ini" "Field 4" "State"
+	StrCpy $R1 '$R2 /DEFAULT_USER_DOMAIN="$R0"'
+	StrCpy $R2 $R1
 	; No Service
 	ReadINIStr $R0 "$PLUGINSDIR\agent.ini" "Field 7" "State"
 	StrCmp $R0 "1" 0 WriteServiceIni_Skip_NoService
@@ -1162,6 +1187,7 @@ not_running:
 	File /oname=$PLUGINSDIR\server.ini "server.ini"
 	File /oname=$PLUGINSDIR\proxy.ini "proxy.ini"
 	File /oname=$PLUGINSDIR\agent.ini "agent.ini"
+	File /oname=$PLUGINSDIR\agent2.ini "agent2.ini"
 	File /oname=$PLUGINSDIR\local.ini "local.ini"
 	File /oname=$PLUGINSDIR\splash.bmp "Banner-ocs.bmp"
 	File /oname=$PLUGINSDIR\SetACL.exe "SetACL.exe"
@@ -1358,6 +1384,16 @@ Function AskAgentOptions
 FunctionEnd
 
 Function ValidateAgentOptions
+FunctionEnd
+
+Function AskAgent2Options
+	${If} ${SectionIsSelected} 3 ; Index of Network inventory section
+		!insertmacro MUI_HEADER_TEXT "OCS Inventory NG Agent for Windows properties" "If needed, specify OCS Inventory NG Agent options..."
+		InstallOptions::dialog "$PLUGINSDIR\agent2.ini"
+	${EndIf}
+FunctionEnd
+
+Function ValidateAgent2Options
 FunctionEnd
 
 Function AskLocalInventory
