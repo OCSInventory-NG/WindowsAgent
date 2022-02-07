@@ -51,6 +51,7 @@ class CConfig;
 
 #include "OCSInventory Front Classes.h"
 #include "Singleton.h"
+#include <OcsWmi.h>
 
 class OCSINVENTORYFRONT_API CConfig : public CSingleton<CConfig>
 {
@@ -115,6 +116,12 @@ public: // Methods
 	BOOL isForceInventoryRequired();
 	// Get Communication Provider DLL
 	LPCTSTR getCommunicationProvider();
+	// Get Default User Domain
+	BOOL isDefaultUserDomainRequired();
+	LPCTSTR getDefaultUserDomain();
+	// Get WMI flag mode
+	tag_WBEM_GENERIC_FLAG_TYPE getWmiFlagMode();
+	LPCTSTR getWmiFlagModeText();
 
 	// Enable pr not debugging mode
 	void setDebugRequired( UINT uDebug = TRUE);
@@ -147,6 +154,10 @@ public: // Methods
 	void setHkcuRequired( BOOL bHKCU = TRUE);
 	// Set Communication Provider DLL to use without extension .DLL
 	void setCommunicationProvider( LPCTSTR lpstrDll);
+	// Set WMI flag /WMI_FLAG_MODE=[READ/COMPLETE]
+	void setWmiFlagMode(LPCTSTR lpstrWmiFlag = LPCTSTR("COMPLETE"));
+	// Set Default user domain /DEFAULT_USER_DOMAIN=name
+	void setDefaultUserDomain(LPCTSTR lpstrDefaultUserDomain = NULL);
 
 	// Write Administrative info to admininfo.conf hidden file in agent install folder
 	BOOL writeAccountInfos( LPCTSTR lpstrName, LPCTSTR lpstrValue);
@@ -170,6 +181,10 @@ private: //Attributes
 	CString m_csIpDiscLat; // Is /IPDISC_LAT:"number_of_ms" enabled to force IP Discover latency
 	BOOL	m_bFastIp;	// Is /FASTIP enabled, to disable network load contriol settings in IP Discover
 	CString m_csComProvider; // What's the communication provider to use to contact server ?
+	CString m_csWmiFlagMode; // READ or COMPLETE
+	tag_WBEM_GENERIC_FLAG_TYPE m_uFlag;
+	CString m_csDefaultUserDomain; // Default user domain name
+	CString m_csFlag;
 	// Agent version
 	CString m_csVersion;
 };

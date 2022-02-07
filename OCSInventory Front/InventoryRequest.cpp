@@ -621,7 +621,8 @@ BOOL CInventoryRequest::runInventory()
 	CSoftware	cSoftOS;
 
 	// Get logged on user
-	if (!m_pSysInfo->getUserName( cs1))
+	m_pLogger->log(LOG_PRIORITY_DEBUG, _T("INVENTORY => WMI FLAG MODE is set to <%s>"), getAgentConfig()->getWmiFlagModeText());
+	if (!m_pSysInfo->getUserName(cs1, getAgentConfig()->getWmiFlagMode()))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve logged on user"));
 	else
 		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Logged on user ID is <%s>"), cs1);
@@ -655,11 +656,18 @@ BOOL CInventoryRequest::runInventory()
 					cs1);
 	m_Device.SetDomainOrWorkgroup( cs1);
 	// Get NT user Domain
-	if (!m_pSysInfo->getUserDomain( cs1))
-		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve user domain"));
+	if (!getAgentConfig()->isDefaultUserDomainRequired())
+	{
+		if (!m_pSysInfo->getUserDomain(cs1, getAgentConfig()->getWmiFlagMode()))
+			m_pLogger->log(LOG_PRIORITY_WARNING, _T("INVENTORY => Failed to retrieve user domain"));
+		else
+			m_pLogger->log(LOG_PRIORITY_DEBUG, _T("INVENTORY => User domain is <%s>"), cs1);
+	}
 	else
-		m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => User domain is <%s>"), 
-					cs1);
+	{
+		cs1 = getAgentConfig()->getDefaultUserDomain();
+		m_pLogger->log(LOG_PRIORITY_DEBUG, _T("INVENTORY => Default User domain is set to <%s>"), cs1);
+	}
 	m_Device.SetUserDomain( cs1);
 	// Get BIOS information
 	if (!m_pSysInfo->getBiosInfo( &m_BIOS))

@@ -775,5 +775,13 @@ BOOL COCSInventoryApp::parseCommandLine()
 	// /NOTIFY
 	if (isRequired( m_lpCmdLine, _T( "notify")))
 		m_pConfig->setNotify( TRUE);
+	// /WMI_FLAG_MODE[=READ/COMPLETE]^M
+	if (isRequired(m_lpCmdLine, _T("wmi_flag_mode")))
+		// Get wmi flag mode
+		m_pConfig->setWmiFlagMode(getParamValue(m_lpCmdLine, _T("wmi_flag_mode")));
+	// /DEFAULT_USER_DOMAIN[=user]
+	if (isRequired(m_lpCmdLine, _T("default_user_domain")))
+		// Get default user domain
+		m_pConfig->setDefaultUserDomain(getParamValue(m_lpCmdLine, _T("default_user_domain")));
 	return TRUE;
 }

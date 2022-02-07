@@ -478,7 +478,7 @@ BOOL COcsWmi::GetClassObjectVariantValue( LPCTSTR lpstrProperty, VARIANT &pVal)
 }
 
 
-INT_PTR COcsWmi::GetRefElementClassObjectLength( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty)
+INT_PTR COcsWmi::GetRefElementClassObjectLength( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag)
 {
 	if (IsWindows8OrGreater())
 	{
@@ -503,7 +503,7 @@ INT_PTR COcsWmi::GetRefElementClassObjectLength( LPCTSTR lpstrRefElement, LPCTST
 			if (csObject.IsEmpty())
 				return 0;
 			m_hResult = m_pIWbemServices->GetObject(_bstr_t(csObject),
-				WBEM_FLAG_RETURN_WBEM_COMPLETE,
+				m_uFlag,
 				NULL,
 				&pClassObject,
 				NULL);
@@ -536,7 +536,7 @@ INT_PTR COcsWmi::GetRefElementClassObjectLength( LPCTSTR lpstrRefElement, LPCTST
 	}
 }
 
-BOOL COcsWmi::GetRefElementClassObjectVariantValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, VARIANT &pVal)
+BOOL COcsWmi::GetRefElementClassObjectVariantValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, VARIANT &pVal, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag)
 {
 	ASSERT( m_pClassObject);
 	ASSERT( lpstrRefElement);
@@ -556,7 +556,7 @@ BOOL COcsWmi::GetRefElementClassObjectVariantValue( LPCTSTR lpstrRefElement, LPC
 		if (csObject.IsEmpty())
 			return FALSE;
 		m_hResult = m_pIWbemServices->GetObject( _bstr_t( csObject),
-												WBEM_FLAG_RETURN_WBEM_COMPLETE,
+												m_uFlag,
 												NULL,
 												&pClassObject,
 												NULL);
@@ -584,7 +584,7 @@ BOOL COcsWmi::GetRefElementClassObjectVariantValue( LPCTSTR lpstrRefElement, LPC
 }
 
 
-LPCTSTR COcsWmi::GetRefElementClassObjectStringValue(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty)
+LPCTSTR COcsWmi::GetRefElementClassObjectStringValue(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag)
 {
 	ASSERT( m_pClassObject);
 	ASSERT( lpstrRefElement);
@@ -606,7 +606,7 @@ LPCTSTR COcsWmi::GetRefElementClassObjectStringValue(LPCTSTR lpstrRefElement, LP
 		if (csObject.IsEmpty())
 			return NULL;
 		m_hResult = m_pIWbemServices->GetObject( _bstr_t( csObject),
-												WBEM_FLAG_RETURN_WBEM_COMPLETE,
+												m_uFlag,
 												NULL,
 												&pClassObject,
 												NULL);
@@ -638,7 +638,7 @@ LPCTSTR COcsWmi::GetRefElementClassObjectStringValue(LPCTSTR lpstrRefElement, LP
 }
 
 
-DWORD COcsWmi::GetRefElementClassObjectDwordValue(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty)
+DWORD COcsWmi::GetRefElementClassObjectDwordValue(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag)
 {
 	ASSERT( m_pClassObject);
 	ASSERT( lpstrRefElement);
@@ -661,7 +661,7 @@ DWORD COcsWmi::GetRefElementClassObjectDwordValue(LPCTSTR lpstrRefElement, LPCTS
 		if (csObject.IsEmpty())
 			return 0;
 		m_hResult = m_pIWbemServices->GetObject( _bstr_t( csObject),
-												WBEM_FLAG_RETURN_WBEM_COMPLETE,
+												m_uFlag,
 												NULL,
 												&pClassObject,
 												NULL);
@@ -688,7 +688,7 @@ DWORD COcsWmi::GetRefElementClassObjectDwordValue(LPCTSTR lpstrRefElement, LPCTS
 }
 
 
-__int64 COcsWmi::GetRefElementClassObjectI64Value(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty)
+__int64 COcsWmi::GetRefElementClassObjectI64Value(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag)
 {
 	ASSERT( m_pClassObject);
 	ASSERT( lpstrRefElement);
@@ -711,7 +711,7 @@ __int64 COcsWmi::GetRefElementClassObjectI64Value(LPCTSTR lpstrRefElement, LPCTS
 		if (csObject.IsEmpty())
 			return 0;
 		m_hResult = m_pIWbemServices->GetObject( _bstr_t( csObject),
-												WBEM_FLAG_RETURN_WBEM_COMPLETE,
+												m_uFlag,
 												NULL,
 												&pClassObject,
 												NULL);
@@ -738,7 +738,7 @@ __int64 COcsWmi::GetRefElementClassObjectI64Value(LPCTSTR lpstrRefElement, LPCTS
 }
 
 
-unsigned __int64 COcsWmi::GetRefElementClassObjectU64Value(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty)
+unsigned __int64 COcsWmi::GetRefElementClassObjectU64Value(LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag)
 {
 	ASSERT( m_pClassObject);
 	ASSERT( lpstrRefElement);
@@ -761,7 +761,7 @@ unsigned __int64 COcsWmi::GetRefElementClassObjectU64Value(LPCTSTR lpstrRefEleme
 		if (csObject.IsEmpty())
 			return 0;
 		m_hResult = m_pIWbemServices->GetObject( _bstr_t( csObject),
-												WBEM_FLAG_RETURN_WBEM_COMPLETE,
+												m_uFlag,
 												NULL,
 												&pClassObject,
 												NULL);

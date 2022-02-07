@@ -1023,7 +1023,7 @@ BOOL CWmi::GetVideoAdapters(CVideoAdapterList *pMyList)
 	}
 }
 
-BOOL CWmi::GetNetworkAdapters(CNetworkAdapterList *pMyList)
+BOOL CWmi::GetNetworkAdapters(CNetworkAdapterList *pMyList, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag)
 {
 	ASSERT( pMyList);
 
@@ -1047,29 +1047,29 @@ BOOL CWmi::GetNetworkAdapters(CNetworkAdapterList *pMyList)
 			while (m_dllWMI.MoveNextEnumClassObject())
 			{
 				myObject.Clear();
-				lIfIndex = m_dllWMI.GetRefElementClassObjectDwordValue( _T( "Element"), _T( "InterfaceIndex"));
+				lIfIndex = m_dllWMI.GetRefElementClassObjectDwordValue( _T( "Element"), _T( "InterfaceIndex"), m_uFlag);
 				myObject.SetIfIndex( lIfIndex);
-				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "AdapterType"));
+				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "AdapterType"), m_uFlag);
 				myObject.SetType( csBuffer);
-				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "ProductName"));
+				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "ProductName"), m_uFlag);
 				myObject.SetDescription( csBuffer);
-				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Speed"));
+				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Speed"), m_uFlag);
 				myObject.SetSpeed( csBuffer);
-				csMacAddress = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "MACAddress"));
+				csMacAddress = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "MACAddress"), m_uFlag);
 				myObject.SetMACAddress( csMacAddress);
-				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "IPAddress"));
+				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "IPAddress"), m_uFlag);
 				myObject.SetIPAddress( csBuffer);
-				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "IPSubnet"));
+				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "IPSubnet"), m_uFlag);
 				myObject.SetIPNetMask( csBuffer);
-				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DefaultIPGateway"));
+				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DefaultIPGateway"), m_uFlag);
 				myObject.SetGateway( csBuffer);
-				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DHCPServer"));
+				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DHCPServer"), m_uFlag);
 				myObject.SetDhcpServer( csBuffer);
-				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue(_T("Setting"), _T("MTU"));
+				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue(_T("Setting"), _T("MTU"), m_uFlag);
 				myObject.SetMtu(csBuffer);
-				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Status"));
+				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Status"), m_uFlag);
 				myObject.SetStatus( csBuffer);
-				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "AdapterType"));
+				csBuffer = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Element"), _T( "AdapterType"), m_uFlag);
 				myObject.SetTypeMIB( csBuffer);
 				AddLog( _T( "\t\t<IfIndex: %ld><Type: %s><Description: %s><Speed: %s><MAC: %s><IP Address: %s><IP Subnet: %s><Gateway: %s><DHCP: %s><Status: %s><TypeMIB: %s><MTU: %s>\n"), 
 					myObject.GetIfIndex(), myObject.GetType(), myObject.GetDescription(), myObject.GetSpeed(),
@@ -1835,7 +1835,7 @@ BOOL CWmi::GetDomainOrWorkgroup( CString &csDomain)
 }
 
 
-BOOL CWmi::GetLoggedOnUser( CString &csUser)
+BOOL CWmi::GetLoggedOnUser( CString &csUser, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag)
 {
 	// If not WMI connected => cannot do this
 	if (!m_bConnected)
@@ -1850,10 +1850,10 @@ BOOL CWmi::GetLoggedOnUser( CString &csUser)
 		{
 			while (m_dllWMI.MoveNextEnumClassObject())
 			{
-				if (m_dllWMI.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "LogonType")) == 2)
+				if (m_dllWMI.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "LogonType"), m_uFlag) == 2)
 				{
 					// This is an interactive session
-					csUser = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Name"));
+					csUser = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Name"), m_uFlag);
 					AddLog( _T( "\t\t<User: %s>\n"), csUser);
 					uIndex++;
 				}
@@ -1876,7 +1876,7 @@ BOOL CWmi::GetLoggedOnUser( CString &csUser)
 	return FALSE;
 }
 
-BOOL CWmi::GetUserDomain( CString &csDomain)
+BOOL CWmi::GetUserDomain( CString &csDomain, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag)
 {
 	BOOL	bResult = FALSE;
 
@@ -1893,10 +1893,10 @@ BOOL CWmi::GetUserDomain( CString &csDomain)
 		{
 			while (m_dllWMI.MoveNextEnumClassObject())
 			{
-				if (m_dllWMI.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "LogonType")) == 2)
+				if (m_dllWMI.GetRefElementClassObjectDwordValue( _T( "Dependent"), _T( "LogonType"), m_uFlag) == 2)
 				{
 					// This is an interactive session
-					csDomain = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Domain"));
+					csDomain = m_dllWMI.GetRefElementClassObjectStringValue( _T( "Antecedent"), _T( "Domain"), m_uFlag);
 					AddLog( _T( "\t\t<Domain: %s>\n"), csDomain);
 					uIndex++;
 				}
