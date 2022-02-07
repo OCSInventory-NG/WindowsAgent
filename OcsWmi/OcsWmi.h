@@ -62,23 +62,23 @@ public:
 
 	// Get Length of data in object
 	INT_PTR GetClassObjectLength( LPCTSTR lpstrProperty);
-	INT_PTR GetRefElementClassObjectLength( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty);
+	INT_PTR GetRefElementClassObjectLength( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag);
 
 	// Get current enumerated object properties (or properties of an objet referenced by the current enumerated object)
 	LPCTSTR GetClassObjectStringValue( LPCTSTR lpstrProperty);
-	LPCTSTR GetRefElementClassObjectStringValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty);
+	LPCTSTR GetRefElementClassObjectStringValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag);
 
 	DWORD GetClassObjectDwordValue( LPCTSTR lpstrProperty);
-	DWORD GetRefElementClassObjectDwordValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty);
+	DWORD GetRefElementClassObjectDwordValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag);
 
 	__int64 GetClassObjectI64Value( LPCTSTR lpstrProperty);
-	__int64 GetRefElementClassObjectI64Value( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty);
+	__int64 GetRefElementClassObjectI64Value( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag);
 	
 	unsigned __int64 GetClassObjectU64Value( LPCTSTR lpstrProperty);
-	unsigned __int64 GetRefElementClassObjectU64Value( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty);
+	unsigned __int64 GetRefElementClassObjectU64Value( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag);
 
 	BOOL GetClassObjectVariantValue( LPCTSTR lpstrProperty, VARIANT &pVal);
-	BOOL GetRefElementClassObjectVariantValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, VARIANT &pVal);
+	BOOL GetRefElementClassObjectVariantValue( LPCTSTR lpstrRefElement, LPCTSTR lpstrProperty, VARIANT &pVal, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag);
 
 	HRESULT GetLastErrorWMI();
 

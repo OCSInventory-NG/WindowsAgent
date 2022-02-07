@@ -49,8 +49,8 @@ public: // Methods
 	BOOL GetOS( CString &csName, CString &csVersion, CString &csComment, CString &csDescription, CString &csInstallDate);
 	DWORD GetAddressWidthOS();
 	BOOL GetDomainOrWorkgroup(CString &csDomain);
-	BOOL GetLoggedOnUser( CString &csUser);
-	BOOL GetUserDomain(CString &csDomain);
+	BOOL GetLoggedOnUser( CString &csUser, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag);
+	BOOL GetUserDomain(CString &csDomain, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag);
 	BOOL GetInputDevices( CInputDeviceList *pMyList);
 	BOOL GetSystemPorts( CSystemPortList *pMyList);
 	BOOL GetPrinters( CPrinterList *pMyList);
@@ -60,7 +60,7 @@ public: // Methods
 	BOOL GetMemorySlots( CMemorySlotList *pMyList);
 	BOOL GetModems( CModemList *pMyList);
 	BOOL GetMonitors( CMonitorList *pMyList);
-	BOOL GetNetworkAdapters( CNetworkAdapterList *pMyList);
+	BOOL GetNetworkAdapters( CNetworkAdapterList *pMyList, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag);
 	BOOL GetSoundDevices( CSoundDeviceList *pMyList);
 	BOOL GetStoragePeripherals( CStoragePeripheralList *pMyList);
 	BOOL GetSystemControllers( CSystemControllerList *pMyList);

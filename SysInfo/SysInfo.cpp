@@ -636,7 +636,7 @@ BOOL CSysInfo::isNotebook()
 }
 
 
-BOOL CSysInfo::getUserName(CString &csUserName)
+BOOL CSysInfo::getUserName(CString &csUserName, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag)
 {
 	TCHAR szUserName[255]; 
 	DWORD dwUserName = 255; 
@@ -657,7 +657,7 @@ BOOL CSysInfo::getUserName(CString &csUserName)
 
 	See https://bugs.launchpad.net/ocsinventory-windows-agent/+bug/1300172
 	*/
-	if (m_wmiInfo.IsConnected() && m_wmiInfo.GetLoggedOnUser( csUserName))
+	if (m_wmiInfo.IsConnected() && m_wmiInfo.GetLoggedOnUser( csUserName, m_uFlag))
 		return TRUE;
 	// Call the GetUserName function.
 	AddLog( _T( "GetUserName: Trying to find logged on User ID from current running process...\n"));
@@ -862,10 +862,10 @@ BOOL CSysInfo::getDomainOrWorkgroup(CString &csDomain)
 	return m_registryInfo.GetDomainOrWorkgroup( csDomain);
 }
 
-BOOL CSysInfo::getUserDomain(CString &csUserDomain)
+BOOL CSysInfo::getUserDomain(CString &csUserDomain, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag)
 {
 	// First, try WMI
-	if (m_wmiInfo.GetUserDomain( csUserDomain))
+	if (m_wmiInfo.GetUserDomain( csUserDomain, m_uFlag))
 		return TRUE;
 	// Last, use registry
 	return m_registryInfo.GetDomainOrWorkgroup( csUserDomain);

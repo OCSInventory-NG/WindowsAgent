@@ -1656,75 +1656,75 @@ void CTestSysInfoDlg::OnBnClickedWmi()
 			CString str, res;
 
 			str = _T( "InterfaceIndex = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "InterfaceIndex"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "InterfaceIndex"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "AdapterType = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "AdapterType"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "AdapterType"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "ProductName  = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "ProductName"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "ProductName"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "MaxSpeed = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Speed"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Speed"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "Manufacturer = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Manufacturer"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Manufacturer"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "Caption = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Caption"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Caption"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "Description  = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Description"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Description"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "MACAddress = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "MACAddress"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "MACAddress"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "IPAddress = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "IPAddress"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "IPAddress"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "IPSubnet = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "IPSubnet"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "IPSubnet"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "DefaultIPGateway = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DefaultIPGateway"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DefaultIPGateway"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "DNSDomain = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DNSDomain"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DNSDomain"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "DNSSearchOrder = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DNSSearchOrder"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DNSSearchOrder"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "DHCPEnabled = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DHCPEnabled"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DHCPEnabled"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "DHCPServer = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DHCPServer"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Setting"), _T( "DHCPServer"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "Status = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Status"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "Status"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "NetConnectionStatus = ");
-			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "NetConnectionStatus"));
+			res = myWmiDll.GetRefElementClassObjectStringValue( _T( "Element"), _T( "NetConnectionStatus"), WBEM_FLAG_RETURN_WBEM_COMPLETE);
 			str += res;
 			m_List.AddString( str);
 			str = _T( "IPEnabled = ");
-			res.Format( _T( "%lu"), myWmiDll.GetRefElementClassObjectDwordValue( _T( "Setting"), _T( "IPEnabled")));
+			res.Format( _T( "%lu"), myWmiDll.GetRefElementClassObjectDwordValue( _T( "Setting"), _T( "IPEnabled"), WBEM_FLAG_RETURN_WBEM_COMPLETE));
 			str += res;
 			m_List.AddString( str);
 			m_List.AddString( _T( ""));
@@ -2965,7 +2965,7 @@ BOOL CTestSysInfoDlg::runSysInfo()
 	CSysInfo    mySysInfo( TRUE, szTempPath);
 
 	// Get logged on user
-	if (!mySysInfo.getUserName( cs1))
+	if (!mySysInfo.getUserName( cs1, WBEM_FLAG_RETURN_WBEM_COMPLETE))
 		AfxMessageBox( _T( "Failed to get username !"));
 	m_Device.SetLoggedOnUser( cs1);
 	// Last logged on user
@@ -2987,7 +2987,7 @@ BOOL CTestSysInfoDlg::runSysInfo()
 		AfxMessageBox( _T( "Failed to get Domain or Workgroup information !"));
 	m_Device.SetDomainOrWorkgroup( cs1);
 	// Get NT user Domain
-	if (!mySysInfo.getUserDomain( cs1))
+	if (!mySysInfo.getUserDomain( cs1, WBEM_FLAG_RETURN_WBEM_COMPLETE))
 		AfxMessageBox( _T( "Failed to get User Domain information !"));
 	m_Device.SetUserDomain( cs1);
 	// Get BIOS information

@@ -106,7 +106,7 @@ public: // Methods
 	BOOL getOS( CString &csName, CString &csVersion, CString &csComment, CString &csDescription, CString &csInstallDate);
 	DWORD getAddressWidthOS();
 	BOOL getDomainOrWorkgroup( CString &csDomain);
-	BOOL getUserDomain( CString &csUserDomain);
+	BOOL getUserDomain( CString &csUserDomain, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag);
 
 	// Memory information
 	BOOL getMemory( ULONG *m_ulPhysicalMemory, ULONG *m_ulSwapSize);
@@ -133,7 +133,7 @@ public: // Methods
 	BOOL isNotebook();
 
 	// User information
-	BOOL getUserName( CString &csUserName);
+	BOOL getUserName( CString &csUserName, tag_WBEM_GENERIC_FLAG_TYPE m_uFlag);
 	BOOL getUserNameFromExplorerProcess( CString &csUserName); 
 
 	// Last user logged in the system

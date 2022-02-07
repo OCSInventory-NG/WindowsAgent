@@ -55,6 +55,8 @@ void CConfig::Clear()
 	m_csIpDiscLat.Empty();
 	m_bFastIp = FALSE;
 	m_csVersion.Empty();
+	m_csWmiFlagMode = "COMPLETE";
+	m_csDefaultUserDomain.Empty();
 }
 
 LPCTSTR CConfig::getVersion()
@@ -95,6 +97,36 @@ BOOL CConfig::isLocalRequired()
 LPCTSTR CConfig::getLocalInventoryFolder()
 {
 	return m_csLocal;
+}
+
+BOOL CConfig::isDefaultUserDomainRequired()
+{
+	return !m_csDefaultUserDomain.IsEmpty();
+}
+ 
+LPCTSTR CConfig::getDefaultUserDomain()
+{
+	return m_csDefaultUserDomain;
+}
+
+tag_WBEM_GENERIC_FLAG_TYPE CConfig::getWmiFlagMode()
+{
+	CString m_csComplete("READ");
+	if (m_csWmiFlagMode == m_csComplete)
+		m_uFlag = WBEM_FLAG_DIRECT_READ;
+	else
+		m_uFlag = WBEM_FLAG_RETURN_WBEM_COMPLETE;
+	return m_uFlag;
+}
+
+LPCTSTR CConfig::getWmiFlagModeText()
+{
+	CString m_csComplete("READ");
+	if (m_csWmiFlagMode == m_csComplete)
+		m_csFlag = "WBEM_FLAG_DIRECT_READ";
+	else
+		m_csFlag = "WBEM_FLAG_RETURN_WBEM_COMPLETE";
+	return m_csFlag;
 }
 
 BOOL CConfig::isNoTagRequired()
@@ -191,6 +223,12 @@ BOOL CConfig::load( LPCTSTR lpstrFile)
 	GetPrivateProfileString( OCS_AGENT_SECTION, _T( "ComProvider"), OCS_DEFAULT_PROVIDER, csBuffer.GetBuffer( 1024), 1024, m_csConfigFile);
 	csBuffer.ReleaseBuffer();
 	setCommunicationProvider( csBuffer);
+	// Default user domain name
+	GetPrivateProfileString(OCS_AGENT_SECTION, _T("DEFAULT_USER_DOMAIN"), _T(""), m_csDefaultUserDomain.GetBuffer(1024), 1024, m_csConfigFile);
+	m_csDefaultUserDomain.ReleaseBuffer();
+	// WMI flag mode
+	GetPrivateProfileString(OCS_AGENT_SECTION, _T("WMI_FLAG_MODE"), _T(""), m_csWmiFlagMode.GetBuffer(1024), 1024, m_csConfigFile);
+	m_csWmiFlagMode.ReleaseBuffer();
 	return TRUE;
 }
 
@@ -219,6 +257,10 @@ BOOL CConfig::save( LPCTSTR lpstrFile)
 		bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "NoTAG"), csBuffer, m_csConfigFile);
 		// Force IP Discover for the specified network
 		bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "IpDisc"), m_csIpDisc, m_csConfigFile);
+		// Wmi flag mode
+		bResult = bResult && WritePrivateProfileString(OCS_AGENT_SECTION, _T("WMI_FLAG_MODE"), m_csWmiFlagMode, m_csConfigFile);
+		// Default user domain
+		bResult = bResult && WritePrivateProfileString(OCS_AGENT_SECTION, _T("DEFAULT_USER_DOMAIN"), m_csDefaultUserDomain, m_csConfigFile);
 		// Communication provider to use
 		CFile comFile( m_csComProvider, CFile::modeRead);
 		bResult = bResult && WritePrivateProfileString( OCS_AGENT_SECTION, _T( "ComProvider"), comFile.GetFileName(), m_csConfigFile);
@@ -300,6 +342,16 @@ void CConfig::setNoSoftwareRequired(BOOL bNoSoftware)
 void CConfig::setNoTagRequired(BOOL bNoTag)
 {
 	m_bNoTag = bNoTag;
+}
+
+void CConfig::setWmiFlagMode(LPCTSTR lpstrWmiFlag)
+{
+	m_csWmiFlagMode = lpstrWmiFlag;
+}
+
+void CConfig::setDefaultUserDomain(LPCTSTR lpstrDefaultUserDomain)
+{
+	m_csDefaultUserDomain = lpstrDefaultUserDomain;
 }
 
 void CConfig::setXmlFolder(LPCTSTR lpstrFolder)
