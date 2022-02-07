@@ -13,33 +13,40 @@ echo.
 Rem ========= UPDATE CONSTANTS BELOW TO MEET YOUR CONFIGURATION NEED =========  
 
 Rem Set path to MS Visual C++
-set VC_PATH=C:\Program Files (x86)\\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build
+SET VC_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build
 
 Rem Set path to Perl 5.6 or higher binary
-set PERL_PATH=C:\Strawberry\perl\bin
+SET PERL_PATH=C:\Strawberry\perl\bin
+
+Rem Set OCS Agent compile folder
+SET OCSAGENT_PATH=C:\Users\Admin\Documents\GitHub\WindowsAgent
+
+Rem Set external deps path
+SET EXT_DEPS=%OCSAGENT_PATH%\External_Deps
 
 Rem Set path to Zlib sources
-set ZLIB_PATH=C:\Users\Admin\Documents\GitHub\WindowsAgent\External_Deps\zlib-1.2.8
+set ZLIB_PATH=%EXT_DEPS%\zlib-1.2.8
 
 Rem Set path to OpenSSL sources
-set OPENSSL_PATH=C:\Users\Admin\Documents\GitHub\WindowsAgent\External_Deps\openssl-1.0.2r
+SET OPENSSL_PATH=%EXT_DEPS%\openssl-1.0.2r
 
 Rem Set path to cURL sources
-set CURL_PATH=C:\Users\Admin\Documents\GitHub\WindowsAgent\External_Deps\curl-7.64.1\src
+SET CURL_PATH=%EXT_DEPS%\curl-7.64.1\src
 
 Rem Set path to tinyXML sources
-SET XML_PATH=C:\Users\Admin\Documents\GitHub\WindowsAgent\External_Deps\tinyxml
+SET XML_PATH=%EXT_DEPS%\tinyxml
 
 Rem Set path to ZipArchive sources, for example
-SET ZIP_PATH=C:\Users\Admin\Documents\GitHub\WindowsAgent\External_Deps\ZipArchive
+SET ZIP_PATH=%EXT_DEPS%\ZipArchive
 
 Rem Set path to Net-SNMP sources, for example
-SET SNMP_PATH=C:\Users\Admin\Documents\GitHub\WindowsAgent\External_Deps\net-snmp-5.7.3
+SET SNMP_PATH=%EXT_DEPS%\net-snmp-5.7.3
 
 Rem ========= DO NOT MODIFY BELOW, UNTIL YOU KNOW WHAT YOU ARE DOING =========
 
 Rem Ensure MS Visual C++ environnement is set
 call "%VC_PATH%\VCVARSALL.BAT" x64
+
 Rem Add perl to PATH
 set PATH=%PATH%;%PERL_PATH%
 
@@ -51,6 +58,7 @@ echo * Preparing for OCS Inventory NG : Building Zlib DLL...                 *
 echo *                                                                       *
 echo *************************************************************************
 echo.
+
 cd "%ZLIB_PATH%"
 
 Rem clean nmake 
@@ -60,14 +68,14 @@ nmake /NOLOGO -f Win32\Makefile.msc AS=ml64 LOC="-DASMV -DASMINF -D_BIND_TO_CURR
 if ERRORLEVEL 1 goto ERROR
 
 Rem copy libs to use them in OCS
-copy zdll.lib ..
-mkdir ..\..\Release
-copy zlib1.dll ..\..\Release
-mkdir ..\..\Debug
-copy zlib1.dll ..\..\Debug
+copy zdll.lib %EXT_DEPS%
+mkdir %OCSAGENT_PATH%\Release
+copy zlib1.dll %OCSAGENT_PATH%\Release
+mkdir %OCSAGENT_PATH%\Debug
+copy zlib1.dll %OCSAGENT_PATH%\Debug
 if ERRORLEVEL 1 goto ERROR
 
-cd ..
+cd %EXT_DEPS%
 
 title OCS Inventory NG Agent for Windows - Building OpenSSL DLLs...
 echo.
@@ -80,7 +88,7 @@ echo.
 cd "%OPENSSL_PATH%"
 
 Rem Configure OpenSSL for MS Visual C++ with lastest Service Pack ( -D_BIND_TO_CURRENT_VCLIBS_VERSION)
-perl.exe configure no-asm VC-WIN64A -D_BIND_TO_CURRENT_VCLIBS_VERSION -D_WINSOCK_DEPRECATED_NO_WARNINGS
+perl.exe configure no-asm VC-WIN64A -D_BIND_TO_CURRENT_VCLIBS_VERSION -D_WINSOCK_DEPRECATED_NO_WARNINGS --openssldir=C:\Windows\openssl
 if ERRORLEVEL 1 goto ERROR
 Rem Prepare OpenSSL build for MS Visual C++
 call ms\do_win64a
@@ -96,18 +104,17 @@ call "..\ms\test.bat"
 if ERRORLEVEL 1 goto ERROR
 
 Rem copy libs to use them in OCS
-copy ssleay32.lib ..\..
-copy libeay32.lib ..\..
-copy libeay32.lib ..\..\curl-7.64.1\winbuild
-copy ssleay32.lib ..\..\curl-7.64.1\winbuild
-copy ssleay32.dll ..\..\..\Release
-copy libeay32.dll ..\..\..\Release
-copy ssleay32.dll ..\..\..\Debug
-copy libeay32.dll ..\..\..\Debug
+copy ssleay32.lib %EXT_DEPS%
+copy libeay32.lib %EXT_DEPS%
+copy libeay32.lib %EXT_DEPS%\curl-7.64.1\winbuild
+copy ssleay32.lib %EXT_DEPS%\curl-7.64.1\winbuild
+copy ssleay32.dll %OCSAGENT_PATH%\Release
+copy libeay32.dll %OCSAGENT_PATH%\Release
+copy ssleay32.dll %OCSAGENT_PATH%\Debug
+copy libeay32.dll %OCSAGENT_PATH%\Debug
 if ERRORLEVEL 1 goto ERROR
 
-cd ..\..
-
+cd %EXT_DEPS%
 
 title OCS Inventory NG Agent for Windows - Building cURL DLL...
 echo.
@@ -136,12 +143,12 @@ rem mt -manifest libcurl.dll.manifest -outputresource:libcurl.dll;2
 if ERRORLEVEL 1 goto ERROR
 
 Rem copy libs to use them in OCS
-copy "..\builds\libcurl-vc15-x64-release-dll-ssl-dll-obj-lib\libcurl.lib" ..\..
-copy "..\builds\libcurl-vc15-x64-release-dll-ssl-dll-obj-lib\libcurl.dll" ..\..\..\Release
-copy "..\builds\libcurl-vc15-x64-release-dll-ssl-dll-obj-lib\libcurl.dll" ..\..\..\Debug
+copy "..\builds\libcurl-vc15-x64-release-dll-ssl-dll-obj-lib\libcurl.lib" %EXT_DEPS%
+copy "..\builds\libcurl-vc15-x64-release-dll-ssl-dll-obj-lib\libcurl.dll" %OCSAGENT_PATH%\Release
+copy "..\builds\libcurl-vc15-x64-release-dll-ssl-dll-obj-lib\libcurl.dll" %OCSAGENT_PATH%\Debug
 if ERRORLEVEL 1 goto ERROR
 
-cd ..\..\..
+cd %EXT_DEPS%
 
 title OCS Inventory NG Agent for Windows - Building Net-SNMP DLL...
 echo.
@@ -170,13 +177,14 @@ Rem Build Net-SNMP dll
 nmake /NOLOGO
 if ERRORLEVEL 1 goto ERROR
 cd ..
-copy "bin\release\netsnmp.dll" ..\..\..\Release
-copy "bin\release\netsnmp.dll" ..\..\..\Debug
+copy "bin\release\netsnmp.dll" %OCSAGENT_PATH%\Release
+copy "bin\release\netsnmp.dll" %OCSAGENT_PATH%\Debug
 if ERRORLEVEL 1 goto ERROR
-copy "lib\release\netsnmp.lib" ..\..
+copy "lib\release\netsnmp.lib" %EXT_DEPS%
 if ERRORLEVEL 1 goto ERROR
 
-cd ..\..
+cd %EXT_DEPS%
+
 title OCS Inventory NG Agent for Windows - Building ZipArchive DLL...
 echo.
 echo *************************************************************************
@@ -192,12 +200,13 @@ devenv ZipArchive.sln /Build "Release Unicode STL MD DLL|x64"
 if ERRORLEVEL 1 goto ERROR
 cd "x64\Release Unicode STL MD DLL"
 Rem copy libs to use them in OCS
-copy "ZipArchive.lib" ..\..\..
-copy "ZipArchive.dll" ..\..\..\..\Release
-copy "ZipArchive.dll" ..\..\..\..\Debug
+copy "ZipArchive.lib" %EXT_DEPS%
+copy "ZipArchive.dll" %OCSAGENT_PATH%\Release
+copy "ZipArchive.dll" %OCSAGENT_PATH%\Debug
 if ERRORLEVEL 1 goto ERROR
 
-cd ..\..\..
+cd %EXT_DEPS%
+
 title OCS Inventory NG Agent for Windows - Building service message file...
 echo.
 echo *************************************************************************
@@ -206,11 +215,12 @@ echo * Preparing for OCS Inventory NG : Compiling service message file...    *
 echo *                                                                       *
 echo *************************************************************************
 echo.
-cd "..\Service"
+cd "%OCSAGENT_PATH%\Service"
 mc.exe NTServiceMsg.mc
 if ERRORLEVEL 1 goto ERROR
 
-cd ..\External_Deps
+cd %EXT_DEPS%
+
 title OCS Inventory NG Agent for Windows - SUCCESSFUL build of required libraries 
 echo.
 echo *************************************************************************
