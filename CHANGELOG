@@ -1,4 +1,9 @@
-﻿2.9.0.0
+﻿2.9.1.0
+  * Add configuration parameter WMI_FLAG_MODE
+  * Add configuration parameter DEFAULT_USER_DOMAIN
+  * Fix openssl vulnerability
+
+2.9.0.0
   * Add italian support for SAAS script
   * Remove DMI call
   * Minor fix on subnet loop
