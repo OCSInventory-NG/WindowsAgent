@@ -1,4 +1,8 @@
-﻿2.9.1.0
+﻿2.9.2.0
+  * This release doesn't bring any feature / functionnality however it is the first fully signed revision using an EV code signing certificate
+    Starting now all our agent releases will be signed using that certificate.
+
+2.9.1.0
   * Add configuration parameter WMI_FLAG_MODE
   * Add configuration parameter DEFAULT_USER_DOMAIN
   * Fix openssl vulnerability
