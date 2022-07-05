@@ -57,3 +57,6 @@ ComHTTP/HTTP.APS
 
 .vs
 
+NSIS_agent_setup/OCS-Windows-Agent-Setup-x64.exe
+NSIS_agent_setup/OCS-Windows-Agent-Setup-x64.log
+NSIS_agent_setup/vcruntime140_1.dll
