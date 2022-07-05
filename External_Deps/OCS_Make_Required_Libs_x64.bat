@@ -13,13 +13,13 @@ echo.
 Rem ========= UPDATE CONSTANTS BELOW TO MEET YOUR CONFIGURATION NEED =========  
 
 Rem Set path to MS Visual C++
-SET VC_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build
+SET VC_PATH=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build
 
 Rem Set path to Perl 5.6 or higher binary
 SET PERL_PATH=C:\Strawberry\perl\bin
 
 Rem Set OCS Agent compile folder
-SET OCSAGENT_PATH=C:\Users\Admin\Documents\GitHub\WindowsAgent
+SET OCSAGENT_PATH=C:\Users\factorfx\Documents\GitHub\WindowsAgent
 
 Rem Set external deps path
 SET EXT_DEPS=%OCSAGENT_PATH%\External_Deps

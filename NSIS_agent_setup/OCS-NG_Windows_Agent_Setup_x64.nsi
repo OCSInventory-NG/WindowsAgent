@@ -31,7 +31,8 @@ setcompressor /SOLID lzma
 ;!insertmacro GetParent
 
 ; Define Visual Studio Path
-!define VC_PATH "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Redist\MSVC\14.28.29910\x64"
+!define VC_PATH "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Redist\MSVC\14.32.31326\x64"
+!define VC_VERSION "VC143"
 
 ; Use Modern UI
 !include "MUI.nsh"
@@ -1682,7 +1683,7 @@ Section "OCS Inventory Agent" SEC03
         clearerrors
 	    ; MSVC 9 CRT redist current for XP and higher
      	SetOutPath "$INSTDIR"
-	    File "${VC_PATH}\Microsoft.VC142.CRT\msvcp140.dll"
+	    File "${VC_PATH}\Microsoft.${VC_VERSION}.CRT\msvcp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying msvcp140.dll $\r$\n"
         Call Write_Log
@@ -1694,38 +1695,38 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "${VC_PATH}\Microsoft.VC142.MFC\mfc140.dll"
+	    File "${VC_PATH}\Microsoft.${VC_VERSION}.MFC\mfc140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfc140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "${VC_PATH}\Microsoft.VC142.MFC\mfc140u.dll"
+	    File "${VC_PATH}\Microsoft.${VC_VERSION}.MFC\mfc140u.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfc140u.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "${VC_PATH}\Microsoft.VC142.MFC\mfcm140.dll"
+	    File "${VC_PATH}\Microsoft.${VC_VERSION}.MFC\mfcm140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-	    File "${VC_PATH}\Microsoft.VC142.MFC\mfcm140u.dll"
+	    File "${VC_PATH}\Microsoft.${VC_VERSION}.MFC\mfcm140u.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying mfcm140u.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
 		;Lib for Win 8.0 / 8.1 / win 10
-		File "${VC_PATH}\Microsoft.VC142.CRT\vcruntime140.dll"
+		File "${VC_PATH}\Microsoft.${VC_VERSION}.CRT\vcruntime140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying vcruntime140.dll $\r$\n"
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-		File "${VC_PATH}\Microsoft.VC142.OpenMP\vcomp140.dll"
+		File "${VC_PATH}\Microsoft.${VC_VERSION}.OpenMP\vcomp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying vcomp140.dll $\r$\n"
         Call Write_Log
@@ -1737,7 +1738,7 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
   	    strcpy $installSatus ":("
 	    clearerrors
-		File "${VC_PATH}\Microsoft.VC142.CXXAMP\vcamp140.dll"
+		File "${VC_PATH}\Microsoft.${VC_VERSION}.CXXAMP\vcamp140.dll"
 	    Iferrors 0 +5
 	    StrCpy $logBuffer "$logBuffer ERROR copying vcamp140.dll $\r$\n"
         Call Write_Log
