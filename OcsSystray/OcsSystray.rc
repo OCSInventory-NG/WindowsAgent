@@ -16,7 +16,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Anglais resources
+// Anglais (neutre) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
@@ -131,12 +131,12 @@ BEGIN
                             "Cannot display inventory informations !\n\nReason: %s"
 END
 
-#endif    // Anglais resources
+#endif    // Anglais (neutre) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Espagnol resources
+// Espagnol (neutre) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
 LANGUAGE LANG_SPANISH, SUBLANG_NEUTRAL
@@ -251,12 +251,12 @@ BEGIN
                             "No se puede mostrar la información del inventario ! Razón: %s"
 END
 
-#endif    // Espagnol resources
+#endif    // Espagnol (neutre) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Français resources
+// Français (neutre) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_NEUTRAL
@@ -371,7 +371,7 @@ BEGIN
                             "Impossible d'afficher les informations d'inventaire !\n\nRaison: %s"
 END
 
-#endif    // Français resources
+#endif    // Français (neutre) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -388,8 +388,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,9,2,0
- PRODUCTVERSION 2,9,2,0
+ FILEVERSION 2,10,0,0
+ PRODUCTVERSION 2,10,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -407,13 +407,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory Systray applet"
             VALUE "CompanyName", "OCS Inventory"
             VALUE "FileDescription", "OCS Inventory Systray applet"
-            VALUE "FileVersion", "2.9.2.0"
+            VALUE "FileVersion", "2.10.0.0"
             VALUE "InternalName", "OcsSystray.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OcsSystray.exe"
             VALUE "ProductName", "OCS Inventory Windows Agent"
-            VALUE "ProductVersion", "2.9.2.0"
+            VALUE "ProductVersion", "2.10.0.0"
         END
     END
     BLOCK "VarFileInfo"
