@@ -28,6 +28,9 @@
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "ws2_32.lib")
 
+#define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
+#define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -953,4 +956,54 @@ LPCTSTR CIPHelper::GetIfType(UINT uType)
 		case 162: return _T("Cisco Express Forwarding Interface");
 		default: return _T("");
 	}
+}
+
+LPCTSTR CIPHelper::GetDefaultDNS()
+{
+	FIXED_INFO* pFixedInfo;
+	ULONG ulOutBufLen;
+	DWORD dwRetVal;
+	IP_ADDR_STRING* pIPAddr;
+
+	// Default value empty
+	CString m_csDNS = NOT_AVAILABLE;
+
+	pFixedInfo = (FIXED_INFO*)MALLOC(sizeof(FIXED_INFO));
+	if (pFixedInfo == NULL) {
+		AddLog(_T("Error allocating memory needed to call GetNetworkParams\n"));
+		return m_csDNS;
+	}
+	ulOutBufLen = sizeof(FIXED_INFO);
+
+	if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW) {
+		FREE(pFixedInfo);
+		pFixedInfo = (FIXED_INFO*)MALLOC(ulOutBufLen);
+		if (pFixedInfo == NULL) {
+			AddLog(_T("Error allocating memory needed to call GetNetworkParams\n"));
+			return m_csDNS;
+		}
+	}
+
+	if (dwRetVal = GetNetworkParams(pFixedInfo, &ulOutBufLen) == NO_ERROR) {
+		AddLog(_T("DNS Servers:\n"));
+		AddLog(_T("\t%s\n"), pFixedInfo->DnsServerList.IpAddress.String);
+
+		m_csDNS = pFixedInfo->DnsServerList.IpAddress.String;
+
+		pIPAddr = pFixedInfo->DnsServerList.Next;
+		while (pIPAddr) {
+			AddLog(_T("\t%s\n"), pIPAddr->IpAddress.String);
+			m_csDNS = m_csDNS + CString(" / ") + CString(pIPAddr->IpAddress.String);
+			pIPAddr = pIPAddr->Next;
+		}
+
+	}
+	else {
+		AddLog(_T("GetNetworkParams failed with error: %d\n"), dwRetVal);
+	}
+
+	if (pFixedInfo)
+		FREE(pFixedInfo);
+
+	return m_csDNS;	
 }

@@ -442,6 +442,11 @@ LPCTSTR CSysInfo::getLocalIP()
 	return m_Sock.GetIPAddress();
 }
 
+LPCTSTR CSysInfo::getLocalDNS()
+{
+	return CIPHelper::GetDefaultDNS();
+}
+
 DWORD CSysInfo::getProcessors( CString &csProcType, CString &csProcSpeed, CCpuList *pMyList)
 {
 	static DWORD	dwRegNumber = 0,

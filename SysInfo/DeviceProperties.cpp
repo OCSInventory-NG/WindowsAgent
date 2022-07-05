@@ -54,6 +54,7 @@ void CDeviceProperties::Clear()
 	m_ulPhysicalMemory = 0;		// Physical memory of the device
 	m_ulSwapSize = 0;		// Page File Size of the device
 	m_csIPAddress.Empty();		// IP Address of the device if available (ex "192.3.4.1" or "Unavailable")
+	m_csDNSAddress.Empty();
 	m_csExecutionDuration = _T( "00:00:00"); // Duration of the inventory check
 	m_csLoggedOnUser.Empty();	// Logged on user when device has been checked
 	m_csLastLoggedUser.Empty();	// Last user who'd been logged in
@@ -114,6 +115,12 @@ void CDeviceProperties::SetIPAddress(LPCTSTR lpstrIP)
 {
 	m_csIPAddress = lpstrIP;
 	StrForSQL( m_csIPAddress);
+}
+
+void CDeviceProperties::SetDNSAddress(LPCTSTR lpstrDNS)
+{
+	m_csDNSAddress = lpstrDNS;
+	StrForSQL(m_csDNSAddress);
 }
 
 void CDeviceProperties::SetLastCheckDate( LPCTSTR lpstrDate)
@@ -261,6 +268,12 @@ LPCTSTR CDeviceProperties::GetIPAddress()
 {
 	return m_csIPAddress;
 }
+
+LPCTSTR CDeviceProperties::GetDNSAddress()
+{
+	return m_csDNSAddress;
+}
+
 LPCTSTR CDeviceProperties::GetExecutionDuration()
 {
 	return m_csExecutionDuration;
