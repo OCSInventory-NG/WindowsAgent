@@ -1007,3 +1007,51 @@ LPCTSTR CIPHelper::GetDefaultDNS()
 
 	return m_csDNS;	
 }
+
+LPCTSTR CIPHelper::GetDefaultGateway(CString csIpAdd)
+{
+	PIP_ADAPTER_INFO pAdapterInfo;
+	PIP_ADAPTER_INFO pAdapter = NULL;
+	DWORD dwRetVal = 0;
+	UINT i;
+
+	// Default value empty
+	CString m_csGateway = NOT_AVAILABLE;
+
+	ULONG ulOutBufLen = sizeof(IP_ADAPTER_INFO);
+	pAdapterInfo = (IP_ADAPTER_INFO*)MALLOC(sizeof(IP_ADAPTER_INFO));
+	if (pAdapterInfo == NULL) {
+		AddLog(_T("Error allocating memory needed to call GetAdaptersinfo\n"));
+		return m_csGateway;
+	}
+
+	if (GetAdaptersInfo(pAdapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW) {
+		FREE(pAdapterInfo);
+		pAdapterInfo = (IP_ADAPTER_INFO*)MALLOC(ulOutBufLen);
+		if (pAdapterInfo == NULL) {
+			AddLog(_T("Error allocating memory needed to call GetAdaptersinfo\n"));
+			return m_csGateway;
+		}
+	}
+
+	if ((dwRetVal = GetAdaptersInfo(pAdapterInfo, &ulOutBufLen)) == NO_ERROR) {
+		pAdapter = pAdapterInfo;
+		while (pAdapter) {
+			if (pAdapter->IpAddressList.IpAddress.String == csIpAdd) {
+				AddLog(_T("Gateway Address:\n"));
+				AddLog(_T("\t%s\n"), pAdapter->GatewayList.IpAddress.String);
+
+				m_csGateway = pAdapter->GatewayList.IpAddress.String;
+			}
+			pAdapter = pAdapter->Next;
+		}
+	}
+	else {
+		AddLog(_T("GetAdaptersInfo failed with error: %d\n"), dwRetVal);
+	}
+
+	if (pAdapterInfo)
+		FREE(pAdapterInfo);
+
+	return m_csGateway;
+}

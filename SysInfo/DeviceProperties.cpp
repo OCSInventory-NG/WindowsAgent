@@ -52,9 +52,10 @@ void CDeviceProperties::Clear()
 	m_csProcessorSpeed.Empty(); // Processor speed
 	m_dwNumberOfProcessor = 0;	// Number of processor of the device
 	m_ulPhysicalMemory = 0;		// Physical memory of the device
-	m_ulSwapSize = 0;		// Page File Size of the device
+	m_ulSwapSize = 0;			// Page File Size of the device
 	m_csIPAddress.Empty();		// IP Address of the device if available (ex "192.3.4.1" or "Unavailable")
-	m_csDNSAddress.Empty();
+	m_csDNSAddress.Empty();		// DNS Address of the device 
+	m_csGatewayAddress.Empty();	// Gateway address of the device
 	m_csExecutionDuration = _T( "00:00:00"); // Duration of the inventory check
 	m_csLoggedOnUser.Empty();	// Logged on user when device has been checked
 	m_csLastLoggedUser.Empty();	// Last user who'd been logged in
@@ -121,6 +122,12 @@ void CDeviceProperties::SetDNSAddress(LPCTSTR lpstrDNS)
 {
 	m_csDNSAddress = lpstrDNS;
 	StrForSQL(m_csDNSAddress);
+}
+
+void CDeviceProperties::SetGatewayAddress(LPCTSTR lpstrGateway)
+{
+	m_csGatewayAddress = lpstrGateway;
+	StrForSQL(m_csGatewayAddress);
 }
 
 void CDeviceProperties::SetLastCheckDate( LPCTSTR lpstrDate)
@@ -272,6 +279,11 @@ LPCTSTR CDeviceProperties::GetIPAddress()
 LPCTSTR CDeviceProperties::GetDNSAddress()
 {
 	return m_csDNSAddress;
+}
+
+LPCTSTR CDeviceProperties::GetGatewayAddress()
+{
+	return m_csGatewayAddress;
 }
 
 LPCTSTR CDeviceProperties::GetExecutionDuration()

@@ -64,6 +64,8 @@ public:
 	LPCTSTR GetIPAddress();
 	// Return a string with the network DNS address
 	LPCTSTR GetDNSAddress();
+	// Return a string with the network Gateway address
+	LPCTSTR GetGatewayAddress();
 	// Return a string with the last check date
 	LPCTSTR GetLastCheckDate();
 	// Return a string with the execution duration
@@ -115,6 +117,8 @@ public:
 	void SetIPAddress( LPCTSTR lpstrIP);
 	// Set the DNS Address
 	void SetDNSAddress(LPCTSTR lpstrDNS);
+	// Set the Gateway Address
+	void SetGatewayAddress(LPCTSTR lpstrGateway);
 	// Set the last check date
 	void SetLastCheckDate( LPCTSTR lpstrDate);
 	// Compute and store the execution duration
@@ -162,6 +166,7 @@ protected: // Attributes
 	ULONG	m_ulSwapSize;		// Swap Size of the device
 	CString	m_csIPAddress;		// IP Address of the device if available (ex "192.3.4.1" or "Unavailable")
 	CString m_csDNSAddress;		// DNS Address of the device if available
+	CString m_csGatewayAddress;	// Gateway Address of the device if available
 	CString	m_csLastCheckDate;	// Last check date when reading from CSV
 	CString	m_csExecutionDuration; // Execution duration in string format
 	CString	m_csLoggedOnUser;	// Logged on username when device has been checked

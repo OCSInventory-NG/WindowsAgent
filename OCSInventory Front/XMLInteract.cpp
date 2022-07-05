@@ -298,6 +298,7 @@ BOOL CXMLInteract::UpdateDeviceProperties( CDeviceProperties &pPC)
 		m_pXml->AddChildElem( _T( "SWAP"), pPC.GetPageFileSize());
 		m_pXml->AddChildElem( _T( "IPADDR"), pPC.GetIPAddress());
 		m_pXml->AddChildElem( _T( "DNS"), pPC.GetDNSAddress());
+		m_pXml->AddChildElem( _T( "DEFAULTGATEWAY"), pPC.GetGatewayAddress());
 		m_pXml->AddChildElem( _T( "ETIME"), pPC.GetExecutionDuration());
 		m_pXml->AddChildElem( _T( "LASTDATE"), pPC.GetLastCheckDate());
 		m_pXml->AddChildElem( _T( "USERID"), pPC.GetLoggedOnUser());

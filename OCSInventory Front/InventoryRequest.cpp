@@ -768,6 +768,10 @@ BOOL CInventoryRequest::runInventory()
 	m_Device.SetIPAddress( m_pSysInfo->getLocalIP());
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Default IPv4 address is <%s>"),
 				  m_Device.GetIPAddress());
+	// Get the local Gateway Address 
+	m_Device.SetGatewayAddress(m_pSysInfo->getLocalGateway(m_pSysInfo->getLocalIP()));
+	m_pLogger->log(LOG_PRIORITY_DEBUG, _T("INVENTORY => Default Gateway address is <%s>"),
+		m_Device.GetGatewayAddress());
 	// Get the local DNS Address 
 	m_Device.SetDNSAddress(m_pSysInfo->getLocalDNS());
 	m_pLogger->log(LOG_PRIORITY_DEBUG, _T("INVENTORY => Default DNS address is <%s>"),

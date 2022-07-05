@@ -447,6 +447,11 @@ LPCTSTR CSysInfo::getLocalDNS()
 	return CIPHelper::GetDefaultDNS();
 }
 
+LPCTSTR CSysInfo::getLocalGateway(CString csIpAdd)
+{
+	return CIPHelper::GetDefaultGateway(csIpAdd);
+}
+
 DWORD CSysInfo::getProcessors( CString &csProcType, CString &csProcSpeed, CCpuList *pMyList)
 {
 	static DWORD	dwRegNumber = 0,
