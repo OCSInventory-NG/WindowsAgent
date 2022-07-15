@@ -2033,6 +2033,8 @@ Section Uninstall
 	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
 	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${OLD_PRODUCT_UNINST_KEY}"
 	DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
+	; Remove ProgramData folder and files
+	RMDir /r /REBOOTOK "$APPDATA\OCS Inventory NG"
 	SetAutoClose true
 SectionEnd
 
