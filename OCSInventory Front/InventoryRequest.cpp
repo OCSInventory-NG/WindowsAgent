@@ -768,6 +768,14 @@ BOOL CInventoryRequest::runInventory()
 	m_Device.SetIPAddress( m_pSysInfo->getLocalIP());
 	m_pLogger->log( LOG_PRIORITY_DEBUG, _T( "INVENTORY => Default IPv4 address is <%s>"),
 				  m_Device.GetIPAddress());
+	// Get the local Gateway Address 
+	m_Device.SetGatewayAddress(m_pSysInfo->getLocalGateway(m_pSysInfo->getLocalIP()));
+	m_pLogger->log(LOG_PRIORITY_DEBUG, _T("INVENTORY => Default Gateway address is <%s>"),
+		m_Device.GetGatewayAddress());
+	// Get the local DNS Address 
+	m_Device.SetDNSAddress(m_pSysInfo->getLocalDNS());
+	m_pLogger->log(LOG_PRIORITY_DEBUG, _T("INVENTORY => Default DNS address is <%s>"),
+		m_Device.GetDNSAddress());
 	// Get Windows registration info
 	if (!m_pSysInfo->getWindowsRegistration( cs1, cs2, cs3))
 		m_pLogger->log( LOG_PRIORITY_WARNING, _T( "INVENTORY => Failed to retrieve system registration"));

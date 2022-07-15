@@ -16,7 +16,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Anglais resources
+// Anglais (neutre) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
@@ -127,12 +127,12 @@ BEGIN
     AFX_IDS_APP_TITLE       "OCS Inventory for Windows Notification"
 END
 
-#endif    // Anglais resources
+#endif    // Anglais (neutre) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Espagnol resources
+// Espagnol (neutre) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
 LANGUAGE LANG_SPANISH, SUBLANG_NEUTRAL
@@ -243,12 +243,12 @@ BEGIN
     AFX_IDS_APP_TITLE       "OCS Inventory for Windows Notification"
 END
 
-#endif    // Espagnol resources
+#endif    // Espagnol (neutre) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Français resources
+// Français (neutre) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_NEUTRAL
@@ -359,7 +359,7 @@ BEGIN
     AFX_IDS_APP_TITLE       "OCS Inventory for Windows Notification"
 END
 
-#endif    // Français resources
+#endif    // Français (neutre) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -386,8 +386,8 @@ IDR_MAINFRAME           ICON                    "..\\Agent\\res\\OCSInventory.ic
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,9,2,0
- PRODUCTVERSION 2,9,2,0
+ FILEVERSION 2,10,0,0
+ PRODUCTVERSION 2,10,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -405,13 +405,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory User Notification Provider"
             VALUE "CompanyName", "OCS Inventory"
             VALUE "FileDescription", "OCS Inventory User Notification Provider"
-            VALUE "FileVersion", "2.9.2.0"
+            VALUE "FileVersion", "2.10.0.0"
             VALUE "InternalName", "OcsNotifyUser.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OcsNotifyUser.exe"
             VALUE "ProductName", "OCS Inventory Windows Agent"
-            VALUE "ProductVersion", "2.9.2.0"
+            VALUE "ProductVersion", "2.10.0.0"
         END
     END
     BLOCK "VarFileInfo"

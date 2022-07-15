@@ -55,6 +55,8 @@ public: // Methods
 	static BOOL IsDSL(UINT uType);
 	static BOOL IsLoopback(UINT uType);
 	static LPCTSTR GetAdapterType(UINT uType);
+	static LPCTSTR GetDefaultDNS();
+	static LPCTSTR GetDefaultGateway(CString csIpAdd);
 };
 #endif // !defined(AFX_IPHELPER_H__609EE787_2041_44FB_863D_75B36F337728__INCLUDED_)
 
