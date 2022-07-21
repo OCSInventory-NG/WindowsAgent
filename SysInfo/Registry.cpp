@@ -241,6 +241,13 @@ static char THIS_FILE[] = __FILE__;
 #define NT_APPS_LANGUAGE_VALUE					_T( "Language")
 #define NT_APPS_INSTALLDATE_VALUE				_T( "InstallDate")
 
+// Defines for retrieving AzureAD informations from registry
+#define AZUREAD_KEY								_T( "SOFTWARE\\Microsoft\\IdentityStore\\Cache")
+#define AZUREAD_SAMNAME_VALUE					_T( "SAMName")
+#define AZUREAD_DISPLAYNAME_VALUE				_T( "DisplayName")		
+#define AZUREAD_PROVIDERNAME_VALUE				_T( "ProviderName")
+
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -4534,5 +4541,136 @@ BOOL CRegistry::GetUser(CString &csUser) {
 	else
 		AddLog(_T("\tFailed in call to <RegOpenKey> function for HKCU\\%s !\n"),
 		WIN10_LASTLOGGEDUSER_USER_KEY);
+	return FALSE;
+}
+
+BOOL CRegistry::IsAzureAd(CString &csDomain) {
+	HKEY			hKeyEnum,
+					hKeyGroup,
+					hKeyProperty,
+					hKeyUserSid;
+	CString			csSubKey,
+					csDomainAz = NOT_AVAILABLE;
+	TCHAR			szGroupName[256],
+					szDeviceName[256],
+					szUserSid[256];
+	DWORD			dwLength,
+					dwMemory,
+					dwIndexEnum = 0,
+					dwIndexGroup = 0,
+					dwIndexUser = 0;
+	LONG			lResult;
+	FILETIME		MyFileTime;
+	UINT			uIndex = 0;
+	BOOL			isAzure;
+
+	AddLog(_T("Registry isAzureAD: Trying to find if the machine is connected to an AzureAD in HKLM\\%s...\n"), AZUREAD_KEY);
+
+	if (RegOpenKeyEx(m_hKey, AZUREAD_KEY, 0, KEY_READ | KEY_WOW64_64KEY, &hKeyEnum) == ERROR_SUCCESS)
+	{
+		dwLength = 255;
+		while ((lResult = RegEnumKeyEx(hKeyEnum, dwIndexEnum, szGroupName, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
+		{
+			// For each group, enumerate user keys
+			szGroupName[dwLength] = 0;
+			csSubKey.Format(_T("%s\\%s"), AZUREAD_KEY, szGroupName);
+			if (RegOpenKeyEx(m_hKey, csSubKey, 0, KEY_READ | KEY_WOW64_64KEY, &hKeyGroup) == ERROR_SUCCESS)
+			{
+				dwLength = 255;
+				dwIndexGroup = 0;
+				while ((lResult = RegEnumKeyEx(hKeyGroup, dwIndexGroup, szDeviceName, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
+				{
+					// For each user, get property keys
+					szDeviceName[dwLength] = 0;
+					csSubKey.Format(_T("%s\\%s\\%s"), AZUREAD_KEY, szGroupName, szDeviceName);
+					if (RegOpenKeyEx(m_hKey, csSubKey, 0, KEY_READ | KEY_WOW64_64KEY, &hKeyProperty) == ERROR_SUCCESS)
+					{
+						dwLength = 255;
+						dwIndexUser = 0;
+						while ((lResult = RegEnumKeyEx(hKeyProperty, dwIndexUser, szUserSid, &dwLength, 0, NULL, 0, &MyFileTime)) == ERROR_SUCCESS)
+						{
+							// For each group, enumerate user keys
+							szUserSid[dwLength] = 0;
+							csSubKey.Format(_T("%s\\%s\\%s\\%s"), AZUREAD_KEY, szGroupName, szDeviceName, szUserSid);
+							if (RegOpenKeyEx(m_hKey, csSubKey, 0, KEY_READ | KEY_WOW64_64KEY, &hKeyUserSid) == ERROR_SUCCESS)
+							{
+								isAzure = FALSE;
+								// Get the Graphic Adapter name
+								if (GetValue(hKeyUserSid, AZUREAD_PROVIDERNAME_VALUE, csDomainAz) == ERROR_SUCCESS && csDomainAz == "AzureAD")
+								{
+									isAzure = TRUE;
+									csDomain = csDomainAz;
+									AddLog(_T("\t\t<Connected to : %s>\n"), csDomainAz);
+								}
+								else
+								{
+									AddLog(_T("\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+										csSubKey, AZUREAD_PROVIDERNAME_VALUE);
+									csDomainAz = NOT_AVAILABLE;
+								}
+								// Get the Graphic Adapter name
+								if (GetValue(hKeyUserSid, AZUREAD_DISPLAYNAME_VALUE, csDomainAz) == ERROR_SUCCESS && isAzure)
+								{
+									int nTokenPos = 0;
+									CString strToken = csDomainAz.Tokenize(_T("@"), nTokenPos);
+									CString csDomainName = NOT_AVAILABLE;
+									while (!strToken.IsEmpty())
+									{
+										csDomainName = strToken;
+										strToken = csDomainAz.Tokenize(_T("@"), nTokenPos);
+									}
+
+									if (csDomainName != NOT_AVAILABLE) {
+										AddLog(_T("\t\t<Domain : %s>\n"), csDomainName);
+										csDomain = csDomain + CString(" (") + csDomainName + CString(")");
+									}
+								}
+								else
+								{
+									AddLog(_T("\tFailed in call to <RegQueryValueEx> function for HKLM\\%s\\%s !\n"),
+										csSubKey, AZUREAD_DISPLAYNAME_VALUE);
+									csDomainAz = NOT_AVAILABLE;
+								}
+							} // if RegOpenKey Object Key
+							else
+								AddLog(_T("\tFailed in call to <RegOpenKeyEx> for HKLM\\%s !\n"),
+									csSubKey);
+
+							dwIndexUser++;
+							dwLength = 255;
+							RegCloseKey(hKeyUserSid);
+						}
+						RegCloseKey(hKeyProperty);
+					} // if RegOpenKey Object Key
+					else
+						AddLog(_T("\tFailed in call to <RegOpenKeyEx> for HKLM\\%s !\n"),
+							csSubKey);
+					dwIndexGroup++;
+					dwLength = 255;
+				} // while RegEnumKey Group
+				RegCloseKey(hKeyGroup);
+				if (dwIndexGroup == 0)
+					// No key found
+					AddLog(_T("\tFailed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+						csSubKey);
+			} // if RegOpenKey Group Key
+			else
+				AddLog(_T("\tFailed in call to <RegOpenKeyEx> for HKLM\\%s !\n"),
+					csSubKey);
+			dwIndexEnum++;
+			dwLength = 255;
+		} // while RegEnumKey Enum
+		RegCloseKey(hKeyEnum);
+		if (dwIndexEnum == 0)
+		{
+			// No key found
+			AddLog(_T("\tFailed in call to <RegEnumKeyEx> function to find subkey of HKLM\\%s.\n"),
+				AZUREAD_KEY);
+			return FALSE;
+		}
+		AddLog(_T("\tOK (%u objects).\n"), uIndex);
+		return TRUE;
+	} // if RegOpenKey enum Key
+	AddLog(_T("\tFailed in call to <RegOpenKeyEx> function for HKLM\\%s !\n"), AZUREAD_KEY);
 	return FALSE;
 }
