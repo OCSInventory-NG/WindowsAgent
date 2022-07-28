@@ -240,13 +240,16 @@ BOOL CDeviceid::CompareMacs( CString &csRefList, CString &csActualList)
  ****/
 void CDeviceid::checkDeviceid()
 {
+	//Per https://docs.microsoft.com/en-us/windows/win32/sysinfo/computer-names
+	#define MAX_DNS_COMPONENT_LENGTH 63
+
 	CString csDeviceID, csFileDeviceID, csActualMac, csFileMac, csFileHostname;
-	TCHAR lpHostname[MAX_COMPUTERNAME_LENGTH + 1];
+	TCHAR lpHostname[MAX_DNS_COMPONENT_LENGTH + 1];
 	CLog *pLogger = getOcsLogger();
 	BOOL bMacChanged = FALSE;
 
 	DWORD size = sizeof( lpHostname );
-	GetComputerName( lpHostname,  &size);
+	GetComputerNameEx((COMPUTER_NAME_FORMAT)ComputerNameDnsHostname, lpHostname, &size);
 	m_csHostName = lpHostname;
 
 	// Load deviceid from .dat file
