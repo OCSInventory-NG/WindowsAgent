@@ -266,8 +266,8 @@ void CDeviceid::checkDeviceid()
 	// Get list of MC Addresses
 	csActualMac = getMacs();
 
-	csFileHostname  = csDeviceID.Left( csDeviceID.GetLength()-20);
-	csFileDeviceID  = csDeviceID;
+	csFileHostname = csDeviceID.Left( csDeviceID.GetLength()-20);
+	csFileDeviceID = csDeviceID;
 
 	// Compare reference to actual. There is changes if
 	// - Hostname has changed
