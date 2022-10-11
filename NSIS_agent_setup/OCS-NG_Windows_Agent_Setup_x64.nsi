@@ -35,7 +35,7 @@ setcompressor /SOLID lzma
 !define VC_VERSION "VC143"
 
 ; Use Modern UI
-!include "MUI.nsh"
+!include "MUI2.nsh"
 ICON "install-ocs.ico"
 ; MUI Settings
 !define MUI_HEADERIMAGE
@@ -66,8 +66,10 @@ Page custom AskLocalInventory ValidateLocalInventory ""
 !define MUI_FINISHPAGE_RUN_TEXT "Start OCS Inventory NG Systray Applet"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\OcsSystray.exe"
 !insertmacro MUI_PAGE_FINISH
-; Confirl before uninstall
+
+UninstPage custom un.AskUninstallOptions un.ValidateUninstallOptions ""
 !insertmacro MUI_UNPAGE_INSTFILES
+
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "French"
@@ -110,7 +112,12 @@ var /GLOBAL OcsNoSplash ; To store if setup must display spash screen (FALSE) or
 var /GLOBAL OcsUpgrade ; To store if /UPGRADE option used (TRUE) or not (FALSE)
 var /GLOBAL installSatus ; To store installation status
 var /GLOBAL OcsLocal ; To store folder where to write local inventory file
-
+; handle uninstall variables
+var /GLOBAL hCtl
+var /GLOBAL hCtl_uninstalloptions
+var /GLOBAL hCtl_clean
+var /GLOBAL hCtl_Label1
+var /GLOBAL uninstallOption ; To store the uninstall option
 #####################################################################
 # GetParameters
 # input, none
@@ -320,6 +327,121 @@ done:
 	Pop $R3
 	Pop $R2
 	Exch $R1
+FunctionEnd
+
+Function un.GetParameters
+	Push $R0
+	Push $R1
+	Push $R2
+	Push $R3
+	
+	StrCpy $R2 1
+	StrLen $R3 $CMDLINE
+	
+	;Check for quote or space
+	StrCpy $R0 $CMDLINE $R2
+	StrCmp $R0 '"' 0 +3
+		StrCpy $R1 '"'
+		Goto loop
+	StrCpy $R1 " "
+	
+	loop:
+		IntOp $R2 $R2 + 1
+		StrCpy $R0 $CMDLINE 1 $R2
+		StrCmp $R0 $R1 get
+		StrCmp $R2 $R3 get
+		Goto loop
+	
+	get:
+		IntOp $R2 $R2 + 1
+		StrCpy $R0 $CMDLINE 1 $R2
+		StrCmp $R0 " " get
+		StrCpy $R0 $CMDLINE "" $R2
+	
+	Pop $R3
+	Pop $R2
+	Pop $R1
+	Exch $R0
+FunctionEnd
+
+Function un.GetParameterValue
+	Exch $R0  ; get the top of the stack(default parameter) into R0
+	Exch      ; exchange the top of the stack(default) with
+			; the second in the stack(parameter to search for)
+	Exch $R1  ; get the top of the stack(search parameter) into $R1
+
+	;Preserve on the stack the registers used in this function
+	Push $R2
+	Push $R3
+	Push $R4
+	Push $R5
+
+	Strlen $R2 $R1      ; store the length of the search string into R2
+
+	Call un.GetParameters  ; get the command line parameters
+	Pop $R3             ; store the command line string in R3
+
+	# search for quoted search string
+	StrCpy $R5 '"'      ; later on we want to search for a open quote
+	Push $R3            ; push the 'search in' string onto the stack
+	Push '"$R1'         ; push the 'search for'
+	Call un.StrStr         ; search for the quoted parameter value
+	Pop $R4
+	StrCpy $R4 $R4 "" 1   ; skip over open quote character, "" means no maxlen
+	StrCmp $R4 "" "" next ; if we didn't find an empty string go to next
+
+	# search for non-quoted search string
+	StrCpy $R5 ' '      ; later on we want to search for a space since we
+					  ; didn't start with an open quote '"' we shouldn't
+					  ; look for a close quote '"'
+	Push $R3            ; push the command line back on the stack for searching
+	Push '$R1'          ; search for the non-quoted search string
+	Call un.StrStr
+	Pop $R4
+
+	; $R4 now contains the parameter string starting at the search string,
+	; if it was found
+next:
+	StrCmp $R4 "" check_for_switch ; if we didn't find anything then look for
+								 ; usage as a command line switch
+	# copy the value after $R1 by using StrCpy with an offset of $R2,
+	# the length of 'OUTPUT'
+	StrCpy $R0 $R4 "" $R2  ; copy commandline text beyond parameter into $R0
+	# search for the next parameter so we can trim this extra text off
+	Push $R0
+	Push $R5            ; search for either the first space ' ', or the first
+					  ; quote '"'
+					  ; if we found '"/output' then we want to find the
+					  ; ending ", as in '"/output=somevalue"'
+					  ; if we found '/output' then we want to find the first
+					  ; space after '/output=somevalue'
+	Call un.StrStr         ; search for the next parameter
+	Pop $R4
+	StrCmp $R4 "" done  ; if 'somevalue' is missing, we are done
+	StrLen $R4 $R4      ; get the length of 'somevalue' so we can copy this
+					  ; text into our output buffer
+	StrCpy $R0 $R0 -$R4 ; using the length of the string beyond the value,
+					  ; copy only the value into $R0
+	goto done           ; if we are in the parameter retrieval path skip over
+					  ; the check for a command line switch
+
+	; See if the parameter was specified as a command line switch, like '/output'
+check_for_switch:
+	Push $R3            ; push the command line back on the stack for searching
+	Push '$R1'         ; search for the non-quoted search string
+	Call un.StrStr
+	Pop $R4
+	StrCmp $R4 "" done  ; if we didn't find anything then use the default
+	StrCpy $R0 ""       ; otherwise copy in an empty string since we found the
+					  ; parameter, just didn't find a value
+
+done:
+	Pop $R5
+	Pop $R4
+	Pop $R3
+	Pop $R2
+	Pop $R1
+	Exch $R0 ; put the value in $R0 at the top of the stack
 FunctionEnd
 
 #####################################################################
@@ -580,7 +702,7 @@ ParseCmd_NoSystray_End:
     WriteINIStr "$PLUGINSDIR\agent.ini" "Field 9" "State" "0"
     goto ParseCmd_Now_End
 ParseCmd_Now:
-    ; Immediately maunch inventory
+    ; Immediately launch inventory
 	WriteINIStr "$PLUGINSDIR\agent.ini" "Field 9" "State" "1"
 ParseCmd_Now_End:
 	; Remove parsed arg from command line
@@ -1397,6 +1519,39 @@ FunctionEnd
 Function ValidateAgent2Options
 FunctionEnd
 
+Function un.AskUninstallOptions
+	; === test (type: Dialog) ===
+	nsDialogs::Create 1018
+	Pop $hCtl
+	${If} $hCtl == error
+		Abort
+	${EndIf}
+	!insertmacro MUI_HEADER_TEXT "OCS Inventory NG Agent uninstaller" "You are about to uninstall OCS Inventory NG Agent ${PRODUCT_VERSION}, select uninstall option below..."
+	
+	; === uninstalloptions (type: GroupBox) ===
+	${NSD_CreateGroupBox} 8u 7u 280u 126u "Uninstall option"
+	Pop $hCtl_uninstalloptions
+	
+	; === clean (type: DropList) ===
+	${NSD_CreateDropList} 12u 41u 195u 13u "NONE"
+	Pop $hCtl_clean
+	${NSD_CB_AddString} $hCtl_clean "NONE"
+	${NSD_CB_AddString} $hCtl_clean "ONLY CONFIGURATION FILES"
+	${NSD_CB_AddString} $hCtl_clean "ALL FILES"
+	${NSD_CB_SelectString} $hCtl_clean "NONE"
+	
+	; === Label1 (type: Label) ===
+	${NSD_CreateLabel} 12u 25u 205u 14u "Do you want to remove persistent files from OCS Inventory ?"
+	Pop $hCtl_Label1
+
+	nsDialogs::Show
+FunctionEnd
+
+Function un.ValidateUninstallOptions
+	${NSD_GetText} $hCtl_clean $0
+	StrCpy $uninstallOption "$0"
+FunctionEnd
+
 Function AskLocalInventory
     ${If} ${SectionIsSelected} 4 ; Index of Local inventory section
         !insertmacro MUI_HEADER_TEXT "OCS Inventory Agent for Windows" "Choose folder to save inventory result..."
@@ -1440,7 +1595,7 @@ Section "!Working data folder" SEC01
     ; Set users and power users permission to read/execute/change
     StrCpy $logBuffer "SetACL allowing Users / Power users read/write permissions on <$APPDATA\OCS Inventory NG\Agent>..."
     Call Write_Log
-    nsExec::ExecToLog 'SetACL -on "$APPDATA\OCS Inventory NG\Agent" -ot file -actn ace -ace "n:S-1-5-32-545;p:read_ex,change;s:y;m:set" -ace "n:S-1-5-32-547;p:read_ex,change;s:y;m:set" -actn clear -clr "dacl,sacl" -actn rstchldrn -rst "dacl,sacl"'
+    nsExec::ExecToLog 'SetACL -on "$APPDATA\OCS Inventory NG\Agent" -ot file -actn ace -ace "n:S-1-5-18;p:full;s:y;m:set" -ace "n:S-1-5-32-544;p:full;s:y;m:set" -ace "n:S-1-5-32-547;p:read_ex,change;s:y;m:set" -actn setprot -op "dacl:p_nc;sacl:p_nc" -actn clear -clr "dacl,sacl" -actn rstchldrn -rst "dacl,sacl"'
     Pop $0
     StrCpy $logBuffer "Result: $0$\r$\n"
     Call Write_Log
@@ -1994,8 +2149,6 @@ Function un.onInit
 	Pop $R9
 	StrLen $0 $R9
 	IntCmp $0 2 unOnInit_silent 0 unOnInit_silent
-	MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure to uninstall $(^Name)?" IDYES +2
-	Abort
 unOnInit_silent:
 FunctionEnd
 
@@ -2033,6 +2186,23 @@ Section Uninstall
 	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
 	DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${OLD_PRODUCT_UNINST_KEY}"
 	DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
+	; Get clean paramater
+	Push "/CLEAN="         	; push the search string onto the stack
+	Push "NONE"   			; push a default value onto the stack
+	Call un.GetParameterValue
+	Pop $2
+
+	${If} $2 == "ALL"
+		${OrIf} $uninstallOption == "ALL FILES"
+			RMDir /r /REBOOTOK "$APPDATA\OCS Inventory NG"
+	${EndIf}
+
+	${If} $2 == "FILES"
+		${OrIf} $uninstallOption == "ONLY CONFIGURATION FILES"
+			RMDir /r /REBOOTOK "$APPDATA\OCS Inventory NG\Agent\Download"
+			Delete /REBOOTOK "$APPDATA\OCS Inventory NG\Agent\ocsinventory.ini"
+	${EndIf}
+
 	SetAutoClose true
 SectionEnd
 
