@@ -68,6 +68,7 @@ public: // Methods
 	BOOL GetRegistryValue( UINT uKeyTree, LPCTSTR lpstrSubKey, LPCTSTR lpstrValue, CString &csResult);
 	BOOL GetRegistryMultipleValues(LPCTSTR lpstrQueryName, UINT uKeyTree, LPCTSTR lpstrSubKey, CRegistryValueList *pMyList);
 	BOOL GetUser(CString &csUser);
+	BOOL IsAzureAd(CString &csDomain);
 
 	//////////////////////////////////
 	// Set attributes values

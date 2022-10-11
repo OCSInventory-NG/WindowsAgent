@@ -866,7 +866,9 @@ BOOL CSysInfo::getInstalledApplications(CSoftwareList *pList, BOOL hkcu)
 BOOL CSysInfo::getDomainOrWorkgroup(CString &csDomain)
 {
 	// First, try WMI
-	if (m_wmiInfo.GetDomainOrWorkgroup( csDomain))
+	if (m_wmiInfo.GetDomainOrWorkgroup(csDomain))
+		if (csDomain == "WORKGROUP")
+			m_registryInfo.IsAzureAd(csDomain);
 		return TRUE;
 	// Last, use registry
 	return m_registryInfo.GetDomainOrWorkgroup( csDomain);
