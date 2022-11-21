@@ -19,7 +19,7 @@ Rem Set path to Perl 5.6 or higher binary
 SET PERL_PATH=C:\Strawberry\perl\bin
 
 Rem Set OCS Agent compile folder
-SET OCSAGENT_PATH=C:\Users\factorfx\Documents\GitHub\WindowsAgent
+SET OCSAGENT_PATH=C:\Users\developpeur\Documents\GitHub\WindowsAgent
 
 Rem Set external deps path
 SET EXT_DEPS=%OCSAGENT_PATH%\External_Deps

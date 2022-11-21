@@ -31,7 +31,7 @@ setcompressor /SOLID lzma
 ;!insertmacro GetParent
 
 ; Define Visual Studio Path
-!define VC_PATH "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Redist\MSVC\14.32.31326\x64"
+!define VC_PATH "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Redist\MSVC\14.34.31931\x64"
 !define VC_VERSION "VC143"
 
 ; Use Modern UI
