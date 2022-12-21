@@ -131,9 +131,9 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON1               ICON                    "C:\\Users\\factorfx\\Documents\\GitHub\\WindowsAgent\\NSIS_agent_setup\\install-ocs.ico"
+IDI_ICON1               ICON                    "C:\\Users\\developpeur\\Documents\\GitHub\\WindowsAgent\\NSIS_agent_setup\\install-ocs.ico"
 
-IDI_ICON2               ICON                    "C:\\Users\\factorfx\\Documents\\GitHub\\WindowsAgent\\Agent\\res\\OCSInventory.ico"
+IDI_ICON2               ICON                    "C:\\Users\\developpeur\\Documents\\GitHub\\WindowsAgent\\Agent\\res\\OCSInventory.ico"
 
 
 #ifdef APSTUDIO_INVOKED
