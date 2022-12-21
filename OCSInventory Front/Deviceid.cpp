@@ -240,14 +240,23 @@ BOOL CDeviceid::CompareMacs( CString &csRefList, CString &csActualList)
  ****/
 void CDeviceid::checkDeviceid()
 {
-	CString csDeviceID, csFileDeviceID, csActualMac, csFileMac, csFileHostname;
-	TCHAR lpHostname[MAX_COMPUTERNAME_LENGTH + 1];
-	CLog *pLogger = getOcsLogger();
-	BOOL bMacChanged = FALSE;
+	//Per https://docs.microsoft.com/en-us/windows/win32/sysinfo/computer-names
+	#define MAX_DNS_COMPONENT_LENGTH 63
 
-	DWORD size = sizeof( lpHostname );
-	GetComputerName( lpHostname,  &size);
-	m_csHostName = lpHostname;
+	CString csDeviceID, csFileDeviceID, csActualMac, csFileMac, csFileHostname, csNBHostname;
+	TCHAR lpNBHostname[MAX_COMPUTERNAME_LENGTH + 1];
+	TCHAR lpDNSHostname[MAX_DNS_COMPONENT_LENGTH + 1];
+	CLog* pLogger = getOcsLogger();
+	BOOL bMacChanged = FALSE;
+	DWORD size;
+
+	size = sizeof( lpNBHostname );
+	GetComputerName(lpNBHostname, &size);
+	csNBHostname = lpNBHostname;
+
+	size = sizeof(lpDNSHostname);
+	GetComputerNameEx((COMPUTER_NAME_FORMAT)ComputerNameDnsHostname, lpDNSHostname, &size);
+	m_csHostName = lpDNSHostname;
 
 	// Load deviceid from .dat file
 	if (!loadDeviceid( csDeviceID, csFileMac))
@@ -257,26 +266,26 @@ void CDeviceid::checkDeviceid()
 	// Get list of MC Addresses
 	csActualMac = getMacs();
 
-	csFileHostname	= csDeviceID.Left( csDeviceID.GetLength()-20);
-	csFileDeviceID	= csDeviceID;
+	csFileHostname = csDeviceID.Left( csDeviceID.GetLength()-20);
+	csFileDeviceID = csDeviceID;
 
 	// Compare reference to actual. There is changes if
 	// - Hostname has changed
 	// - There is only one MAC, and it has changed
 	// - There is 2 or more MACs, and at least 2 has changed has changed
 	bMacChanged = CompareMacs( csFileMac, csActualMac);
-	if (bMacChanged && (m_csHostName != csFileHostname))
+	if (bMacChanged && !(m_csHostName == csFileHostname || csNBHostname == csFileHostname))
 	{
 		// Both MAC and hostname changes
 		csDeviceID.Empty();
-		pLogger->log( LOG_PRIORITY_NOTICE, _T( "DID_CHECK => MAC Address changed new:<%s> old:<%s>, Hostname changed new:<%s> old:<%s>"), 
-			csActualMac, csFileMac, m_csHostName, csFileHostname ); 
+		pLogger->log( LOG_PRIORITY_NOTICE, _T( "DID_CHECK => MAC Address changed new:<%s> old:<%s>, Hostname changed new:<%s> old:<%s>"),
+			csActualMac, csFileMac, m_csHostName, csFileHostname );
 	}
-	else if (bMacChanged || (m_csHostName != csFileHostname))
+	else if (bMacChanged || !(m_csHostName == csFileHostname || csNBHostname == csFileHostname))
 	{
 		m_csOldDeviceid = csDeviceID;
 		csDeviceID.Empty();
-		if (bMacChanged)				
+		if (bMacChanged)
 			pLogger->log( LOG_PRIORITY_NOTICE, _T( "DID_CHECK => MAC Address changed new:<%s> old:<%s>"), csActualMac, csFileMac);
 		else
 			pLogger->log(LOG_PRIORITY_NOTICE, _T( "DID_CHECK => Hostname changed new:<%s> old:<%s>"), m_csHostName, csFileHostname);
@@ -291,7 +300,7 @@ void CDeviceid::checkDeviceid()
 	else
 		m_csDeviceid = csDeviceID;
 	// Write file if something changes, even if DeviceID not regenerated (case of minor changes on MAC addresses)
-	if (( csFileMac != csActualMac) || (m_csHostName != csFileHostname))
+	if (( csFileMac != csActualMac) || !(m_csHostName == csFileHostname || csNBHostname == csFileHostname))
 		writeDeviceid();
 }
 
