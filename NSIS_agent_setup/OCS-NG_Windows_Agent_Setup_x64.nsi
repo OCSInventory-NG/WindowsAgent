@@ -13,7 +13,7 @@ setcompressor /SOLID lzma
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "OCS Inventory NG Agent"
 !define OLD_PRODUCT_NAME "OCS Inventory Agent"
-!define PRODUCT_VERSION "2.10.0.0"
+!define PRODUCT_VERSION "2.10.1.0"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
@@ -1595,14 +1595,14 @@ Section "!Working data folder" SEC01
     ; Set users and power users permission to read/execute/change
     StrCpy $logBuffer "SetACL allowing Users / Power users read/write permissions on <$APPDATA\OCS Inventory NG\Agent>..."
     Call Write_Log
-    nsExec::ExecToLog 'SetACL -on "$APPDATA\OCS Inventory NG\Agent" -ot file -actn ace -ace "n:S-1-5-18;p:full;s:y;m:set" -ace "n:S-1-5-32-544;p:full;s:y;m:set" -ace "n:S-1-5-32-547;p:read_ex,change;s:y;m:set" -actn setprot -op "dacl:p_nc;sacl:p_nc" -actn clear -clr "dacl,sacl" -actn rstchldrn -rst "dacl,sacl"'
+    nsExec::ExecToLog '$PLUGINSDIR\SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent" -ot file -actn ace -ace "n:S-1-5-18;p:full;s:y;m:set" -ace "n:S-1-5-32-544;p:full;s:y;m:set" -ace "n:S-1-5-32-547;p:read_ex,change;s:y;m:set" -actn setprot -op "dacl:p_nc;sacl:p_nc" -actn clear -clr "dacl,sacl" -actn rstchldrn -rst "dacl,sacl"'
     Pop $0
     StrCpy $logBuffer "Result: $0$\r$\n"
     Call Write_Log
     ; Propagate inherited permissions to Download directory
     StrCpy $logBuffer "SetACL propagating inherited permissions on <$APPDATA\OCS Inventory NG\Agent\Download>..."
     Call Write_Log
-    nsExec::ExecToLog 'SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -actn setprot -op "dacl:np;sacl:np" -actn clear -clr "dacl,sacl" -actn rstchldrn -rst "dacl,sacl"'
+    nsExec::ExecToLog '$PLUGINSDIR\SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent\Download" -ot file -actn setprot -op "dacl:np;sacl:np" -actn clear -clr "dacl,sacl" -actn rstchldrn -rst "dacl,sacl"'
     Pop $0
     StrCpy $logBuffer "Result: $0$\r$\n"
     Call Write_Log
