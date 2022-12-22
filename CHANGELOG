@@ -1,4 +1,15 @@
-﻿2.9.2.0
+﻿2.10.1.0
+  * Fix 15 character device name limit (Thanks to @CorbinIvon)
+  * Fix set ACL on programdata OCS Inventory folder
+
+2.10.0.0
+  * Add default DNS retrieving
+  * Add default gateway retrieving
+  * Add AzureAD informations retrieving
+  * Add uninstall parameter to remove programdata remanent files
+  * Remove classic user rights on programdata OCS Inventory folder
+
+2.9.2.0
   * This release doesn't bring any feature / functionnality however it is the first fully signed revision using an EV code signing certificate
     Starting now all our agent releases will be signed using that certificate.
 
