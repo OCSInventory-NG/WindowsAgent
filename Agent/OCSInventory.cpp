@@ -126,14 +126,17 @@ BOOL COCSInventoryApp::InitInstance()
 		BOOL				bWriteState = FALSE;
 		CString				csLabelText;
 
+		// Agent Configuration
+		m_pConfig = getAgentConfig();
+
+		// Parse command line before instanciate logger
+		BOOL bParseCommandLine = parseCommandLine();
+
 		// Logger
 		m_pLogger			= getOcsLogger();
 		m_pLogger->setApplication( AfxGetAppName());
 		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "=============================================================================="));
 		m_pLogger->log( LOG_PRIORITY_NOTICE, _T( "Starting OCS Inventory Agent on %s."), cStartTime.Format( _T( "%#c")));
-
-		// Agent Configuration
-		m_pConfig			= getAgentConfig();
 
 		// Communication provider loader
 		CComProvider		*pProvider = getComServerProvider();
@@ -164,7 +167,7 @@ BOOL COCSInventoryApp::InitInstance()
 		* Parse command line
 		*
 		****/
-		if (!parseCommandLine())
+		if (!bParseCommandLine)
 		{
 			m_pLogger->log(LOG_PRIORITY_ERROR, _T( "AGENT => Failed initializing using provided command line parameters <%s>"), m_lpCmdLine);
 			m_nExitCode = OCS_APP_GENERIC_ERROR;
