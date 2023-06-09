@@ -63,8 +63,8 @@ Page custom AskLocalInventory ValidateLocalInventory ""
 ; View before start page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finshed page
-!define MUI_FINISHPAGE_RUN_TEXT "Start OCS Inventory NG Systray Applet"
-!define MUI_FINISHPAGE_RUN "$INSTDIR\OcsSystray.exe"
+;!define MUI_FINISHPAGE_RUN_TEXT "Start OCS Inventory NG Systray Applet"
+;!define MUI_FINISHPAGE_RUN "$INSTDIR\OcsSystray.exe"
 !insertmacro MUI_PAGE_FINISH
 
 UninstPage custom un.AskUninstallOptions un.ValidateUninstallOptions ""
@@ -2041,6 +2041,7 @@ Section "Network inventory (server reachable)" SEC04
 ; DO NOT LAUNCH SYSTRAY AUTOMATICALLY, to avoid it running under system account
 ; when agent is upgraded using agent itself and package deployment
 ;	    Exec "$INSTDIR\OcsSystray.exe"
+		ShellExecAsUser::ShellExecAsUser "open" "$INSTDIR\OcsSystray.exe"
 	${EndIf}
 	; Install service if needed
 	Call InstallService
