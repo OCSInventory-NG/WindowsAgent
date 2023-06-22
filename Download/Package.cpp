@@ -88,19 +88,17 @@ BOOL CPackage::load( LPCTSTR lpstrFile)
 			}
 			else
 			{
-				m_csPath = cPath;
-				m_csPath.Replace( _T( "/"), _T( "\\"));
-				m_csPath.Replace( _T( "INSTALL_PATH"), getInstallFolder());
+				m_csStorePath = cPath;
+				m_csStorePath.Replace( _T( "/"), _T( "\\"));
+				m_csStorePath.Replace( _T( "INSTALL_PATH"), getInstallFolder());
 			}
 		}
-		else
-		{
-			// Put into path tmp folder to unzip package
-			if (GetTempPath( _MAX_PATH, m_csPath.GetBufferSetLength( _MAX_PATH+1)) == 0)
-				return FALSE;
-			m_csPath.ReleaseBuffer();
-			m_csPath.AppendFormat( _T( "\\%s.OCS"), m_csID);
-		}
+
+		// Put into path tmp folder to unzip package
+		if (GetTempPath( _MAX_PATH, m_csPath.GetBufferSetLength( _MAX_PATH+1)) == 0)
+			return FALSE;
+		m_csPath.ReleaseBuffer();
+		m_csPath.AppendFormat( _T( "\\%s.OCS"), m_csID);
 
 		if (m_csAction == OCS_DOWNLOAD_ACTION_LAUNCH)
 		{
@@ -756,6 +754,9 @@ BOOL CPackage::unZip()
 				cFile.WriteString( m_csID);
 				cFile.Close();
 			}
+		}
+		else {
+
 		}
 
 	}

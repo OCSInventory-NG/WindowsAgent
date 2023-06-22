@@ -119,6 +119,7 @@ protected:
 	CString m_csDigestAlgo;		// Digest algorithm
 	CString m_csDigestEncode;	// Digest encoding algorithm
 	CString m_csPath;			// Path for local package storage
+	CString m_csStorePath;		// Path for store destination package
 	CString m_csGardeFou;		// Command to validate package before install		
 	CString m_csCommand;		// Command to execute when LAUNCH or EXECUTE action
 	CString	m_csSchedule;		// Download fragment, but schedule setup at specified date and time
