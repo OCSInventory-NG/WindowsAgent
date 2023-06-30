@@ -18,6 +18,7 @@ REQUIREMENTS
 - KillProcDLL plug-in (http://nsis.sourceforge.net/KillProcDLL_plug-in)
 - SetACL 2.0.3 or higher (http://setacl.sourceforge.net/)
 - NSIS Simple Firewall Plugin 1.19 or higher (http://nsis.sourceforge.net/NSIS_Simple_Firewall_Plugin)
+- ShellExecAsUser plugin (https://nsis.sourceforge.io/ShellExecAsUser_plug-in)
 
 Put SetACL.exe into OCS-NG_Windows_Agent_Setup.nsi script directory, and 
 compile OCS-NG_Windows_Agent_Setup.nsi (Script assume that agent's binary
@@ -30,7 +31,7 @@ shipped with Visual Studio 2008, does not mention Windows 2000 as a valid build
 target, only Windows XP and higher.  
 
 So, for Windows 2000 target only, we prefer using a precompiled binary distribution
-from Günter Knauf, built using MingW32 compiler, and available at location
+from Gï¿½nter Knauf, built using MingW32 compiler, and available at location
 http://www.gknw.net/mirror/curl/win32/curl-7.21.3-ssl-sspi-zlib-static-bin-w32.zip
 Just download this package and unzip it into nsis_agent_setup folder.
 
@@ -48,11 +49,6 @@ INSTALLER COMMAND LINE OPTIONS
 - /S to run the installer in silent mode, no interraction with user
  
 - /NOSPLASH disable spash screen when installer starts
-
-- /UPGRADE to deploy new agent through OCS deployment feature.
-  Because you upgrade agent using agent itself to run the upgrade, it is needed
-  to notify the installer (which terminates agent's processes) to specify the
-  result in order to send it back to the server next time agent will run
 
 - /NO_SERVICE to not register OCS Inventory NG Agent into Windows Service
   Manager. Agent can onlybe launched manually or through a script/GPO.
