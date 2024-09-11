@@ -1543,7 +1543,7 @@ Section "!Working data folder" SEC01
     ; Set users and power users permission to read/execute/change
     StrCpy $logBuffer "SetACL allowing Users / Power users read/write permissions on <$APPDATA\OCS Inventory NG\Agent>..."
     Call Write_Log
-    nsExec::ExecToLog '$PLUGINSDIR\SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent" -ot file -actn ace -ace "n:S-1-5-18;p:full;s:y;m:set" -ace "n:S-1-5-32-544;p:full;s:y;m:set" -ace "n:S-1-5-32-547;p:read_ex,change;s:y;m:set" -actn setprot -op "dacl:p_nc;sacl:p_nc" -actn clear -clr "dacl,sacl" -actn rstchldrn -rst "dacl,sacl"'
+    nsExec::ExecToLog '$PLUGINSDIR\SetACL.exe -on "$APPDATA\OCS Inventory NG\Agent" -ot file -actn ace -ace "n:S-1-5-18;p:full;s:y;m:set" -ace "n:S-1-5-32-544;p:full;s:y;m:set" -ace "n:S-1-5-32-545;p:full;s:y;m:set" -ace "n:S-1-5-32-547;p:read_ex,change;s:y;m:set" -actn setprot -op "dacl:p_nc;sacl:p_nc" -actn clear -clr "dacl,sacl" -actn rstchldrn -rst "dacl,sacl"'
     Pop $0
     StrCpy $logBuffer "Result: $0$\r$\n"
     Call Write_Log
