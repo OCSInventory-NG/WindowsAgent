@@ -14,7 +14,6 @@
 #include "stdafx.h"
 #include "SysInfo.h"
 #include "IPHelper.h"
-#include "SNMP.h"
 #include "FileVersion.h"
 #include "dtwinver.h"
 #include <TlHelp32.h>
