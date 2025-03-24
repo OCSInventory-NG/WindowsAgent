@@ -30,10 +30,7 @@ static char THIS_FILE[] = __FILE__;
 
 CHTTPCrypt::CHTTPCrypt()
 {
-    OpenSSL_add_all_algorithms();
-    OpenSSL_add_all_ciphers();
-    OpenSSL_add_all_digests();
-
+	OPENSSL_init_crypto(0, NULL);
 	retrievePreKey();
 }
 
@@ -121,7 +118,7 @@ BOOL CHTTPCrypt::retrievePreKey()
 BOOL CHTTPCrypt::encrypt( CString &csInput, CString &csOutput)
 {
     BYTE pInitVector[AES_BLOCK_SIZE];	// Random generated initialization vector
-    EVP_CIPHER_CTX oEncCtx;				// Cipher context
+    EVP_CIPHER_CTX *oEncCtx = EVP_CIPHER_CTX_new();				// Cipher context
     const EVP_CIPHER *oChiper = NULL;	// Cipher object
     LPBYTE pInBuffer = NULL,			// Input buffer for data to encipher
 		   pOutBuffer = NULL,			// Output buffer for enciphered data
@@ -148,21 +145,23 @@ BOOL CHTTPCrypt::encrypt( CString &csInput, CString &csOutput)
     }
 
     // Create initialization vector
-    RAND_pseudo_bytes( pInitVector, AES_BLOCK_SIZE);
+	if (RAND_bytes(pInitVector, AES_BLOCK_SIZE) != 1)
+		return FALSE;
 	// Base64 encode initialization vector
 	if (!base64_encode( pInitVector, AES_BLOCK_SIZE, csVector))
 		return FALSE;
     // Create encryption context using initialization vector   
-    EVP_CIPHER_CTX_init( &oEncCtx);
-    EVP_EncryptInit_ex( &oEncCtx, oChiper, 0, (LPBYTE) LPCSTR( m_csKey), pInitVector);
+    EVP_EncryptInit_ex( oEncCtx, oChiper, NULL, (LPBYTE)LPCSTR( m_csKey), pInitVector);
 	// Allocate input buffer to store data to encipher
-	if ((pInBuffer = (LPBYTE) malloc( csInputA.GetLength()+2)) == NULL)
+	pInBuffer = (LPBYTE)malloc(csInputA.GetLength() + 2);
+	if (!pInBuffer)
 		return FALSE;
 	memset( pInBuffer, 0, csInputA.GetLength()+2);
 	memcpy( pInBuffer, (LPCSTR) csInputA, csInputA.GetLength());
     // Allocate output buffer for enciphered data, including last block + padding and to be sure, add two blocks.
 	nOutBufferLength = csInputA.GetLength()+2*AES_BLOCK_SIZE;
-    if ((pOutBuffer = (LPBYTE) malloc( nOutBufferLength)) == NULL)
+	pOutBuffer = (LPBYTE)malloc(nOutBufferLength);
+    if (!pOutBuffer)
 	{
 		free( pInBuffer);
 		return FALSE;
@@ -170,8 +169,7 @@ BOOL CHTTPCrypt::encrypt( CString &csInput, CString &csOutput)
 	memset( pOutBuffer, 0, nOutBufferLength);
 	// Encrypt most of the data (Input must include the null terminating char)
 	nLength = nOutBufferLength;
-    if (EVP_EncryptUpdate( &oEncCtx, pOutBuffer, &nLength,
-							pInBuffer, csInputA.GetLength()+1) < 0)
+    if (EVP_EncryptUpdate( oEncCtx, pOutBuffer, &nLength, pInBuffer, csInputA.GetLength()+1) < 0)
 	{
 		// Encryption fail
 		free( pOutBuffer);
@@ -181,7 +179,7 @@ BOOL CHTTPCrypt::encrypt( CString &csInput, CString &csOutput)
     // Add last block+padding
 	pPaddingBuffer = pOutBuffer+nLength;
 	nPaddingBufferLength = nLength;
-    if (EVP_EncryptFinal_ex( &oEncCtx, pPaddingBuffer, &nPaddingBufferLength) < 0)
+    if (EVP_EncryptFinal_ex( oEncCtx, pPaddingBuffer, &nPaddingBufferLength) < 0)
 	{
 		// Encryption fail
 		free( pOutBuffer);
@@ -200,13 +198,13 @@ BOOL CHTTPCrypt::encrypt( CString &csInput, CString &csOutput)
 	csOutput.Format( _T( "%s%s%s"), csVector,  OCS_HTTP_SEPARATOR_VALUE, csBuffer);
 	free( pOutBuffer);
 	free( pInBuffer);
-    EVP_CIPHER_CTX_cleanup(&oEncCtx);
+    EVP_CIPHER_CTX_free(oEncCtx);
 	return TRUE;
 }
 
 BOOL CHTTPCrypt::decrypt(CString &csInput, CString &csOutput)
 {
-	EVP_CIPHER_CTX oEncCtx;
+	EVP_CIPHER_CTX *oEncCtx = EVP_CIPHER_CTX_new();
 	const EVP_CIPHER *oChiper = NULL;
 	int		nSep;
 	UINT	uLength;
@@ -239,25 +237,22 @@ BOOL CHTTPCrypt::decrypt(CString &csInput, CString &csOutput)
 	if ((pInitVector = base64_decode( csBuffer, &uLength)) == NULL)
 		return FALSE;
 	// Create decryption context using initialization vector  
-	EVP_CIPHER_CTX_init( &oEncCtx);
-	EVP_DecryptInit_ex( &oEncCtx, oChiper, 0, (LPBYTE) LPCSTR( m_csKey), pInitVector);
+	EVP_DecryptInit_ex( oEncCtx, oChiper, NULL, (LPBYTE) LPCSTR( m_csKey), pInitVector);
 	free( pInitVector);
 	// Get real encrypted data from input string
-	csBuffer = csInput.Mid( nSep+_tcslen( OCS_HTTP_SEPARATOR_VALUE), csInput.GetLength()-nSep-_tcslen( OCS_HTTP_SEPARATOR_VALUE));
+	csBuffer = csInput.Mid(nSep + _tcslen(OCS_HTTP_SEPARATOR_VALUE));
 	if ((pInBuffer = base64_decode( csBuffer, &uLength)) == NULL)
-	{
 		return FALSE;
-	}
 	// Decrypt most of the data
 	nOutBufferLength = uLength; 
-    if ((pOutBuffer = (LPBYTE) malloc( nOutBufferLength)) == NULL)
+	pOutBuffer = (LPBYTE)malloc(nOutBufferLength);
+    if (!pOutBuffer)
 	{
 		free( pInBuffer);
 		return FALSE;
 	}
 	memset( pOutBuffer, 0, nOutBufferLength);
-	if (EVP_DecryptUpdate( &oEncCtx, pOutBuffer, &nOutBufferLength, 
-			pInBuffer, nOutBufferLength) < 0)
+	if (EVP_DecryptUpdate( oEncCtx, pOutBuffer, &nOutBufferLength, pInBuffer, nOutBufferLength) < 0)
 	{
 		// Decryption fail
 		free( pInBuffer);
@@ -267,7 +262,7 @@ BOOL CHTTPCrypt::decrypt(CString &csInput, CString &csOutput)
 	// Decrypt last block+padding:
 	pOutPaddingBuffer = pOutBuffer + nOutBufferLength;
 	nOutPaddingLength = nOutBufferLength;
-	if (EVP_DecryptFinal_ex( &oEncCtx, pOutPaddingBuffer, &nOutPaddingLength) < 0)
+	if (EVP_DecryptFinal_ex( oEncCtx, pOutPaddingBuffer, &nOutPaddingLength) < 0)
 	{
 		// Decryption fail
 		free( pInBuffer);
@@ -276,10 +271,9 @@ BOOL CHTTPCrypt::decrypt(CString &csInput, CString &csOutput)
     }
 
 	// Copy decrypted data to output
-	for (nSep = 0; (nSep<nOutBufferLength+nOutPaddingLength) && (pOutBuffer[nSep]!=0); nSep++)
-		csOutput.AppendFormat( _T( "%c"), pOutBuffer[nSep]);
+	csOutput = CString((LPCTSTR)pOutBuffer);
 	free( pInBuffer);
 	free( pOutBuffer);
-	EVP_CIPHER_CTX_cleanup(&oEncCtx);
+	EVP_CIPHER_CTX_free(oEncCtx);
 	return TRUE;
 }

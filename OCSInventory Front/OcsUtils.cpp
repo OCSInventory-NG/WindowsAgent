@@ -17,6 +17,7 @@
 #include <shlwapi.h>
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
+#include <openssl/crypto.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -381,28 +382,32 @@ BOOL OCSINVENTORYFRONT_API fileDigest( LPCTSTR lpstrFile, CString &csDigest, LPC
 
 	// Initialize checksum computing
 	const EVP_MD *evpMD;
-	EVP_MD_CTX ctx;
+	EVP_MD_CTX *ctx = EVP_MD_CTX_new();
 	UINT uLength;
 
-	OpenSSL_add_all_digests();
+	OPENSSL_init_crypto(0, NULL);
+	evpMD = EVP_get_digestbyname(GetAnsiFromUnicode(lpstrAlgo));
+
 	// Set the algorithm
-	if (!(evpMD = EVP_get_digestbyname( GetAnsiFromUnicode( lpstrAlgo))))
+	if (!evpMD)
 		// Unsupported digest
 		return FALSE;
 	// Computing the checksum
-	EVP_DigestInit (&ctx, evpMD);
+	EVP_DigestInit_ex(ctx, evpMD, NULL);
 
 	int nByteRead;
 	do
 	{
-		nByteRead = fRead.Read( pBuffer, 1024);
-		EVP_DigestUpdate (&ctx, pBuffer, nByteRead);
+		nByteRead = fRead.Read( pBuffer, sizeof(pBuffer));
+		EVP_DigestUpdate(ctx, pBuffer, nByteRead);
 	}
 	while(nByteRead>0);
 
-	EVP_DigestFinal( &ctx, pDigest, &uLength);
+	EVP_DigestFinal_ex( ctx, pDigest, &uLength);
 	// Close file
 	fRead.Close();
+
+	EVP_MD_CTX_free(ctx);
 	// Now, encode result
 	if (bBase64)
 		// Digest is base64 encoded
