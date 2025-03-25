@@ -219,15 +219,15 @@ BOOL CHTTPCrypt::decrypt(CString &csInput, CString &csOutput)
     // Set aes key
 	switch (m_csKey.GetLength())
 	{
-	case 16:
+		case 16:
             oChiper = EVP_aes_128_cbc();
 			break;
-	case 32:
+		case 32:
             oChiper = EVP_aes_256_cbc();
 			break;
-	default:
-		 // Wrong key size
-         return FALSE;
+		default:
+			 // Wrong key size
+			 return FALSE;
     }
 	csOutput.Empty();
 	// Get initialization vector from input string and base64 decode it
@@ -240,7 +240,7 @@ BOOL CHTTPCrypt::decrypt(CString &csInput, CString &csOutput)
 	EVP_DecryptInit_ex( oEncCtx, oChiper, NULL, (LPBYTE) LPCSTR( m_csKey), pInitVector);
 	free( pInitVector);
 	// Get real encrypted data from input string
-	csBuffer = csInput.Mid(nSep + _tcslen(OCS_HTTP_SEPARATOR_VALUE));
+	csBuffer = csInput.Mid(nSep + _tcslen(OCS_HTTP_SEPARATOR_VALUE), csInput.GetLength() - nSep - _tcslen(OCS_HTTP_SEPARATOR_VALUE));
 	if ((pInBuffer = base64_decode( csBuffer, &uLength)) == NULL)
 		return FALSE;
 	// Decrypt most of the data
@@ -271,7 +271,9 @@ BOOL CHTTPCrypt::decrypt(CString &csInput, CString &csOutput)
     }
 
 	// Copy decrypted data to output
-	csOutput = CString((LPCTSTR)pOutBuffer);
+	for (nSep = 0; (nSep < nOutBufferLength + nOutPaddingLength) && (pOutBuffer[nSep] != 0); nSep++)
+		csOutput.AppendFormat(_T("%c"), pOutBuffer[nSep]);
+
 	free( pInBuffer);
 	free( pOutBuffer);
 	EVP_CIPHER_CTX_free(oEncCtx);
