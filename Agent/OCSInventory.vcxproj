@@ -142,7 +142,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>Wsnmp32.lib;Wsock32.lib;..\External_Deps\libeay32.lib;..\External_Deps\ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Wsnmp32.lib;Wsock32.lib;..\External_Deps\libcrypto.lib;..\External_Deps\libssl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)OCSInventory.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -172,7 +172,7 @@
       <AdditionalManifestDependencies>
       </AdditionalManifestDependencies>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Wsnmp32.lib;Wsock32.lib;..\External_Deps\libeay32.lib;..\External_Deps\ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Wsnmp32.lib;Wsock32.lib;..\External_Deps\libcrypto.lib;..\External_Deps\libssl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

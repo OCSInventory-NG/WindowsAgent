@@ -20,6 +20,7 @@
 #include <openssl/aes.h>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
+#include <openssl/crypto.h>
 
 // 32 Bytes = 256 bits key
 #define OCS_HTTP_KEY_VALUE			"v1{!\b-'6C8E56eI'&OA/m7!^&l:e23E#"

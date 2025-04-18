@@ -13,7 +13,7 @@ setcompressor /SOLID lzma
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "OCS Inventory NG Agent"
 !define OLD_PRODUCT_NAME "OCS Inventory Agent"
-!define PRODUCT_VERSION "2.10.1.0"
+!define PRODUCT_VERSION "2.11.0.0"
 !define PRODUCT_PUBLISHER "OCS Inventory NG Team"
 !define PRODUCT_WEB_SITE "http://www.ocsinventory-ng.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\OCSInventory.exe"
@@ -30,7 +30,7 @@ setcompressor /SOLID lzma
 ;!insertmacro GetParent
 
 ; Define Visual Studio Path
-!define VC_PATH "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Redist\MSVC\14.34.31931\x86"
+!define VC_PATH "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Redist\MSVC\14.42.34433\x86"
 !define VC_VERSION "VC143"
 
 ; Use Modern UI
@@ -1764,15 +1764,15 @@ Section "OCS Inventory Agent" SEC03
         Call Write_Log
     	strcpy $installSatus ":("
         clearerrors
-        File "..\Release\libeay32.dll"
+        File "..\Release\libcrypto-1_1.dll"
         Iferrors 0 +5
-        StrCpy $logBuffer "$logBuffer ERROR copying libeay32.dll $\r$\n"
+        StrCpy $logBuffer "$logBuffer ERROR copying libcrypto-1_1.dll $\r$\n"
         Call Write_Log
     	strcpy $installSatus ":("
         clearerrors
-        File "..\Release\ssleay32.dll"
+        File "..\Release\libssl-1_1.dll"
         Iferrors 0 +5
-        StrCpy $logBuffer "$logBuffer ERROR copying ssleay32.dll $\r$\n"
+        StrCpy $logBuffer "$logBuffer ERROR copying libssl-1_1.dll $\r$\n"
         Call Write_Log
     	strcpy $installSatus ":("
         clearerrors
@@ -2112,13 +2112,13 @@ Section Uninstall
 	Delete /REBOOTOK "$INSTDIR\ZipArchive.dll"
 	Delete /REBOOTOK "$INSTDIR\uac.manifest"
 	Delete /REBOOTOK "$INSTDIR\SysInfo.dll"
-	Delete /REBOOTOK "$INSTDIR\ssleay32.dll"
+	Delete /REBOOTOK "$INSTDIR\libssl-1_1.dll"
 	Delete /REBOOTOK "$INSTDIR\OcsWmi.dll"
 	Delete /REBOOTOK "$INSTDIR\OcsSystray.exe"
 	Delete /REBOOTOK "$INSTDIR\OcsService.exe"
 	Delete /REBOOTOK "$INSTDIR\OCSInventory.exe"
 	Delete /REBOOTOK "$INSTDIR\OcsSnmp.exe"
-	Delete /REBOOTOK "$INSTDIR\libeay32.dll"
+	Delete /REBOOTOK "$INSTDIR\libcrypto-1_1.dll"
 	Delete /REBOOTOK "$INSTDIR\libcurl.dll"
 	Delete /REBOOTOK "$INSTDIR\download.exe"
 	RMDir /r /REBOOTOK "$INSTDIR"
