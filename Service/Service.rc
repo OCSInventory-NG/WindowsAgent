@@ -25,8 +25,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,11,0,0
- PRODUCTVERSION 2,11,0,0
+ FILEVERSION 2,11,0,1
+ PRODUCTVERSION 2,11,0,1
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -44,13 +44,13 @@ BEGIN
             VALUE "Comments", "OCS Inventory Service"
             VALUE "CompanyName", "OCS Inventory"
             VALUE "FileDescription", "OCS Inventory Service"
-            VALUE "FileVersion", "2.11.0.0"
+            VALUE "FileVersion", "2.11.0.1"
             VALUE "InternalName", "OcsService.exe"
             VALUE "LegalCopyright", "Open Source Software released under GNU General Public License V2"
             VALUE "LegalTrademarks", "http://www.ocsinventory-ng.org"
             VALUE "OriginalFilename", "OcsService.exe"
             VALUE "ProductName", "OCS Inventory Windows Agent"
-            VALUE "ProductVersion", "2.11.0.0"
+            VALUE "ProductVersion", "2.11.0.1"
         END
     END
     BLOCK "VarFileInfo"
