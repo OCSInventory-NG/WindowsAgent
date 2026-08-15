@@ -27,6 +27,9 @@ Function Get-DNSClientCache($pwlang){
 			$entries.Add("</SAAS>`n")           
         }  
 	
+	if ($entries.Count -eq 0) {
+		return $null
+	}
 	return -join $entries
 	
 } 
