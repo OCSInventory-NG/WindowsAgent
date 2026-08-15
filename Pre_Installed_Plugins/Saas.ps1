@@ -1,32 +1,33 @@
 Function Get-DNSClientCache($pwlang){  
     $hash = @{}  
+    $entries = [System.Collections.Generic.List[string]]::new()
 
     Invoke-Expression "ipconfig /displaydns" |  
     Select-String -Pattern $pwlang -Context 0,5 |  
         %{
-			$xml += "<SAAS>`n"
+			$entries.Add("<SAAS>`n")
 			if ($_.Line.Contains(":")) {
-				$xml += "<ENTRY>" + ($_.Line -Split ":")[1].Trim().ToLower()  + "</ENTRY>`n"
+				$entries.Add("<ENTRY>" + ($_.Line -Split ":")[1].Trim().ToLower()  + "</ENTRY>`n")
 			} else {
-				$xml += "<ENTRY />`n"
+				$entries.Add("<ENTRY />`n")
 			}
 
 			if ($_.Context.PostContext[4].Contains(":")) {
-				$xml += "<DATA>" + ($_.Context.PostContext[4] -Split ":")[1].Trim().ToLower() + "</DATA>`n"
+				$entries.Add("<DATA>" + ($_.Context.PostContext[4] -Split ":")[1].Trim().ToLower() + "</DATA>`n")
 			} else {
-				$xml += "<DATA />`n"
+				$entries.Add("<DATA />`n")
 			}
 
 			if ($_.Context.PostContext[1].Contains(":")) {
-				$xml += "<TTL>" + ($_.Context.PostContext[1] -Split ":")[1].Trim() + "</TTL>`n"
+				$entries.Add("<TTL>" + ($_.Context.PostContext[1] -Split ":")[1].Trim() + "</TTL>`n")
 			} else {
-				$xml += "<TTL />`n"
+				$entries.Add("<TTL />`n")
 			}
 
-			$xml += "</SAAS>`n"           
+			$entries.Add("</SAAS>`n")           
         }  
 	
-	return $xml
+	return -join $entries
 	
 } 
 
